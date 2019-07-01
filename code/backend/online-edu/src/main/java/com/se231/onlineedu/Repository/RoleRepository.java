@@ -1,4 +1,4 @@
-package com.se231.onlineedu.Repository;
+package com.se231.onlineedu.repository;
 
 import com.se231.onlineedu.model.Role;
 import com.se231.onlineedu.model.User;
