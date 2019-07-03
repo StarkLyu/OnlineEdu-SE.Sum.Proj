@@ -18,11 +18,10 @@ import java.io.IOException;
 
 /**
  * JwtAuthTokenFilter class
- *
+ * <p>
  * Filter that process request
  *
  * @author Yuxuan Liu
- *
  * @date 2019/07/01
  */
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
@@ -42,21 +41,19 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        try {
 
-            String jwt = getJwt(request);
-            if (jwt!=null && tokenProvider.validateJwtToken(jwt)) {
-                String username = tokenProvider.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication
-                        = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            logger.error("Can NOT set user authentication -> Message: {}", e);
+        String jwt = getJwt(request);
+        if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
+            String username = tokenProvider.getUserNameFromJwtToken(jwt);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication
+                    = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+
         filterChain.doFilter(request, response);
     }
 
@@ -64,7 +61,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith(BEARER)) {
-            return authHeader.replace(BEARER,"");
+            return authHeader.replace(BEARER, "");
         }
 
         return null;
