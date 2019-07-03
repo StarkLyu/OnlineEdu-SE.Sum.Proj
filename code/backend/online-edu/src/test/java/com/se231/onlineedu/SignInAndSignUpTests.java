@@ -1,7 +1,7 @@
 package com.se231.onlineedu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.se231.onlineedu.Repository.RoleRepository;
+import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.Role;
 import com.se231.onlineedu.model.UserRole;
@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;

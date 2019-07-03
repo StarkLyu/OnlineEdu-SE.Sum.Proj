@@ -1,7 +1,7 @@
 package com.se231.onlineedu.controller;
 
-import com.se231.onlineedu.Repository.RoleRepository;
-import com.se231.onlineedu.Repository.UserRepository;
+import com.se231.onlineedu.repository.RoleRepository;
+import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.message.request.LoginForm;
 import com.se231.onlineedu.message.request.SignUpForm;
 import com.se231.onlineedu.message.response.JwtResponse;

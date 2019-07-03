@@ -1,6 +1,6 @@
 package com.se231.onlineedu.security.services;
 
-import com.se231.onlineedu.Repository.UserRepository;
+import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

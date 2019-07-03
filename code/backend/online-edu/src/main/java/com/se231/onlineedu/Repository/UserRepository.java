@@ -1,4 +1,4 @@
-package com.se231.onlineedu.Repository;
+package com.se231.onlineedu.repository;
 
 
 import com.se231.onlineedu.model.User;
@@ -19,16 +19,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * find user by username
      *
-     * @param username
-     * @return
-     */
+     * @param username finding user with this exact username
+     * @return the user with this username
+     * */
     Optional<User> findByUsername(String username);
 
     /**
      * check if username is valid
      *
-     * @param username
-     * @return
+     * @param username pending username
+     * @return  true if exists same username
      */
     Boolean existsByUsername(String username);
 }
