@@ -20,13 +20,13 @@ public class Course {
     private Long id;
 
     @NotBlank
-    private String name;
-
-    @NotBlank
     private Date startDate;
 
     @NotBlank
     private Date endDate;
+
+    @NotBlank
+    private int state;
 
     public Long getId() {
         return id;
@@ -34,14 +34,6 @@ public class Course {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Date getStartDate() {
@@ -58,5 +50,13 @@ public class Course {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

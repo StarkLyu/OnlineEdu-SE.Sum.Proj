@@ -1,5 +1,8 @@
 package com.se231.onlineedu.repository;
 
+import com.se231.onlineedu.model.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 /**
  * Course Repository interface
  *
@@ -9,6 +12,6 @@ package com.se231.onlineedu.repository;
  * @date 2019/7/1
  */
 
-public interface CourseRepository {
+public interface CourseRepository extends JpaRepository<Course,Long> {
 
 }
