@@ -1,13 +1,20 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
+ * CoursePrototype Class.
+ *
  * Prototype of course,store the resource of a course.
+ *
+ * @author Zhe Li
+ *
+ * @date 2019/7/3
  */
+@Entity
+@Table(name = "coursePrototype")
 public class CoursePrototype {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +25,25 @@ public class CoursePrototype {
 
     private String description;
 
-    @NotBlank
+    /**
+     *  state is used to represent the state of a course prototype
+     *  0:waiting for examined
+     *  1:passed examined
+     *  -1:not pass
+     */
+    @NotNull
     private int state;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
