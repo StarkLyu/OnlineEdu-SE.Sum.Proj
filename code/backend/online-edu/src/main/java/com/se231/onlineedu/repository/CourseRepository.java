@@ -1,7 +1,7 @@
 package com.se231.onlineedu.repository;
 
 /**
- * Course Repository interface
+ * Course repository interface
  *
  * used to operate with database
  *
