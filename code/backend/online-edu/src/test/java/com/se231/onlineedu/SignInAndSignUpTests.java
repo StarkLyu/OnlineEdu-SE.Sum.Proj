@@ -1,18 +1,16 @@
 package com.se231.onlineedu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.se231.onlineedu.model.RoleType;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.Role;
-import com.se231.onlineedu.model.UserRole;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -107,9 +105,9 @@ public class SignInAndSignUpTests {
             return;
         }
 
-        roleRepository.save(new Role(UserRole.ROLE_USER));
-        roleRepository.save(new Role(UserRole.ROLE_ADMIN));
-        roleRepository.save(new Role(UserRole.ROLE_SUPER_ADMIN));
+        roleRepository.save(new Role(RoleType.ROLE_USER));
+        roleRepository.save(new Role(RoleType.ROLE_ADMIN));
+        roleRepository.save(new Role(RoleType.ROLE_SUPER_ADMIN));
 
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         result = mvc.perform(post("/api/auth/signup")

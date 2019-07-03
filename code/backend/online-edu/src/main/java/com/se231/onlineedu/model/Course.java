@@ -28,6 +28,23 @@ public class Course {
     @NotBlank
     private int state;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CoursePrototype coursePrototype;
+
+    @OneToMany(mappedBy = "course")
+    private Section section;
+
+    public Course(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank int state, CoursePrototype coursePrototype, Section section) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.state = state;
+        this.coursePrototype = coursePrototype;
+        this.section = section;
+    }
+
+    public Course() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -58,5 +75,21 @@ public class Course {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public CoursePrototype getCoursePrototype() {
+        return coursePrototype;
+    }
+
+    public void setCoursePrototype(CoursePrototype coursePrototype) {
+        this.coursePrototype = coursePrototype;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
     }
 }

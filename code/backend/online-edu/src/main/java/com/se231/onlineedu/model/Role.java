@@ -23,12 +23,12 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(length = 60)
-    private UserRole role;
+    private RoleType role;
 
     public Role() {
     }
 
-    public Role(UserRole role) {
+    public Role(RoleType role) {
         this.role = role;
     }
 
@@ -40,11 +40,11 @@ public class Role {
         this.id = id;
     }
 
-    public UserRole getRole() {
+    public RoleType getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(RoleType role) {
         this.role = role;
     }
 }

@@ -1,8 +1,7 @@
 package com.se231.onlineedu.repository;
 
 import com.se231.onlineedu.model.Role;
-import com.se231.onlineedu.model.User;
-import com.se231.onlineedu.model.UserRole;
+import com.se231.onlineedu.model.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -18,10 +17,10 @@ import java.util.Optional;
  */
 public interface RoleRepository extends JpaRepository<Role, Long> {
     /**
-     * find Role by UserRole enum
+     * find Role by RoleType enum
      *
      * @param role
      * @return Optional<Role>
      */
-    Optional<Role> findByRole(UserRole role);
+    Optional<Role> findByRole(RoleType role);
 }
