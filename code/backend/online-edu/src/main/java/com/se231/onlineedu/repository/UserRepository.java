@@ -3,6 +3,7 @@ package com.se231.onlineedu.repository;
 
 import com.se231.onlineedu.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
  *
  * @date 2019/07/01
  */
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * find user by username

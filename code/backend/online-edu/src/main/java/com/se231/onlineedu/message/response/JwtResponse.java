@@ -33,11 +33,6 @@ public class JwtResponse {
         this.tokenType = tokenType;
     }
 
-    public JwtResponse(String accessToken, String tokenType) {
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-    }
-
     public JwtResponse() {
     }
 }

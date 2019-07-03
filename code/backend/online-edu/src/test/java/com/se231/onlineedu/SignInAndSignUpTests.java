@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -24,17 +26,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * OnlineEduApplicationTests class
- *
+ * UserLoginAndRegisterTests class
+ * <p>
  * test user register, login, and authorization
  *
  * @author Yuxuan Liu
- *
  * @date 2019/07/01
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class OnlineEduApplicationTests {
+public class SignInAndSignUpTests {
 
     private static String userSignUp = "{\n" +
             "\t\"username\":\"user\",\n" +
@@ -44,6 +45,11 @@ public class OnlineEduApplicationTests {
 
     private static String userSignIn = "{\n" +
             "\t\"username\":\"user\",\n" +
+            "\t\"password\":\"password\"" +
+            "}";
+
+    private static String userSignInWrong = "{\n" +
+            "\t\"username\":\"useruser\",\n" +
             "\t\"password\":\"password\"" +
             "}";
 
@@ -133,6 +139,14 @@ public class OnlineEduApplicationTests {
 
         assertTrue(result.equals(signUpResponse));
 
+        result = mvc.perform(post("/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(superAdminSignUp)).andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+
+        assertTrue(result.equals("Fail -> Username is already taken!"));
+
         setUpIsDone = true;
     }
 
@@ -209,6 +223,14 @@ public class OnlineEduApplicationTests {
                 .andReturn().getResponse().getContentAsString();
 
         assertTrue(result.equals(superAdminContent));
+    }
+
+    @Test
+    public void testWrongLogin() throws Exception {
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userSignInWrong))
+                .andExpect(status().isUnauthorized());
     }
 
 }

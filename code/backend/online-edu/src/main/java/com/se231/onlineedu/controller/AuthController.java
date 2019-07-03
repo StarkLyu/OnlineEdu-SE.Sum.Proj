@@ -9,6 +9,7 @@ import com.se231.onlineedu.model.Role;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.UserRole;
 import com.se231.onlineedu.security.jwt.JwtProvider;
+import com.se231.onlineedu.security.services.UserPrinciple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +67,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtProvider.generateJwtToken(authentication);
+        String jwt = jwtProvider.generateJwtToken((UserPrinciple) authentication.getPrincipal());
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
