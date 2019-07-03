@@ -7,10 +7,78 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: Home
     },
+    {
+      path: '/viewcourses',
+      name: 'viewCourses',
+    },
+    {
+      path: '/user',
+      name: 'user',
+      children: [
+        {
+          path: 'course',
+          name: 'userCourse',
+
+        },
+        {
+          path: 'info',
+          name: 'userInfo'
+        },
+      ]
+    },
+    {
+      path: '/course',
+      name: 'course',
+      children: [
+        {
+          path: 'student',
+          name: 'courseStudent',
+          children: [
+            {
+              path: 'welcome',
+              name: 'courseStudentWelcome',
+            },
+            {
+              path: 'home',
+              name: 'courseStudentHome',
+            },
+            {
+              path: 'chapters',
+              name: 'courseStudentChapters',
+            },
+            {
+              path: 'homework',
+              name: 'courseStudentHomework',
+            },
+            {
+              path: 'resources',
+              name: 'courseStudentResources',
+            },
+            {
+              path: 'grade',
+              name: 'courseStudentGrade',
+            }
+          ]
+        },
+        {
+          path: 'manager',
+          name: 'courseManager',
+          children: [
+
+          ]
+        }
+      ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('./views/Login')
+    },
+    {},
     {
       path: '/about',
       name: 'about',
