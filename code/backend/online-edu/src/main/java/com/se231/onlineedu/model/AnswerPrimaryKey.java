@@ -4,11 +4,13 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 @Embeddable
-public class AnswerPrimaryKey {
+public class AnswerPrimaryKey implements Serializable {
+    private static final Long serialVersionUID = 1L;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "paper_answer_id")
     private PaperAnswer paperAnswer;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

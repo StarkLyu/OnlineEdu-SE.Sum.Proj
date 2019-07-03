@@ -8,9 +8,6 @@ public class Section {
     @EmbeddedId
     private SectionPrimaryKey sectionPrimaryKey;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
-
     private String title;
 
     private String description;
@@ -24,14 +21,6 @@ public class Section {
     public Section() {
     }
 
-    public Section(SectionPrimaryKey sectionPrimaryKey, Course course, String title, String description, List<Paper> papers, List<Resource> resources) {
-        this.sectionPrimaryKey = sectionPrimaryKey;
-        this.course = course;
-        this.title = title;
-        this.description = description;
-        this.papers = papers;
-        this.resources = resources;
-    }
 
     public SectionPrimaryKey getSectionPrimaryKey() {
         return sectionPrimaryKey;
@@ -39,14 +28,6 @@ public class Section {
 
     public void setSectionPrimaryKey(SectionPrimaryKey sectionPrimaryKey) {
         this.sectionPrimaryKey = sectionPrimaryKey;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
     }
 
     public String getTitle() {

@@ -3,11 +3,19 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 /**
+ * CoursePrototype Class.
+ *
  * Prototype of course,store the resource of a course.
+ *
+ * @author Zhe Li
+ *
+ * @date 2019/7/3
  */
 @Entity
+@Table(name = "coursePrototype")
 public class CoursePrototype {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +32,6 @@ public class CoursePrototype {
     @OneToMany(mappedBy = "coursePrototype")
     private List<Course> courses;
 
-    @NotBlank
-    private int state;
-
     public CoursePrototype(@NotBlank String title, String description, List<Question> questions, List<Course> courses, @NotBlank int state) {
         this.title = title;
         this.description = description;
@@ -36,6 +41,26 @@ public class CoursePrototype {
     }
 
     public CoursePrototype() {
+
+    }
+    /**
+     *  state is used to represent the state of a course prototype
+     *  0:waiting for examined
+     *  1:passed examined
+     *  -1:not pass
+     */
+    @NotNull
+    private int state;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getId() {

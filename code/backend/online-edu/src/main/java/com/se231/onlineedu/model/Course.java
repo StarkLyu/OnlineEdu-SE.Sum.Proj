@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+import java.util.List;
 
 /**
  * Course Class
@@ -31,16 +32,9 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     private CoursePrototype coursePrototype;
 
-    @OneToMany(mappedBy = "course")
-    private Section section;
+    @OneToMany(mappedBy = "sectionPrimaryKey.course")
+    private List<Section> sections;
 
-    public Course(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank int state, CoursePrototype coursePrototype, Section section) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.state = state;
-        this.coursePrototype = coursePrototype;
-        this.section = section;
-    }
 
     public Course() {
     }
@@ -85,11 +79,19 @@ public class Course {
         this.coursePrototype = coursePrototype;
     }
 
-    public Section getSection() {
-        return section;
+    public List<Section> getSections() {
+        return sections;
     }
 
-    public void setSection(Section section) {
-        this.section = section;
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public Course(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank int state, CoursePrototype coursePrototype, List<Section> sections) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.state = state;
+        this.coursePrototype = coursePrototype;
+        this.sections = sections;
     }
 }
