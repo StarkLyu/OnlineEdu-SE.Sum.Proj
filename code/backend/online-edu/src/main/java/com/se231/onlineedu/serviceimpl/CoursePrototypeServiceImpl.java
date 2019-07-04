@@ -1,12 +1,11 @@
 package com.se231.onlineedu.serviceimpl;
 
-import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
-import com.se231.onlineedu.message.response.ApplyResponse;
+import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.ApplyRepository;
 import com.se231.onlineedu.repository.UserRepository;
-import com.se231.onlineedu.service.CourseService;
+import com.se231.onlineedu.service.CoursePrototypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
  * @date 2019/7/3
  */
 @Service
-public class CourseServiceImpl implements CourseService {
+public class CoursePrototypeServiceImpl implements CoursePrototypeService {
 
     private CoursePrototypeRepository coursePrototypeRepository;
 
@@ -29,16 +28,16 @@ public class CourseServiceImpl implements CourseService {
     private UserRepository userRepository;
 
     @Autowired
-    public CourseServiceImpl(CoursePrototypeRepository coursePrototypeRepository,
-                             ApplyRepository applyRepository,
-                             UserRepository userRepository){
+    public CoursePrototypeServiceImpl(CoursePrototypeRepository coursePrototypeRepository,
+                                      ApplyRepository applyRepository,
+                                      UserRepository userRepository){
         this.coursePrototypeRepository=coursePrototypeRepository;
         this.applyRepository=applyRepository;
         this.userRepository=userRepository;
     }
 
     @Override
-    public CoursePrototype createCourse(CreateCourseApplicationForm form, Long userId) throws Exception{
+    public CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) throws Exception{
         CoursePrototype coursePrototype=new CoursePrototype();
         coursePrototype.setTitle(form.getTitle());
         coursePrototype.setDescription(form.getDescription());

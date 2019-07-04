@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.RoleType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,8 +44,6 @@ public class CourseTest {
 
     private String result;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
     /**
      * work around for static requirement of beforeClass
      * <p>
@@ -61,43 +58,33 @@ public class CourseTest {
     @Test
     @WithMockUser(roles = "Admin",username = "admin")
     public void testCreateCourse() throws Exception {
-        result = mvc.perform(post("/api/course/")
+        mvc.perform(post("/api/course")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(nullString))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isInternalServerError());
 
-        assertEquals(badResponse,result);
-
-        result = mvc.perform(post("/api/course/")
+        mvc.perform(post("/api/course")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(noTitle))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isInternalServerError());
 
-        assertEquals(badResponse,result);
-
-        result = mvc.perform(post("/api/course/")
+        mvc.perform(post("/api/course")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(LongTitle))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isInternalServerError());
 
-        assertEquals(badResponse,result);
         result = mvc.perform(post("/api/course/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        assertEquals(goodResponse,result);
         result = mvc.perform(post("/api/course/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(longDes))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
-        assertEquals(badResponse,result);
     }
 
     @Test
@@ -108,14 +95,11 @@ public class CourseTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        assertEquals(badResponse,result);
-
         result = mvc.perform(post("/api/course/2/apply")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        assertEquals(goodResponse,result);
     }
 
 }

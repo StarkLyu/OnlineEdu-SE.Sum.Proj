@@ -27,7 +27,8 @@ public class Course {
     private Date endDate;
 
     @NotBlank
-    private int state;
+    @Enumerated(EnumType.STRING)
+    private CourseState state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CoursePrototype coursePrototype;
@@ -35,6 +36,8 @@ public class Course {
     @OneToMany(mappedBy = "sectionPrimaryKey.course")
     private List<Section> sections;
 
+    @OneToOne
+    private User user;
 
     public Course() {
     }
@@ -63,11 +66,11 @@ public class Course {
         this.endDate = endDate;
     }
 
-    public int getState() {
+    public CourseState getState() {
         return state;
     }
 
-    public void setState(int state) {
+    public void setState(CourseState state) {
         this.state = state;
     }
 
@@ -87,7 +90,15 @@ public class Course {
         this.sections = sections;
     }
 
-    public Course(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank int state, CoursePrototype coursePrototype, List<Section> sections) {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Course(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank CourseState state, CoursePrototype coursePrototype, List<Section> sections) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.state = state;

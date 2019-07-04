@@ -1,11 +1,8 @@
 package com.se231.onlineedu.service;
 
-import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
-import com.se231.onlineedu.message.response.ApplyResponse;
+import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.Apply;
-import com.se231.onlineedu.model.ApplyPrimaryKey;
 import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.User;
 
 
 /**
@@ -18,7 +15,7 @@ import com.se231.onlineedu.model.User;
  * @date 2019/7/3
  */
 
-public interface CourseService {
+public interface CoursePrototypeService {
 
     /**
      * Teaching Admin(or higher)could apply to create a new course prototype.
@@ -27,7 +24,7 @@ public interface CourseService {
      * @param form create application form
      * @return response for front
      */
-    CoursePrototype createCourse(CreateCourseApplicationForm form, Long userId) throws Exception;
+    CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) throws Exception;
 
     /**
      * Teaching Admin could apply for the usage of a course prototype.
@@ -51,7 +48,7 @@ public interface CourseService {
      * @param courseId id of the a course
      * @param applicantId id of the applicant
      * @param decision -1 represent disapproval while 1 represent approval
-     * @the application
+     * @return the application
      */
     Apply decideUseCourse(Long courseId, Long applicantId, String decision)throws Exception;
 }
