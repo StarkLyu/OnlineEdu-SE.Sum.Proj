@@ -2,10 +2,7 @@ package com.se231.onlineedu.serviceimpl;
 
 import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.message.response.ApplyResponse;
-import com.se231.onlineedu.model.ApplyPrimaryKey;
-import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.Apply;
-import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.ApplyRepository;
 import com.se231.onlineedu.repository.UserRepository;
@@ -41,41 +38,48 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public ApplyResponse createCourse(CreateCourseApplicationForm form, User user) throws Exception{
+    public CoursePrototype createCourse(CreateCourseApplicationForm form, Long userId) throws Exception{
         CoursePrototype coursePrototype=new CoursePrototype();
         coursePrototype.setTitle(form.getTitle());
         coursePrototype.setDescription(form.getDescription());
-        coursePrototype.setState(0);
+        coursePrototype.setState(CoursePrototypeState.NOT_PASS);
+        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
         coursePrototype.setUser(user);
-        coursePrototypeRepository.save(coursePrototype);
-        return new ApplyResponse(1);
+        return coursePrototypeRepository.save(coursePrototype);
     }
 
     @Override
-    public ApplyResponse applyForCourse(Long courseId,User user) throws Exception{
+    public Apply applyForCourse(Long courseId,Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
+        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
         ApplyPrimaryKey id = new ApplyPrimaryKey(user,coursePrototype);
-        Apply application=applyRepository.findById(id).orElseGet(()->new Apply(id));
-        return new ApplyResponse(application.getState()+1);
+        Apply application;
+        if(!applyRepository.existsById(id)){
+            application=new Apply(id);
+            return applyRepository.save(application);
+        }
+        else {
+            return applyRepository.findById(id).orElseThrow(()->new Exception("No corresponding apply"));
+        }
     }
 
     @Override
-    public void decideCreateCourse(Long coursePrototypeId,int decision)throws Exception{
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(()->new Exception("No corresponding course"));        coursePrototype.setState(1);
-        coursePrototype.setState(decision);
-        coursePrototypeRepository.save(coursePrototype);
+    public CoursePrototype decideCreateCourse(Long coursePrototypeId,String decision)throws Exception{
+        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(()->new Exception("No corresponding course"));
+        coursePrototype.setState(CoursePrototypeState.valueOf(decision.toUpperCase()));
+        return coursePrototypeRepository.save(coursePrototype);
     }
 
     @Override
-    public void decideUseCourse(Long courseId,Long applicantId,int decision)throws Exception{
+    public Apply decideUseCourse(Long courseId,Long applicantId,String decision)throws Exception{
 
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
         User user = userRepository.findById(applicantId).orElseThrow(()->new Exception("No corresponding user"));
         ApplyPrimaryKey applyPrimaryKey=new ApplyPrimaryKey(user,coursePrototype);
-        Apply Apply =
+        Apply apply =
                 applyRepository.findById(applyPrimaryKey).orElseThrow(()->new Exception("No corresponding application"));
-
-        Apply.setState(decision);
+        apply.setApplyState(ApplyState.valueOf(decision.toUpperCase()));
+        return applyRepository.save(apply);
     }
 
 

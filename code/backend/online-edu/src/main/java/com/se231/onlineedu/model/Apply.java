@@ -1,9 +1,8 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 /**
@@ -18,26 +17,22 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Teacher_Apply_For_Course")
+@JsonIgnoreProperties("hibernateLazyInitializer")
 public class Apply {
 
     @EmbeddedId
     private ApplyPrimaryKey applicationForCoursePK;
 
-    /**
-     * state is used to represent whether the application is examined or not
-     * 0 represent not examined yet
-     * 1 represent approval
-     * -1 represent disapproval
-     */
     @NotNull
-    private int state;
+    @Enumerated(EnumType.STRING)
+    private ApplyState applyState;
 
     public Apply() {
     }
 
     public Apply(ApplyPrimaryKey applicationForCoursePK) {
         this.applicationForCoursePK = applicationForCoursePK;
-        this.state=0;
+        this.applyState=ApplyState.NOT_DECIDE;
     }
 
     public ApplyPrimaryKey getApplicationForCoursePK() {
@@ -48,11 +43,11 @@ public class Apply {
         this.applicationForCoursePK = applicationForCoursePK;
     }
 
-    public int getState() {
-        return state;
+    public ApplyState getState() {
+        return applyState;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setApplyState(ApplyState state) {
+        this.applyState = state;
     }
 }

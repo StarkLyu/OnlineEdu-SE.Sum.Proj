@@ -3,7 +3,10 @@ package com.se231.onlineedu.controller;
 import javax.validation.Valid;
 import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.message.response.ApplyResponse;
+import com.se231.onlineedu.model.Apply;
+import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,44 +33,33 @@ public class CourseController {
 
     @PostMapping("/")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<ApplyResponse> createCourse(@Valid @RequestBody CreateCourseApplicationForm form, BindingResult bindingResult,
-                                                      @AuthenticationPrincipal User user) throws Exception{
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>(new ApplyResponse(0), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(courseService.createCourse(form,user),HttpStatus.OK);
+    public ResponseEntity<CoursePrototype> createCourse(@Valid @RequestBody CreateCourseApplicationForm form, BindingResult bindingResult,
+                                                        @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
+        return ResponseEntity.ok(courseService.createCourse(form,userPrinciple.getId()));
     }
 
     @PostMapping("/{id}/apply")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<ApplyResponse> applyForCourse(@PathVariable(name = "id")Long courseId,
-                                                        @AuthenticationPrincipal User user) throws Exception {
-        ApplyResponse response= courseService.applyForCourse(courseId,user);
-        switch(response.getAlert()){
-            case 0:
-                return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-            case 1:
-                return new ResponseEntity<>(response,HttpStatus.OK);
+    public ResponseEntity<Apply> applyForCourse(@PathVariable(name = "id")Long courseId,
+                                                @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception {
 
-            default:
-                return new ResponseEntity<>(response,HttpStatus.CONTINUE);
-        }
+        return ResponseEntity.ok(courseService.applyForCourse(courseId,userPrinciple.getId()));
     }
 
     @PostMapping("/{id}/create")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public void decideApplicationOfCreatingCourse(@RequestParam(name = "decision")int decision,
+    public ResponseEntity<CoursePrototype> decideApplicationOfCreatingCourse(@RequestParam(name = "decision")String decision,
                                                   @PathVariable(name = "id") Long coursePrototypeId)throws Exception{
-        courseService.decideCreateCourse(coursePrototypeId,decision);
+        return ResponseEntity.ok(courseService.decideCreateCourse(coursePrototypeId,decision));
     }
 
     @PostMapping("/apply")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public void decideApplicationOfUsingCourse(@RequestParam(name = "decision")int decision,
+    public ResponseEntity<Apply> decideApplicationOfUsingCourse(@RequestParam(name = "decision")String decision,
                                                @RequestParam(name = "course_id")Long courseId,
                                                @RequestParam(name = "applicant_id")Long applicantId)throws Exception{
 
-        courseService.decideUseCourse(courseId,applicantId,decision);
+        return ResponseEntity.ok(courseService.decideUseCourse(courseId,applicantId,decision));
     }
 
 }
