@@ -1,7 +1,7 @@
 <template>
     <el-menu mode="horizontal" router>
 
-        <div class="head-logo head-div"><img src="../../../assets/mainlogo.png" style="width: 160px;"></div>
+        <div class="head-logo head-div"><img alt="fuck" src="../../../assets/mainlogo.png" style="width: 160px;"></div>
         <el-menu-item index="/home">首页</el-menu-item>
         <el-menu-item index="/viewcourses">课程</el-menu-item>
         <el-menu-item index="/user">个人中心</el-menu-item>
