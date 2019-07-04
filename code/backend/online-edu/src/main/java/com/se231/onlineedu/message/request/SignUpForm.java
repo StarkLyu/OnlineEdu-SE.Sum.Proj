@@ -19,15 +19,15 @@ public class SignUpForm {
     @Size(min = 3, max = 50)
     private String username;
 
-    private List<String> role;
+    private List<String> roles;
 
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
 
-    public SignUpForm(@NotBlank @Size(min = 3, max = 50) String username, List<String> role, @NotBlank @Size(min = 6, max = 40) String password) {
+    public SignUpForm(@NotBlank @Size(min = 3, max = 50) String username, List<String> roles, @NotBlank @Size(min = 6, max = 40) String password) {
         this.username = username;
-        this.role = role;
+        this.roles = roles;
         this.password = password;
     }
 
@@ -40,11 +40,11 @@ public class SignUpForm {
     }
 
     public List<String> getRole() {
-        return role;
+        return roles;
     }
 
     public void setRole(List<String> role) {
-        this.role = role;
+        this.roles = roles;
     }
 
     public String getPassword() {

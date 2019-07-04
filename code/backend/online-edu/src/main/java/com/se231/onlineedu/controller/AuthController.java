@@ -98,6 +98,12 @@ public class AuthController {
                     roles.add(pmRole);
 
                     break;
+                case "teaching_admin":
+                    Role tRole = roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN)
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+                    roles.add(tRole);
+                    break;
+
                 default:
                     Role userRole = roleRepository.findByRole(RoleType.ROLE_USER)
                             .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
