@@ -38,7 +38,7 @@ public class SignInAndSignUpTests {
     private static String userSignUp = "{\n" +
             "\t\"username\":\"user\",\n" +
             "\t\"password\":\"password\",\n" +
-            "\t\"role\":[\"user\"]\n" +
+            "\t\"roles\":[\"user\"]\n" +
             "}";
 
     private static String userSignIn = "{\n" +
@@ -54,7 +54,7 @@ public class SignInAndSignUpTests {
     private static String adminSignUp = "{\n" +
             "\t\"username\":\"admin\",\n" +
             "\t\"password\":\"password\",\n" +
-            "\t\"role\":[\"admin\"]\n" +
+            "\t\"roles\":[\"admin\"]\n" +
             "}";
 
     private static String adminSignIn = "{\n" +
@@ -65,7 +65,7 @@ public class SignInAndSignUpTests {
     private static String superAdminSignUp = "{\n" +
             "\t\"username\":\"superAdmin\",\n" +
             "\t\"password\":\"password\",\n" +
-            "\t\"role\":[\"super_admin\"]\n" +
+            "\t\"roles\":[\"super_admin\"]\n" +
             "}";
 
     private static String superAdminSignIn = "{\n" +
@@ -108,6 +108,7 @@ public class SignInAndSignUpTests {
         roleRepository.save(new Role(RoleType.ROLE_USER));
         roleRepository.save(new Role(RoleType.ROLE_ADMIN));
         roleRepository.save(new Role(RoleType.ROLE_SUPER_ADMIN));
+        roleRepository.save(new Role(RoleType.ROLE_TEACHING_ADMIN));
 
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         result = mvc.perform(post("/api/auth/signup")

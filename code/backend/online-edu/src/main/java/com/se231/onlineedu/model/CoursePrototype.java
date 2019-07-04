@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * CoursePrototype Class.
@@ -32,7 +33,16 @@ public class CoursePrototype {
     @OneToMany(mappedBy = "coursePrototype")
     private List<Course> courses;
 
-    public CoursePrototype(@NotBlank String title, String description, List<Question> questions, List<Course> courses, @NotBlank int state) {
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private CoursePrototypeState state;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    public CoursePrototype() {}
+
+    public CoursePrototype(@NotBlank String title, String description, List<Question> questions, List<Course> courses, @NotBlank CoursePrototypeState state) {
         this.title = title;
         this.description = description;
         this.questions = questions;
@@ -40,20 +50,7 @@ public class CoursePrototype {
         this.state = state;
     }
 
-    public CoursePrototype() {
 
-    }
-    /**
-     *  state is used to represent the state of a course prototype
-     *  0:waiting for examined
-     *  1:passed examined
-     *  -1:not pass
-     */
-    @NotNull
-    private int state;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
 
     public User getUser() {
         return user;
@@ -103,11 +100,11 @@ public class CoursePrototype {
         this.courses = courses;
     }
 
-    public int getState() {
+    public CoursePrototypeState getState() {
         return state;
     }
 
-    public void setState(int state) {
+    public void setState(CoursePrototypeState state) {
         this.state = state;
     }
 }
