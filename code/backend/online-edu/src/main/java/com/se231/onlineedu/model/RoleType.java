@@ -2,7 +2,7 @@ package com.se231.onlineedu.model;
 
 
 /**
- * UserRole enum
+ * RoleType enum
  *
  * Store different roles
  *
@@ -10,7 +10,7 @@ package com.se231.onlineedu.model;
  *
  * @date 2019/07/01
  */
-public enum UserRole {
+public enum RoleType {
     ROLE_SUPER_ADMIN,
     ROLE_ADMIN,
     ROLE_TEACHING_ADMIN,

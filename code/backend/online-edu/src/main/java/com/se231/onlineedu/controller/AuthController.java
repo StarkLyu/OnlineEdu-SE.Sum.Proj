@@ -1,5 +1,6 @@
 package com.se231.onlineedu.controller;
 
+import com.se231.onlineedu.model.RoleType;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.message.request.LoginForm;
@@ -7,7 +8,6 @@ import com.se231.onlineedu.message.request.SignUpForm;
 import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.Role;
 import com.se231.onlineedu.model.User;
-import com.se231.onlineedu.model.UserRole;
 import com.se231.onlineedu.security.jwt.JwtProvider;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,19 +87,25 @@ public class AuthController {
         strRoles.forEach(role -> {
             switch(role) {
                 case "super_admin":
-                    Role adminRole = roleRepository.findByRole(UserRole.ROLE_SUPER_ADMIN)
+                    Role adminRole = roleRepository.findByRole(RoleType.ROLE_SUPER_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
                     roles.add(adminRole);
 
                     break;
                 case "admin":
-                    Role pmRole = roleRepository.findByRole(UserRole.ROLE_ADMIN)
+                    Role pmRole = roleRepository.findByRole(RoleType.ROLE_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
                     roles.add(pmRole);
 
                     break;
+                case "teaching_admin":
+                    Role tRole = roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN)
+                            .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+                    roles.add(tRole);
+                    break;
+
                 default:
-                    Role userRole = roleRepository.findByRole(UserRole.ROLE_USER)
+                    Role userRole = roleRepository.findByRole(RoleType.ROLE_USER)
                             .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
                     roles.add(userRole);
             }

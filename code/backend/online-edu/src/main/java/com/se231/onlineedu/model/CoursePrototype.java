@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -25,6 +26,23 @@ public class CoursePrototype {
 
     private String description;
 
+    @OneToMany(mappedBy = "coursePrototype")
+    private List<Question> questions;
+
+    @OneToMany(mappedBy = "coursePrototype")
+    private List<Course> courses;
+
+    public CoursePrototype(@NotBlank String title, String description, List<Question> questions, List<Course> courses, @NotBlank int state) {
+        this.title = title;
+        this.description = description;
+        this.questions = questions;
+        this.courses = courses;
+        this.state = state;
+    }
+
+    public CoursePrototype() {
+
+    }
     /**
      *  state is used to represent the state of a course prototype
      *  0:waiting for examined
@@ -67,6 +85,22 @@ public class CoursePrototype {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     public int getState() {
