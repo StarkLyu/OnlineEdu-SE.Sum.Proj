@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Manage from './Manage.vue'
 import router from './router'
-import Element from  'element-ui'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.use(Element);
+Vue.use(ElementUI);
 
 new Vue({
     router,
