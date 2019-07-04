@@ -21,19 +21,19 @@ public interface CourseService {
     /**
      * Teaching Admin(or higher)could apply to create a new course prototype.
      *
-     * @param user the applicant
+     * @param userId the id of applicant
      * @param form create application form
      * @return response for front
      */
-    ApplyResponse createCourse(CreateCourseApplicationForm form, User user) throws Exception;
+    ApplyResponse createCourse(CreateCourseApplicationForm form, Long userId) throws Exception;
 
     /**
      * Teaching Admin could apply for the usage of a course prototype.
      * @param courseId  the applying course
-     * @param user the applicant
+     * @param userId the id of applicant
      * @return  response for front
      */
-    ApplyResponse applyForCourse(Long courseId,User user) throws Exception;
+    ApplyResponse applyForCourse(Long courseId,Long userId) throws Exception;
 
     /**
      * Admin approve the application of create course.

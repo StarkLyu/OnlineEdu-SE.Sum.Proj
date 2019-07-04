@@ -41,22 +41,31 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public ApplyResponse createCourse(CreateCourseApplicationForm form, User user) throws Exception{
+    public ApplyResponse createCourse(CreateCourseApplicationForm form, Long userId) throws Exception{
         CoursePrototype coursePrototype=new CoursePrototype();
         coursePrototype.setTitle(form.getTitle());
         coursePrototype.setDescription(form.getDescription());
         coursePrototype.setState(0);
+        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
         coursePrototype.setUser(user);
         coursePrototypeRepository.save(coursePrototype);
         return new ApplyResponse(1);
     }
 
     @Override
-    public ApplyResponse applyForCourse(Long courseId,User user) throws Exception{
+    public ApplyResponse applyForCourse(Long courseId,Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
+        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
         ApplyPrimaryKey id = new ApplyPrimaryKey(user,coursePrototype);
-        Apply application=applyRepository.findById(id).orElseGet(()->new Apply(id));
-        return new ApplyResponse(application.getState()+1);
+        Apply application;
+        if(!applyRepository.existsById(id)){
+            application=new Apply(id);
+            applyRepository.save(application);
+            return new ApplyResponse(1);
+        }
+        else {
+            return new ApplyResponse(0);
+        }
     }
 
     @Override
@@ -72,10 +81,11 @@ public class CourseServiceImpl implements CourseService {
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
         User user = userRepository.findById(applicantId).orElseThrow(()->new Exception("No corresponding user"));
         ApplyPrimaryKey applyPrimaryKey=new ApplyPrimaryKey(user,coursePrototype);
-        Apply Apply =
+        Apply apply =
                 applyRepository.findById(applyPrimaryKey).orElseThrow(()->new Exception("No corresponding application"));
 
-        Apply.setState(decision);
+        apply.setApplyState(decision);
+        applyRepository.save(apply);
     }
 
 
