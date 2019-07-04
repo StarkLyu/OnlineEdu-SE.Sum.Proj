@@ -1,8 +1,8 @@
 package com.se231.onlineedu.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.sql.Date;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,13 +20,13 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private Date startDate;
 
-    @NotBlank
+    @NotNull
     private Date endDate;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private CourseState state;
 
@@ -98,7 +98,15 @@ public class Course {
         this.user = user;
     }
 
-    public Course(@NotBlank Date startDate, @NotBlank Date endDate, @NotBlank CourseState state, CoursePrototype coursePrototype, List<Section> sections) {
+    public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, User user) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.state = state;
+        this.coursePrototype = coursePrototype;
+        this.user = user;
+    }
+
+    public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, List<Section> sections) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.state = state;
