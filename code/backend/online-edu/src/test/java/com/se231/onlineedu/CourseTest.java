@@ -1,0 +1,123 @@
+package com.se231.onlineedu;
+
+import static org.junit.Assert.assertEquals;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.se231.onlineedu.model.RoleType;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+@SpringBootTest
+@RunWith(SpringRunner.class)
+public class CourseTest {
+    //initialize test case and local variable
+    private static String nullString="{}";
+
+    private static String noTitle="{\n" +
+            "\"title\":\"\"}";
+
+    private static String LongTitle="{\n" +
+            "\"title\":\"qwertyuiopasdfghjklzxcvbnmqwertyuiuop\"}";
+
+    private static String titleAndDes="{\"title\":\"English\",\n" +
+            "\"description\":\"learing English\"}";
+
+    private static String longDes="{\"title\":\"MATH\",\n" +
+            "\"description\":\"abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwkabcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwke[pqwmr;qlkq[wpekq[wp,dq[pl,eqw[],qwd[]qwd,[qwk,abcdasdedwqwdjqwpiojqdwpjpodqwjpoaxjopasdjopdjqwopjfopqjo[pjkqw[pkd[qpklp[dqwk[pqwdkdqp[wkdqw[pkq[pke[]pqwle[peqwkle[pqwkewpekq[wp,dq]pl,eqw[],qwd[]qwd,[qwk,\"}";
+
+    private static String goodResponse = "{\"alert\":1}";
+
+    private static String badResponse = "{\"alert\":0}";
+
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
+
+    private String result;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * work around for static requirement of beforeClass
+     * <p>
+     * see https://stackoverflow.com/questions/12087959/junit-run-set-up-method-once
+     */
+
+    @Before
+    public void setup() throws Exception {
+        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+    }
+
+    @Test
+    @WithMockUser(roles = "Admin")
+    public void testCreateCourse() throws Exception {
+        result = mvc.perform(post("/api/course/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(nullString))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(badResponse,result);
+
+        result = mvc.perform(post("/api/course/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noTitle))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(badResponse,result);
+
+        result = mvc.perform(post("/api/course/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(LongTitle))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(badResponse,result);
+        result = mvc.perform(post("/api/course/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(titleAndDes))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(goodResponse,result);
+        result = mvc.perform(post("/api/course/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(longDes))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(badResponse,result);
+    }
+
+    @Test
+    @WithMockUser(username = "admin2",roles = "ADMIN")
+    public void applyCourseTest() throws Exception{
+        result = mvc.perform(post("/api/course/1/apply")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(badResponse,result);
+
+        result = mvc.perform(post("/api/course/2/apply")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(goodResponse,result);
+    }
+
+}

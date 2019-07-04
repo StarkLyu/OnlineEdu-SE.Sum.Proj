@@ -30,14 +30,14 @@ public class Apply {
      * -1 represent disapproval
      */
     @NotNull
-    private int state;
+    private int applyState;
 
     public Apply() {
     }
 
     public Apply(ApplyPrimaryKey applicationForCoursePK) {
         this.applicationForCoursePK = applicationForCoursePK;
-        this.state=0;
+        this.applyState=0;
     }
 
     public ApplyPrimaryKey getApplicationForCoursePK() {
@@ -49,10 +49,10 @@ public class Apply {
     }
 
     public int getState() {
-        return state;
+        return applyState;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setApplyState(int state) {
+        this.applyState = state;
     }
 }

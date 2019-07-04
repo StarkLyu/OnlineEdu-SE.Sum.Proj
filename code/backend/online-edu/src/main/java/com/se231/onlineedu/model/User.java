@@ -45,11 +45,13 @@ public class User {
         this.username = username;
     }
 
-    public User(@NotBlank String username, @NotBlank String password, List<Role> roles) {
+    public User(Long id, @NotBlank String username, @NotBlank String password, List<Role> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
+
+
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_roles",

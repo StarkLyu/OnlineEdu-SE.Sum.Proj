@@ -17,7 +17,7 @@ public class ApplyPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;
 
     @ManyToOne()
-    private User teachingAdmin;
+    private User user;
 
     @ManyToOne()
     private CoursePrototype coursePrototype;
@@ -25,17 +25,17 @@ public class ApplyPrimaryKey implements Serializable {
     public ApplyPrimaryKey() {
     }
 
-    public ApplyPrimaryKey(User teachingAdmin, CoursePrototype coursePrototype) {
-        this.teachingAdmin = teachingAdmin;
+    public ApplyPrimaryKey(User user, CoursePrototype coursePrototype) {
+        this.user = user;
         this.coursePrototype = coursePrototype;
     }
 
     public User getTeachingAdmin() {
-        return teachingAdmin;
+        return user;
     }
 
     public void setTeachingAdmin(User teachingAdmin) {
-        this.teachingAdmin = teachingAdmin;
+        this.user = teachingAdmin;
     }
 
     public CoursePrototype getCoursePrototype() {
