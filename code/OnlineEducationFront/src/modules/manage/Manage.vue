@@ -1,16 +1,11 @@
 <template>
     <div id="manage">
-
-        <p>这是manage.vue</p>
-
-        <div style="float: left; margin-right: 20px; width: 10%">
+        <div class="nav">
             <ManageNav></ManageNav>
         </div>
-
-        <div style="float: left;width: 80%">
+        <div style="float: left; width: 80%">
             <router-view></router-view>
         </div>
-
     </div>
 </template>
 
@@ -26,5 +21,13 @@
 </script>
 
 <style scoped>
+    .nav {
+        float: left;
+        width: 15%;
+    }
 
+    .showbody {
+        float: left;
+        width: 85%;
+    }
 </style>
