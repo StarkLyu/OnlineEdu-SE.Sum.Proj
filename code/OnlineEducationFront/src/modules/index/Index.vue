@@ -25,7 +25,7 @@
         width: 1350px;
         margin-left: auto;
         margin-right: auto;
-        border-style: solid;
+        background-color: #eee;
     }
 </style>
 <script>
