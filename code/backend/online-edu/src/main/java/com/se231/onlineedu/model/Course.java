@@ -4,6 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Course Class
@@ -31,10 +34,15 @@ public class Course {
     private CourseState state;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private CoursePrototype coursePrototype;
 
     @OneToMany(mappedBy = "sectionPrimaryKey.course")
     private List<Section> sections;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "courses")
+    private Set<User> students;
 
     @OneToOne
     private User user;
@@ -96,6 +104,14 @@ public class Course {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<User> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<User> students) {
+        this.students = students;
     }
 
     public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, User user) {

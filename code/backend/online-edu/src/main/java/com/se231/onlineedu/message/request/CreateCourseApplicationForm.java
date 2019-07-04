@@ -3,7 +3,7 @@ package com.se231.onlineedu.message.request;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Create Course form class
@@ -23,9 +23,6 @@ public class CreateCourseApplicationForm {
     @Future
     private Date endDate;
 
-    @NotNull
-    private Long coursePrototypeId;
-
     public Date getStartDate() {
         return startDate;
     }
@@ -42,11 +39,4 @@ public class CreateCourseApplicationForm {
         this.endDate = endDate;
     }
 
-    public Long getCoursePrototypeId() {
-        return coursePrototypeId;
-    }
-
-    public void setCoursePrototypeId(Long coursePrototypeId) {
-        this.coursePrototypeId = coursePrototypeId;
-    }
 }
