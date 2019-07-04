@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import ManageUser from "./components/ManageUser.vue"
-import ManageCourse from "./components/ManageCourse"
+import ManageUser from "./views/ManageUser.vue"
+import ManageCourse from "./views/ManageCourse"
 
 Vue.use(VueRouter)
 
