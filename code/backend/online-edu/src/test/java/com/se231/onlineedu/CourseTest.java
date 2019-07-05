@@ -223,14 +223,14 @@ public class CourseTest {
                 .content(titleAndDes))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/api/course/1/start")
+        mvc.perform(post("/api/course/start")
                 .contentType(MediaType.APPLICATION_JSON)
+                .param("prototypeId","1")
                 .content(JSONObject.toJSONString(applyCourse1)))
                 .andExpect(status().isOk());
 
-        result = mvc.perform(post("/api/course/start")
-                .param("decision","approval")
-                .param("courseId","1"))
+        result = mvc.perform(post("/api/course/1/start")
+                .param("decision","approval"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -250,14 +250,14 @@ public class CourseTest {
                 .content(titleAndDes))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/api/course/1/start")
+        mvc.perform(post("/api/course/start")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JSONObject.toJSONString(applyCourse1)))
+                .content(JSONObject.toJSONString(applyCourse1))
+                .param("prototypeId","1"))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/api/course/start")
-                .param("decision","approval")
-                .param("courseId","1"))
+        mvc.perform(post("/api/course/1/start")
+                .param("decision","approval"))
                 .andExpect(status().isOk());
 
         mvc.perform(post("/api/auth/signin")

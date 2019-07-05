@@ -75,8 +75,7 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
         User user = userRepository.findById(applicantId).orElseThrow(()->new Exception("No corresponding user"));
         ApplyPrimaryKey applyPrimaryKey=new ApplyPrimaryKey(user,coursePrototype);
-        Apply apply =
-                applyRepository.findById(applyPrimaryKey).orElseThrow(()->new Exception("No corresponding application"));
+        Apply apply = applyRepository.findById(applyPrimaryKey).orElseThrow(()->new Exception("No corresponding application"));
         apply.setApplyState(ApplyState.valueOf(decision.toUpperCase()));
         return applyRepository.save(apply);
     }

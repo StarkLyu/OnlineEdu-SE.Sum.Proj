@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 /**
@@ -28,6 +29,7 @@ public class Question {
 
     private String answer;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private CoursePrototype coursePrototype;
 
