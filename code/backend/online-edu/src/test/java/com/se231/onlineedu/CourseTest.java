@@ -1,12 +1,17 @@
 package com.se231.onlineedu;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.*;
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.se231.onlineedu.model.CoursePrototype;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
+import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
+import com.se231.onlineedu.model.*;
+import com.se231.onlineedu.repository.RoleRepository;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +28,43 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 public class CourseTest {
     //initialize test case and local variable
-    private static String nullString="{}";
+    private static String userSignUp = "{\n" +
+            "\t\"username\":\"user\",\n" +
+            "\t\"password\":\"password\",\n" +
+            "\t\"roles\":[\"user\"]\n" +
+            "}";
 
-    private static String noTitle="{\n" +
-            "\"title\":\"\"}";
+    private static String userSignIn = "{\n" +
+            "\t\"username\":\"user\",\n" +
+            "\t\"password\":\"password\"" +
+            "}";
+
+    private static String adminSignUp = "{\n" +
+            "\t\"username\":\"admin\",\n" +
+            "\t\"password\":\"password\",\n" +
+            "\t\"roles\":[\"admin\"]\n" +
+            "}";
+
+    private static String adminSignIn = "{\n" +
+            "\t\"username\":\"admin\",\n" +
+            "\t\"password\":\"password\"" +
+            "}";
+
+    private static List<Role> userRole=new ArrayList<>();
+
+    private static List<Role> adminRole=new ArrayList<>();
+
+    private static User user;
+
+    private static User admin;
+
+    private static CoursePrototype coursePrototype1= new CoursePrototype();
+
+    private static CreateCourseApplicationForm applyCourse1 = new CreateCourseApplicationForm();
+
+    private static String nullString= JSONObject.toJSONString(new CreateCoursePrototypeApplicationForm());
+
+    private static String shortTitle= JSONObject.toJSONString(new CreateCoursePrototypeApplicationForm("as",""));
 
     private static String LongTitle="{\n" +
             "\"title\":\"qwertyuiopasdfghjklzxcvbnmqwertyuiuop\"}";
@@ -40,6 +78,9 @@ public class CourseTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     private MockMvc mvc;
 
     private String result;
@@ -50,56 +91,112 @@ public class CourseTest {
      * see https://stackoverflow.com/questions/12087959/junit-run-set-up-method-once
      */
 
+    private static boolean setUpIsDone = false;
+
     @Before
     public void setup() throws Exception {
+        if (setUpIsDone) {
+            mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+            return;
+        }
+
+        userRole.add(roleRepository.save(new Role(RoleType.ROLE_USER)));
+        adminRole.add(roleRepository.save(new Role(RoleType.ROLE_ADMIN)));
+        roleRepository.save(new Role(RoleType.ROLE_SUPER_ADMIN));
+        roleRepository.save(new Role(RoleType.ROLE_TEACHING_ADMIN));
+
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+
+        mvc.perform(post("/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userSignUp));
+
+        user = new User(1L,"user","password",userRole);
+
+        mvc.perform(post("/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignUp));
+
+        admin = new User(2L,"admin","password",adminRole);
+
+        admin.setCourses(Collections.emptyList());
+
+        coursePrototype1.setTitle("English");
+
+        coursePrototype1.setId(1L);
+
+        coursePrototype1.setState(CoursePrototypeState.NOT_PASS);
+
+        setUpIsDone=true;
     }
 
     @Test
-    @WithMockUser(roles = "Admin",username = "admin")
+    @WithMockUser(roles = "ADMIN",username = "admin")
     public void testCreateCourse() throws Exception {
-        mvc.perform(post("/api/course")
+
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn));
+
+        mvc.perform(post("/api/coursePrototype/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(nullString))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
 
-        mvc.perform(post("/api/course")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(noTitle))
-                .andExpect(status().isInternalServerError());
-
-        mvc.perform(post("/api/course")
+        mvc.perform(post("/api/coursePrototype/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(LongTitle))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
 
-        result = mvc.perform(post("/api/course/")
+        mvc.perform(post("/api/coursePrototype/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shortTitle))
+                .andExpect(status().isBadRequest());
+
+        result = mvc.perform(post("/api/coursePrototype/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        result = mvc.perform(post("/api/course/")
+        Assert.assertEquals(coursePrototype1.getTitle(),JSON.parseObject(result,CoursePrototype.class).getTitle());
+
+        mvc.perform(post("/api/coursePrototype/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(longDes))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isBadRequest());
+
+        result = mvc.perform(post("/api/coursePrototype/1/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("decision","using"))
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
+
+        Assert.assertEquals(CoursePrototypeState.USING,JSON.parseObject(result,CoursePrototype.class).getState());
 
     }
 
     @Test
     @WithMockUser(username = "admin2",roles = "ADMIN")
     public void applyCourseTest() throws Exception{
-        result = mvc.perform(post("/api/course/1/apply")
-                .contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn));
+
+        mvc.perform(post("/api/coursePrototype/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(titleAndDes))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        result = mvc.perform(post("/api/course/2/apply")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+        mvc.perform(post("/api/coursePrototype/1/apply"))
+                .andExpect(status().isOk());
 
+        mvc.perform(post("/api/coursePrototype/apply")
+                .param("decision","disapproval")
+                .param("course_id","1")
+                .param("applicant_id","2"))
+                .andExpect(status().isOk());
     }
 
 }

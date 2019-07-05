@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -106,5 +107,24 @@ public class CoursePrototype {
 
     public void setState(CoursePrototypeState state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CoursePrototype that = (CoursePrototype) o;
+        return id.equals(that.id) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(questions, that.questions) &&
+                Objects.equals(courses, that.courses) &&
+                state == that.state &&
+                Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, questions, courses, state, user);
     }
 }

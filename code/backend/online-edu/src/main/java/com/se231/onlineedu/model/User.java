@@ -46,6 +46,7 @@ public class User {
     }
 
     public User(Long id, @NotBlank String username, @NotBlank String password, List<Role> roles) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
