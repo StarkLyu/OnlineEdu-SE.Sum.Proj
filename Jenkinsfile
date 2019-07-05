@@ -11,6 +11,10 @@ pipeline {
                 sh "cd code/backend/online-edu && mvn -Dspring.profiles.active=test test"
             }
         }
-	
+	stage('Deploy') {
+	    steps {
+	    		sh "cd code/backend/online-edu && mvn -Dspring.profiles.active=dev tomcat7:deploy"
+	        }
+	    }
     }
 }
