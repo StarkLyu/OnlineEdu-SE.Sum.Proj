@@ -13,7 +13,7 @@ pipeline {
         }
 	stage('Deploy') {
 	    steps {
-	    		sh "cd code/backend/online-edu && mvn -DskipTests -Dspring.profiles.active=deploy tomcat7:redeploy"
+	    	sh "cd code/backend/online-edu && mvn -DskipTests tomcat7:redeploy"
 	        }
 	    }
     }
