@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
@@ -127,6 +126,18 @@ public class CourseTest {
 
         coursePrototype1.setState(CoursePrototypeState.NOT_PASS);
 
+        Calendar startDate = Calendar.getInstance();
+
+        Calendar endDate = Calendar.getInstance();
+
+        startDate.add(Calendar.DATE,10);
+
+        endDate.add(Calendar.DATE,60);
+
+        applyCourse1.setStartDate(startDate.getTime());
+
+        applyCourse1.setEndDate(endDate.getTime());
+
         setUpIsDone=true;
     }
 
@@ -178,7 +189,7 @@ public class CourseTest {
 
     @Test
     @WithMockUser(username = "admin2",roles = "ADMIN")
-    public void applyCourseTest() throws Exception{
+    public void applyCoursePrototypeTest() throws Exception{
         mvc.perform(post("/api/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(adminSignIn));
@@ -186,8 +197,7 @@ public class CourseTest {
         mvc.perform(post("/api/coursePrototype/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk());
 
         mvc.perform(post("/api/coursePrototype/1/apply"))
                 .andExpect(status().isOk());
@@ -198,5 +208,65 @@ public class CourseTest {
                 .param("applicant_id","2"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser(username = "admin2",roles = "ADMIN")
+    public void applyCourseTest() throws Exception{
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn));
+
+        mvc.perform(post("/api/coursePrototype/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(titleAndDes))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/course/1/start")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(applyCourse1)))
+                .andExpect(status().isOk());
+
+        result = mvc.perform(post("/api/course/start")
+                .param("decision","approval")
+                .param("courseId","1"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        Assert.assertEquals(CourseState.READY_TO_START,JSON.parseObject(result,Course.class).getState());
+
+    }
+
+    @Test
+    @WithMockUser(username = "admin2",roles = "ADMIN")
+    public void pickCourseTest() throws Exception{
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn));
+
+        mvc.perform(post("/api/coursePrototype/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(titleAndDes))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/course/1/start")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(applyCourse1)))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/course/start")
+                .param("decision","approval")
+                .param("courseId","1"))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userSignIn));
+
+        mvc.perform(post("/api/course/1/pick"))
+                .andExpect(status().isOk());
+
+    }
+
+
 
 }
