@@ -32,6 +32,9 @@ public class CoursePrototypeController {
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public ResponseEntity<CoursePrototype> createCoursePrototype(@Valid @RequestBody CreateCoursePrototypeApplicationForm form, BindingResult bindingResult,
                                                         @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body(null);
+        }
         return ResponseEntity.ok(coursePrototypeService.createCourse(form,userPrinciple.getId()));
     }
 

@@ -21,6 +21,8 @@
 </script>
 
 <style scoped>
+    @import "/src/assets/div-layout.css";
+
     .nav {
         float: left;
         width: 15%;
