@@ -107,7 +107,7 @@
                 <version>2.2</version>
                 <configuration>
                     <!-- 远程tomcat下manager路径 -->
-                    <url>http://202.120.40.8:30382/manager/text</url>
+                    <url>http://localhost:30382/manager/text</url>
                     <server>tomcat8</server>
                 </configuration>
             </plugin>
