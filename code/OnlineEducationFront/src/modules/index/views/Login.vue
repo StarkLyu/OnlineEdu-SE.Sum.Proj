@@ -5,7 +5,7 @@
                 <h3>登录</h3>
                 <el-form>
                     <el-form-item>
-                        <el-input placeholder="用户名" suffix-icon="el-icon-user"></el-input>
+                        <el-input placeholder="用户名" suffix-icon="el-icon-user" id="userId"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-input placeholder="密码" suffix-icon="el-icon-lock"></el-input>
