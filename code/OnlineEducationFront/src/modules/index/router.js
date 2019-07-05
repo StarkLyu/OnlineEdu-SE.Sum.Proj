@@ -84,6 +84,11 @@ export default new Router({
             component: () => import('./views/Register.vue')
         },
         {
+            path: '/teachercoursedetail',
+            name: 'TeacherCourseDetail',
+            component: () => import('./views/TeacherCourseDetail')
+        },
+        {
             path: '/teachercoursemanage',
             name: 'TeacherCourseManage',
             component: () => import('./views/TeacherCourseManage')
@@ -92,6 +97,11 @@ export default new Router({
             path: '/teacherstudentmanage',
             name: 'TeacherStudenetManage',
             component: () => import('./views/TeacherStudentManage')
+        },
+        {
+            path: '/teacherscoremanage',
+            name: 'TeacherScoreManage',
+            component: () => import('./views/TeacherScoreManage')
         }
     ]
 })

@@ -24,7 +24,7 @@
                                 type="password"
                                 suffix-icon="el-icon-lock"
                                 placeholder="请在此创建密码"
-                                v-model="registerUser.password"
+                                v-model="registerUser.passWord"
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码">
@@ -92,7 +92,7 @@
                 countDown: 60,
                 registerUser: {
                     userId: "",
-                    password: "",
+                    passWord: "",
                     confirmPass: "",
                     email: ""
                 }
@@ -145,7 +145,7 @@
     .next-button {
         width: 100px;
     }
-    
+
     .return-link {
         width: 300px;
         text-align: center;

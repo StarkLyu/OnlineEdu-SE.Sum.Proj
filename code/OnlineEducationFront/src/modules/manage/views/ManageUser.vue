@@ -11,30 +11,32 @@
             <div class="divright">
                 <el-button @click="handleAdd">新增</el-button>
             </div>
-            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))" class="usertable">
+            <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
+                      class="usertable"
+                      highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="userid"
+                            prop="userId"
                             label="用户编号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="username"
+                            prop="userName"
                             label="用户名"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userrole"
-                            label="角色"
+                            prop="userRole"
+                            label="用户身份"
                             min-width="25%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="password"
+                            prop="passWord"
                             label="密码"
                             min-width="35%"
                     ></el-table-column>
@@ -44,7 +46,7 @@
                             min-width="50%"
                     ></el-table-column>
                     <el-table-column
-                            prop="id"
+                            prop="userId"
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
@@ -67,13 +69,19 @@
                 top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item label="用户编号">
-                    <el-input type="text" v-model="editForm.userid"></el-input>
+                    <el-input type="text" v-model="editForm.userId"></el-input>
                 </el-form-item>
                 <el-form-item label="用户名">
-                    <el-input type="text" v-model="editForm.username"></el-input>
+                    <el-input type="text" v-model="editForm.userName"></el-input>
+                </el-form-item>
+                <el-form-item label="用户身份">
+                    <el-radio-group v-model="editForm.userRole">
+                        <el-radio label="老师/助教"></el-radio>
+                        <el-radio label="学生"></el-radio>
+                    </el-radio-group>
                 </el-form-item>
                 <el-form-item label="密码">
-                    <el-input type="text" v-model="editForm.password"></el-input>
+                    <el-input type="text" v-model="editForm.passWord"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱">
                     <el-input type="text" v-model="editForm.email"></el-input>
@@ -98,24 +106,24 @@
 
                 UserData: [
                     {
-                        userid:"45112323",
-                        username:"kamen",
-                        userrole:"老师",
-                        password:"123",
+                        userId:"45112323",
+                        userName:"kamen",
+                        userRole:"老师",
+                        passWord:"123",
                         email:"1099@fg.co"
                     },
                     {
-                        userid:"2144641",
-                        username:"student",
-                        userrole:"学生",
-                        password:"ewt",
+                        userId:"2144641",
+                        userName:"student",
+                        userRole:"学生",
+                        passWord:"ewt",
                         email:"1daswew9@fger.coq"
                     },
                     {
-                        userid:"78089870",
-                        username:"zhujiao",
-                        userrole:"老师",
-                        password:"edgdwwd",
+                        userId:"78089870",
+                        userName:"zhujiao",
+                        userRole:"老师",
+                        passWord:"edgdwwd",
                         email:"df633339@qq.com"
                     }
                 ],
@@ -131,17 +139,18 @@
 
                 //编辑界面数据
                 editForm: {
-                    userid:"",
-                    username: "",
-                    password:"",
+                    userId:"",
+                    userName: "",
+                    passWord:"",
                     email:"",
+                    userRole:"",
                 },
             }
         },
 
         methods:{
             handleDel:function(index,row){
-                alert(row.username+"已删除");
+                alert(row.userName+"已删除");
             },
 
             //显示编辑界面
@@ -156,8 +165,8 @@
                 this.dialogStatus = "create";
                 this.dialogFormVisible = true;
                 this.editForm = {
-                    userid:"",
-                    username: "",
+                    userId:"",
+                    userName: "",
                     password:"111111",
                     email:"",
                 }

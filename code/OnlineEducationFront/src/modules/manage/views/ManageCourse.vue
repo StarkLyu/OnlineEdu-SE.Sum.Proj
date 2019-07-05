@@ -11,43 +11,44 @@
             <div class="divright">
                 <el-button @click="handleAdd">新增</el-button>
             </div>
-
-            <el-table :data="CourseData.filter(data=>!search || data.coursename.includes(search))" class="coursetable">
+            <el-table :data="CourseData.filter(data=>!search || data.courseName.includes(search))"
+                      class="coursetable"
+                      highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="courseid"
+                            prop="courseId"
                             label="课程号"
                             min-width="25%"
                             sortable
                     ></el-table-column>
                     <el-table-column
-                            prop="coursename"
+                            prop="courseName"
                             label="课程名"
                             min-width="30%"
                             sortable
                     ></el-table-column>
                     <el-table-column
-                            prop="coursetime"
+                            prop="courseTime"
                             label="上课时间"
                             min-width="40%"
                             sortable
                     ></el-table-column>
                     <el-table-column
-                            prop="courseroom"
+                            prop="courseRoom"
                             label="上课地点"
                             min-width="35%"
                             sortable
                     ></el-table-column>
                     <el-table-column
-                            prop="courseteacher"
+                            prop="courseTeacher"
                             label="授课教师"
                             min-width="25%"
                             sortable
                     ></el-table-column>
                     <el-table-column
-                            prop="id"
+                            prop="courseId"
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
@@ -70,25 +71,34 @@
 <!--            课程的基本信息-->
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item label="课程号">
-                    <el-input type="text" v-model="editForm.courseid"></el-input>
+                    <el-input type="text" v-model="editForm.courseId"></el-input>
                 </el-form-item>
                 <el-form-item label="课程名">
-                    <el-input type="text" v-model="editForm.coursename"></el-input>
+                    <el-input type="text" v-model="editForm.courseName"></el-input>
                 </el-form-item>
                 <el-form-item label="上课时间">
-                    <el-input type="text" v-model="editForm.coursetime"></el-input>
+                    <el-input type="text" v-model="editForm.courseTime"></el-input>
                 </el-form-item>
                 <el-form-item label="上课地点">
-                    <el-input type="text" v-model="editForm.courseroom"></el-input>
+                    <el-input type="text" v-model="editForm.courseRoom"></el-input>
                 </el-form-item>
                 <el-form-item label="授课教师">
-                    <el-input type="text" v-model="editForm.courseteacher"></el-input>
+                    <el-input type="text" v-model="editForm.courseTeacher"></el-input>
                 </el-form-item>
             </el-form>
 <!--            编辑页面下的学生信息-->
-            <el-input type="text" placeholder="请输入学生学号" v-model="addStudent"></el-input>
-            <el-button @click="AddCourseStudent">增加学生</el-button>
-            <el-table :data="StudentForm">
+            <div class="divleftmargin">
+                <el-input type="text"
+                          placeholder="请输入学生学号"
+                          v-model="addStudent">
+                </el-input>
+            </div>
+            <div class="divleft">
+                <el-button @click="AddCourseStudent">
+                    增加学生
+                </el-button>
+            </div>
+            <el-table :data="StudentForm" height="300px">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column property="userid" label="学号" sortable></el-table-column>
                 <el-table-column property="username" label="学生"></el-table-column>
@@ -121,27 +131,27 @@
             return{
                 search:"",
 
-                CourseData:[
+                CourseData: [
                     {
-                        courseid:"CS-23",
-                        coursename:"数据分析",
-                        coursetime:"1-16周 8:00-10:00",
-                        courseroom:"东上院211",
-                        courseteacher:"sheng",
+                        courseId: "CS-23",
+                        courseName: "数据分析",
+                        courseTime: "1-16周 8:00-10:00",
+                        courseRoom: "东上院211",
+                        courseTeacher: "sheng",
                     },
                     {
-                        courseid:"SE-9911",
-                        coursename:"软件工程导论",
-                        coursetime:"1-16周 16:00-18:00",
-                        courseroom:"上院211",
-                        courseteacher:"daf",
+                        courseId: "SE-9911",
+                        courseName: "软件工程导论",
+                        courseTime: "1-16周 16:00-18:00",
+                        courseRoom: "上院211",
+                        courseTeacher: "daf",
                     },
                     {
-                        courseid:"CS-524",
-                        coursename:"java设计思想",
-                        coursetime:"1-16周 12:00-14:00",
-                        courseroom:"东下院201",
-                        courseteacher:"zang",
+                        courseId: "CS-524",
+                        courseName: "java设计思想",
+                        courseTime: "1-16周 12:00-14:00",
+                        courseRoom: "东下院201",
+                        courseTeacher: "zang",
                     }
                 ],
 
@@ -156,11 +166,11 @@
 
                 //编辑界面数据
                 editForm: {
-                    courseid:"",
-                    coursename:"",
-                    coursetime:"",
-                    courseroom:"",
-                    courseteacher:"",
+                    courseId:"",
+                    courseName:"",
+                    courseTime:"",
+                    courseRoom:"",
+                    courseTeacher:"",
                 },
 
                 addStudent:"",
@@ -168,16 +178,16 @@
                 // 课程的学生信息
                 StudentForm: [
                     {
-                        userid:"124321",
-                        username:"刘鹏",
+                        userId:"124321",
+                        userName:"刘鹏",
                     },
                     {
-                        userid:"3521",
-                        username:"达芙蓉",
+                        userId:"3521",
+                        userName:"达芙蓉",
                     },
                     {
-                        userid:"351131",
-                        username:"万格恩",
+                        userId:"351131",
+                        userName:"万格恩",
                     },
                 ]
             }
@@ -185,7 +195,7 @@
 
         methods:{
             handleDel:function(index,row){
-                alert(row.coursename+"已删除");
+                alert(row.courseName+"已删除");
             },
 
             //显示编辑界面
@@ -226,7 +236,7 @@
 
             //课程删除学生
             DelStudent: function(index, row){
-                alert(row.username+"已删除");
+                alert(row.userName+"已删除");
             }
 
         }
@@ -236,6 +246,11 @@
 <style>
     .divleft {
         float: left;
+    }
+
+    .divleftmargin{
+        float: left;
+        margin-right: 20px;
     }
 
     .divright {
