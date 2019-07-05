@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import User from './views/User.vue'
+import UserCourseList from './components/UserCourseList.vue'
+import UserInfoManage from "./components/UserInfoManage";
 
 Vue.use(Router)
 
@@ -18,15 +21,17 @@ export default new Router({
         {
             path: '/user',
             name: 'user',
+            component: User,
             children: [
                 {
                     path: 'course',
                     name: 'userCourse',
-
+                    component: UserCourseList
                 },
                 {
                     path: 'info',
-                    name: 'userInfo'
+                    name: 'userInfo',
+                    component: UserInfoManage
                 },
             ]
         },

@@ -1,10 +1,10 @@
 <template>
     <el-menu mode="horizontal" router>
-
         <div class="head-logo head-div"><img alt="fuck" src="../../../assets/mainlogo.png" style="width: 160px;"></div>
         <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item index="/viewcourses">课程</el-menu-item>
+        <el-menu-item index="/viewcourses">课程广场</el-menu-item>
         <el-menu-item index="/user">个人中心</el-menu-item>
+        <el-menu-item>帮助</el-menu-item>
         <div class="head-right head-div">
             <div class="head-right head-user"><HeadSideUser></HeadSideUser></div>
             <div class="head-right head-search"><SearchInput></SearchInput></div>
