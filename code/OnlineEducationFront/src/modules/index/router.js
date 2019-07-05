@@ -82,6 +82,16 @@ export default new Router({
             path: '/register',
             name: 'register',
             component: () => import('./views/Register.vue')
+        },
+        {
+            path: '/teachercoursemanage',
+            name: 'TeacherCourseManage',
+            component: () => import('./views/TeacherCourseManage')
+        },
+        {
+            path: '/teacherstudentmanage',
+            name: 'TeacherStudenetManage',
+            component: () => import('./views/TeacherStudentManage')
         }
     ]
 })

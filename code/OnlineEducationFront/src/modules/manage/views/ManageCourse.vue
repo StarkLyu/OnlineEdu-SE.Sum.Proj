@@ -90,7 +90,7 @@
             <el-button @click="AddCourseStudent">增加学生</el-button>
             <el-table :data="StudentForm">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column property="userid" label="学号"></el-table-column>
+                <el-table-column property="userid" label="学号" sortable></el-table-column>
                 <el-table-column property="username" label="学生"></el-table-column>
                 <el-table-column>
                     <template slot-scope="scope">
@@ -248,7 +248,7 @@
 
     .coursetable {
         width: 100%;
-        font-size: 20px;
+        font-size: 15px;
         padding-bottom:20px;
     }
 

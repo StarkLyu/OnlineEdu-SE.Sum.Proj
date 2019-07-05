@@ -191,7 +191,7 @@
 
     .usertable {
         width: 100%;
-        font-size: 20px;
+        font-size: 15px;
         padding-bottom:20px;
     }
 
