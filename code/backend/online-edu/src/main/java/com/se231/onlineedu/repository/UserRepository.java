@@ -33,4 +33,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return  true if exists same username
      */
     Boolean existsByUsername(String username);
+
+    /**
+     * check if email address is valid
+     *
+     * @param email pending email
+     * @return  true if exists same email address
+     */
+    Boolean existsByEmail(String email);
+
+    /**
+     * check if telephone number is valid
+     * @param tel pending tel
+     * @return true if exists same telephone number
+     */
+    Boolean existsByTel(Long tel);
 }
