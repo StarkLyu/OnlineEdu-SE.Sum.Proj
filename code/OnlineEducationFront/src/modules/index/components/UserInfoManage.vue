@@ -1,9 +1,6 @@
 <template>
     <div class="info-form">
         <el-form label-position="right" label-width="100px">
-            <el-form-item label="用户名">
-                <el-input disabled v-model="userInfo.userName"></el-input>
-            </el-form-item>
             <el-form-item label="真实姓名">
                 <el-input v-model="userInfo.realName"></el-input>
             </el-form-item>
@@ -27,6 +24,16 @@
             </el-form-item>
             <el-form-item label="邮箱">
                 <el-input v-model="userInfo.email"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <div class="bottom-buttons">
+                    <div class="float-left">
+                        <el-button>提交</el-button>
+                    </div>
+                    <div class="float-right">
+                        <el-button>重置</el-button>
+                    </div>
+                </div>
             </el-form-item>
         </el-form>
     </div>
@@ -55,5 +62,11 @@
 <style scoped>
     .info-form {
         width: 500px
+    }
+
+    .bottom-buttons {
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
     }
 </style>
