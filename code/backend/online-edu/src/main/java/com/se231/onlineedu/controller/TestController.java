@@ -35,4 +35,9 @@ public class TestController {
     public String adminAccess() {
         return "Super Admin Contents";
     }
+
+    @GetMapping("/noAuth")
+    public String Access() {
+        return "all can see Contents";
+    }
 }
