@@ -4,8 +4,6 @@ import javax.validation.Valid;
 import java.util.List;
 import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.CourseState;
-import com.se231.onlineedu.model.PickCourse;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +20,24 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019/7/4
  */
 @RestController
-@RequestMapping("api/course")
+@RequestMapping("api/courses")
 public class CourseController {
 
     @Autowired
     CourseService courseService;
 
-    @PostMapping("{id}/start")
+    @PostMapping("/start")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<Course> applyToStartCourse(@PathVariable(name = "id")Long prototypeId,
+    public ResponseEntity<Course> applyToStartCourse(@RequestParam Long prototypeId,
                                                      @Valid @RequestBody CreateCourseApplicationForm form,
                                                      @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
         return ResponseEntity.ok(courseService.applyToStartCourse(prototypeId,form.getStartDate(),form.getEndDate(),userPrinciple.getId()));
     }
 
-    @PostMapping("/start")
+    @PostMapping("{id}/start")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public Course examineStartCourse(@RequestParam String decision,
-                                     @RequestParam Long courseId) throws Exception{
+                                     @PathVariable("id") Long courseId) throws Exception{
         return courseService.examineStartCourseApplication(courseId, decision);
     }
 

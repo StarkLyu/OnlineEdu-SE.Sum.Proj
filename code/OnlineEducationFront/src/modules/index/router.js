@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import User from './views/User.vue'
+import UserCourseList from './components/UserCourseList.vue'
+import UserSetting from "./components/UserSetting";
 
 Vue.use(Router)
 
@@ -18,33 +21,38 @@ export default new Router({
         {
             path: '/user',
             name: 'user',
+            component: User,
             children: [
                 {
                     path: 'course',
                     name: 'userCourse',
-
+                    component: UserCourseList
                 },
                 {
                     path: 'info',
-                    name: 'userInfo'
+                    name: 'userInfo',
+                    component: UserSetting
                 },
             ]
         },
         {
             path: '/course',
             name: 'course',
+            component: () => import('./views/RouterTemp.vue'),
             children: [
                 {
                     path: 'student',
                     name: 'courseStudent',
+                    component: () => import('./views/Course.vue'),
                     children: [
                         {
                             path: 'welcome',
                             name: 'courseStudentWelcome',
                         },
                         {
-                            path: 'home',
-                            name: 'courseStudentHome',
+                            path: 'info',
+                            name: 'courseStudentInfo',
+                            component: () => import('./components/UserCourseInfo.vue')
                         },
                         {
                             path: 'chapters',
@@ -61,14 +69,57 @@ export default new Router({
                         {
                             path: 'grade',
                             name: 'courseStudentGrade',
+                        },
+                        {
+                            path: 'report',
+                            name: 'courseStudentReport',
+                        },
+                        {
+                            path: 'forum',
+                            name: 'courseStudentForum'
                         }
                     ]
                 },
                 {
                     path: 'manager',
                     name: 'courseManager',
+                    component: () => import('./components/TeacherCourseNav'),
                     children: [
-
+                        {
+                            path: 'detail',
+                            name: 'TeacherCourseDetail',
+                            component: () => import('./views/TeacherCourseDetail')
+                        },
+                        {
+                            path: 'edit',
+                            name: 'TeacherCourseManage',
+                            component: () => import('./views/TeacherCourseManage')
+                        },
+                        {
+                            path: 'student',
+                            name: 'TeacherStudenetManage',
+                            component: () => import('./views/TeacherStudentManage')
+                        },
+                        {
+                            path: 'score',
+                            name: 'TeacherScoreManage',
+                            component: () => import('./views/TeacherScoreManage')
+                        },
+                        {
+                            path: 'annoucement',
+                            name: 'TeacherCourseAnnouce',
+                            component: () => import('./views/TeacherCourseAnnouce')
+                        },
+                        {
+                            path: 'assignment',
+                            name: 'TeacherCourseAssign',
+                            component: () => import('./views/TeacherCourseAssign')
+                        },
+                        {
+                            path: 'bt',
+                            name: 'TeacherCourseBT',
+                            component: () => import('./views/TeacherCourseBT')
+                        },
                     ]
                 }
             ]
@@ -83,25 +134,25 @@ export default new Router({
             name: 'register',
             component: () => import('./views/Register.vue')
         },
-        {
-            path: '/teachercoursedetail',
-            name: 'TeacherCourseDetail',
-            component: () => import('./views/TeacherCourseDetail')
-        },
-        {
-            path: '/teachercoursemanage',
-            name: 'TeacherCourseManage',
-            component: () => import('./views/TeacherCourseManage')
-        },
-        {
-            path: '/teacherstudentmanage',
-            name: 'TeacherStudenetManage',
-            component: () => import('./views/TeacherStudentManage')
-        },
-        {
-            path: '/teacherscoremanage',
-            name: 'TeacherScoreManage',
-            component: () => import('./views/TeacherScoreManage')
-        }
+        // {
+        //     path: '/teachercoursedetail',
+        //     name: 'TeacherCourseDetail',
+        //     component: () => import('./views/TeacherCourseDetail')
+        // },
+        // {
+        //     path: '/teachercoursemanage',
+        //     name: 'TeacherCourseManage',
+        //     component: () => import('./views/TeacherCourseManage')
+        // },
+        // {
+        //     path: '/teacherstudentmanage',
+        //     name: 'TeacherStudenetManage',
+        //     component: () => import('./views/TeacherStudentManage')
+        // },
+        // {
+        //     path: '/teacherscoremanage',
+        //     name: 'TeacherScoreManage',
+        //     component: () => import('./views/TeacherScoreManage')
+        // }
     ]
 })

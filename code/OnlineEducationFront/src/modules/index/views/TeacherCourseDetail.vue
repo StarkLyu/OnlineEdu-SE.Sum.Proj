@@ -1,65 +1,59 @@
 <template>
     <div>
-        <div class="nav">
-            <TeacherCourseNav></TeacherCourseNav>
-        </div>
-        <div class="showbody">
-            <div class="margintop">
-                <h1 class="titlesytle">课程详情</h1>
-                <div class="courseimg">
-                    <img src="../../../assets/logo.png" height="200" width="200"/>
-                </div>
-                <div class="coursedes">
-                    <p>
-                        课程号：
-                        <span>
+        <div class="margintop">
+            <h1 class="titlesytle">课程详情</h1>
+            <div class="courseimg">
+                <img src="../../../assets/logo.png" height="200" width="200"/>
+            </div>
+            <div class="coursedes">
+                <p>
+                    课程号：
+                    <span>
                         {{CourseForm.courseId}}
                         </span>
-                    </p>
-                    <p>
-                        课程名称：
-                        <span>
+                </p>
+                <p>
+                    课程名称：
+                    <span>
                         {{CourseForm.courseName}}
                     </span>
-                    </p>
-                    <p>
-                        授课教师：
-                        <span>
+                </p>
+                <p>
+                    授课教师：
+                    <span>
                         {{CourseForm.courseTeacher}}
                     </span>
-                    </p>
-                    <p>
-                        上课时间：
-                        <span>
+                </p>
+                <p>
+                    上课时间：
+                    <span>
                         {{CourseForm.courseTime}}
                     </span>
-                    </p>
-                    <p>
-                        上课地点：
-                        <span>
+                </p>
+                <p>
+                    上课地点：
+                    <span>
                         {{CourseForm.courseRoom}}
                     </span>
-                    </p>
-                    <p>
-                        上课助教：
-                        <span>
+                </p>
+                <p>
+                    上课助教：
+                    <span>
                         {{CourseForm.courseAssistance}}
                     </span>
-                    </p>
-                    <p>
-                        课程详细信息：
-                        <span>
+                </p>
+                <p>
+                    课程详细信息：
+                    <span>
                         {{CourseForm.courseDes}}
                     </span>
-                    </p>
-                </div>
+                </p>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import TeacherCourseNav from "../components/TeacherCourseNav"
     export default {
         name: "TeacherCourseDetail",
 
@@ -76,26 +70,11 @@
                 },
             }
         },
-
-        components:{
-            TeacherCourseNav,
-        }
     }
 </script>
 
 <style scoped>
     @import "/src/assets/div-layout.css";
-
-    .nav {
-        float: left;
-        width: 15%;
-        margin-top: 20px;
-    }
-
-    .showbody {
-        float: left;
-        width: 85%;
-    }
 
     .margintop {
         margin-top: 30px

@@ -15,9 +15,12 @@ public class Paper {
     private Date end;
 
     @OneToMany
-    private List<Question> questions;
+    private List<PaperWithQuestions> questions;
 
-    public Paper(Date start, Date end, List<Question> questions) {
+    @ManyToOne
+    private Course course;
+
+    public Paper(Date start, Date end, List<PaperWithQuestions> questions) {
         this.start = start;
         this.end = end;
         this.questions = questions;
@@ -54,11 +57,19 @@ public class Paper {
         this.end = end;
     }
 
-    public List<Question> getQuestions() {
+    public List<PaperWithQuestions> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(List<PaperWithQuestions> questions) {
         this.questions = questions;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }

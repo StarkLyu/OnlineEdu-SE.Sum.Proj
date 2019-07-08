@@ -10,6 +10,7 @@ import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
+import com.se231.onlineedu.repository.UserRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,22 +30,27 @@ import org.springframework.web.context.WebApplicationContext;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class CourseTest {
     //initialize test case and local variable
-    private static String userSignUp = "{\n" +
-            "\t\"username\":\"user\",\n" +
-            "\t\"password\":\"password\",\n" +
-            "\t\"roles\":[\"user\"]\n" +
+    private static String userSignUp = "{ \"username\":\"user\",\n" +
+            "  \"password\":\"password\",\n" +
+            "  \"email\":\"12312412@qq.com\",\n" +
+            "  \"tel\":\"13345676543\",\n" +
+            "  \"university\":\"sjtu\",\n" +
+            "  \"major\":\"SE\",\n" +
+            "  \"grade\":2,\n" +
+            "  \"sno\":\"12321\",\n" +
+            "  \"realName\":\"小王\",\n" +
+            "  \"sex\":\"男\"\n" +
             "}";
 
     private static String userSignIn = "{\n" +
             "\t\"username\":\"user\",\n" +
-            "\t\"password\":\"password\"" +
+            "\t\"password\":\"password\""+
             "}";
 
-    private static String adminSignUp = "{\n" +
-            "\t\"username\":\"admin\",\n" +
-            "\t\"password\":\"password\",\n" +
-            "\t\"roles\":[\"admin\"]\n" +
-            "}";
+    private static String adminSignUp = "{\"username\":\"admin\",\n" +
+            "  \"password\":\"password\",\n" +
+            "  \"email\":\"12312@qq.com\","+
+            "  \"tel\":\"13345676043\"}";
 
     private static String adminSignIn = "{\n" +
             "\t\"username\":\"admin\",\n" +
@@ -54,10 +60,6 @@ public class CourseTest {
     private static List<Role> userRole=new ArrayList<>();
 
     private static List<Role> adminRole=new ArrayList<>();
-
-    private static User user;
-
-    private static User admin;
 
     private static CoursePrototype coursePrototype1= new CoursePrototype();
 
@@ -81,6 +83,9 @@ public class CourseTest {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private MockMvc mvc;
 
@@ -110,23 +115,33 @@ public class CourseTest {
 
         mvc.perform(post("/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(userSignUp));
-
-        user = new User(1L,"user","password",userRole);
+                .content(userSignUp)).andExpect(status().isOk());
 
         mvc.perform(post("/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(adminSignUp));
+                .content(adminSignUp)).andExpect(status().isOk());
 
-        admin = new User(2L,"admin","password",adminRole);
-
-        admin.setCourses(Collections.emptyList());
+        User admin = userRepository.getOne(2L);
+        admin.setRoles(adminRole);
+        userRepository.save(admin);
 
         coursePrototype1.setTitle("English");
 
         coursePrototype1.setId(1L);
 
         coursePrototype1.setState(CoursePrototypeState.NOT_PASS);
+
+        Calendar startDate = Calendar.getInstance();
+
+        Calendar endDate = Calendar.getInstance();
+
+        startDate.add(Calendar.DATE,10);
+
+        endDate.add(Calendar.DATE,60);
+
+        applyCourse1.setStartDate(startDate.getTime());
+
+        applyCourse1.setEndDate(endDate.getTime());
 
         setUpIsDone=true;
     }
@@ -179,7 +194,7 @@ public class CourseTest {
 
     @Test
     @WithMockUser(username = "admin2",roles = "ADMIN")
-    public void applyCourseTest() throws Exception{
+    public void applyCoursePrototypeTest() throws Exception{
         mvc.perform(post("/api/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(adminSignIn));
@@ -187,8 +202,7 @@ public class CourseTest {
         mvc.perform(post("/api/coursePrototype/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk());
 
         mvc.perform(post("/api/coursePrototype/1/apply"))
                 .andExpect(status().isOk());
@@ -199,5 +213,65 @@ public class CourseTest {
                 .param("applicant_id","2"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser(username = "admin2",roles = "ADMIN")
+    public void applyCourseTest() throws Exception{
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn));
+
+        mvc.perform(post("/api/coursePrototype/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(titleAndDes))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/courses/start")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("prototypeId","1")
+                .content(JSONObject.toJSONString(applyCourse1)))
+                .andExpect(status().isOk());
+
+        result = mvc.perform(post("/api/courses/1/start")
+                .param("decision","approval"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        Assert.assertEquals(CourseState.READY_TO_START,JSON.parseObject(result,Course.class).getState());
+
+    }
+
+    @Test
+    @WithMockUser(username = "admin2",roles = "ADMIN")
+    public void pickCourseTest() throws Exception{
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn));
+
+        mvc.perform(post("/api/coursePrototype/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(titleAndDes))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/courses/start")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(applyCourse1))
+                .param("prototypeId","1"))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/courses/1/start")
+                .param("decision","approval"))
+                .andExpect(status().isOk());
+
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userSignIn));
+
+        mvc.perform(post("/api/courses/1/pick"))
+                .andExpect(status().isOk());
+
+    }
+
+
 
 }
