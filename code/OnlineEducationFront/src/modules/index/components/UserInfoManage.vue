@@ -1,6 +1,6 @@
 <template>
     <div class="info-form">
-        <el-form label-position="right" label-width="100px">
+        <el-form label-position="left" label-width="100px">
             <el-form-item label="真实姓名">
                 <el-input v-model="userInfo.realName"></el-input>
             </el-form-item>
@@ -16,19 +16,23 @@
             <el-form-item label="学号">
                 <el-input v-model="userInfo.sno"></el-input>
             </el-form-item>
+            <el-form-item label="年级">
+                <el-select v-model="userInfo.grade">
+                    <el-option
+                            v-for="grade in gradeList"
+                            :key="grade.value"
+                            :value="grade.value"
+                            :label="grade.label"
+                    ></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="专业">
                 <el-input v-model="userInfo.major"></el-input>
-            </el-form-item>
-            <el-form-item label="电话">
-                <el-input v-model="userInfo.tel"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱">
-                <el-input v-model="userInfo.email"></el-input>
             </el-form-item>
             <el-form-item>
                 <div class="bottom-buttons">
                     <div class="float-left">
-                        <el-button>提交</el-button>
+                        <el-button @click="submitInfo">提交</el-button>
                     </div>
                     <div class="float-right">
                         <el-button>重置</el-button>
@@ -42,19 +46,54 @@
 <script>
     export default {
         name: "UserInfoManage",
+        props: {
+            userdata: Object
+        },
         data() {
             return {
                 userInfo: {
-                    userName: "",
                     realName: "",
                     sex: "",
                     university: "",
-                    sno: 0,
+                    sno: "",
                     major: "",
-                    tel: "",
-                    email: ""
-                }
+                    grade: 1,
+                },
+                gradeList: [
+                    {
+                        value: 1,
+                        label: "大一"
+                    },
+                    {
+                        value: 2,
+                        label: "大二"
+                    },
+                    {
+                        value: 3,
+                        label: "大三"
+                    },
+                    {
+                        value: 4,
+                        label: "大四"
+                    },
+                    {
+                        value: 5,
+                        label: "研一"
+                    },
+                    {
+                        value: 6,
+                        label: "研二"
+                    }
+                ]
             }
+        },
+        methods: {
+            submitInfo: function () {
+                this.$emit('submit-info', this.userInfo);
+            }
+        },
+        mounted() {
+            this.userInfo = this.userdata;
         }
     }
 </script>
