@@ -89,24 +89,50 @@ export default new Router({
             component: () => import('./views/Register.vue')
         },
         {
-            path: '/teachercoursedetail',
-            name: 'TeacherCourseDetail',
-            component: () => import('./views/TeacherCourseDetail')
+            path: '/teacher',
+            name: 'teacher',
+            children:[
+                {
+                    path: '/coursedetail',
+                    name: 'CourseDetail',
+                    component: () => import('./views/TeacherCourseDetail')
+                },
+                {
+                    path: '/coursemanage',
+                    name: 'TeacherCourseManage',
+                    component: () => import('./views/TeacherCourseManage')
+                },
+                {
+                    path: '/studentmanage',
+                    name: 'TeacherStudenetManage',
+                    component: () => import('./views/TeacherStudentManage')
+                },
+                {
+                    path: '/scoremanage',
+                    name: 'TeacherScoreManage',
+                    component: () => import('./views/TeacherScoreManage')
+                },
+            ]
         },
-        {
-            path: '/teachercoursemanage',
-            name: 'TeacherCourseManage',
-            component: () => import('./views/TeacherCourseManage')
-        },
-        {
-            path: '/teacherstudentmanage',
-            name: 'TeacherStudenetManage',
-            component: () => import('./views/TeacherStudentManage')
-        },
-        {
-            path: '/teacherscoremanage',
-            name: 'TeacherScoreManage',
-            component: () => import('./views/TeacherScoreManage')
-        }
+        // {
+        //     path: '/teachercoursedetail',
+        //     name: 'TeacherCourseDetail',
+        //     component: () => import('./views/TeacherCourseDetail')
+        // },
+        // {
+        //     path: '/teachercoursemanage',
+        //     name: 'TeacherCourseManage',
+        //     component: () => import('./views/TeacherCourseManage')
+        // },
+        // {
+        //     path: '/teacherstudentmanage',
+        //     name: 'TeacherStudenetManage',
+        //     component: () => import('./views/TeacherStudentManage')
+        // },
+        // {
+        //     path: '/teacherscoremanage',
+        //     name: 'TeacherScoreManage',
+        //     component: () => import('./views/TeacherScoreManage')
+        // }
     ]
 })

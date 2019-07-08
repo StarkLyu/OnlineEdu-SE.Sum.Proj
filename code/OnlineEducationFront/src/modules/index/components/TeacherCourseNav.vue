@@ -6,25 +6,25 @@
                 <el-menu
                         class="el-menu-vertical-demo"
                         router="true">
-                    <el-menu-item index="1" route="/teachercoursedetail">
+                    <el-menu-item index="1" route="/teacher/coursedetail">
                         <i class="el-icon-copy-document"></i>
                         <span slot="title">
                             课程详情
                         </span>
                     </el-menu-item>
-                    <el-menu-item index="2" route="/teacherstudentmanage">
+                    <el-menu-item index="2" route="/teacher/studentmanage">
                         <i class="el-icon-copy-document"></i>
                         <span slot="title">
                             学生管理
                         </span>
                     </el-menu-item>
-                    <el-menu-item index="3" route="/teachercoursemanage">
+                    <el-menu-item index="3" route="/teacher/coursemanage">
                         <i class="el-icon-copy-document"></i>
                         <span slot="title">
                             课程编辑
                         </span>
                     </el-menu-item>
-                    <el-menu-item index="4" route="/teacherscoremanage">
+                    <el-menu-item index="4" route="/teacher/scoremanage">
                         <i class="el-icon-copy-document"></i>
                         <span slot="title">
                             成绩管理
