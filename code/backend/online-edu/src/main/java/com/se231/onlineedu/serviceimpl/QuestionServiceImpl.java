@@ -9,6 +9,15 @@ import com.se231.onlineedu.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Question Service Interface Implementation Class
+ *
+ * contains main service logic related to question.
+ *
+ * @author Zhe Li
+ *
+ * @date 2019/7/5
+ */
 @Service
 public class QuestionServiceImpl implements QuestionService {
     private QuestionRepository questionRepository;

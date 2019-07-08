@@ -2,15 +2,18 @@ package com.se231.onlineedu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se231.onlineedu.model.RoleType;
+import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.Role;
+import com.se231.onlineedu.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +26,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UserLoginAndRegisterTests class
@@ -37,41 +42,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class SignInAndSignUpTests {
 
-    private static String userSignUp = "{\n" +
-            "\t\"username\":\"user\",\n" +
-            "\t\"password\":\"password\",\n" +
-            "\t\"roles\":[\"user\"]\n" +
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    private static String userSignUp = "{ \"username\":\"user1\",\n" +
+            "  \"password\":\"password\",\n" +
+            "  \"email\":\"12312412@qq.com\",\n" +
+            "  \"tel\":\"13345676543\",\n" +
+            "  \"university\":\"sjtu\",\n" +
+            "  \"major\":\"SE\",\n" +
+            "  \"grade\":2,\n" +
+            "  \"sno\":\"12321\",\n" +
+            "  \"realName\":\"小王\",\n" +
+            "  \"sex\":\"男\"\n" +
             "}";
 
     private static String userSignIn = "{\n" +
-            "\t\"username\":\"user\",\n" +
+            "\t\"username\":\"user1\",\n" +
             "\t\"password\":\"password\"" +
             "}";
 
-    private static String userSignInWrong = "{\n" +
-            "\t\"username\":\"useruser\",\n" +
-            "\t\"password\":\"password\"" +
-            "}";
-
-    private static String adminSignUp = "{\n" +
-            "\t\"username\":\"admin\",\n" +
-            "\t\"password\":\"password\",\n" +
-            "\t\"roles\":[\"admin\"]\n" +
-            "}";
 
     private static String adminSignIn = "{\n" +
             "\t\"username\":\"admin\",\n" +
             "\t\"password\":\"password\"" +
             "}";
 
-    private static String superAdminSignUp = "{\n" +
-            "\t\"username\":\"superAdmin\",\n" +
-            "\t\"password\":\"password\",\n" +
-            "\t\"roles\":[\"super_admin\"]\n" +
-            "}";
-
     private static String superAdminSignIn = "{\n" +
-            "\t\"username\":\"superAdmin\",\n" +
+            "\t\"username\":\"super_admin\",\n" +
             "\t\"password\":\"password\"" +
             "}";
 
@@ -81,11 +79,28 @@ public class SignInAndSignUpTests {
 
     private static String signUpResponse = "User registered successfully!";
 
+    private static String userSignInWrong = "{\n" +
+            "\t\"username\":\"user1\",\n" +
+            "\t\"password\":\"password1\"" +
+            "}";
+
+    private static List<Role> adminRole=new ArrayList<>();
+
+    private static List<Role> superAdminRole=new ArrayList<>();
+
+
+    private static User admin = new User("admin","");
+
+    private static User superAdmin = new User("super_admin","");
+
     @Autowired
     private WebApplicationContext context;
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private MockMvc mvc;
 
@@ -108,9 +123,18 @@ public class SignInAndSignUpTests {
         }
 
         roleRepository.save(new Role(RoleType.ROLE_USER));
-        roleRepository.save(new Role(RoleType.ROLE_ADMIN));
-        roleRepository.save(new Role(RoleType.ROLE_SUPER_ADMIN));
+        adminRole.add(roleRepository.save(new Role(RoleType.ROLE_ADMIN)));
+        superAdminRole.add(roleRepository.save(new Role(RoleType.ROLE_SUPER_ADMIN)));
         roleRepository.save(new Role(RoleType.ROLE_TEACHING_ADMIN));
+
+        admin.setRoles(adminRole);
+        admin.setPassword(passwordEncoder.encode("password"));
+        admin.setEmail("aaa@qq.com");
+        userRepository.save(admin);
+        superAdmin.setEmail("bbb@126.com");
+        superAdmin.setPassword(passwordEncoder.encode("password"));
+        superAdmin.setRoles(superAdminRole);
+        userRepository.save(superAdmin);
 
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         result = mvc.perform(post("/api/auth/signup")
@@ -124,25 +148,7 @@ public class SignInAndSignUpTests {
 
         result = mvc.perform(post("/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(adminSignUp)).andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        assertTrue(result.equals(signUpResponse));
-
-        result = mvc.perform(post("/api/auth/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(superAdminSignUp)).andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        assertTrue(result.equals(signUpResponse));
-
-        result = mvc.perform(post("/api/auth/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(superAdminSignUp)).andExpect(status().isBadRequest())
+                .content(userSignUp)).andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
 

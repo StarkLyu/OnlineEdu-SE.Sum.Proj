@@ -4,8 +4,6 @@ import javax.validation.Valid;
 import java.util.List;
 import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.CourseState;
-import com.se231.onlineedu.model.PickCourse;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019/7/4
  */
 @RestController
-@RequestMapping("api/course")
+@RequestMapping("api/courses")
 public class CourseController {
 
     @Autowired
