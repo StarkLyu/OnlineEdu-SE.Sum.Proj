@@ -3,16 +3,29 @@
         <div class="login-square float-right">
             <div class="login-form">
                 <h3>登录</h3>
-                <el-form>
-                    <el-form-item>
-                        <el-input placeholder="用户名" suffix-icon="el-icon-user" id="userId"></el-input>
+                <el-form :model="loginInfo"
+                         :rules="rules"
+                         ref="loginInfo"
+                >
+                    <el-form-item prop="userName">
+                        <el-input
+                                placeholder="用户名"
+                                suffix-icon="el-icon-user"
+                                id="userId"
+                                v-model="loginInfo.userName"
+                        ></el-input>
                     </el-form-item>
-                    <el-form-item>
-                        <el-input placeholder="密码" suffix-icon="el-icon-lock"></el-input>
+                    <el-form-item prop="password">
+                        <el-input
+                                type="password"
+                                placeholder="密码"
+                                suffix-icon="el-icon-lock"
+                                v-model="loginInfo.password"
+                        ></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" size="medium">
-                            <div class="login-text">登录</div>
+                            <div class="login-text" @click="login" :loading="true">登录</div>
                         </el-button>
                     </el-form-item>
                     <el-form-item>
@@ -36,7 +49,27 @@
         name: "Login",
         data() {
             return {
-
+                loginInfo: {
+                    userName: "",
+                    password: ""
+                },
+                rules: {
+                    userName: [
+                        {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "blur"}
+                    ],
+                    password: [
+                        {min: 6, max: 15, message: "密码长度为6到15个字符", trigger: "blur"}
+                    ]
+                }
+            }
+        },
+        methods: {
+            login: function () {
+                this.$refs["loginInfo"].validate((valid) => {
+                    if (valid) {
+                        this.$store.dispatch('user/login', this.loginInfo);
+                    }
+                })
             }
         }
     }
