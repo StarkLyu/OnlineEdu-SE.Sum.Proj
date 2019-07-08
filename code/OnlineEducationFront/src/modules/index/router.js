@@ -83,8 +83,43 @@ export default new Router({
                 {
                     path: 'manager',
                     name: 'courseManager',
+                    component: () => import('./components/TeacherCourseNav'),
                     children: [
-
+                        {
+                            path: 'detail',
+                            name: 'TeacherCourseDetail',
+                            component: () => import('./views/TeacherCourseDetail')
+                        },
+                        {
+                            path: 'edit',
+                            name: 'TeacherCourseManage',
+                            component: () => import('./views/TeacherCourseManage')
+                        },
+                        {
+                            path: 'student',
+                            name: 'TeacherStudenetManage',
+                            component: () => import('./views/TeacherStudentManage')
+                        },
+                        {
+                            path: 'score',
+                            name: 'TeacherScoreManage',
+                            component: () => import('./views/TeacherScoreManage')
+                        },
+                        {
+                            path: 'annoucement',
+                            name: 'TeacherCourseAnnouce',
+                            component: () => import('./views/TeacherCourseAnnouce')
+                        },
+                        {
+                            path: 'assignment',
+                            name: 'TeacherCourseAssign',
+                            component: () => import('./views/TeacherCourseAssign')
+                        },
+                        {
+                            path: 'bt',
+                            name: 'TeacherCourseBT',
+                            component: () => import('./views/TeacherCourseBT')
+                        },
                     ]
                 }
             ]
@@ -98,32 +133,6 @@ export default new Router({
             path: '/register',
             name: 'register',
             component: () => import('./views/Register.vue')
-        },
-        {
-            path: '/teacher',
-            name: 'teacher',
-            children:[
-                {
-                    path: '/coursedetail',
-                    name: 'CourseDetail',
-                    component: () => import('./views/TeacherCourseDetail')
-                },
-                {
-                    path: '/coursemanage',
-                    name: 'TeacherCourseManage',
-                    component: () => import('./views/TeacherCourseManage')
-                },
-                {
-                    path: '/studentmanage',
-                    name: 'TeacherStudenetManage',
-                    component: () => import('./views/TeacherStudentManage')
-                },
-                {
-                    path: '/scoremanage',
-                    name: 'TeacherScoreManage',
-                    component: () => import('./views/TeacherScoreManage')
-                },
-            ]
         },
         // {
         //     path: '/teachercoursedetail',
