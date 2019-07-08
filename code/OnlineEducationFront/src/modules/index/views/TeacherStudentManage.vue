@@ -7,26 +7,29 @@
                         class="padding"
                         v-model="search"
                         placeholder="请输入用户名"
-                        prefix-icon="el-icon-search"/>
+                        prefix-icon="el-icon-search"
+                />
             </div>
-            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))" class="usertable">
+            <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
+                      class="usertable"
+                      stripe>
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="userid"
+                            prop="userId"
                             label="学号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="username"
+                            prop="userName"
                             label="学生名"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="usercollege"
+                            prop="userCollege"
                             label="学院"
                             min-width="25%"
                             sortable>
@@ -52,32 +55,32 @@
 
                 UserData: [
                     {
-                        userid:"45112323",
-                        username:"kamen",
-                        usercollege:"化学化工",
+                        userId:"45112323",
+                        userName:"kamen",
+                        userCollege:"化学化工",
                         email:"1099@fg.co"
                     },
                     {
-                        userid:"2144641",
-                        username:"student",
-                        usercollege:"电子信息",
+                        userId:"2144641",
+                        userName:"student",
+                        userCollege:"电子信息",
                         email:"1daswew9@fger.coq"
                     },
                     {
-                        userid:"78089870",
-                        username:"zhujiao",
-                        usercollege:"机动",
+                        userId:"78089870",
+                        userName:"zhujiao",
+                        userCollege:"机动",
                         email:"df633339@qq.com"
                     }
                 ],
             }
-        }
+        },
     }
 </script>
 
 <style scoped>
     .usertable {
-        width: 90%;
+        width: 100%;
         font-size: 15px;
         padding-bottom:20px;
     }

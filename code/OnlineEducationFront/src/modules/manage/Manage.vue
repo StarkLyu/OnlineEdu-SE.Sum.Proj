@@ -3,7 +3,7 @@
         <div class="nav">
             <ManageNav></ManageNav>
         </div>
-        <div style="float: left; width: 80%">
+        <div class="showbody">
             <router-view></router-view>
         </div>
     </div>

@@ -1,30 +1,27 @@
 <template>
     <div id="ManageNav">
-        <el-col :span="16">
-            <h3>管理</h3>
-            <el-menu
-                    default-active="2"
-                    class="el-menu-vertical-demo"
-                    @open="handleOpen"
-                    @close="handleClose">
-                <el-menu-item index="1">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">
-                        <router-link to="/ManageUser">
+        <el-row class="tac">
+            <el-col :span="16">
+                <h3>管理</h3>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        router="true">
+                    <el-menu-item index="1" route="/ManageUser">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">
                             用户管理
-                        </router-link>
-                    </span>
-                </el-menu-item>
-                <el-menu-item index="2">
-                    <i class="el-icon-setting"></i>
-                    <span slot="title">
-                        <router-link to="/ManageCourse">
+                        </span>
+                    </el-menu-item>
+                    <el-menu-item index="2" route="/ManageCourse">
+                        <i class="el-icon-copy-document"></i>
+                        <span slot="title">
                             课程管理
-                        </router-link>
-                    </span>
-                </el-menu-item>
-            </el-menu>
-        </el-col>
+                        </span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -33,26 +30,12 @@
         name: "ManagNav",
 
         methods:{
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            }
+
         }
     }
 </script>
 
 <style scoped>
-    a {
-        text-decoration: none;
-        color: dimgrey;
-    }
-
-    a:hover {
-        color: black;
-    }
-
     h3 {
         text-align: center;
     }
