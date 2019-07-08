@@ -1,18 +1,20 @@
 <template>
     <div>
-        <div class="margintop">
+        <el-header>
             <h1 class="titlesytle">课程成绩管理</h1>
+        </el-header>
+        <el-main>
             <div class="float-left">
-                <el-input
-                        class="padding"
-                        v-model="search"
-                        placeholder="请输入用户名"
-                        prefix-icon="el-icon-search"
-                />
+                <el-input class="padding"
+                          v-model="search"
+                          placeholder="请输入用户名"
+                          prefix-icon="el-icon-search"/>
             </div>
-            <div class="float-right">
-                <el-button @click="handleAdd">导入成绩</el-button>
+<!--            导入成绩button-->
+            <div class="addbutton">
+                <el-button @click="handleAdd" icon="el-icon-plus">导入成绩</el-button>
             </div>
+<!--            成绩显示-->
             <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
                       class="usertable"
                       stripe>
@@ -47,15 +49,15 @@
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
-                            <el-button type="button" @click="handleEdit(scope.$index, scope.row)">
+                            <el-button type="button" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">
                                 修改
                             </el-button>
                         </template>
                     </el-table-column>
                 </el-table-column>
             </el-table>
-        </div>
-        <!--编辑增加页面弹窗-->
+        </el-main>
+        <!--成绩编辑弹窗-->
         <el-dialog
                 :title="'成绩修改'"
                 :visible.sync="dialogFormVisible"
@@ -127,7 +129,6 @@
 
             //显示编辑界面
             handleEdit: function(index, row) {
-                this.dialogStatus = "update";
                 this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
             },
@@ -153,12 +154,13 @@
         padding: 8px;
     }
 
-    .margintop {
-        margin-top: 30px
-    }
-
     .titlesytle {
         text-align: center;
         padding-top: 20px
+    }
+
+    .addbutton {
+        float: right;
+        margin-right:20%;
     }
 </style>

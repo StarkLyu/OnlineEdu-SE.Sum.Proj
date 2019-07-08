@@ -1,7 +1,9 @@
 <template>
     <div>
-        <div class="margintop">
+        <el-header>
             <h1 class="titlesytle">课程详情</h1>
+        </el-header>
+        <el-main>
             <div class="courseimg">
                 <img src="../../../assets/logo.png" height="200" width="200"/>
             </div>
@@ -10,7 +12,7 @@
                     课程号：
                     <span>
                         {{CourseForm.courseId}}
-                        </span>
+                    </span>
                 </p>
                 <p>
                     课程名称：
@@ -49,7 +51,7 @@
                     </span>
                 </p>
             </div>
-        </div>
+        </el-main>
     </div>
 </template>
 
@@ -66,7 +68,7 @@
                     courseRoom: "东下院201",
                     courseTeacher: "zang",
                     courseAssistance:"张，刘，俄",
-                    courseDes:"hwhfquowfeuoqoue",
+                    courseDes:"数据库管理已经从一种专门的计算机应用发展为现代计算环境的一个核心部分。因此，有关数据库系统的知识已经成为计算机教育中的一个必不可少的部分，也是软件工程专业学生必须掌握的基本技术。本课程主要讲述数据库管理的基本概念，包括数据库设计、数据库语言及数据库管理等多个方面。",
                 },
             }
         },
@@ -75,10 +77,6 @@
 
 <style scoped>
     @import "/src/assets/div-layout.css";
-
-    .margintop {
-        margin-top: 30px
-    }
 
     .titlesytle {
         text-align: center;
