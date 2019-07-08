@@ -1,27 +1,19 @@
-package com.se231.onlineedu.message.request;
+package com.se231.onlineedu.message.response;
 
-import java.util.List;
-
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import com.se231.onlineedu.model.User;
 
 /**
- * SignUpForm Class
+ * Personal information form class
  *
- * Sign up request form
+ * this form is used to allow user to check and modify their personal information.
  *
- * @author Yuxuan Liu
+ * @author Zhe Li
  *
- * @date 2019/07/01
+ * @date 2019/07/08
  */
-public class SignUpForm {
-    @NotBlank
-    @Size(min = 3, max = 50)
-    private String username;
-
-    @NotBlank
-    @Size(min = 6, max = 40)
-    private String password;
-
+public class PersonalInfo {
     @Email
     private String email;
 
@@ -40,28 +32,29 @@ public class SignUpForm {
 
     private String sex;
 
-    public SignUpForm(@NotBlank @Size(min = 3, max = 50) String username, List<String> roles, @NotBlank @Size(min = 6, max = 40) String password) {
-        this.username = username;
-        this.password = password;
+    public PersonalInfo(User user) {
+        this.email=user.getEmail();
+        this.grade=user.getGrade();
+        this.major=user.getMajor();
+        this.realName=user.getRealName();
+        this.sex=user.getSex();
+        this.sno=user.getSno();
+        this.tel=user.getTel().toString();
+        this.university=user.getUniversity();
     }
 
-    public SignUpForm() {
+    public PersonalInfo() {
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void modifyUserInfo(User user){
+        user.setEmail(email);
+        user.setGrade(grade);
+        user.setMajor(major);
+        user.setRealName(realName);
+        user.setSex(sex);
+        user.setSno(sno);
+        user.setTel(Long.parseLong(tel));
+        user.setUniversity(university);
     }
 
     public String getEmail() {

@@ -47,6 +47,9 @@ public class Course {
     @OneToOne
     private User user;
 
+    @OneToMany
+    private List<Paper> papers;
+
     public Course() {
     }
 
@@ -112,6 +115,14 @@ public class Course {
 
     public void setStudents(Set<User> students) {
         this.students = students;
+    }
+
+    public List<Paper> getPapers() {
+        return papers;
+    }
+
+    public void setPapers(List<Paper> papers) {
+        this.papers = papers;
     }
 
     public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, User user) {

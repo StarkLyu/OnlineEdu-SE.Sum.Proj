@@ -21,7 +21,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     /**
      * find Role by RoleType enum
      *
-     * @param role
+     * @param role role to find
      * @return Optional<Role>
      */
     Optional<Role> findByRole(RoleType role);

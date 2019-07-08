@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.se231.onlineedu.message.request.SignUpForm;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -36,6 +37,23 @@ public class User {
     @JsonIgnore
     @NotBlank
     private String password;
+
+    @NotBlank
+    private String email;
+
+    private Long tel;
+
+    private String university;
+
+    private String major;
+
+    private int grade;
+
+    private String sno;
+
+    private String realName;
+
+    private String sex;
 
     public String getUsername() {
         return username;
@@ -89,6 +107,18 @@ public class User {
         this.password = password;
     }
 
+    public User(SignUpForm form) {
+        this.username = form.getUsername();
+        this.email = form.getEmail();
+        this.tel = Long.parseLong(form.getTel());
+        this.university = form.getUniversity();
+        this.major = form.getMajor();
+        this.grade = form.getGrade();
+        this.sno = form.getSno();
+        this.realName = form.getRealName();
+        this.sex = form.getSex();
+    }
+
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
@@ -99,6 +129,70 @@ public class User {
 
     public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Long getTel() {
+        return tel;
+    }
+
+    public void setTel(Long tel) {
+        this.tel = tel;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
+    public String getSno() {
+        return sno;
+    }
+
+    public void setSno(String sno) {
+        this.sno = sno;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public User() {
