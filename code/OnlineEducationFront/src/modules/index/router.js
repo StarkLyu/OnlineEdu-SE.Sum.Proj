@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import User from './views/User.vue'
 import UserCourseList from './components/UserCourseList.vue'
-import UserInfoManage from "./components/UserInfoManage";
+import UserSetting from "./components/UserSetting";
 
 Vue.use(Router)
 
@@ -31,25 +31,28 @@ export default new Router({
                 {
                     path: 'info',
                     name: 'userInfo',
-                    component: UserInfoManage
+                    component: UserSetting
                 },
             ]
         },
         {
             path: '/course',
             name: 'course',
+            component: () => import('./views/RouterTemp.vue'),
             children: [
                 {
                     path: 'student',
                     name: 'courseStudent',
+                    component: () => import('./views/Course.vue'),
                     children: [
                         {
                             path: 'welcome',
                             name: 'courseStudentWelcome',
                         },
                         {
-                            path: 'home',
-                            name: 'courseStudentHome',
+                            path: 'info',
+                            name: 'courseStudentInfo',
+                            component: () => import('./components/UserCourseInfo.vue')
                         },
                         {
                             path: 'chapters',
@@ -66,6 +69,14 @@ export default new Router({
                         {
                             path: 'grade',
                             name: 'courseStudentGrade',
+                        },
+                        {
+                            path: 'report',
+                            name: 'courseStudentReport',
+                        },
+                        {
+                            path: 'forum',
+                            name: 'courseStudentForum'
                         }
                     ]
                 },
