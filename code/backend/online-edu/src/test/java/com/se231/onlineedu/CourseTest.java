@@ -25,6 +25,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * Course Test
+ *
+ * Test operation about opening a new course(and prototype)
+ *
+ * @author Zhe Li
+ *
+ * @date 2019/7/5
+ */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
@@ -154,22 +163,22 @@ public class CourseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(adminSignIn));
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(nullString))
                 .andExpect(status().isBadRequest());
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(LongTitle))
                 .andExpect(status().isBadRequest());
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shortTitle))
                 .andExpect(status().isBadRequest());
 
-        result = mvc.perform(post("/api/coursePrototype/")
+        result = mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
                 .andExpect(status().isOk())
@@ -177,12 +186,12 @@ public class CourseTest {
 
         Assert.assertEquals(coursePrototype1.getTitle(),JSON.parseObject(result,CoursePrototype.class).getTitle());
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(longDes))
                 .andExpect(status().isBadRequest());
 
-        result = mvc.perform(post("/api/coursePrototype/1/create")
+        result = mvc.perform(post("/api/coursePrototypes/1/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("decision","using"))
                 .andExpect(status().isOk())
@@ -199,15 +208,15 @@ public class CourseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(adminSignIn));
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/api/coursePrototype/1/apply"))
+        mvc.perform(post("/api/coursePrototypes/1/apply"))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/api/coursePrototype/apply")
+        mvc.perform(post("/api/coursePrototypes/apply")
                 .param("decision","disapproval")
                 .param("course_id","1")
                 .param("applicant_id","2"))
@@ -221,7 +230,7 @@ public class CourseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(adminSignIn));
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
                 .andExpect(status().isOk());
@@ -248,7 +257,7 @@ public class CourseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(adminSignIn));
 
-        mvc.perform(post("/api/coursePrototype/")
+        mvc.perform(post("/api/coursePrototypes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(titleAndDes))
                 .andExpect(status().isOk());

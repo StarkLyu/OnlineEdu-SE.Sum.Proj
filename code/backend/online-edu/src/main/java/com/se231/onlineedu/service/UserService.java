@@ -23,16 +23,7 @@ public interface UserService {
     PersonalInfo getUserInfo(Long userId)throws Exception;
 
     /**
-     * this service allow user to modify his own information
-     * @param userId the id of the modifying user
-     * @param personalInfo the form user submit
-     * @return  user information form
-     * @throws Exception mainly throw not found exception
-     */
-    PersonalInfo modifyUserInfo(Long userId,PersonalInfo personalInfo)throws Exception;
-
-    /**
-     * this service allow admin to manage users' personal information
+     * this service allow admin to manage users' personal information or a user to modify his personal information.
      * @param id    the id of managed user
      * @param personalInfo  the form admin submit
      * @return  user information form after changing.

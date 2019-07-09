@@ -20,17 +20,16 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019/7/5
  */
 @RestController
-@RequestMapping("/api/coursePrototype")
+@RequestMapping("/api/coursePrototype/{id}/questions")
 public class QuestionController {
 
     @Autowired
     QuestionService questionService;
 
-    @PostMapping("/{id}/question")
+    @PostMapping
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public ResponseEntity<Question> submitQuestion(@Valid @RequestBody SubmitQuestionForm form,
                                                    @PathVariable("id")Long coursePrototypeId)throws Exception{
-
         return ResponseEntity.ok(questionService.submitQuestion(coursePrototypeId,
                 QuestionType.valueOf(form.getQuestionType().toUpperCase()),form.getQuestion(),form.getAnswer()));
     }

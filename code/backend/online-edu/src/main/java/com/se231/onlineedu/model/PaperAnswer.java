@@ -3,6 +3,15 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Paper Answer Entity Class
+ *
+ * answer for a paper submitted by an user
+ *
+ * @author Yuxuan Liu
+ *
+ * @date 2019/7/4
+ */
 @Entity
 public class PaperAnswer {
     @EmbeddedId

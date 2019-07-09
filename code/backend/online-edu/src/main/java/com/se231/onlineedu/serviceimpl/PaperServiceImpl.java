@@ -3,12 +3,8 @@ package com.se231.onlineedu.serviceimpl;
 import java.util.Date;
 import java.util.List;
 import com.se231.onlineedu.message.request.PaperQuestionForm;
-import com.se231.onlineedu.model.Paper;
-import com.se231.onlineedu.model.PaperWithQuestions;
-import com.se231.onlineedu.model.Question;
-import com.se231.onlineedu.repository.PaperRepository;
-import com.se231.onlineedu.repository.PaperWithQuestionsRepository;
-import com.se231.onlineedu.repository.QuestionRepository;
+import com.se231.onlineedu.model.*;
+import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.PaperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,11 +27,18 @@ public class PaperServiceImpl implements PaperService {
 
     private PaperRepository paperRepository;
 
+    private SectionRepository sectionRepository;
+
+    private CourseRepository courseRepository;
+
     @Autowired
-    public PaperServiceImpl(PaperWithQuestionsRepository paperWithQuestionsRepository, QuestionRepository questionRepository, PaperRepository paperRepository) {
+    public PaperServiceImpl(PaperWithQuestionsRepository paperWithQuestionsRepository, QuestionRepository questionRepository,
+                            PaperRepository paperRepository,SectionRepository sectionRepository,CourseRepository courseRepository) {
         this.paperWithQuestionsRepository = paperWithQuestionsRepository;
         this.questionRepository = questionRepository;
         this.paperRepository = paperRepository;
+        this.sectionRepository=sectionRepository;
+        this.courseRepository=courseRepository;
     }
 
     @Override
@@ -43,17 +46,30 @@ public class PaperServiceImpl implements PaperService {
                              Date start, Date end)throws Exception{
         Paper paper=new Paper();
         paper = paperRepository.save(paper);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(()->new Exception("No corresponding course"));
         for(PaperQuestionForm paperQuestionForm:paperQuestionFormsList){
                 Question question = questionRepository.findById(paperQuestionForm.getQuestionId())
                         .orElseThrow(()->new Exception("No corresponding question"));
                 PaperWithQuestions paperWithQuestions = new PaperWithQuestions(paper,question,
                         paperQuestionForm.getQuestionNumber(),paperQuestionForm.getScore());
-                System.out.println(paperWithQuestions.getPaperWithQuestionsPrimaryKey().getQuestion().getQuestion());
                 paperWithQuestionsRepository.save(paperWithQuestions);
         }
         paper.setStart(start);
         paper.setEnd(end);
+        paper.setCourse(course);
         return paperRepository.save(paper);
     }
 
+    @Override
+    public Section issuePaper(Long courseId, int secNo, Long paperId) throws Exception {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(()->new Exception("No corresponding course"));
+        Section section = sectionRepository.findById(new SectionPrimaryKey(course,secNo))
+                .orElseThrow(()->new Exception("No corresponding question"));
+        Paper paper = paperRepository.findById(paperId)
+                .orElseThrow(()->new Exception("No corresponding paper"));
+        section.getPapers().add(paper);
+        return sectionRepository.save(section);
+    }
 }
