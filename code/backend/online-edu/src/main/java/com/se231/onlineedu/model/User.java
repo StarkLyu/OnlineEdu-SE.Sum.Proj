@@ -55,6 +55,25 @@ public class User {
 
     private String sex;
 
+
+
+    @Column(name = "enabled")
+    private boolean enabled;
+
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public User(){
+        super();
+        this.enabled = false;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -193,9 +212,6 @@ public class User {
 
     public void setSex(String sex) {
         this.sex = sex;
-    }
-
-    public User() {
     }
 
 }

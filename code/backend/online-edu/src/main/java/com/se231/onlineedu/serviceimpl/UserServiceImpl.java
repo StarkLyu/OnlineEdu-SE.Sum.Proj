@@ -1,12 +1,13 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.util.List;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * User Service Implementation Class
@@ -19,12 +20,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
 
     @Override
     public PersonalInfo getUserInfo(Long userId) throws Exception {
