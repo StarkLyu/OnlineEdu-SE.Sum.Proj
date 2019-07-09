@@ -6,6 +6,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
+/**
+ * Paper Answer Primary Key Class
+ *
+ * an answer for paper must be identified by user and paper
+ *
+ * @author Yuxuan Liu
+ *
+ * @date 2019/7/4
+ */
 @Embeddable
 public class PaperAnswerPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;

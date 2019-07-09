@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import com.se231.onlineedu.message.request.PaperQuestionForm;
 import com.se231.onlineedu.model.Paper;
+import com.se231.onlineedu.model.Section;
 
 /**
  * Service Interface related to paper.
@@ -27,4 +28,14 @@ public interface PaperService {
      */
     Paper addNewPaper(List<PaperQuestionForm> paperQuestionFormsList, Long courseId,
                       Date start, Date end)throws Exception;
+
+    /**
+     * this service allow teacher to issue a existing paper to a section
+     * @param courseId  id of the course
+     * @param secNo number of the section
+     * @param paperId id of issued paper
+     * @return  the section which is modified
+     * @throws Exception    mainly contain not found exception
+     */
+    Section issuePaper(Long courseId,int secNo,Long paperId)throws Exception;
 }

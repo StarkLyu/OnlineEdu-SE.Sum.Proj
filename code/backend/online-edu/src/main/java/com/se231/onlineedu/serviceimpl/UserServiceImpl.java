@@ -33,15 +33,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PersonalInfo modifyUserInfo(Long userId,PersonalInfo personalInfo) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user"));
-        personalInfo.modifyUserInfo(user);
-        return new PersonalInfo(userRepository.save(user));
-    }
-
-    @Override
     public PersonalInfo manageUserInfo(Long id, PersonalInfo personalInfo) throws Exception {
         User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+        checkSameEmailAndTel(personalInfo.getEmail(),personalInfo.getTel(),user);
         personalInfo.modifyUserInfo(user);
         return new PersonalInfo(userRepository.save(user));
     }
@@ -64,5 +58,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkSameTel(String tel) {
         return userRepository.existsByTel(Long.parseLong(tel));
+    }
+
+    private void checkSameEmailAndTel(String email,String tel,User originUser)throws Exception{
+        Long tele = Long.parseLong(tel);
+        if(!originUser.getEmail().equals(email)&&userRepository.existsByEmail(email)){
+            throw new Exception("This email address is already token !");
+        }
+
+        if(!originUser.getTel().equals(tele)&&userRepository.existsByTel(tele)){
+            throw new Exception("This telephone number is already token !");
+        }
     }
 }

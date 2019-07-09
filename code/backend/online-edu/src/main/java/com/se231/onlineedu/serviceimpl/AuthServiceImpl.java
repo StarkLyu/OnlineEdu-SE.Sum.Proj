@@ -98,10 +98,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<String> addTeachingAdmin(Long userId){
         User user = userRepository.findById(userId).orElseThrow(()->new RuntimeException(("Fail -> Case: User Not Found.")));
-        user.getRoles().add(roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN)
-                .orElseThrow(()->new RuntimeException("Fail -> Case: Teaching Admin Role Not Found")));
+        Role teachingAdmin = roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN)
+                .orElseThrow(()->new RuntimeException("Fail -> Case: Teaching Admin Role Not Found"));
+        if(user.getRoles().contains(teachingAdmin)){
+            return ResponseEntity.ok("This User has already been a teaching admin.");
+        }
+        user.getRoles().add(teachingAdmin);
         userRepository.save(user);
-
         return ResponseEntity.ok("Add Teaching Admin successfully");
     }
 

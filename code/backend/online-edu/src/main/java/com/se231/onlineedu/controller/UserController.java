@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/info/modify")
     public ResponseEntity<PersonalInfo> modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
                                                            @Valid @RequestBody PersonalInfo personalInfo)throws Exception{
-        return ResponseEntity.ok(userService.modifyUserInfo(userPrinciple.getId(),personalInfo));
+        return ResponseEntity.ok(userService.manageUserInfo(userPrinciple.getId(),personalInfo));
     }
 
     @PostMapping("{id}/info/modify")
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok(userService.manageUserInfo(id, personalInfo));
     }
 
-    @GetMapping("/")
+    @GetMapping("/info")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<List<User>> getAllUser(){
         return ResponseEntity.ok(userService.getAllUser());
