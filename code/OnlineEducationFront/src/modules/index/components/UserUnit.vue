@@ -15,7 +15,6 @@
 </script>
 
 <style scoped>
-
     .name-font {
         font-size: 14px;
     }
