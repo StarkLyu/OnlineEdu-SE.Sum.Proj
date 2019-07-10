@@ -5,6 +5,15 @@ import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Paper Entity Class
+ *
+ * paper is a list of questions which generate a test or a exercise.
+ *
+ * @author Zhe Li
+ *
+ * @date 2019/7/10
+ */
 @Entity
 public class Paper {
     @Id
@@ -20,6 +29,7 @@ public class Paper {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "course_id")
     private Course course;
 
     public Paper(Date start, Date end, List<PaperWithQuestions> questions) {

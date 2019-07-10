@@ -5,6 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Answer Primary Key Class
@@ -20,6 +21,7 @@ public class AnswerPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonBackReference
     private PaperAnswer paperAnswer;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
