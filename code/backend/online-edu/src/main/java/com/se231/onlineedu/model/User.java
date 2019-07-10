@@ -167,6 +167,7 @@ public class User{
         this.sno = userExcel.getSno();
         this.realName = userExcel.getRealName();
         this.sex = userExcel.getSex();
+        this.enabled=true;
     }
 
     public void setRoles(List<Role> roles) {
