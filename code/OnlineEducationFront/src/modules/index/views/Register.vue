@@ -3,8 +3,8 @@
         <div class="step-line">
             <el-steps :active="currentStep">
                 <el-step title="账号信息" icon="el-icon-user-solid"></el-step>
-                <el-step title="邮箱验证" icon="el-icon-message"></el-step>
                 <el-step title="详细信息" icon="el-icon-s-order"></el-step>
+                <el-step title="邮箱验证" icon="el-icon-message"></el-step>
                 <el-step title="注册完成" icon="el-icon-check"></el-step>
             </el-steps>
         </div>
@@ -66,33 +66,21 @@
         </div>
         <div v-else-if="currentStep === 1">
             <div class="step-layout">
-                <el-form>
-                    <el-form-item>
-                        <h3>系统已向你的邮箱{{ registerUser.email }}发送了一封邮件，请从中获取验证码，如果邮箱填写有误请点击“上一步”返回并重新输入</h3>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input>
-                            <el-button v-if="resendFlag" slot="append">重新发送</el-button>
-                            <el-button v-else slot="append" disabled></el-button>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <div class="center-layout button-group-size">
-                            <el-button type="primary" @click="lastStep">上一步</el-button>
-                            <el-button type="primary" @click="submitStep2">下一步</el-button>
-                        </div>
-                    </el-form-item>
-                </el-form>
-            </div>
-        </div>
-        <div v-else-if="currentStep === 2">
-            <div class="step-layout">
                 <UserInfoManage
                         :userdata="registerDetailInfo"
                         type="register"
                         @submit-info="submitStep3"
                         @on-back="lastStep"
                 ></UserInfoManage>
+            </div>
+        </div>
+        <div v-else-if="currentStep === 2">
+            <div class="step-layout">
+                <EmailConfirm confirm-type="register" ref="emailConfirm"></EmailConfirm>
+                <div class="center-layout button-group-size">
+                    <el-button type="primary" @click="lastStep">返回</el-button>
+                    <el-button type="primary" @click="submitStep2">提交</el-button>
+                </div>
             </div>
         </div>
         <div v-else-if="currentStep === 3">
@@ -111,10 +99,11 @@
 <script>
     import UserInfoManage from "../components/UserInfoManage";
     import FormRules from "../rules.js";
+    import EmailConfirm from "../components/EmailConfirm";
 
     export default {
         name: "Register",
-        components: {UserInfoManage},
+        components: {EmailConfirm, UserInfoManage},
         data() {
             var checkConfirmPass = (rule, value, callback) => {
                 if (value !== this.registerUser.password) {
@@ -136,10 +125,7 @@
                     tel: ""
                 },
                 step1Rules: {
-                    userName: [
-                        {required: true, message: "用户名不能为空", trigger: "change"},
-                        {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "change"}
-                    ],
+                    userName: FormRules.usernameRule,
                     password: FormRules.passwordRule,
                     confirmPass: [
                         {required: true, message: "确认密码不能为空", trigger: "change"},
@@ -174,7 +160,8 @@
                 this.nextStep();
             },
             submitStep2: function () {
-                this.nextStep();
+                this.$refs['emailConfirm'].sendConfirmCode();
+                //this.nextStep();
             },
             submitStep3: function(detailInfo) {
                 let totalRegisterInfo = {
@@ -189,10 +176,12 @@
                     major: detailInfo.major,
                     grade: detailInfo.grade
                 };
+                console.log(totalRegisterInfo);
                 this.$http.request({
                     url: "/api/auth/signup",
                     method: "post",
-                    data: totalRegisterInfo
+                    data: totalRegisterInfo,
+                    withCredentials: true
                 }).then((response) => {
                     console.log(response);
                     this.nextStep();
@@ -221,16 +210,10 @@
         margin-top: 50px;
     }
 
-    .step1-size {
-        width: 450px;
-    }
-
-    .step2-size {
-        width: 900px;
-    }
-
     .button-group-size {
+        margin-top: 40px;
         width: 190px;
+        margin-bottom: 20px;
     }
 
     .next-button {

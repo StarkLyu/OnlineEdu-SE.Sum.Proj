@@ -4,6 +4,9 @@
             <el-form-item label="真实姓名">
                 <el-input v-model="userInfo.realName"></el-input>
             </el-form-item>
+            <el-form-item label="手机号">
+                <el-input v-model="userInfo.tel"></el-input>
+            </el-form-item>
             <el-form-item label="性别">
                 <el-radio-group v-model="userInfo.sex">
                     <el-radio label="M">男</el-radio>
@@ -60,10 +63,12 @@
                 userInfo: {
                     realName: "",
                     sex: "",
+                    tel: "",
                     university: "",
                     sno: "",
                     major: "",
                     grade: 1,
+                    email: ""
                 },
                 gradeList: [
                     {
@@ -99,6 +104,9 @@
             },
             backUp: function () {
                 this.$emit('on-back');
+            },
+            uploadInfo: function(newInfo) {
+                this.userInfo = newInfo;
             }
         },
         mounted() {
