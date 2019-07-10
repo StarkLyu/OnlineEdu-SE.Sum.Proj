@@ -106,7 +106,9 @@ public class AuthServiceImpl implements AuthService {
         roles.add(userRole);
         user.setRoles(roles);
         httpSession.setAttribute("user", user);
-        httpSession.setAttribute("token", emailSenderService.sendEmail(user.getEmail(),new VerificationToken()));
+        VerificationToken verificationToken = new VerificationToken();
+        httpSession.setAttribute("token", verificationToken);
+        emailSenderService.sendEmail(user.getEmail(),verificationToken);
         return ResponseEntity.ok(user);
     }
 

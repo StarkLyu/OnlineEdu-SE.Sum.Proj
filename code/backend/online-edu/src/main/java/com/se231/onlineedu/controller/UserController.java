@@ -1,5 +1,9 @@
 package com.se231.onlineedu.controller;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.File;
+import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
@@ -21,11 +25,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.File;
-import java.util.List;
 
 /**
  * User Controller Class
@@ -70,7 +69,9 @@ public class UserController {
         return ResponseEntity.ok(userService.manageUserInfo(userPrinciple.getId(), personalInfo));
     }
 
-    @ApiOperation(value = "管理员修改用户的个人信息", httpMethod = "POST")
+
+    @ApiOperation(value = "管理员修改用户的个人信息",httpMethod = "POST")
+    @ApiImplicitParam(value = "修改的用户的id",name = "id",type = "path",dataTypeClass = Long.class)
     @PostMapping("{id}/info/modify")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<?> managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
@@ -85,19 +86,21 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUser());
     }
 
-    @ApiOperation(value = "查询是否有重复的用户名", httpMethod = "GET")
-    @ApiResponse(code = 200, response = Boolean.class, message = "真则为存在重复用户名")
-    @ApiImplicitParam(name = "username", value = "待查的用户名",
-            required = true, dataTypeClass = String.class)
+
+    @ApiOperation(value = "查询是否有重复的用户名",httpMethod = "GET")
+    @ApiResponse(code = 200,response = Boolean.class,message = "真则为存在重复用户名")
+    @ApiImplicitParam(name = "username",value = "待查的用户名",
+            required = true,dataTypeClass = String.class,type = "param")
     @GetMapping("/checkSame/username")
     public ResponseEntity<Boolean> checkSameUsername(@RequestParam("username") String username) {
         return ResponseEntity.ok(userService.checkSameUsername(username));
     }
 
-    @ApiOperation(value = "查询是否存在重复的邮箱地址", httpMethod = "GET")
-    @ApiResponse(code = 200, response = Boolean.class, message = "真则为存在重复邮箱地址")
-    @ApiImplicitParam(value = "待查询的邮箱地址", name = "email",
-            required = true, dataTypeClass = String.class)
+
+    @ApiOperation(value = "查询是否存在重复的邮箱地址",httpMethod = "GET")
+    @ApiResponse(code = 200,response = Boolean.class,message = "真则为存在重复邮箱地址")
+    @ApiImplicitParam(value = "待查询的邮箱地址",name = "email",
+            required = true,dataTypeClass = String.class,type = "param")
     @GetMapping("/checkSame/email")
     public ResponseEntity<Boolean> checkSameEmail(@RequestParam("email") String email) {
         return ResponseEntity.ok(userService.checkSameEmail(email));
@@ -113,7 +116,10 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "用户修改个人的头像", httpMethod = "PATCH")
+
+
+    @ApiOperation(value = "用户可以个人的头像",httpMethod = "PATCH")
+    @ApiImplicitParam(name = "id",value = "上传的用户id",type = "path")
     @PatchMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
@@ -190,5 +196,14 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().body("验证码无效");
         }
+    }
+
+    @ApiOperation(value = "管理员或老师批量导入学生信息",httpMethod = "POST")
+    @ApiImplicitParam(value = "上传的excel表格必须为xls或xlsx格式，注意第一行为表头，从第二行开始为正式数据," +
+            "依次为username,password,email,tel,university,major,sno,grade,real name,sex",type = "FormData",name = "excel")
+    @PostMapping("/bulkImport")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    public ResponseEntity<?> buckImportUser(@RequestParam("excel") MultipartFile excel)throws Exception{
+        return ResponseEntity.ok(userService.bulkImportUser(excel));
     }
 }

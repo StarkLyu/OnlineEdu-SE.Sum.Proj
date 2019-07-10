@@ -59,9 +59,39 @@ public interface UserService {
      */
     boolean checkSameTel(String tel);
 
+    /**
+     * this service allows admin or super admin to buck import users' information.
+     * @param excel the excel used to bulk import user information
+     * @return  String to return hints
+     * @throws Exception IO Exception
+     */
+    String bulkImportUser(MultipartFile excel)throws Exception;
+
+    /**
+     * this service allows user to update his personal avatar
+     * @param avatarUrl url of upload image
+     * @param id    id of requesting user
+     * @return  user info
+     * @throws Exception    mainly not found exception
+     */
     User updateUserAvatar(String avatarUrl, Long id) throws Exception;
 
 
+    /**
+     * this service confirm to change password
+     * @param id  user id request to verify
+     * @param password new password
+     * @return  user info
+     * @throws Exception exception
+     */
     User updateUserPasswordConfirm(Long id, String password) throws Exception;
+
+    /**
+     * this service confirm to change password
+     * @param id  user id request to verify
+     * @param email new email
+     * @return  user info
+     * @throws Exception exception
+     */
     User updateUserEmailConfirm(Long id, String email) throws Exception;
 }

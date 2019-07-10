@@ -1,18 +1,32 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import com.alibaba.excel.EasyExcelFactory;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.model.Role;
+import com.se231.onlineedu.model.RoleType;
 import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.model.UserExcel;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+
 
 /**
  * User Service Implementation Class
@@ -32,6 +46,11 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public User getUserInfo(Long userId) throws Exception {
@@ -76,6 +95,58 @@ public class UserServiceImpl implements UserService {
         if(!originUser.getTel().equals(tele)&&userRepository.existsByTel(tele)){
             throw new Exception("This telephone number is already token !");
         }
+    }
+
+    @Override
+    public String bulkImportUser(MultipartFile excel) throws Exception {
+        Workbook workbook = null;
+        //获取文件名字
+        String fileName = excel.getOriginalFilename();
+        //判断后缀
+        if(fileName.endsWith("xls")){
+            workbook = new HSSFWorkbook(excel.getInputStream());
+        }else if(fileName.endsWith("xlsx")) {
+            workbook = new XSSFWorkbook(excel.getInputStream());
+        }else {
+            return "Import File Fail -> File Format Wrong,Only Support Xlsx And Xls";
+        }
+        //获取工作sheet
+        Sheet sheet = workbook.getSheet("sheet1");
+        int rows = sheet.getLastRowNum();
+        if(rows==0||rows==1){
+            return "File Error -> File Is Empty.";
+        }
+
+        List<Role> roles=new ArrayList<>();
+        Role userRole = roleRepository.findByRole(RoleType.ROLE_USER).
+                orElseThrow(()->new RuntimeException("Fail -> Cause: User Role Not Found"));
+        roles.add(userRole);
+
+        List<User> userList= new ArrayList<>();
+        InputStream file = excel.getInputStream();
+        List<Object> data = EasyExcelFactory
+                .read(file, new com.alibaba.excel.metadata.Sheet(1,1, UserExcel.class));
+        int rowNumber=1;
+        //username,password,email,tel,university,major,sno,grade,real name,sex
+        for(Object dataItem:data){
+            rowNumber++;
+            UserExcel userExcel=(UserExcel)dataItem;
+            if(userRepository.existsByUsername(userExcel.getUsername())){
+                return "Data Error -> Same Username In Row "+rowNumber;
+            }
+            if(userRepository.existsByEmail(userExcel.getEmail())){
+                return "Data Error -> Same Email In Row "+rowNumber;
+            }
+            if(userRepository.existsByTel(userExcel.getTel())){
+                return "Data Error -> Same Telephone Number In Row "+rowNumber;
+            }
+            User user =new User(userExcel);
+            user.setPassword(encoder.encode((userExcel.getPassword())));
+            userList.add(user);
+        }
+
+        userRepository.saveAll(userList);
+        return "Import successfully.";
     }
 
     @Override
