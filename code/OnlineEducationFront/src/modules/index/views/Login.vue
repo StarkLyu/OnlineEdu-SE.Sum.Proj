@@ -67,7 +67,7 @@
             login: function () {
                 this.$refs["loginInfo"].validate((valid) => {
                     if (valid) {
-                        this.$store.dispatch('user/login', this.loginInfo);
+                        this.$store.dispatch('login', this.loginInfo);
                     }
                 })
             }

@@ -87,13 +87,22 @@
         </div>
         <div v-else-if="currentStep === 2">
             <div class="step-layout">
-                <UserInfoManage :userdata="registerDetailInfo" @submit-info="submitStep3"></UserInfoManage>
+                <UserInfoManage
+                        :userdata="registerDetailInfo"
+                        type="register"
+                        @submit-info="submitStep3"
+                        @on-back="lastStep"
+                ></UserInfoManage>
             </div>
         </div>
-        <div v-else-if="currentStep === 3"></div>
+        <div v-else-if="currentStep === 3">
+            <div class="step-layout">
+                <h3>恭喜你，注册成功！系统将在5秒后自动跳转至登录页面，如跳转失败，请点击下方链接</h3>
+            </div>
+        </div>
         <div class="center-layout return-link">
             <div class="return-offset">
-                <el-link>已有账号？点此返回登录</el-link>
+                <el-link href="/#/login">已有账号？点此返回登录</el-link>
             </div>
         </div>
     </div>
@@ -101,6 +110,8 @@
 
 <script>
     import UserInfoManage from "../components/UserInfoManage";
+    import FormRules from "../rules.js";
+
     export default {
         name: "Register",
         components: {UserInfoManage},
@@ -112,7 +123,7 @@
                 else {
                     callback();
                 }
-            }
+            };
             return {
                 currentStep: 0,
                 resendFlag: false,
@@ -129,22 +140,13 @@
                         {required: true, message: "用户名不能为空", trigger: "change"},
                         {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "change"}
                     ],
-                    password: [
-                        {required: true, message: "密码不能为空", trigger: "change"},
-                        {min: 6, max: 15, message: "密码长度为6到15个字符", trigger: "blur"}
-                    ],
+                    password: FormRules.passwordRule,
                     confirmPass: [
                         {required: true, message: "确认密码不能为空", trigger: "change"},
                         {validator: checkConfirmPass, trigger: "change"}
                     ],
-                    email: [
-                        {required: true, message: "邮箱不能为空", trigger: "change"},
-                        {type: "email", message: "邮箱格式有误", trigger: "blur"}
-                    ],
-                    tel: [
-                        {required: true, message: "手机号不能为空", trigger: "change"},
-                        {len: 11, message: "手机号必须为11位", trigger: "blur"}
-                    ]
+                    email: FormRules.emailRule,
+                    tel: FormRules.telRule,
                 },
                 registerDetailInfo: {
                     realName: "",
@@ -176,7 +178,7 @@
             },
             submitStep3: function(detailInfo) {
                 let totalRegisterInfo = {
-                    useramne: this.registerUser.userName,
+                    username: this.registerUser.userName,
                     password: this.registerUser.password,
                     email: this.registerUser.email,
                     tel: this.registerUser.tel,
@@ -187,7 +189,19 @@
                     major: detailInfo.major,
                     grade: detailInfo.grade
                 };
-
+                this.$http.request({
+                    url: "/api/auth/signup",
+                    method: "post",
+                    data: totalRegisterInfo
+                }).then((response) => {
+                    console.log(response);
+                    this.nextStep();
+                }).catch((error) => {
+                    console.log(error.response);
+                    if (error.response.data === "Fail -> Email Address is already taken!") {
+                        alert("邮箱已被使用，请更换邮箱");
+                    }
+                })
             }
         }
     }
@@ -216,7 +230,7 @@
     }
 
     .button-group-size {
-        width: 180px;
+        width: 190px;
     }
 
     .next-button {
