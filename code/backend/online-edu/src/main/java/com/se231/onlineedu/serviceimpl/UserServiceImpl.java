@@ -2,6 +2,7 @@ package com.se231.onlineedu.serviceimpl;
 
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
@@ -30,8 +31,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private PasswordEncoder encoder;
+
+    private RoleRepository roleRepository;
+
     @Autowired
     private EmailSenderService emailSenderService;
+    public UserServiceImpl(UserRepository userRepository,PasswordEncoder encoder,RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.encoder=encoder;
+        this.roleRepository=roleRepository;
+    }
 
     @Override
     public User getUserInfo(Long userId) throws Exception {

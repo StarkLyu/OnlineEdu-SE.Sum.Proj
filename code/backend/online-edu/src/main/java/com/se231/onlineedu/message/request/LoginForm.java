@@ -2,6 +2,8 @@ package com.se231.onlineedu.message.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * LoginForm Class
@@ -12,11 +14,14 @@ import javax.validation.constraints.Size;
  *
  * @date 2019/07/01
  */
+@ApiModel(value = "用户登录的表格",description = "用户输入用户名和密码登录")
 public class LoginForm {
+    @ApiModelProperty(value = "用户名",required = true)
     @NotBlank
     @Size(min=3, max = 60)
     private String username;
 
+    @ApiModelProperty(value = "密码",required = true)
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;

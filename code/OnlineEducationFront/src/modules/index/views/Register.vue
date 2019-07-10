@@ -10,24 +10,30 @@
         </div>
         <div v-if="currentStep === 0">
             <div class="step-layout">
-                <el-form label-position="left" label-width="80px">
-                    <el-form-item label="用户名">
+                <el-form
+                        label-position="left"
+                        label-width="80px"
+                        :model="registerUser"
+                        :rules="step1Rules"
+                        ref="step1Form"
+                >
+                    <el-form-item label="用户名" prop="userName">
                         <el-input
                                 type="text"
                                 suffix-icon="el-icon-user"
                                 placeholder="请在此创建你的用户名"
-                                v-model="registerUser.userId"
+                                v-model="registerUser.userName"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="密码">
+                    <el-form-item label="密码" prop="password">
                         <el-input
                                 type="password"
                                 suffix-icon="el-icon-lock"
                                 placeholder="请在此创建密码"
-                                v-model="registerUser.passWord"
+                                v-model="registerUser.password"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="确认密码">
+                    <el-form-item label="确认密码" prop="confirmPass">
                         <el-input
                                 type="password"
                                 suffix-icon="el-icon-lock"
@@ -35,12 +41,19 @@
                                 v-model="registerUser.confirmPass"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱">
+                    <el-form-item label="邮箱" prop="email">
                         <el-input
                                 type="text"
                                 suffix-icon="el-icon-message"
                                 placeholder="请输入你的邮箱"
                                 v-model="registerUser.email"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号" prop="tel">
+                        <el-input type="text"
+                                  suffix-icon="el-icon-phone-outline"
+                                  placeholder="请输入你的手机号码"
+                                  v-model="registerUser.tel"
                         ></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -72,7 +85,11 @@
                 </el-form>
             </div>
         </div>
-        <div v-else-if="currentStep === 2"></div>
+        <div v-else-if="currentStep === 2">
+            <div class="step-layout">
+                <UserInfoManage :userdata="registerDetailInfo" @submit-info="submitStep3"></UserInfoManage>
+            </div>
+        </div>
         <div v-else-if="currentStep === 3"></div>
         <div class="center-layout return-link">
             <div class="return-offset">
@@ -83,18 +100,59 @@
 </template>
 
 <script>
+    import UserInfoManage from "../components/UserInfoManage";
     export default {
         name: "Register",
+        components: {UserInfoManage},
         data() {
+            var checkConfirmPass = (rule, value, callback) => {
+                if (value !== this.registerUser.password) {
+                    callback(new Error("两次输入的密码不符"));
+                }
+                else {
+                    callback();
+                }
+            }
             return {
                 currentStep: 0,
                 resendFlag: false,
                 countDown: 60,
                 registerUser: {
-                    userId: "",
-                    passWord: "",
+                    userName: "",
+                    password: "",
                     confirmPass: "",
-                    email: ""
+                    email: "",
+                    tel: ""
+                },
+                step1Rules: {
+                    userName: [
+                        {required: true, message: "用户名不能为空", trigger: "change"},
+                        {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "change"}
+                    ],
+                    password: [
+                        {required: true, message: "密码不能为空", trigger: "change"},
+                        {min: 6, max: 15, message: "密码长度为6到15个字符", trigger: "blur"}
+                    ],
+                    confirmPass: [
+                        {required: true, message: "确认密码不能为空", trigger: "change"},
+                        {validator: checkConfirmPass, trigger: "change"}
+                    ],
+                    email: [
+                        {required: true, message: "邮箱不能为空", trigger: "change"},
+                        {type: "email", message: "邮箱格式有误", trigger: "blur"}
+                    ],
+                    tel: [
+                        {required: true, message: "手机号不能为空", trigger: "change"},
+                        {len: 11, message: "手机号必须为11位", trigger: "blur"}
+                    ]
+                },
+                registerDetailInfo: {
+                    realName: "",
+                    sex: "",
+                    university: "",
+                    sno: "",
+                    major: "",
+                    grade: 1,
                 }
             }
         },
@@ -106,12 +164,31 @@
                 this.currentStep--;
             },
             submitStep1: function () {
+                /*this.$refs["step1Form"].validate((valid) => {
+                    if (valid) {
+                        this.nextStep();
+                    }
+                })*/
                 this.nextStep();
             },
             submitStep2: function () {
                 this.nextStep();
             },
+            submitStep3: function(detailInfo) {
+                let totalRegisterInfo = {
+                    useramne: this.registerUser.userName,
+                    password: this.registerUser.password,
+                    email: this.registerUser.email,
+                    tel: this.registerUser.tel,
+                    realName: detailInfo.realName,
+                    sex: detailInfo.sex,
+                    university: detailInfo.university,
+                    sno: detailInfo.sno,
+                    major: detailInfo.major,
+                    grade: detailInfo.grade
+                };
 
+            }
         }
     }
 </script>

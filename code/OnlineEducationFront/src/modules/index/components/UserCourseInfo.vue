@@ -28,7 +28,7 @@
                     {
                         title: "测试公告",
                         time: Date(),
-                        content: "哈哈哈哈哈吼吼吼吼吼呵呵呵呵呵\n耶呵呵呵呵呵呵呵呵"
+                        content: "哈哈哈哈哈吼吼吼吼吼呵呵呵呵呵font-family: \"Helvetica Neue\",Helvetica,\"PingFang SC\",\"Hiragino Sans GB\",\"Microsoft YaHei\",\"微软雅黑\",Arial,sans-serif;font-family: \"Helvetica Neue\",Helvetica,\"PingFang SC\",\"Hiragino Sans GB\",\"Microsoft YaHei\",\"微软雅黑\",Arial,sans-serif;\n耶呵呵呵呵呵呵呵呵"
                     }
                 ],
                 courseInfo: {

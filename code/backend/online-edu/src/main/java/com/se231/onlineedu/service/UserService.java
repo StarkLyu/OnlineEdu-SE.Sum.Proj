@@ -3,6 +3,7 @@ package com.se231.onlineedu.service;
 import java.util.List;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * User Service Interface

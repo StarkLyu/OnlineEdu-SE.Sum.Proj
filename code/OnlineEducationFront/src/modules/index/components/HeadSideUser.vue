@@ -5,7 +5,7 @@
         </div>
         <div v-else>
             <el-avatar icon="el-icon-user-solid"></el-avatar>
-            <el-link>登录</el-link>/<el-link>注册</el-link>
+            <el-link type="primary" href="/#/login">登录</el-link>/<el-link type="primary" href="/#/register">注册</el-link>
         </div>
     </div>
 </template>
