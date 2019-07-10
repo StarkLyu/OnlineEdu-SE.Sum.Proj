@@ -15,7 +15,7 @@
         name: "HeadSideUser",
         data() {
             return {
-                userName: "STARK",
+                username: "STARK",
                 loginStatus: false,
             }
         }

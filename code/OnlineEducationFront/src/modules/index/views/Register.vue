@@ -22,7 +22,7 @@
                                 type="text"
                                 suffix-icon="el-icon-user"
                                 placeholder="请在此创建你的用户名"
-                                v-model="registerUser.userName"
+                                v-model="registerUser.username"
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
@@ -129,14 +129,14 @@
                 resendFlag: false,
                 countDown: 60,
                 registerUser: {
-                    userName: "",
+                    username: "",
                     password: "",
                     confirmPass: "",
                     email: "",
                     tel: ""
                 },
                 step1Rules: {
-                    userName: [
+                    username: [
                         {required: true, message: "用户名不能为空", trigger: "change"},
                         {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "change"}
                     ],

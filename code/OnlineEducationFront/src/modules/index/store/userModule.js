@@ -39,7 +39,7 @@ const actions = {
             url: "/api/auth/signin",
             method: "post",
             data: {
-                username: loginInfo.userName,
+                username: loginInfo.username,
                 password: loginInfo.password
             }
         }).then((response) => {
@@ -58,6 +58,7 @@ const actions = {
                 }
             }).then((infoResponse) => {
                 if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
+                    localStorage.setItem("managerToken", state.accessToken);
                     window.location = "/manager"
                 }
                 commit("infoSet", infoResponse.data);
@@ -78,13 +79,12 @@ const actions = {
             }
         });
     },
-
 }
 
 // mutations
 const mutations = {
     loginSet (state, loginData) {
-        state.userName = loginData.userName;
+        state.userName = loginData.username;
         state.accessToken = loginData.accessToken;
         state.loginStatus = true;
         console.log(state);

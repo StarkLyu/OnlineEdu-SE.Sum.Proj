@@ -11,34 +11,34 @@
             <div class="divright">
                 <el-button @click="handleAdd">新增</el-button>
             </div>
-            <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
+            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
                       highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="userId"
+                            prop="sno"
                             label="用户编号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userName"
+                            prop="username"
                             label="用户名"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userRole"
+                            prop="role"
                             label="用户身份"
                             min-width="25%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="passWord"
-                            label="密码"
-                            min-width="35%"
+                            prop="tel"
+                            label="电话"
+                            min-width="50%"
                     ></el-table-column>
                     <el-table-column
                             prop="email"
@@ -50,12 +50,15 @@
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
-                            <el-button type="button" @click="handleEdit(scope.$index, scope.row)">
-                                修改
-                            </el-button>
-                            <el-button type="button" @click="handleDel(scope.$index, scope.row)">
-                                删除
-                            </el-button>
+                            <span v-if="scope.row.role!=='管理员'">
+                                <el-button type="button" @click="handleEdit(scope.$index, scope.row)">
+                                    修改
+                                </el-button>
+                                <el-button type="button" @click="handleDel(scope.$index, scope.row)">
+                                    删除
+                                </el-button>
+                            </span>
+                            <span v-else>无法操作</span>
                         </template>
                     </el-table-column>
                 </el-table-column>
@@ -69,19 +72,19 @@
                 top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item label="用户编号">
-                    <el-input type="text" v-model="editForm.userId"></el-input>
+                    <el-input type="text" v-model="editForm.sno"></el-input>
                 </el-form-item>
                 <el-form-item label="用户名">
-                    <el-input type="text" v-model="editForm.userName"></el-input>
+                    <el-input type="text" v-model="editForm.username"></el-input>
                 </el-form-item>
                 <el-form-item label="用户身份">
-                    <el-radio-group v-model="editForm.userRole">
-                        <el-radio label="老师/助教"></el-radio>
+                    <el-radio-group v-model="editForm.role">
+                        <el-radio label="教师"></el-radio>
                         <el-radio label="学生"></el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="密码">
-                    <el-input type="text" v-model="editForm.passWord"></el-input>
+                <el-form-item label="电话">
+                    <el-input type="text" v-model="editForm.tel"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱">
                     <el-input type="text" v-model="editForm.email"></el-input>
@@ -97,6 +100,8 @@
 </template>
 
 <script>
+    import getHeader from "../managerRequestHeader.js";
+
     export default {
         name: "ManageUser",
 
@@ -104,29 +109,7 @@
             return{
                 search: '',
 
-                UserData: [
-                    {
-                        userId:"45112323",
-                        userName:"kamen",
-                        userRole:"老师",
-                        passWord:"123",
-                        email:"1099@fg.co"
-                    },
-                    {
-                        userId:"2144641",
-                        userName:"student",
-                        userRole:"学生",
-                        passWord:"ewt",
-                        email:"1daswew9@fger.coq"
-                    },
-                    {
-                        userId:"78089870",
-                        userName:"zhujiao",
-                        userRole:"老师",
-                        passWord:"edgdwwd",
-                        email:"df633339@qq.com"
-                    }
-                ],
+                UserData: [],
 
                 dialogFormVisible:false,
 
@@ -139,18 +122,59 @@
 
                 //编辑界面数据
                 editForm: {
-                    userId:"",
-                    userName: "",
-                    passWord:"",
+                    sno:"",
+                    username: "",
                     email:"",
-                    userRole:"",
+                    tel:"",
+                    role:"",
                 },
             }
         },
 
         methods:{
+            showAllUsers(){
+                var that=this;
+                this.$axios.request({
+                    url: '/api/users/info/all',
+                    method: "get",
+                    headers: getHeader.requestHeader()
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        // alert("请求成功");
+
+
+
+                        that.UserData = response.data;
+
+                        // 存储role
+                        for (let index=0; index<that.UserData.length; index++)
+                        {
+                            var temprolearray=[];
+                            temprolearray=response.data[index].roles;
+                            // console.log(temprolearray[0].role);
+                            var temprole=temprolearray[0].role;
+
+                            if (temprole==="ROLE_ADMIN"){
+                                that.UserData[index].role="管理员";
+                            }
+                            else if(temprole==="TEACHING_ADMIN") {
+                                that.UserData[index].role="教师";
+                            }
+                            else{
+                                that.UserData[index].role="学生";
+                            }
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    })
+            },
+
             handleDel:function(index,row){
-                alert(row.userName+"已删除");
+                alert(row.username+"已删除");
             },
 
             //显示编辑界面
@@ -165,8 +189,8 @@
                 this.dialogStatus = "create";
                 this.dialogFormVisible = true;
                 this.editForm = {
-                    userId:"",
-                    userName: "",
+                    sno:"",
+                    username: "",
                     password:"111111",
                     email:"",
                 }
@@ -181,6 +205,10 @@
                 alert("用户修改成功");
                 this.dialogFormVisible=false;
             }
+        },
+
+        mounted() {
+            this.showAllUsers();
         }
     }
 </script>

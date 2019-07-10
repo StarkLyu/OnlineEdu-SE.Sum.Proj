@@ -10,12 +10,23 @@
                           placeholder="请输入用户名"
                           prefix-icon="el-icon-search"/>
             </div>
-<!--            导入成绩button-->
-            <div class="addbutton">
-                <el-button @click="handleAdd" icon="el-icon-plus">导入成绩</el-button>
+<!--            导入成绩，上传的组件-->
+            <div class="float-right">
+                <el-upload
+                        class="upload-demo"
+                        ref="upload"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        :auto-upload="false">
+                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                    <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
+                    <div slot="tip" class="el-upload__tip">上传成绩</div>
+                </el-upload>
             </div>
 <!--            成绩显示-->
-            <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
+            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
                       stripe>
                 <el-table-column >
@@ -67,7 +78,7 @@
                 <el-form-item>
                     <h3>学生姓名</h3>
                     <span>
-                            {{editForm.userName}}
+                            {{editForm.username}}
                         </span>
                 </el-form-item>
                 <el-form-item label="成绩">
@@ -88,24 +99,34 @@
 
         data(){
             return{
+                fileList: [
+                    {
+                        name: 'food.jpeg',
+                        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                    },
+                    {
+                        name: 'food2.jpeg',
+                        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+                    }],
+
                 search: '',
 
                 UserData: [
                     {
-                        userId:"45112323",
-                        userName:"张三",
+                        sno:"45112323",
+                        username:"张三",
                         userCollege:"化学化工",
                         score:98,
                     },
                     {
-                        userId:"2144641",
-                        userName:"李四",
+                        sno:"2144641",
+                        username:"李四",
                         userCollege:"电子信息",
                         score:48,
                     },
                     {
-                        userId:"78089870",
-                        userName:"王二",
+                        sno:"78089870",
+                        username:"王二",
                         userCollege:"机动",
                         score:80,
                     }
@@ -115,7 +136,7 @@
 
                 //编辑界面数据
                 editForm: {
-                    userName:"",
+                    username:"",
                     score:"",
                 },
             }
@@ -137,6 +158,18 @@
             updateData(){
                 alert("用户修改成功");
                 this.dialogFormVisible=false;
+            },
+
+            submitUpload() {
+                this.$refs.upload.submit();
+            },
+
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+
+            handlePreview(file) {
+                console.log(file);
             },
         }
     }
