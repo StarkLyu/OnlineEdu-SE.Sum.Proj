@@ -31,17 +31,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private PasswordEncoder encoder;
 
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private EmailSenderService emailSenderService;
-    public UserServiceImpl(UserRepository userRepository,PasswordEncoder encoder,RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.encoder=encoder;
-        this.roleRepository=roleRepository;
-    }
 
     @Override
     public User getUserInfo(Long userId) throws Exception {
@@ -94,23 +84,6 @@ public class UserServiceImpl implements UserService {
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
         return user;
-    }
-
-    @Override
-    public String sendEmail(User user) throws Exception {
-        Integer tokenInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
-        String token = tokenInt.toString();
-
-        String subject = "验证码服务";
-        String message = "您的验证码为：";
-
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(user.getEmail());
-        email.setSubject(subject);
-        email.setFrom("18621107375@163.com");
-        email.setText(message + token);
-        emailSenderService.sendEmail(email);
-        return token;
     }
 
     @Override

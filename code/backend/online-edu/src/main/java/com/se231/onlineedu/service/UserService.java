@@ -61,7 +61,6 @@ public interface UserService {
 
     User updateUserAvatar(String avatarUrl, Long id) throws Exception;
 
-    String sendEmail(User user) throws Exception;
 
     User updateUserPasswordConfirm(Long id, String password) throws Exception;
     User updateUserEmailConfirm(Long id, String email) throws Exception;
