@@ -25,7 +25,7 @@ import java.util.Objects;
                 "username"
         })
 })
-public class User {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,9 +50,48 @@ public class User {
 
     private String sno;
 
+    private String tno;
+
+    public String getTno() {
+        return tno;
+    }
+
+    public void setTno(String tno) {
+        this.tno = tno;
+    }
+
     private String realName;
 
     private String sex;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    private String avatarUrl;
+
+
+
+    @Column(name = "enabled")
+    private boolean enabled;
+
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public User(){
+        super();
+        this.enabled = false;
+    }
 
     public String getUsername() {
         return username;
@@ -204,11 +243,8 @@ public class User {
 
     public void setSex(String sex) {
         this.sex = sex;
-    }
 
-    public User() {
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

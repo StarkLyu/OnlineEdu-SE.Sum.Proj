@@ -1,6 +1,5 @@
 package com.se231.onlineedu.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se231.onlineedu.security.jwt.JwtAuthEntryPoint;
 import com.se231.onlineedu.security.jwt.JwtAuthTokenFilter;
 import com.se231.onlineedu.security.services.UserDetailsServiceImpl;
@@ -68,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().
                 authorizeRequests()
+                .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/auth/*").permitAll()
                 .antMatchers("/api/swagger/**").permitAll()
                 .antMatchers("/api/users/checkSame/**").permitAll()

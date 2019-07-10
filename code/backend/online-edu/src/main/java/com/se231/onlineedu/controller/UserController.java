@@ -1,9 +1,10 @@
 package com.se231.onlineedu.controller;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
+import com.alibaba.fastjson.JSONObject;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -42,20 +43,21 @@ public class UserController {
     @Value("${app.file.limit}")
     private Long limit;
 
-    static String fileExtension = ".jpg,.jpeg,.png,.svg,.tif";
+    private static String fileExtension = ".jpg,.jpeg,.png,.svg,.tif";
 
     @Autowired
     UserService userService;
 
+
     @ApiOperation(value = "已登录用户查询个人信息",notes = "已登录用户查询个人信息",httpMethod = "GET")
     @GetMapping("/info")
-    public ResponseEntity<PersonalInfo> getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple)throws Exception{
+    public ResponseEntity<?> getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple)throws Exception{
         return ResponseEntity.ok(userService.getUserInfo(userPrinciple.getId()));
     }
 
     @ApiOperation(value = "用户修改自己的个人信息",httpMethod = "POST")
     @PostMapping("/info/modify")
-    public ResponseEntity<PersonalInfo> modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
+    public ResponseEntity<?> modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
                                                            @Valid @RequestBody PersonalInfo personalInfo)throws Exception{
         return ResponseEntity.ok(userService.manageUserInfo(userPrinciple.getId(),personalInfo));
     }
@@ -64,7 +66,7 @@ public class UserController {
     @ApiImplicitParam(value = "修改的用户的id",name = "id",type = "path",dataTypeClass = Long.class)
     @PostMapping("{id}/info/modify")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<PersonalInfo> managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
+    public ResponseEntity<?> managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
                                                            @PathVariable("id")Long id)throws Exception{
         return ResponseEntity.ok(userService.manageUserInfo(id, personalInfo));
     }
@@ -108,7 +110,7 @@ public class UserController {
     @ApiImplicitParam(name = "id",value = "上传的用户id",type = "path")
     @PatchMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<String> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException, IOException {
+    public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
         if (multipartFile.getSize() > limit) {
             return ResponseEntity.badRequest().body("exceeded max size");
         }
@@ -129,7 +131,53 @@ public class UserController {
         file.createNewFile();
         multipartFile.transferTo(file);
 
-        return ResponseEntity.ok(fileName);
+        return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
+    }
+
+
+    @ApiOperation(value = "用户修改个人的密码",httpMethod = "PATCH")
+    @PatchMapping("/{id}/password")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchPassword(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
+        httpSession.setAttribute("password", passwordJSON.get("password"));
+        httpSession.setAttribute("token", userService.sendEmail(userService.getUserInfo(id)));
+        return ResponseEntity.ok("已发送验证码");
+    }
+
+    @ApiOperation(value = "用户邮箱确认修改",httpMethod = "GET")
+    @GetMapping("/{id}/password/confirm")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchPasswordConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) throws Exception {
+        String testToken = (String)httpSession.getAttribute("token");
+        if(testToken.equals(token)){
+            String password = (String)httpSession.getAttribute("password");
+            userService.updateUserPasswordConfirm(id,password);
+            return ResponseEntity.ok("修改成功");
+        }
+        return ResponseEntity.badRequest().body("验证码错误");
+    }
+
+
+    @ApiOperation(value = "用户修改个人的邮箱",httpMethod = "PATCH")
+    @PatchMapping("/{id}/email")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchEmail(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
+        httpSession.setAttribute("email", passwordJSON.get("email"));
+        httpSession.setAttribute("token", userService.sendEmail(userService.getUserInfo(id)));
+        return ResponseEntity.ok("已发送验证码");
+    }
+
+    @ApiOperation(value = "用户邮箱确认修改",httpMethod = "GET")
+    @GetMapping("/{id}/email/confirm")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchEmailConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) throws Exception {
+        String testToken = (String)httpSession.getAttribute("token");
+        if(testToken.equals(token)){
+            String email = (String)httpSession.getAttribute("email");
+            userService.updateUserEmailConfirm(id,email);
+            return ResponseEntity.ok("修改成功");
+        }
+        return ResponseEntity.badRequest().body("验证码错误");
     }
 
     @ApiOperation(value = "管理员或老师批量导入学生信息",httpMethod = "POST")

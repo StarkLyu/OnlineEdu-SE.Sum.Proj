@@ -1,11 +1,10 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.write.ExcelBuilder;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.Role;
 import com.se231.onlineedu.model.RoleType;
@@ -13,14 +12,21 @@ import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.UserExcel;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.UserRepository;
+import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+
 
 /**
  * User Service Implementation Class
@@ -33,6 +39,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
 
     private PasswordEncoder encoder;
@@ -40,6 +50,7 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private EmailSenderService emailSenderService;
     public UserServiceImpl(UserRepository userRepository,PasswordEncoder encoder,RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.encoder=encoder;
@@ -47,17 +58,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PersonalInfo getUserInfo(Long userId) throws Exception {
+    public User getUserInfo(Long userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user"));
-        return new PersonalInfo(user);
+        return user;
     }
 
     @Override
-    public PersonalInfo manageUserInfo(Long id, PersonalInfo personalInfo) throws Exception {
+    public User manageUserInfo(Long id, PersonalInfo personalInfo) throws Exception {
         User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
         checkSameEmailAndTel(personalInfo.getEmail(),personalInfo.getTel(),user);
         personalInfo.modifyUserInfo(user);
-        return new PersonalInfo(userRepository.save(user));
+        return userRepository.save(user);
     }
 
     @Override
@@ -143,26 +154,42 @@ public class UserServiceImpl implements UserService {
         return "Import successfully.";
     }
 
-    private String getCellAsString(Cell cell){
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_STRING:
-                return cell.getRichStringCellValue().getString();
-
-            case Cell.CELL_TYPE_NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    return cell.getDateCellValue().toString();
-                } else {
-                    return Double.valueOf(cell.getNumericCellValue()).toString();
-                }
-
-            case Cell.CELL_TYPE_BOOLEAN:
-                return Boolean.valueOf(cell.getBooleanCellValue()).toString();
-            case Cell.CELL_TYPE_FORMULA:
-                return cell.getCellFormula();
-
-            default:
-                return "";
-        }
+    @Override
+    public User updateUserAvatar(String avatarUrl, Long id) throws Exception {
+        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+        user.setAvatarUrl(avatarUrl);
+        userRepository.save(user);
+        return user;
     }
 
+    @Override
+    public String sendEmail(User user) throws Exception {
+        Integer tokenInt = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        String token = tokenInt.toString();
+
+        String subject = "验证码服务";
+        String message = "您的验证码为：";
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(user.getEmail());
+        email.setSubject(subject);
+        email.setFrom("18621107375@163.com");
+        email.setText(message + token);
+        emailSenderService.sendEmail(email);
+        return token;
+    }
+
+    @Override
+    public User updateUserPasswordConfirm(Long id, String password) throws Exception {
+        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+        user.setPassword(passwordEncoder.encode(password));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUserEmailConfirm(Long id, String email) throws Exception {
+        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+        user.setEmail(email);
+        return userRepository.save(user);
+    }
 }

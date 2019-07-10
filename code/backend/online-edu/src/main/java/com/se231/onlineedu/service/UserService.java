@@ -21,7 +21,7 @@ public interface UserService {
      * @return  user information form
      * @throws Exception mainly throw not found exception
      */
-    PersonalInfo getUserInfo(Long userId)throws Exception;
+    User getUserInfo(Long userId)throws Exception;
 
     /**
      * this service allow admin to manage users' personal information or a user to modify his personal information.
@@ -30,7 +30,7 @@ public interface UserService {
      * @return  user information form after changing.
      * @throws Exception    mainly throw not found exception
      */
-    PersonalInfo manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
+    User manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
 
     /**
      * this service allow admin to get a list of all user
@@ -66,4 +66,24 @@ public interface UserService {
      * @throws Exception IO Exception
      */
     String bulkImportUser(MultipartFile excel)throws Exception;
+
+    /**
+     * this service allows user to update his personal avatar
+     * @param avatarUrl url of upload image
+     * @param id    id of requesting user
+     * @return  user info
+     * @throws Exception    mainly not found exception
+     */
+    User updateUserAvatar(String avatarUrl, Long id) throws Exception;
+
+    /**
+     * this service helps to send verification email
+     * @param user  user request to verify
+     * @return  user info
+     * @throws Exception exception
+     */
+    String sendEmail(User user) throws Exception;
+
+    User updateUserPasswordConfirm(Long id, String password) throws Exception;
+    User updateUserEmailConfirm(Long id, String email) throws Exception;
 }
