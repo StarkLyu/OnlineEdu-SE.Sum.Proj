@@ -6,6 +6,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
+/**
+ * SectionRepository Primary Key Class
+ *
+ * a section must be identified by a course an its no
+ *
+ * @author Yuxuan Liu
+ *
+ * @date 2019/7/4
+ */
 @Embeddable
 public class SectionPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;

@@ -3,6 +3,15 @@ package com.se231.onlineedu.model;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+/**
+ * Answer Entity Class
+ *
+ * answer for a specific question in the answer of a paper.
+ *
+ * @author Yuxuan Liu
+ *
+ * @date 2019/7/4
+ */
 @Entity
 public class Answer {
     @EmbeddedId

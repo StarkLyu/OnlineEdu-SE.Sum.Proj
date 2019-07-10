@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019/7/3
  */
 @RestController
-@RequestMapping("/api/coursePrototype")
+@RequestMapping("/api/coursePrototypes")
 public class CoursePrototypeController {
     @Autowired
     private CoursePrototypeService coursePrototypeService;
