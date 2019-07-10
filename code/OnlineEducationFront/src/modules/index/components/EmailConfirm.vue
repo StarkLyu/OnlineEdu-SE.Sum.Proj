@@ -5,7 +5,7 @@
                 <h3>系统已向你的邮箱发送了一封邮件，请从中获取验证码</h3>
             </el-form-item>
             <el-form-item>
-                <el-input v-model="confirmCode" placeholder="请输入验证码">
+                <el-input type="text" v-model="confirmCode" placeholder="请输入验证码">
                     <el-button
                             v-if="resendFlag"
                             slot="append"
@@ -56,7 +56,22 @@
                 }
             },
             sendConfirmRequest: function () {
+                this.$emit("resend-request");
                 this.countTime();
+            },
+            sendConfirmCode: function () {
+                this.$http.request(this.requestConfig).then(() => {
+                    alert("注册成功！");
+                    this.$emit("confirm-pass");
+                }).catch((error) => {
+                    console.log(error.response);
+                    if (error.response.status === 400) {
+                        alert("验证码失效");
+                    }
+                    else {
+                        alert("验证失败");
+                    }
+                })
             },
             clear: function () {
                 clearInterval(this.countDownId);
@@ -68,6 +83,20 @@
         },
         mounted() {
             this.sendConfirmRequest();
+        },
+        computed: {
+            requestConfig: function () {
+                if (this.confirmType === "register") return {
+                    url: "/api/auth/registrationConfirm",
+                    method: "get",
+                    params: {
+                        verificationToken: this.confirmCode
+                    },
+                    withCredentials: true
+                };
+                else if (this.confirmType === "password") return "/api/auth/password/confirm";
+                else return "/api/auth/email/confirm";
+            }
         }
     }
 </script>

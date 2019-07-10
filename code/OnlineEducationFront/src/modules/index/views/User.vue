@@ -15,7 +15,12 @@
     import UserMenu from "../components/UserMenu";
     export default {
         name: "User",
-        components: {UserMenu, UserHead}
+        components: {UserMenu, UserHead},
+        created() {
+            if (!this.$store.state.user.loginStatus) {
+                this.$router.push("/login");
+            }
+        }
     }
 </script>
 
