@@ -15,8 +15,14 @@
         name: "HeadSideUser",
         data() {
             return {
-                userName: "STARK",
-                loginStatus: false,
+            }
+        },
+        computed: {
+            userName() {
+                return this.$store.state.user.userName;
+            },
+            loginStatus() {
+                return this.$store.state.user.loginStatus;
             }
         }
     }
