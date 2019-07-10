@@ -10,43 +10,43 @@
             <div class="coursedes">
                 <p>
                     课程号：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseId}}
                     </span>
                 </p>
                 <p>
                     课程名称：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseName}}
                     </span>
                 </p>
                 <p>
                     授课教师：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseTeacher}}
                     </span>
                 </p>
                 <p>
                     上课时间：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseTime}}
                     </span>
                 </p>
                 <p>
                     上课地点：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseRoom}}
                     </span>
                 </p>
                 <p>
                     上课助教：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseAssistance}}
                     </span>
                 </p>
                 <p>
                     课程详细信息：
-                    <span>
+                    <span class="detail">
                         {{CourseForm.courseDes}}
                     </span>
                 </p>
@@ -91,5 +91,10 @@
     .coursedes {
         float: right;
         width: 70%;
+        font-size: large;
+    }
+
+    .detail {
+        font-size: small;
     }
 </style>

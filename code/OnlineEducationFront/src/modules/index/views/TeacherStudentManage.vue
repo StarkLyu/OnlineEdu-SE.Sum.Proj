@@ -11,7 +11,7 @@
                           prefix-icon="el-icon-search"/>
             </div>
 <!--            学生信息显示table-->
-            <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
+            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
                       stripe>
                 <el-table-column >
@@ -56,20 +56,20 @@
 
                 UserData: [
                     {
-                        userId:"45112323",
-                        userName:"kamen",
+                        sno:"45112323",
+                        username:"kamen",
                         userCollege:"化学化工",
                         email:"1099@fg.co"
                     },
                     {
-                        userId:"2144641",
-                        userName:"student",
+                        sno:"2144641",
+                        username:"student",
                         userCollege:"电子信息",
                         email:"1daswew9@fger.coq"
                     },
                     {
-                        userId:"78089870",
-                        userName:"zhujiao",
+                        sno:"78089870",
+                        username:"zhujiao",
                         userCollege:"机动",
                         email:"df633339@qq.com"
                     }

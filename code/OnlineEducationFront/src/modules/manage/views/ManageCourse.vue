@@ -47,6 +47,18 @@
                             min-width="25%"
                             sortable
                     ></el-table-column>
+<!--                    显示课程状态的tab-->
+                    <el-table-column
+                            prop="courseState"
+                            label="课程状态"
+                            min-width="25%"
+                            sortable>
+                        <template slot-scope="scope">
+                            <el-tag :type="scope.row.courseStateTemp">
+                                {{scope.row.courseState}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
                     <el-table-column
                             prop="courseId"
                             label="操作"
@@ -85,6 +97,15 @@
                 <el-form-item label="授课教师">
                     <el-input type="text" v-model="editForm.courseTeacher"></el-input>
                 </el-form-item>
+                <el-form-item label="课程状态">
+                    <el-radio-group v-model="editForm.courseState">
+                        <el-radio label="待审核"></el-radio>
+                        <el-radio label="未开始"></el-radio>
+                        <el-radio label="进行中"></el-radio>
+                        <el-radio label="已结束"></el-radio>
+                        <el-radio label="未通过"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
             </el-form>
 <!--            编辑页面下的学生信息-->
             <div class="divleftmargin">
@@ -100,8 +121,8 @@
             </div>
             <el-table :data="StudentForm" height="300px">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column property="userid" label="学号" sortable></el-table-column>
-                <el-table-column property="username" label="学生"></el-table-column>
+                <el-table-column property="userId" label="学号" sortable></el-table-column>
+                <el-table-column property="userName" label="学生"></el-table-column>
                 <el-table-column>
                     <template slot-scope="scope">
                         <el-button type="button" @click="DelStudent(scope.$index, scope.row)">
@@ -138,6 +159,8 @@
                         courseTime: "1-16周 8:00-10:00",
                         courseRoom: "东上院211",
                         courseTeacher: "sheng",
+                        courseState:"待审核",
+                        courseStateTemp:'warning',
                     },
                     {
                         courseId: "SE-9911",
@@ -145,6 +168,8 @@
                         courseTime: "1-16周 16:00-18:00",
                         courseRoom: "上院211",
                         courseTeacher: "daf",
+                        courseState:"进行中",
+                        courseStateTemp:'success',
                     },
                     {
                         courseId: "CS-524",
@@ -152,6 +177,26 @@
                         courseTime: "1-16周 12:00-14:00",
                         courseRoom: "东下院201",
                         courseTeacher: "zang",
+                        courseState:"未开始",
+                        courseStateTemp:'primary',
+                    },
+                    {
+                        courseId: "CS-524",
+                        courseName: "java设计思想",
+                        courseTime: "1-16周 12:00-14:00",
+                        courseRoom: "东下院201",
+                        courseTeacher: "zang",
+                        courseState:"未通过",
+                        courseStateTemp:'danger',
+                    },
+                    {
+                        courseId: "CS-524",
+                        courseName: "java设计思想",
+                        courseTime: "1-16周 12:00-14:00",
+                        courseRoom: "东下院201",
+                        courseTeacher: "zang",
+                        courseState:"已结束",
+                        courseStateTemp:'info',
                     }
                 ],
 
@@ -171,6 +216,7 @@
                     courseTime:"",
                     courseRoom:"",
                     courseTeacher:"",
+                    courseState:"",
                 },
 
                 addStudent:"",
@@ -178,16 +224,16 @@
                 // 课程的学生信息
                 StudentForm: [
                     {
-                        userId:"124321",
-                        userName:"刘鹏",
+                        sno:"124321",
+                        username:"刘鹏",
                     },
                     {
-                        userId:"3521",
-                        userName:"达芙蓉",
+                        sno:"3521",
+                        username:"达芙蓉",
                     },
                     {
-                        userId:"351131",
-                        userName:"万格恩",
+                        sno:"351131",
+                        username:"万格恩",
                     },
                 ]
             }
@@ -236,7 +282,7 @@
 
             //课程删除学生
             DelStudent: function(index, row){
-                alert(row.userName+"已删除");
+                alert(row.username+"已删除");
             }
 
         }

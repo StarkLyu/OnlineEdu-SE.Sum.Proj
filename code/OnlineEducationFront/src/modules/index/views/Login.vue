@@ -12,7 +12,7 @@
                                 placeholder="用户名"
                                 suffix-icon="el-icon-user"
                                 id="userId"
-                                v-model="loginInfo.userName"
+                                v-model="loginInfo.username"
                         ></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
@@ -50,11 +50,11 @@
         data() {
             return {
                 loginInfo: {
-                    userName: "",
+                    username: "",
                     password: ""
                 },
                 rules: {
-                    userName: [
+                    username: [
                         {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "blur"}
                     ],
                     password: [

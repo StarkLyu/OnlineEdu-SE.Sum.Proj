@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const state = {
-    userName: "",
+    username: "",
     accessToken: "",
 }
 
@@ -17,12 +17,12 @@ const actions = {
             url: "/api/auth/signin",
             method: "post",
             data: {
-                username: loginInfo.userName,
+                username: loginInfo.username,
                 password: loginInfo.password
             }
         }).then((response) => {
             commit("loginSet", {
-                userName: loginInfo.userName,
+                username: loginInfo.username,
                 accessToken: response.data.accessToken
             });
             alert("登录成功");
@@ -42,7 +42,7 @@ const actions = {
             method: "post",
             data: registerInfo
         }).then((response) => {
-            
+
         })
     }
 }
@@ -50,7 +50,7 @@ const actions = {
 // mutations
 const mutations = {
     loginSet (state, loginData) {
-        state.userName = loginData.userName;
+        state.userName = loginData.username;
         state.accessToken = loginData.accessToken;
     }
 }
