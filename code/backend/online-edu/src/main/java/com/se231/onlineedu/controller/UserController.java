@@ -152,10 +152,7 @@ public class UserController {
     @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<?> patchPassword(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
         httpSession.setAttribute("password", passwordJSON.get("password"));
-        VerificationToken verificationToken = new VerificationToken();
-        httpSession.setAttribute("token", verificationToken);
-        emailSenderService.sendEmail(userService.getUserInfo(id).getEmail(), verificationToken);
-        return ResponseEntity.ok("已发送验证码");
+        return sendEmail(httpSession,id);
     }
 
     @ApiOperation(value = "用户邮箱确认修改", httpMethod = "GET")
@@ -178,10 +175,7 @@ public class UserController {
     @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<?> patchEmail(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
         httpSession.setAttribute("email", passwordJSON.get("email"));
-        VerificationToken verificationToken = new VerificationToken();
-        httpSession.setAttribute("token", verificationToken);
-        emailSenderService.sendEmail(userService.getUserInfo(id).getEmail(), verificationToken);
-        return ResponseEntity.ok("已发送验证码");
+        return sendEmail(httpSession, id);
     }
 
     @ApiOperation(value = "用户邮箱确认修改", httpMethod = "GET")
@@ -205,5 +199,12 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<?> buckImportUser(@RequestParam("excel") MultipartFile excel)throws Exception{
         return ResponseEntity.ok(userService.bulkImportUser(excel));
+    }
+
+    private ResponseEntity<?> sendEmail(HttpSession httpSession, Long id) throws Exception {
+        VerificationToken verificationToken = new VerificationToken();
+        httpSession.setAttribute("token", verificationToken);
+        emailSenderService.sendEmail(userService.getUserInfo(id).getEmail(), verificationToken);
+        return ResponseEntity.ok("已发送验证码");
     }
 }
