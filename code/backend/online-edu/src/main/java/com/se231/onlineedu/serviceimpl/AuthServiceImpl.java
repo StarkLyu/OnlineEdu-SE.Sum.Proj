@@ -47,14 +47,9 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder encoder;
     private JwtProvider jwtProvider;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     private EmailSenderService emailSenderService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository,
@@ -111,7 +106,9 @@ public class AuthServiceImpl implements AuthService {
         roles.add(userRole);
         user.setRoles(roles);
         httpSession.setAttribute("user", user);
-        httpSession.setAttribute("token", new VerificationToken(userService.sendEmail(user)));
+        VerificationToken verificationToken = new VerificationToken();
+        httpSession.setAttribute("token", verificationToken);
+        emailSenderService.sendEmail(user.getEmail(),verificationToken);
         return ResponseEntity.ok(user);
     }
 

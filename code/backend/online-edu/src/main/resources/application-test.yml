@@ -1,7 +1,7 @@
 spring:
   mail:
-    host: smtp.163.com
-    username: 18621107375@163.com
+    host: smtp.126.com
+    username: sjtu_se231_1@126.com
     password: abcd1234
     protocol: smtp
     properties.mail.smtp.auth: true
@@ -12,4 +12,4 @@ spring:
     properties.mail.smtp.starttls.required: true
     properties.mail.smtp.ssl.enable: true
     default-encoding: utf-8
-    from: 18621107375@163.com
+    from: sjtu_se231_1@126.com

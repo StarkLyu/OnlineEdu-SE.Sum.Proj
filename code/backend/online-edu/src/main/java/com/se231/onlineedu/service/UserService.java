@@ -76,14 +76,22 @@ public interface UserService {
      */
     User updateUserAvatar(String avatarUrl, Long id) throws Exception;
 
+
     /**
-     * this service helps to send verification email
-     * @param user  user request to verify
+     * this service confirm to change password
+     * @param id  user id request to verify
+     * @param password new password
      * @return  user info
      * @throws Exception exception
      */
-    String sendEmail(User user) throws Exception;
-
     User updateUserPasswordConfirm(Long id, String password) throws Exception;
+
+    /**
+     * this service confirm to change password
+     * @param id  user id request to verify
+     * @param email new email
+     * @return  user info
+     * @throws Exception exception
+     */
     User updateUserEmailConfirm(Long id, String email) throws Exception;
 }
