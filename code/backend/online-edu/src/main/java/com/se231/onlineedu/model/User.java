@@ -7,8 +7,7 @@ import com.se231.onlineedu.message.request.SignUpForm;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-
-
+import java.util.Objects;
 
 
 /**
@@ -26,7 +25,7 @@ import java.util.List;
                 "username"
         })
 })
-public class User {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,9 +50,48 @@ public class User {
 
     private String sno;
 
+    private String tno;
+
+    public String getTno() {
+        return tno;
+    }
+
+    public void setTno(String tno) {
+        this.tno = tno;
+    }
+
     private String realName;
 
     private String sex;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    private String avatarUrl;
+
+
+
+    @Column(name = "enabled")
+    private boolean enabled;
+
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public User(){
+        super();
+        this.enabled = false;
+    }
 
     public String getUsername() {
         return username;
@@ -117,6 +155,19 @@ public class User {
         this.sno = form.getSno();
         this.realName = form.getRealName();
         this.sex = form.getSex();
+    }
+
+    public User(UserExcel userExcel){
+        this.username = userExcel.getUsername();
+        this.email = userExcel.getEmail();
+        this.tel = userExcel.getTel();
+        this.university = userExcel.getUniversity();
+        this.major = userExcel.getMajor();
+        this.grade = userExcel.getGrade();
+        this.sno = userExcel.getSno();
+        this.realName = userExcel.getRealName();
+        this.sex = userExcel.getSex();
+        this.enabled=true;
     }
 
     public void setRoles(List<Role> roles) {
@@ -193,9 +244,18 @@ public class User {
 
     public void setSex(String sex) {
         this.sex = sex;
+
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
     }
 
-    public User() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
-
 }

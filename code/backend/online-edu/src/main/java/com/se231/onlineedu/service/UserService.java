@@ -3,6 +3,7 @@ package com.se231.onlineedu.service;
 import java.util.List;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * User Service Interface
@@ -20,25 +21,16 @@ public interface UserService {
      * @return  user information form
      * @throws Exception mainly throw not found exception
      */
-    PersonalInfo getUserInfo(Long userId)throws Exception;
+    User getUserInfo(Long userId)throws Exception;
 
     /**
-     * this service allow user to modify his own information
-     * @param userId the id of the modifying user
-     * @param personalInfo the form user submit
-     * @return  user information form
-     * @throws Exception mainly throw not found exception
-     */
-    PersonalInfo modifyUserInfo(Long userId,PersonalInfo personalInfo)throws Exception;
-
-    /**
-     * this service allow admin to manage users' personal information
+     * this service allow admin to manage users' personal information or a user to modify his personal information.
      * @param id    the id of managed user
      * @param personalInfo  the form admin submit
      * @return  user information form after changing.
      * @throws Exception    mainly throw not found exception
      */
-    PersonalInfo manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
+    User manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
 
     /**
      * this service allow admin to get a list of all user
@@ -66,4 +58,32 @@ public interface UserService {
      * @return true if exists same telephone number, false if doesn't exist.
      */
     boolean checkSameTel(String tel);
+
+    /**
+     * this service allows admin or super admin to buck import users' information.
+     * @param excel the excel used to bulk import user information
+     * @return  String to return hints
+     * @throws Exception IO Exception
+     */
+    String bulkImportUser(MultipartFile excel)throws Exception;
+
+    /**
+     * this service allows user to update his personal avatar
+     * @param avatarUrl url of upload image
+     * @param id    id of requesting user
+     * @return  user info
+     * @throws Exception    mainly not found exception
+     */
+    User updateUserAvatar(String avatarUrl, Long id) throws Exception;
+
+    /**
+     * this service helps to send verification email
+     * @param user  user request to verify
+     * @return  user info
+     * @throws Exception exception
+     */
+    String sendEmail(User user) throws Exception;
+
+    User updateUserPasswordConfirm(Long id, String password) throws Exception;
+    User updateUserEmailConfirm(Long id, String email) throws Exception;
 }

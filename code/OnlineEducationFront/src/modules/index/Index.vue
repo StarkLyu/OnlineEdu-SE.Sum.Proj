@@ -32,6 +32,6 @@
 
     export default {
         name: "Index",
-        components: {MainMenu}
+        components: {MainMenu},
     }
 </script>

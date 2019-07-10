@@ -1,18 +1,40 @@
 import axios from 'axios'
 
 const state = {
-    username: "",
+    userName: "jjj",
     accessToken: "",
+    loginStatus: false,
+    userInfo: {
+        email: "",
+        grade: 0,
+        major: "",
+        realName: "",
+        sex: "",
+        sno: "",
+        tno: "",
+        tel: "",
+        university: "",
+        roles: [
+            {
+                id: 0,
+                role: "",
+            }
+        ]
+    }
 }
 
 // getters
 const getters = {
-
+    authRequestHead: state => {
+        return {
+            Authorization: "Bearer " + state.accessToken
+        }
+    }
 }
 
 // actions
 const actions = {
-    login: ({ commit }, loginInfo) => {
+    login: ({ state,commit }, loginInfo) => {
         axios.request({
             url: "/api/auth/signin",
             method: "post",
@@ -21,12 +43,34 @@ const actions = {
                 password: loginInfo.password
             }
         }).then((response) => {
+            console.log(response.data);
             commit("loginSet", {
-                username: loginInfo.username,
-                accessToken: response.data.accessToken
+                userName: loginInfo.userName,
+                accessToken: response.data.body.accessToken
             });
             alert("登录成功");
+            console.log(state);
+            axios.request({
+                url: "/api/users/info",
+                method: 'get',
+                headers: {
+                    "Authorization": "Bearer " + state.accessToken
+                }
+            }).then((infoResponse) => {
+                if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
+                    localStorage.setItem("managerToken", state.accessToken);
+                    window.location = "/manager"
+                }
+                commit("infoSet", infoResponse.data);
+                console.log(state);
+            }).catch((error) => {
+                console.log(error.response);
+                if (error.response.data.status === 401) {
+                    alert("登录出错");
+                }
+            })
         }).catch((error) => {
+            console.log(error.response);
             if (error.response.data.status === 401) {
                 alert("用户名或密码错误");
             }
@@ -34,17 +78,7 @@ const actions = {
                 alert(error);
             }
         });
-        return 1;
     },
-    register: ({ commit }, registerInfo) => {
-        axios.request({
-            url: "/api/auth/signup",
-            method: "post",
-            data: registerInfo
-        }).then((response) => {
-
-        })
-    }
 }
 
 // mutations
@@ -52,11 +86,16 @@ const mutations = {
     loginSet (state, loginData) {
         state.userName = loginData.username;
         state.accessToken = loginData.accessToken;
+        state.loginStatus = true;
+        console.log(state);
+    },
+    infoSet (state, infoData) {
+        state.userInfo = infoData;
+        console.log(state);
     }
 }
 
 export default {
-    namespaced: true,
     state,
     getters,
     actions,

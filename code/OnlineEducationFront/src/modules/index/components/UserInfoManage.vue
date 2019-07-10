@@ -34,6 +34,9 @@
                     <div class="float-left">
                         <el-button @click="submitInfo">提交</el-button>
                     </div>
+                    <div v-if="type==='register'" class="float-left">
+                        <el-button @click="backUp">返回</el-button>
+                    </div>
                     <div class="float-right">
                         <el-button>重置</el-button>
                     </div>
@@ -47,7 +50,10 @@
     export default {
         name: "UserInfoManage",
         props: {
-            userdata: Object
+            userdata: Object,
+            type: {
+                default: "modify"
+            }
         },
         data() {
             return {
@@ -90,6 +96,9 @@
         methods: {
             submitInfo: function () {
                 this.$emit('submit-info', this.userInfo);
+            },
+            backUp: function () {
+                this.$emit('on-back');
             }
         },
         mounted() {
@@ -104,7 +113,7 @@
     }
 
     .bottom-buttons {
-        width: 200px;
+        width: 210px;
         margin-left: auto;
         margin-right: auto;
     }

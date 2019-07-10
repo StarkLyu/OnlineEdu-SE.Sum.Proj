@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Paper {
@@ -17,6 +18,7 @@ public class Paper {
     @OneToMany
     private List<PaperWithQuestions> questions;
 
+    @JsonIgnore
     @ManyToOne
     private Course course;
 

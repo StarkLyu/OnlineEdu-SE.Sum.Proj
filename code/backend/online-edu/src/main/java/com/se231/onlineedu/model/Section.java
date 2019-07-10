@@ -3,6 +3,15 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * SectionRepository Entity Class
+ *
+ * a section is a teaching module in the convenience of teacher to manage resource.
+ *
+ * @author Yuxuan Liu
+ *
+ * @date 2019/7/4
+ */
 @Entity
 public class Section {
     @EmbeddedId
