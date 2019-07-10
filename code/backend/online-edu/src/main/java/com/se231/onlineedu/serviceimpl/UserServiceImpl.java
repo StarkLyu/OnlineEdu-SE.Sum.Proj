@@ -99,7 +99,9 @@ public class UserServiceImpl implements UserService {
         //判断后缀
         if(fileName.endsWith("xls")){
             workbook = new HSSFWorkbook(excel.getInputStream());
-        }else if(fileName.endsWith("xlsx")){
+        }else if(fileName.endsWith("xlsx")) {
+            workbook = new XSSFWorkbook(excel.getInputStream());
+        }else {
             return "Import File Fail -> File Format Wrong,Only Support Xlsx And Xls";
         }
         //获取工作sheet

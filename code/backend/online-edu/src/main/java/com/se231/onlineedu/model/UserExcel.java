@@ -14,34 +14,34 @@ import com.alibaba.excel.metadata.BaseRowModel;
  * @date 2019/07/10
  */
 public class UserExcel extends BaseRowModel {
-    @ExcelProperty(index = 0,value = "username")
+    @ExcelProperty(index = 0)
     private String username;
 
-    @ExcelProperty(index = 1,value = "password")
+    @ExcelProperty(index = 1)
     private String password;
 
-    @ExcelProperty(index = 2,value = "email")
+    @ExcelProperty(index = 2)
     private String email;
 
     @ExcelProperty(index = 3)
     private Long tel;
 
-    @ExcelProperty(index = 4,value = "university")
+    @ExcelProperty(index = 4)
     private String university;
 
-    @ExcelProperty(index = 5,value = "major")
+    @ExcelProperty(index = 5)
     private String major;
 
-    @ExcelProperty(index = 6,value = "sno")
+    @ExcelProperty(index = 6)
     private String sno;
 
     @ExcelProperty(index = 7)
     private int grade;
 
-    @ExcelProperty(index = 8,value = "real name")
+    @ExcelProperty(index = 8)
     private String realName;
 
-    @ExcelProperty(index = 9,value = "sex")
+    @ExcelProperty(index = 9)
     private String sex;
 
     public String getUsername() {
@@ -121,6 +121,6 @@ public class UserExcel extends BaseRowModel {
     }
 
     public void setSex(String sex) {
-        sex = sex;
+        this.sex = sex;
     }
 }
