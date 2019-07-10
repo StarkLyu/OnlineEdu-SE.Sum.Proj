@@ -47,6 +47,11 @@ public class VerificationToken {
         this.times = 0;
     }
 
+    public VerificationToken(String token, Date expiryDate) {
+        this.token = token;
+        this.expiryDate = expiryDate;
+        times=0;
+    }
 
     public String getToken() {
         return token;

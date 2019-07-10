@@ -13,6 +13,7 @@ import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.AuthService;
 import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
+import com.se231.onlineedu.service.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,9 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder encoder;
     private JwtProvider jwtProvider;
 
+    @Autowired
+    private VerificationTokenService verificationTokenService;
+
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -72,11 +76,12 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         if(! userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("fail -> username not found")).isEnabled()){
-            return ResponseEntity.badRequest().body("请先激活账号");
+            return new ResponseEntity<>("请先激活账号",
+                    HttpStatus.BAD_REQUEST);
         }
 
         String jwt = jwtProvider.generateJwtToken((UserPrinciple) authentication.getPrincipal());
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
     }
 
     @Override
@@ -106,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
         roles.add(userRole);
         user.setRoles(roles);
         httpSession.setAttribute("user", user);
-        VerificationToken verificationToken = new VerificationToken();
+        VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);
         emailSenderService.sendEmail(user.getEmail(),verificationToken);
         return ResponseEntity.ok(user);

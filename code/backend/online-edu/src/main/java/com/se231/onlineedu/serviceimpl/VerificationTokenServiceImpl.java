@@ -19,4 +19,9 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
         }
         return true;
     }
+
+    @Override
+    public VerificationToken generateToken(){
+        return new VerificationToken();
+    }
 }

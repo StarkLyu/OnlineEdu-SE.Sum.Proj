@@ -202,7 +202,7 @@ public class UserController {
     }
 
     private ResponseEntity<?> sendEmail(HttpSession httpSession, Long id) throws Exception {
-        VerificationToken verificationToken = new VerificationToken();
+        VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);
         emailSenderService.sendEmail(userService.getUserInfo(id).getEmail(), verificationToken);
         return ResponseEntity.ok("已发送验证码");
