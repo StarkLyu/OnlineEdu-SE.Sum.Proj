@@ -7,8 +7,7 @@ import com.se231.onlineedu.message.request.SignUpForm;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-
-
+import java.util.Objects;
 
 
 /**
@@ -198,4 +197,16 @@ public class User {
     public User() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

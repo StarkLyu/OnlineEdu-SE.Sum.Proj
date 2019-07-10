@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.Role;
 import com.se231.onlineedu.model.RoleType;
@@ -82,7 +83,7 @@ public class ManageInfoTest {
 
     private static String signUpResponse = "User registered successfully!";
 
-    private boolean setUpIsDone=false;
+    private static boolean setUpIsDone=false;
 
     private MockMvc mvc;
 
@@ -177,7 +178,7 @@ public class ManageInfoTest {
 
     @Test
     @WithMockUser
-    public void checkAndManageInfoTest()throws Exception{
+    public void checkAndModifyInfoTest()throws Exception{
         mvc.perform(post("/api/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(user1SignIn))
@@ -185,12 +186,108 @@ public class ManageInfoTest {
 
         personalInfo=new PersonalInfo(userRepository.getOne(2L));
 
-        result = mvc.perform(get("/api/user/info"))
+        result = mvc.perform(get("/api/users/info"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        Assert.assertEquals(JSON.toJSONString(personalInfo),result);
+        Assert.assertEquals(personalInfo, JSON.parseObject(result,PersonalInfo.class));
+
+        personalInfo.setEmail("use1@163.com");
+
+        result = mvc.perform(post("/api/users/info/modify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(personalInfo)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals(personalInfo,JSON.parseObject(result,PersonalInfo.class));
+    }
+
+    @Test
+    @WithMockUser
+    public void getAndManageUserInfo()throws Exception{
+        mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn))
+                .andExpect(status().isOk());
+
+        result = mvc.perform(get("/api/users/info/all"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals(userRepository.findAll(),JSON.parseArray(result,User.class));
+
+        personalInfo.setEmail("us1@163.com");
+
+        result = mvc.perform(post("/api/users/2/info/modify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(personalInfo)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals(personalInfo,JSON.parseObject(result,PersonalInfo.class));
+
+        result = mvc.perform(get("/api/users/checkSame/username")
+                .param("username","user1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals("true",result);
+
+        result = mvc.perform(get("/api/users/checkSame/username")
+                .param("username","use"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals("false",result);
+
+        result = mvc.perform(get("/api/users/checkSame/email")
+                .param("email","admin@qq.com"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals("true",result);
+
+        result = mvc.perform(get("/api/users/checkSame/email")
+                .param("email","uses@163.com"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals("false",result);
+
+        result = mvc.perform(get("/api/users/checkSame/tel")
+                .param("tel","18332112332"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals("false",result);
+
+        result = mvc.perform(get("/api/users/checkSame/tel")
+                .param("tel","13345678901"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assert.assertEquals("true",result);
+
     }
 }

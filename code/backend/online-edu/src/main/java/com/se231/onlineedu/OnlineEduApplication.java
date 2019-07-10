@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * OnlineEduApplication class
@@ -15,6 +16,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @date 2019/07/01
  */
 @SpringBootApplication
+@EnableSwagger2
 public class OnlineEduApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
@@ -25,4 +27,6 @@ public class OnlineEduApplication extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(OnlineEduApplication.class);
 	}
+
+
 }

@@ -2,6 +2,7 @@ package com.se231.onlineedu.message.response;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 import com.se231.onlineedu.model.User;
 
 /**
@@ -39,7 +40,9 @@ public class PersonalInfo {
         this.realName=user.getRealName();
         this.sex=user.getSex();
         this.sno=user.getSno();
-        this.tel=user.getTel().toString();
+        if(user.getTel()!=null) {
+            this.tel = user.getTel().toString();
+        }
         this.university=user.getUniversity();
     }
 
@@ -119,5 +122,25 @@ public class PersonalInfo {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersonalInfo that = (PersonalInfo) o;
+        return grade == that.grade &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(tel, that.tel) &&
+                Objects.equals(university, that.university) &&
+                Objects.equals(major, that.major) &&
+                Objects.equals(sno, that.sno) &&
+                Objects.equals(realName, that.realName) &&
+                Objects.equals(sex, that.sex);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, tel, university, major, grade, sno, realName, sex);
     }
 }

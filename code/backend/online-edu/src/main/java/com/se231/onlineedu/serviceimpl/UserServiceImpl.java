@@ -1,12 +1,26 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.model.Role;
+import com.se231.onlineedu.model.RoleType;
 import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.UserService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.format.CellElapsedFormatter;
+import org.apache.poi.ss.format.CellFormatType;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * User Service Implementation Class
@@ -21,9 +35,15 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
+    private PasswordEncoder encoder;
+
+    private RoleRepository roleRepository;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,PasswordEncoder encoder,RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.encoder=encoder;
+        this.roleRepository=roleRepository;
     }
 
     @Override
