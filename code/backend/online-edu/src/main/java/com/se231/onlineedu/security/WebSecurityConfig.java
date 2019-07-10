@@ -69,8 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().
                 authorizeRequests()
                 .antMatchers("/api/auth/*").permitAll()
-                .antMatchers("/v2/api-docs","/configuration/ui", "/swagger-resources",
-                        "/configuration/security", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui").permitAll()
+                .antMatchers("/api/swagger/**").permitAll()
                 .antMatchers("/api/course/**").permitAll()
                 .antMatchers("/api/users/search*").permitAll()
                 .antMatchers("/api/comments/*").permitAll()

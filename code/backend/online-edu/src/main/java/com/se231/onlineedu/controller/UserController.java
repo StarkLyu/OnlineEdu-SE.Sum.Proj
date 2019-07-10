@@ -103,7 +103,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(tags = "用户上传头像",value = "用户可以上传个人的头像",httpMethod = "PATCH")
+    @ApiOperation(value = "用户可以个人的头像",httpMethod = "PATCH")
     @PatchMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<String> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException, IOException {

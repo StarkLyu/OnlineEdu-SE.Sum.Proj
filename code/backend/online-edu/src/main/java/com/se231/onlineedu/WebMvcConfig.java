@@ -14,10 +14,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class WebMvcConfig implements WebMvcConfigurer {
       @Override
       public void addResourceHandlers(ResourceHandlerRegistry registry) {
-          registry.addResourceHandler("swagger-ui.html")
+          registry.addResourceHandler("/api/swagger/swagger-ui.html")
                   .addResourceLocations("classpath:/META-INF/resources/");
 
-          registry.addResourceHandler("/webjars/**")
+          registry.addResourceHandler("api/swagger/webjars/**")
                   .addResourceLocations("classpath:/META-INF/resources/webjars/");
       }
 }
