@@ -20,7 +20,7 @@ public interface UserService {
      * @return  user information form
      * @throws Exception mainly throw not found exception
      */
-    PersonalInfo getUserInfo(Long userId)throws Exception;
+    User getUserInfo(Long userId)throws Exception;
 
     /**
      * this service allow admin to manage users' personal information or a user to modify his personal information.
@@ -29,7 +29,7 @@ public interface UserService {
      * @return  user information form after changing.
      * @throws Exception    mainly throw not found exception
      */
-    PersonalInfo manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
+    User manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
 
     /**
      * this service allow admin to get a list of all user
@@ -57,4 +57,11 @@ public interface UserService {
      * @return true if exists same telephone number, false if doesn't exist.
      */
     boolean checkSameTel(String tel);
+
+    User updateUserAvatar(String avatarUrl, Long id) throws Exception;
+
+    String sendEmail(User user) throws Exception;
+
+    User updateUserPasswordConfirm(Long id, String password) throws Exception;
+    User updateUserEmailConfirm(Long id, String email) throws Exception;
 }

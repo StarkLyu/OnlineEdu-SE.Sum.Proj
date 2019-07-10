@@ -1,11 +1,13 @@
 package com.se231.onlineedu.controller;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import com.se231.onlineedu.message.request.LoginForm;
 import com.se231.onlineedu.message.request.SignUpForm;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
 import com.se231.onlineedu.service.AuthService;
+import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,14 +36,17 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
         return ResponseEntity.ok(authService.userSignIn(loginRequest.getUsername(),loginRequest.getPassword()));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(WebRequest webRequest, @Valid @RequestBody SignUpForm signUpRequest) {
-        return authService.userSignUp(signUpRequest, webRequest);
+    public ResponseEntity<?> registerUser(HttpSession httpSession, @Valid @RequestBody SignUpForm signUpRequest) throws Exception {
+        return authService.userSignUp(signUpRequest, httpSession);
     }
 
     @PostMapping("/{id}/teachingAdmin")
@@ -51,15 +56,17 @@ public class AuthController {
     }
 
     @GetMapping("/registrationConfirm")
-    public ResponseEntity<String> confirmRegistration(WebRequest webRequest, @RequestParam("token") String token){
-        Locale locale = webRequest.getLocale();
-        VerificationToken verificationToken = authService.getVerificationToken(token);
-        User user = verificationToken.getUser();
+    public ResponseEntity<?> confirmRegistration(HttpSession httpSession, @RequestParam("verificationToken") String token){
+        VerificationToken verificationToken = (VerificationToken)httpSession.getAttribute("token");
+        if(!verificationToken.getToken().equals(token)){
+            return ResponseEntity.badRequest().body("验证码无效");
+        }
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             return ResponseEntity.badRequest().body("验证码已失效");
         }
 
+        User user = (User)httpSession.getAttribute("user");
         user.setEnabled(true);
         authService.saveRegisteredUser(user);
         return ResponseEntity.ok("已激活");

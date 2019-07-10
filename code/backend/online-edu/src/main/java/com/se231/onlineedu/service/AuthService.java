@@ -1,11 +1,11 @@
 package com.se231.onlineedu.service;
 
 import com.se231.onlineedu.message.request.SignUpForm;
-import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.request.WebRequest;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * Interface of service related to auth.
@@ -32,15 +32,10 @@ public interface AuthService {
      * @param form register form
      * @return a http response entity
      */
-    ResponseEntity<?> userSignUp(SignUpForm form, WebRequest webRequest);
+    ResponseEntity<?> userSignUp(SignUpForm form,  HttpSession httpSession) throws Exception;
 
     ResponseEntity<String> addTeachingAdmin(Long userId);
 
-    User getUser(String verificationToken);
-
-    VerificationToken getVerificationToken(String VerificationToken);
-
     void saveRegisteredUser(User user);
 
-    void createVerificationToken(User user, String token);
 }

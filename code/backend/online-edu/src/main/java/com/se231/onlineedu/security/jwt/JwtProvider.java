@@ -21,7 +21,6 @@ import java.util.Date;
  * @date 2019/07/01
  */
 @Component
-@PropertySource(value={"classpath:jwt.properties"})
 public class JwtProvider {
 
     private Clock clock = DefaultClock.INSTANCE;

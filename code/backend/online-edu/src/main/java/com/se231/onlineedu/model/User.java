@@ -51,9 +51,29 @@ public class User {
 
     private String sno;
 
+    private String tno;
+
+    public String getTno() {
+        return tno;
+    }
+
+    public void setTno(String tno) {
+        this.tno = tno;
+    }
+
     private String realName;
 
     private String sex;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    private String avatarUrl;
 
 
 

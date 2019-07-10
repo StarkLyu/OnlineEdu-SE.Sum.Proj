@@ -1,18 +1,25 @@
 package com.se231.onlineedu.controller;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
+import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,22 +47,25 @@ public class UserController {
     static String fileExtension = ".jpg,.jpeg,.png,.svg,.tif";
 
     @Autowired
+    private EmailSenderService emailSenderService;
+
+    @Autowired
     UserService userService;
 
-    @GetMapping("/info")
-    public ResponseEntity<PersonalInfo> getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple)throws Exception{
+    @GetMapping("/self-info")
+    public ResponseEntity<?> getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple)throws Exception{
         return ResponseEntity.ok(userService.getUserInfo(userPrinciple.getId()));
     }
 
     @PostMapping("/info/modify")
-    public ResponseEntity<PersonalInfo> modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
+    public ResponseEntity<?> modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
                                                            @Valid @RequestBody PersonalInfo personalInfo)throws Exception{
         return ResponseEntity.ok(userService.manageUserInfo(userPrinciple.getId(),personalInfo));
     }
 
     @PostMapping("{id}/info/modify")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<PersonalInfo> managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
+    public ResponseEntity<?> managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
                                                            @PathVariable("id")Long id)throws Exception{
         return ResponseEntity.ok(userService.manageUserInfo(id, personalInfo));
     }
@@ -83,7 +93,7 @@ public class UserController {
 
     @PatchMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<String> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException, IOException {
+    public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
         if (multipartFile.getSize() > limit) {
             return ResponseEntity.badRequest().body("exceeded max size");
         }
@@ -104,6 +114,47 @@ public class UserController {
         file.createNewFile();
         multipartFile.transferTo(file);
 
-        return ResponseEntity.ok(fileName);
+        return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
+    }
+
+    @PatchMapping("/{id}/password")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchPassword(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
+        httpSession.setAttribute("password", passwordJSON.get("password"));
+        httpSession.setAttribute("token", userService.sendEmail(userService.getUserInfo(id)));
+        return ResponseEntity.ok("已发送验证码");
+    }
+
+    @GetMapping("/{id}/password/confirm")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchPasswordConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) throws Exception {
+        String testToken = (String)httpSession.getAttribute("token");
+        if(testToken.equals(token)){
+            String password = (String)httpSession.getAttribute("password");
+            userService.updateUserPasswordConfirm(id,password);
+            return ResponseEntity.ok("修改成功");
+        }
+        return ResponseEntity.badRequest().body("验证码错误");
+    }
+
+
+    @PatchMapping("/{id}/email")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchEmail(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
+        httpSession.setAttribute("email", passwordJSON.get("email"));
+        httpSession.setAttribute("token", userService.sendEmail(userService.getUserInfo(id)));
+        return ResponseEntity.ok("已发送验证码");
+    }
+
+    @GetMapping("/{id}/email/confirm")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchEmailConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) throws Exception {
+        String testToken = (String)httpSession.getAttribute("token");
+        if(testToken.equals(token)){
+            String email = (String)httpSession.getAttribute("email");
+            userService.updateUserEmailConfirm(id,email);
+            return ResponseEntity.ok("修改成功");
+        }
+        return ResponseEntity.badRequest().body("验证码错误");
     }
 }
