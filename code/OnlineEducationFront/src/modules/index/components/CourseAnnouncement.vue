@@ -8,7 +8,9 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <span class="float-right">{{ announce.time }}</span>
             </template>
-            <pre class="announce-font">{{ announce.content }}</pre>
+            <div class="content-style">
+                <pre>{{ announce.content }}</pre>
+            </div>
         </el-collapse-item>
     </el-collapse>
 </template>
@@ -23,7 +25,6 @@
 </script>
 
 <style scoped>
-    .announce-font {
-        font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-    }
+
+
 </style>

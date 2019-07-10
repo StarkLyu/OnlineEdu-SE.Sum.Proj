@@ -106,9 +106,9 @@ export default new Router({
                             component: () => import('./views/TeacherScoreManage')
                         },
                         {
-                            path: 'annoucement',
-                            name: 'TeacherCourseAnnouce',
-                            component: () => import('./views/TeacherCourseAnnouce')
+                            path: 'announcement',
+                            name: 'TeacherCourseAnnounce',
+                            component: () => import('./views/TeacherCourseAnnounce')
                         },
                         {
                             path: 'assignment',

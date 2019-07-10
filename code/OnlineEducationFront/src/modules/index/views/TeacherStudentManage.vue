@@ -1,15 +1,16 @@
 <template>
     <div>
-        <div class="margintop">
+        <el-header>
             <h1 class="titlesytle">学生信息查看</h1>
+        </el-header>
+        <el-main>
             <div class="float-left">
-                <el-input
-                        class="padding"
-                        v-model="search"
-                        placeholder="请输入用户名"
-                        prefix-icon="el-icon-search"
-                />
+                <el-input class="padding"
+                          v-model="search"
+                          placeholder="请输入用户名"
+                          prefix-icon="el-icon-search"/>
             </div>
+<!--            学生信息显示table-->
             <el-table :data="UserData.filter(data=>!search || data.userName.includes(search))"
                       class="usertable"
                       stripe>
@@ -41,7 +42,7 @@
                     ></el-table-column>
                 </el-table-column>
             </el-table>
-        </div>
+        </el-main>
     </div>
 </template>
 
@@ -87,10 +88,6 @@
 
     .padding {
         padding: 8px;
-    }
-
-    .margintop {
-        margin-top: 30px
     }
 
     .titlesytle {

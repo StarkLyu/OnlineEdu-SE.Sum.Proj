@@ -63,7 +63,7 @@
                 </el-table-column>
             </el-table>
         </div>
-        <!--编辑增加页面弹窗-->
+        <!--课程编辑页面弹窗-->
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
                    :lock-scroll="false"

@@ -1,8 +1,11 @@
 <template>
     <div>
-        <div class="margintop">
+        <el-header>
             <h1 class="titlesytle">课程作业</h1>
-        </div>
+        </el-header>
+        <el-main>
+            作业……
+        </el-main>
     </div>
 </template>
 
@@ -14,10 +17,6 @@
 
 <style scoped>
     @import "/src/assets/div-layout.css";
-
-    .margintop {
-        margin-top: 30px
-    }
 
     .titlesytle {
         text-align: center;

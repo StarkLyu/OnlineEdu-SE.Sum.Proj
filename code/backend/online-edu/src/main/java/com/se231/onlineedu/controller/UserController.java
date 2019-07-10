@@ -1,6 +1,8 @@
 package com.se231.onlineedu.controller;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
@@ -10,8 +12,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,7 +34,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/users")
 @Api(tags = "用户信息控制类",value = "用户信息相关的api")
+@PropertySource(value={"classpath:user.properties"})
 public class UserController {
+    @Value("${app.nginx.path}")
+    private String nginxPath;
+
+    @Value("${app.file.limit}")
+    private Long limit;
+
+    static String fileExtension = ".jpg,.jpeg,.png,.svg,.tif";
+
     @Autowired
     UserService userService;
 
@@ -89,4 +102,31 @@ public class UserController {
         return ResponseEntity.ok(userService.checkSameTel(tel));
     }
 
+
+    @ApiOperation(tags = "用户上传头像",value = "用户可以上传个人的头像",httpMethod = "PATCH")
+    @PatchMapping("/{id}/avatar")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<String> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException, IOException {
+        if (multipartFile.getSize() > limit) {
+            return ResponseEntity.badRequest().body("exceeded max size");
+        }
+
+        String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+
+        if (!fileExtension.contains(suffix)) {
+            return ResponseEntity.badRequest().body("file format not supported");
+        }
+        String fileName = nginxPath + id + "-avatar/" + id + "-avatar" + suffix;
+        File file = new File(fileName);
+
+        if (file.getParentFile().exists()) {
+            FileUtils.cleanDirectory(file.getParentFile());
+        } else {
+            file.getParentFile().mkdir();
+        }
+        file.createNewFile();
+        multipartFile.transferTo(file);
+
+        return ResponseEntity.ok(fileName);
+    }
 }
