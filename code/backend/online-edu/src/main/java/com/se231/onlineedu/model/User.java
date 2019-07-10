@@ -118,6 +118,18 @@ public class User {
         this.sex = form.getSex();
     }
 
+    public User(UserExcel userExcel){
+        this.username = userExcel.getUsername();
+        this.email = userExcel.getEmail();
+        this.tel = userExcel.getTel();
+        this.university = userExcel.getUniversity();
+        this.major = userExcel.getMajor();
+        this.grade = userExcel.getGrade();
+        this.sno = userExcel.getSno();
+        this.realName = userExcel.getRealName();
+        this.sex = userExcel.getSex();
+    }
+
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }

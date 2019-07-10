@@ -129,4 +129,10 @@ public class UserController {
 
         return ResponseEntity.ok(fileName);
     }
+
+    @PostMapping("/bulkImport")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    public ResponseEntity<?> buckImportUser(@RequestParam("excel") MultipartFile excel)throws Exception{
+        return ResponseEntity.ok(userService.bulkImportUser(excel));
+    }
 }

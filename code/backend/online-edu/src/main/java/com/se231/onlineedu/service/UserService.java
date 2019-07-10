@@ -59,4 +59,11 @@ public interface UserService {
      */
     boolean checkSameTel(String tel);
 
+    /**
+     * this service allows admin or super admin to buck import users' information.
+     * @param excel the excel used to bulk import user information
+     * @return  String to return hints
+     * @throws Exception IO Exception
+     */
+    String bulkImportUser(MultipartFile excel)throws Exception;
 }
