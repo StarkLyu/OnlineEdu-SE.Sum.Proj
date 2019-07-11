@@ -15,10 +15,8 @@
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
-//import org.mockito.internal.util.io.IOUtil;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.core.io.FileSystemResource;
 //import org.springframework.http.MediaType;
 //import org.springframework.mock.web.MockMultipartFile;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,10 +29,8 @@
 //import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 //import org.springframework.web.context.WebApplicationContext;
 //
-//import java.io.File;
 //import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
+//import java.io.InputStream;
 //import java.util.ArrayList;
 //import java.util.HashMap;
 //import java.util.List;
@@ -285,10 +281,10 @@
 //                .andExpect(status().isBadRequest())
 //                .andExpect(content().string("file format not supported"));
 //
-//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
-//                .file(avatar)
-//                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
-//                .andExpect(status().isOk());
+////        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
+////                .file(avatar)
+////                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
+////                .andExpect(status().isOk());
 //    }
 //
 //    @Test
@@ -387,12 +383,50 @@
 //    @Test
 //    @WithMockUser(roles = {"ADMIN"})
 //    public void importUserTest() throws Exception {
-//        FileInputStream fileInputStream = new FileInputStream("testfile/UserData.xlsx");
-//        MockMultipartFile multipartFile = new MockMultipartFile("excel", "UserData.xlsx","", IOUtils.toByteArray(fileInputStream));
+//        String path = UserInfoTest.class.getClassLoader().getResource("UserData.xlsx").getPath();
+//        String pathEmpty = UserInfoTest.class.getClassLoader().getResource("UserDataEmpty.xlsx").getPath();
+//        String pathSameUsername = UserInfoTest.class.getClassLoader().getResource("UserDataSameUsername.xlsx").getPath();
+//        String pathSameEmail = UserInfoTest.class.getClassLoader().getResource("UserDataSameEmail.xlsx").getPath();
+//        String pathSameTel = UserInfoTest.class.getClassLoader().getResource("UserDataSameTel.xlsx").getPath();
+//
+//        MockMultipartFile multipartFile = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(path));
+//        MockMultipartFile multipartFileWrongFormat = new MockMultipartFile("excel", "UserData.xl","plain/text", new FileInputStream(path));
+//        MockMultipartFile multipartFileEmpty = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathEmpty));
+//        MockMultipartFile multipartFileSameUsername = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathSameUsername));
+//        MockMultipartFile multipartFileSameEmail = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathSameEmail));
+//        MockMultipartFile multipartFileSameTel = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathSameTel));
 //
 //
-//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
+////        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+////                .file(multipartFileEmpty))
+////                .andDo(MockMvcResultHandlers.print())
+////                .andExpect(status().isBadRequest());
+//
+////        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+////                .file(multipartFileSameUsername))
+////                .andDo(MockMvcResultHandlers.print())
+////                .andExpect(status().isBadRequest());
+////
+////        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+////                .file(multipartFileSameEmail))
+////                .andDo(MockMvcResultHandlers.print())
+////                .andExpect(status().isBadRequest());
+////
+////        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+////                .file(multipartFileSameTel))
+////                .andDo(MockMvcResultHandlers.print())
+////                .andExpect(status().isBadRequest());
+//
+//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
 //                .file(multipartFile))
+//                .andDo(MockMvcResultHandlers.print())
 //                .andExpect(status().isOk());
+//
+//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+//                .file(multipartFileWrongFormat))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(status().isBadRequest());
+//
+//
 //    }
 //}

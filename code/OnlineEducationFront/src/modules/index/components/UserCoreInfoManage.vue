@@ -15,7 +15,7 @@
         <el-row class="content-row">
             <el-col :span="4" :push="1">修改邮箱：</el-col>
             <el-col :span="10">
-                <UserEmailChange></UserEmailChange>
+                <UserEmailChange :old-email="oldEmail"></UserEmailChange>
             </el-col>
         </el-row>
     </div>
@@ -27,7 +27,12 @@
     import UserEmailChange from "./UserEmailChange";
     export default {
         name: "UserCoreInfoManage",
-        components: {UserEmailChange, UserPasswordChange, UserAvatarUpload}
+        components: {UserEmailChange, UserPasswordChange, UserAvatarUpload},
+        computed: {
+            oldEmail: function () {
+                return this.$store.state.user.userInfo.email;
+            }
+        }
     }
 </script>
 

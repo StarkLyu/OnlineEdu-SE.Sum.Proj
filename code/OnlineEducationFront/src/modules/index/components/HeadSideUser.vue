@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="width: 103px">
         <div v-if="loginStatus">
             <el-avatar></el-avatar>{{ username }}
         </div>
