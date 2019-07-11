@@ -39,4 +39,6 @@ public class PaperController {
         return ResponseEntity.ok(paperService.issuePaper(courseId, secNo, paperId));
     }
 
+
+
 }

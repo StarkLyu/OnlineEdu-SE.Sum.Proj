@@ -1,5 +1,6 @@
 package com.se231.onlineedu.model;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -20,11 +21,12 @@ public class PaperWithQuestions {
     @EmbeddedId
     private PaperWithQuestionsPrimaryKey paperWithQuestionsPrimaryKey;
 
+    @Column(unique = true)
     private int questionNumber;
 
-    private int score;
+    private double score;
 
-    public PaperWithQuestions(Paper paper, Question question, int questionNumber, int score) {
+    public PaperWithQuestions(Paper paper, Question question, int questionNumber, double score) {
         this.paperWithQuestionsPrimaryKey = new PaperWithQuestionsPrimaryKey(paper,question);
         this.questionNumber = questionNumber;
         this.score = score;
@@ -49,7 +51,7 @@ public class PaperWithQuestions {
         this.questionNumber = questionNumber;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 

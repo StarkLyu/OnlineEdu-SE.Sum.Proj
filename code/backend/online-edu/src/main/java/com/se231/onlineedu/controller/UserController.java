@@ -116,11 +116,9 @@ public class UserController {
     }
 
 
-
-
-    @ApiOperation(value = "用户可以个人的头像",httpMethod = "PATCH")
+    @ApiOperation(value = "用户可以个人的头像",httpMethod = "POST")
     @ApiImplicitParam(name = "id",value = "上传的用户id",type = "path")
-    @PatchMapping("/{id}/avatar")
+    @PostMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
         if (multipartFile.getSize() > limit) {
