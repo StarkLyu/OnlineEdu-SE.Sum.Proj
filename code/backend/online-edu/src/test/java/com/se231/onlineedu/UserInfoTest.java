@@ -158,7 +158,6 @@ public class UserInfoTest {
 
         Assert.assertEquals(personalInfo, JSON.parseObject(result, PersonalInfo.class));
 
-        personalInfo.setEmail("use1@163.com");
 
         result = mvc.perform(post("/api/users/info/modify")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -186,8 +185,6 @@ public class UserInfoTest {
                 .getContentAsString();
 
         Assert.assertEquals(userRepository.findAll(), JSON.parseArray(result, User.class));
-
-        personalInfo.setEmail("us1@163.com");
 
         result = mvc.perform(post("/api/users/2/info/modify")
                 .contentType(MediaType.APPLICATION_JSON)

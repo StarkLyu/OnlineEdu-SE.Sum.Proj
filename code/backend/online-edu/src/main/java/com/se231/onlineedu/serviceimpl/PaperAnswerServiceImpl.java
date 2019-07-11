@@ -39,7 +39,14 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
                 .orElseThrow(()->new RuntimeException("Course Not Found"));
         Paper paper = paperRepository.findById(paperId)
                 .orElseThrow(()->new RuntimeException("Paper Not Found"));
-        PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,0);
+        int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
+        if(times==3){
+            throw new RuntimeException("You Have Answered Three Times");
+        }
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
+        if(!paper.getCourse().equals(course)){
+            throw new RuntimeException("This Course Doesn't Have This Paper.");
+        }
         PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
         paperAnswer = paperAnswerRepository.save(paperAnswer);
         List<Answer> answerList= new ArrayList<>();
@@ -50,7 +57,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
                     paperWithQuestionsRepository.findById(new PaperWithQuestionsPrimaryKey(paper,question))
                     .orElseThrow(()->new RuntimeException("Question Not Found"));
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
-            //若题目不为
+            //若题目为主观题，默认不做批改，直接不打分留题。若为客观题则直接检测与答案是否匹配。
             double score= (entry.getValue().equals(question.getAnswer())&&
                     !question.getQuestionType().equals(QuestionType.SUBJECTIVE))?paperWithQuestions.getScore():0;
             Answer answer = new Answer(answerPrimaryKey,entry.getValue(),score);
