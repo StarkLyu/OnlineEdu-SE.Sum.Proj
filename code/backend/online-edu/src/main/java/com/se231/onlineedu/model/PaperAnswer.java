@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Paper Answer Entity Class
  *
- * answer for a paper submitted by an user
+ * answer for a paper submitted by a user
  *
  * @author Yuxuan Liu
  *
@@ -17,7 +17,7 @@ public class PaperAnswer {
     @EmbeddedId
     private PaperAnswerPrimaryKey paperAnswerPrimaryKey;
 
-    @OneToMany
+    @OneToMany(mappedBy = "answerPrimaryKey.paperAnswer")
     private List<Answer> answers;
 
     private double grade;

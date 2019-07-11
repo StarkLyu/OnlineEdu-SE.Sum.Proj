@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Autowired
     private RoleRepository roleRepository;
 
@@ -57,6 +56,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User manageUserInfo(Long id, PersonalInfo personalInfo) throws Exception {
         User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+        if(!user.getTel().toString().equals(personalInfo.getTel())&&checkSameTel(personalInfo.getTel())){
+            throw new Exception("This telephone number is already token !");
+        }
         checkSameTel(personalInfo.getTel());
         personalInfo.modifyUserInfo(user);
         return userRepository.save(user);

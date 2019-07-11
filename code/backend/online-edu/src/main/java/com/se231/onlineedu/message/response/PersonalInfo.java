@@ -15,9 +15,6 @@ import com.se231.onlineedu.model.User;
  * @date 2019/07/08
  */
 public class PersonalInfo {
-    @Email
-    private String email;
-
     @Pattern(regexp = "0?(13|14|15|18|17)[0-9]{9}")
     private String tel;
 
@@ -34,7 +31,6 @@ public class PersonalInfo {
     private String sex;
 
     public PersonalInfo(User user) {
-        this.email=user.getEmail();
         this.grade=user.getGrade();
         this.major=user.getMajor();
         this.realName=user.getRealName();
@@ -50,7 +46,6 @@ public class PersonalInfo {
     }
 
     public void modifyUserInfo(User user){
-        user.setEmail(email);
         user.setGrade(grade);
         user.setMajor(major);
         user.setRealName(realName);
@@ -58,14 +53,6 @@ public class PersonalInfo {
         user.setSno(sno);
         user.setTel(Long.parseLong(tel));
         user.setUniversity(university);
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getTel() {
@@ -130,7 +117,6 @@ public class PersonalInfo {
         if (o == null || getClass() != o.getClass()) return false;
         PersonalInfo that = (PersonalInfo) o;
         return grade == that.grade &&
-                Objects.equals(email, that.email) &&
                 Objects.equals(tel, that.tel) &&
                 Objects.equals(university, that.university) &&
                 Objects.equals(major, that.major) &&
@@ -141,6 +127,6 @@ public class PersonalInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, tel, university, major, grade, sno, realName, sex);
+        return Objects.hash( tel, university, major, grade, sno, realName, sex);
     }
 }
