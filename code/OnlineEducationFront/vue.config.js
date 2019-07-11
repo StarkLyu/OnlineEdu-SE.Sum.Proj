@@ -14,6 +14,12 @@ module.exports = {
         },
     },
     devServer: {
-        proxy: "http://202.120.40.8:30382/online-edu"
+        proxy: {
+            '/online-edu': {
+                target: "http://202.120.40.8:30382",
+                ws: true,
+                changeOrigin: true,
+            }
+        }
     }
 }
