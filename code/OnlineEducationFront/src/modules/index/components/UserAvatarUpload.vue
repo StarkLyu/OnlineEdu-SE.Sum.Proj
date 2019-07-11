@@ -39,7 +39,10 @@
             uploadProcess: function(param) {
                 let formData = new FormData();
                 formData.append("avatar",param.file);
-                this.$http.post(this.uploadUrl, formData, {
+                this.$http.request({
+                    url: this.uploadUrl,
+                    method: "patch",
+                    data: formData,
                     headers: this.uploadHeader
                 }).then((response) => {
                     console.log(response);

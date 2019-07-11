@@ -119,7 +119,7 @@
 
 <script>
     import getHeader from "../managerRequestHeader.js";
-    import Rules from "/Users/zhangyuxin/Documents/MINE/PROGRAM/OnlineEdu-SE/OnlineEdu-SE.Sum.Proj/code/OnlineEducationFront/src/modules/index/rules.js"
+    import Rules from "../../index/rules.js"
 
     export default {
         name: "ManageUser",
