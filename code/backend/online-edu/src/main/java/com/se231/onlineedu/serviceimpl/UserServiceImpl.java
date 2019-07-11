@@ -111,32 +111,44 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(()->new RuntimeException("Fail -> Cause: User Role Not Found"));
         roles.add(userRole);
 
-        List<User> userList= new ArrayList<>();
         InputStream file = excel.getInputStream();
         List<Object> data = EasyExcelFactory
                 .read(file, new com.alibaba.excel.metadata.Sheet(1,1, UserExcel.class));
         int rowNumber=1;
+        boolean hasError = false;
+        StringBuilder errorMessage= new StringBuilder();
+        errorMessage.append("Some Data Has Error:\n");
         //username,password,email,tel,university,major,sno,grade,real name,sex
         for(Object dataItem:data){
             rowNumber++;
             UserExcel userExcel=(UserExcel)dataItem;
             if(userRepository.existsByUsername(userExcel.getUsername())){
-                return ResponseEntity.badRequest().body("Data Error -> Same Username In Row "+rowNumber);
+                hasError=true;
+                errorMessage.append("Data Error -> Same Username In Row "+rowNumber+"\n");
+                continue;
             }
             if(userRepository.existsByEmail(userExcel.getEmail())){
-                return ResponseEntity.badRequest().body("Data Error -> Same Email In Row "+rowNumber);
+                hasError=true;
+                errorMessage.append("Data Error -> Same Email In Row "+rowNumber+"\n");
+                continue;
             }
             if(userRepository.existsByTel(userExcel.getTel())){
-                return ResponseEntity.badRequest().body("Data Error -> Same Telephone Number In Row "+rowNumber);
+                hasError=true;
+                errorMessage.append("Data Error -> Same Telephone Number In Row "+rowNumber+"\n");
+                continue;
             }
             User user =new User(userExcel);
             user.setRoles(roles);
             user.setPassword(encoder.encode((userExcel.getPassword())));
-            userList.add(user);
+            userRepository.save(user);
         }
 
-        userRepository.saveAll(userList);
-        return ResponseEntity.ok("Import successfully.");
+        if(!hasError) {
+            return ResponseEntity.ok("Import successfully.");
+        }
+        else {
+            return ResponseEntity.badRequest().body(errorMessage.toString());
+        }
     }
 
     @Override
