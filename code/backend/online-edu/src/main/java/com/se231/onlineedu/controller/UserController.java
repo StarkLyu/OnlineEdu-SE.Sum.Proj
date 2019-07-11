@@ -148,6 +148,7 @@ public class UserController {
 
         file.createNewFile();
         multipartFile.transferTo(file);
+        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rw-r--r--"));
         Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rw-r--r--"));
 
 
