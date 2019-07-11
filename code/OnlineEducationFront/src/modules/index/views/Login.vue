@@ -92,8 +92,8 @@
                             }).then((infoResponse) => {
                                 this.$store.commit("infoSet", infoResponse.data);
                                 //console.log(state);
-                                if (infoResponse.data.role === "ROLE_ADMIN") {
-                                    localStorage.setItem("manageToken", getToken);
+                                if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
+                                    localStorage.setItem("managerToken", getToken);
                                     window.location = "/manager";
                                 }
                                 this.$router.push('/user');

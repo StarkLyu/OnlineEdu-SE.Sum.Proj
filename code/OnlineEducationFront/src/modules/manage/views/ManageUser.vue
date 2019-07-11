@@ -7,7 +7,6 @@
                         v-model="search"
                         placeholder="请输入用户名"
                         prefix-icon="el-icon-search"/>
-
                 <el-upload
                         class="upload-demo"
                         ref="upload"
@@ -15,18 +14,17 @@
                         :http-request="uploadExcel"
                         :on-preview="handlePreview"
                         :before-upload="beforeUpload"
-                        :on-progress="UploadProgress"
                         :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
+                        :on-progress="onUploadProgress"
                         :limit="3"
                         :on-exceed="handleExceed"
                         :auto-upload="false"
                         :file-list="fileList">
-                    <el-button slot="trigger" size="small" type="primary">点击选择用户信息</el-button>
+                    <el-button slot="trigger" size="small" type="primary" style="margin-right: 10px">点击选择用户信息</el-button>
                     <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
-                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>
+<!--                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>-->
             </div>
             <div class="divright">
                 <el-button @click="handleAdd">新增</el-button>
@@ -100,8 +98,8 @@
 <!--                只有用户为学生是才显示是否授权为教师的选项-->
                 <span v-if="editForm.boolrole===false">
                     <el-form-item label="用户身份">
-                    <el-checkbox label="教师" v-model="editForm.role">授权为教师</el-checkbox>
-                </el-form-item>
+                        <el-checkbox label="教师" v-model="rolecheck">授权为教师</el-checkbox>
+                    </el-form-item>
                 </span>
                 <el-form-item label="电话" prop="tel">
                     <el-input type="text" v-model="editForm.tel"></el-input>
@@ -151,6 +149,8 @@
                     role:"学生",
                     boolrole:false,
                 },
+
+                rolecheck:"",
 
                 // 校验规则
                 formRule: {
@@ -227,10 +227,6 @@
                 this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
             },
 
-            beforeRemove(file, fileList) {
-                return this.$confirm(`确定移除 ${ file.name }？`);
-            },
-
             // 上传前校验格式
             beforeUpload(file) {
                 let Xls = file.name.split('.');
@@ -238,7 +234,7 @@
                 if (Xls[1] === 'xls' || Xls[1] === 'xlsx') {
                     return file
                 } else {
-                    this.$message.error('上传文件只能是 xls/xlsx 格式!')
+                    this.$message.error('上传文件只能是 xls/xlsx 格式!');
                     return false;
                 }
             },
@@ -247,34 +243,53 @@
             uploadExcel(file){
                 console.log("正在上传文件");
 
+                // 进度条
+                // this.excelFlag = true;
+
                 let param = new FormData();
                 param.append('excel',file.file);
 
                 var that=this;
-                this.$axios.request({
-                    url: '/api/users/bulkImport',
-                    method: "post",
-                    headers: {Authorization: "Bearer " + localStorage.getItem("managerToken") ,'Content-Type':'multipart/form-data'},
-                    data:param,
-                })
+                this.$axios.request(
+                    {
+                        url: '/api/users/bulkImport',
+                        method: "post",
+                        headers: {Authorization: "Bearer " + localStorage.getItem("managerToken") ,'Content-Type':'multipart/form-data'},
+                        data:param,
+                    },
+                    {
+                        onUploadProgress: (event) => {
+                            // 监听上传进度
+                            event.percent = event.loaded / event.total * 100;
+                            this.excelUploadPercent=event.percent;
+                            file.onProgress(event);
+                        }
+                    }
+                )
                     .then(function (response) {
                         console.log(response.data);
-                        alert("上传成功");
+                        if (response.data==='Import successfully.')
+                        {
+                            alert("上传成功");
+                            // this.$message.success('上传成功');
+                        }
+                        that.excelFlag=false;
                         that.showAllUsers();
 
                     })
                     .catch(function (error) {
                         console.log(error);
-                        // alert("请求失败");
                     });
             },
 
             // 进度条
             uploadProgress(event,file,fileList){
                 this.excelFlag = true;
-                this.excelUploadPercent = file.percentage.toFixed(0);
-                console.log(this.excelUploadPercent);
+                // this.excelUploadPercent = file.percentage.toFixed(0);
+
                 this.excelUploadPercent=Math.floor(event.percent);
+                console.log(this.excelUploadPercent);
+
             },
 
             // 删除学生
@@ -313,11 +328,11 @@
                 this.dialogFormVisible=false;
             },
 
-
+            // 编辑信息
             updateData(){
                 var that=this;
                 // 把学生修改为老师
-                if (this.editForm.role==='教师'){
+                if (this.rolecheck===true){
                     this.$axios.request({
                         url: '/api/auth/'+this.editForm.id+'/teachingAdmin',
                         method: "post",
