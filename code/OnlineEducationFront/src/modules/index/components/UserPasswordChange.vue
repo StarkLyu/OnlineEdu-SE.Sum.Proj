@@ -30,6 +30,7 @@
                         confirmType="password"
                         ref="emailConfirm"
                         @confirm-pass="changeSuccess"
+                        @resend-request="resendRequest"
                 ></EmailConfirm>
             </div>
             <div slot="footer">
@@ -108,6 +109,21 @@
             },
             sendConfirm: function () {
                 this.$refs.emailConfirm.sendConfirmCode();
+            },
+            resendRequest: function () {
+                this.$http.request({
+                    url: this.requestUrl,
+                    method: "patch",
+                    headers: this.requestHeader,
+                    data: {
+                        password: this.changePass.newPass
+                    }
+                }).then(() => {
+
+                }).catch((error) => {
+                    alert("出错啦！");
+                    console.log(error.response);
+                })
             }
         },
         computed: {
