@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(tags = "用户信息控制类", value = "用户信息相关的api")
 @PropertySource(value = {"classpath:user.properties"})
 public class UserController {
+
     private String nginxPath = "/home/ubuntu/nginx/online-edu";
 
     @Value("${app.file.limit}")

@@ -281,10 +281,10 @@ public class UserInfoTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("file format not supported"));
 
-        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
-                .file(avatar)
-                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
-                .andExpect(status().isOk());
+//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
+//                .file(avatar)
+//                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
+//                .andExpect(status().isOk());
     }
 
     @Test
