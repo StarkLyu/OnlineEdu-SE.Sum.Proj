@@ -12,6 +12,7 @@
                         action="/api/users/bulkImport"
                         :http-request="uploadExcel"
                         :on-preview="handlePreview"
+                        :before-upload="beforeUpload"
                         :on-progress="UploadProgress"
                         :on-remove="handleRemove"
                         :before-remove="beforeRemove"
@@ -21,8 +22,7 @@
                     <el-button size="small" type="primary">点击上传用户信息</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
-                <el-progress v-if="excelFlag ===true" :percentage="excelUploadPercent" style="margin-top:10px;">
-                </el-progress>
+                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>
             </div>
             <div class="divright">
                 <el-button @click="handleAdd">新增</el-button>
@@ -93,14 +93,12 @@
                 <el-form-item label="用户名">
                     <el-input type="text" v-model="editForm.username"></el-input>
                 </el-form-item>
-                <el-form-item label="用户身份">
-                    <el-radio-group v-model="editForm.role">
-                        <el-radio label="教师"></el-radio>
-                        <span v-if="editForm.role!=='教师' && editForm.role!=='管理员'">
-                            <el-radio label="学生"></el-radio>
-                        </span>
-                    </el-radio-group>
+<!--                只有用户为学生是才显示是否授权为教师的选项-->
+                <span v-if="editForm.boolrole===false">
+                    <el-form-item label="用户身份">
+                    <el-checkbox label="教师" v-model="editForm.role">授权为教师</el-checkbox>
                 </el-form-item>
+                </span>
                 <el-form-item label="电话" prop="tel">
                     <el-input type="text" v-model="editForm.tel"></el-input>
                 </el-form-item>
@@ -119,7 +117,7 @@
 
 <script>
     import getHeader from "../managerRequestHeader.js";
-    import Rules from "/Users/zhangyuxin/Documents/MINE/PROGRAM/OnlineEdu-SE/OnlineEdu-SE.Sum.Proj/code/OnlineEducationFront/src/modules/index/rules.js"
+    import Rules from "../../index/rules.js"
 
     export default {
         name: "ManageUser",
@@ -147,6 +145,7 @@
                     email:"",
                     tel:"",
                     role:"学生",
+                    boolrole:false,
                 },
 
                 // 校验规则
@@ -224,6 +223,18 @@
                 return this.$confirm(`确定移除 ${ file.name }？`);
             },
 
+            // 上传前校验格式
+            beforeUpload(file) {
+                let Xls = file.name.split('.');
+
+                if (Xls[1] === 'xls' || Xls[1] === 'xlsx') {
+                    return file
+                } else {
+                    this.$message.error('上传文件只能是 xls/xlsx 格式!')
+                    return false;
+                }
+            },
+
             // 上传文件
             uploadExcel(file){
                 let param = new FormData();
@@ -249,9 +260,11 @@
             },
 
             // 进度条
-            uploadProgress(file){
+            uploadProgress(event,file,fileList){
                 this.excelFlag = true;
                 this.excelUploadPercent = file.percentage.toFixed(0);
+                console.log(this.excelUploadPercent);
+                this.excelUploadPercent=Math.floor(event.percent);
             },
 
             // 删除学生
@@ -264,7 +277,12 @@
                 this.dialogStatus = "update";
                 this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
-                console.log(this.editForm);
+                if(this.editForm.role==='学生'){
+                    this.editForm.boolrole=false;
+                }
+                else {
+                    this.editForm.boolrole=true;
+                }
             },
 
             //显示新增界面
@@ -276,6 +294,7 @@
                     username: "",
                     email:"",
                     role:'学生',
+                    boolrole:false,
                 }
             },
 

@@ -42,13 +42,13 @@ const actions = {
                 url: "/api/auth/signin",
                 method: "post",
                 data: {
-                    username: loginInfo.userName,
+                    username: loginInfo.username,
                     password: loginInfo.password
                 }
             }).then((response) => {
                 console.log(response.data);
                 commit("loginSet", {
-                    userName: loginInfo.userName,
+                    userName: loginInfo.username,
                     accessToken: response.data.accessToken
                 });
                 alert("登录成功");
@@ -77,6 +77,9 @@ const actions = {
         }).then((infoResponse) => {
             commit("infoSet", infoResponse.data);
             console.log(state);
+            if (state.user.userInfo.roles[0].role === "ROLE_ADMIN") {
+                window.location = "/manager"
+            }
         }).catch((error) => {
             console.log(error.response);
             if (error.response.data.status === 401) {
