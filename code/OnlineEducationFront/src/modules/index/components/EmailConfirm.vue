@@ -61,7 +61,6 @@
             },
             sendConfirmCode: function () {
                 this.$http.request(this.requestConfig).then(() => {
-                    alert("注册成功！");
                     this.$emit("confirm-pass");
                 }).catch((error) => {
                     console.log(error.response);
@@ -94,8 +93,18 @@
                     },
                     withCredentials: true
                 };
-                else if (this.confirmType === "password") return "/api/auth/password/confirm";
-                else return "/api/auth/email/confirm";
+                else {
+                    let id = this.$store.state.user.userInfo.id;
+                    return {
+                        url: "/api/users/" + id + "/" + this.confirmType + "/confirm",
+                        method: "get",
+                        params: {
+                            verificationToken: this.confirmCode
+                        },
+                        headers: this.$store.getters.authRequestHead,
+                        withCredentials: true
+                    };
+                }
             }
         }
     }

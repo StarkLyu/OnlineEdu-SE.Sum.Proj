@@ -3,7 +3,7 @@ import axios from 'axios'
  axios.defaults.withCredentials = true;
 
 const state = {
-    username: "jjj",
+    username: "",
     accessToken: "",
     loginStatus: false,
     userInfo: {
@@ -36,7 +36,7 @@ const getters = {
 
 // actions
 const actions = {
-    login: ({ state,commit,dispatch }, loginInfo) => {
+    /*login: ({ state,commit,dispatch }, loginInfo) => {
         return new Promise((resolve, reject) => {
             axios.request({
                 url: "/api/auth/signin",
@@ -89,7 +89,7 @@ const actions = {
                 alert(error);
             }
         });
-    },
+    },*/
 }
 
 // mutations
@@ -103,6 +103,28 @@ const mutations = {
     infoSet (state, infoData) {
         state.userInfo = infoData;
         console.log(state);
+    },
+    logOut (state) {
+        state.username = "";
+        state.accessToken = "";
+        state.loginStatus = false;
+        state.userInfo = {
+            email: "",
+            grade: 0,
+            major: "",
+            realName: "",
+            sex: "",
+            sno: "",
+            tno: "",
+            tel: "",
+            university: "",
+            roles: [
+                {
+                    id: 0,
+                    role: "",
+                }
+            ]
+        }
     }
 }
 
