@@ -146,11 +146,9 @@ public class UserController {
         }
         System.out.println(file.getAbsolutePath());
 
-        Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
-        FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
-        Files.createFile(file.toPath(), permissions);
-
+        file.createNewFile();
         multipartFile.transferTo(file);
+        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rw-r--r--"));
 
 
         return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
