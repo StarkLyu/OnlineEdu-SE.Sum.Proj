@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.withCredentials = true;
+ axios.defaults.withCredentials = true;
 
 const state = {
     userName: "jjj",
@@ -77,8 +77,8 @@ const actions = {
         }).then((infoResponse) => {
             commit("infoSet", infoResponse.data);
             console.log(state);
-            if (state.user.userInfo.roles[0].role === "ROLE_ADMIN") {
-                window.location = "/manager"
+            if (state.userInfo.roles[0].role === "ROLE_ADMIN") {
+                window.location = "/manager";
             }
         }).catch((error) => {
             console.log(error.response);
