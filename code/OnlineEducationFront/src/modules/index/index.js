@@ -9,8 +9,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '../../assets/div-layout.css'
 import '../../assets/icon/iconfont.css'
 
+axios.defaults.withCredentials = true;
 Vue.config.productionTip = false;
-Vue.use(ElementUI)
+Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
 Vue.prototype.$http = axios;
 

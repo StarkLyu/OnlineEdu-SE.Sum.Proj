@@ -1,9 +1,14 @@
 <template>
     <el-upload
             class="avatar-uploader avatar"
-            action="http://202.120.40.8:30382/online-edu/api/users/starklyu/"
+            :action="uploadUrl"
+            :headers="uploadHeader"
             :show-file-list="false"
-            :before-upload="beforeAvatarUpload">
+            :before-upload="beforeAvatarUpload"
+            :on-success="uploadSucceed"
+            :on-error="uploadFail"
+            :http-request="uploadProcess"
+    >
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
@@ -14,11 +19,11 @@
         name: "UserAvatarUpload",
         data() {
             return {
-                imageUrl: ''
+
             };
         },
         methods: {
-            beforeAvatarUpload(file) {
+            beforeAvatarUpload: function(file) {
                 console.log(file);
                 const isJPG = file.type === 'image/jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
@@ -30,6 +35,40 @@
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
                 return isJPG && isLt2M;
+            },
+            uploadProcess: function(param) {
+                let formData = new FormData();
+                formData.append("avatar",param.file);
+                this.$http.post(this.uploadUrl, formData, {
+                    headers: this.uploadHeader
+                }).then((response) => {
+                    console.log(response);
+                    alert("修改成功");
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            uploadSucceed: function(response,file,filelist) {
+                alert("上传成功");
+                console.log(response);
+            },
+            uploadFail: function(error,file,filelist) {
+                alert("上传失败");
+                console.log(error);
+            }
+        },
+        computed: {
+            uploadUrl: function () {
+                return "http://202.120.40.8:30382/online-edu/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
+            },
+            imageUrl: function () {
+                return this.$store.state.user.userInfo.avatarUrl
+            },
+            uploadHeader: function () {
+                return {
+                    'Authorization': "Bearer " + this.$store.state.user.accessToken,
+                    'Content-Type': 'multipart/form-data'
+                }
             }
         }
     }

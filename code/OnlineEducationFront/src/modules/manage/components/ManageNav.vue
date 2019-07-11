@@ -27,11 +27,8 @@
 
 <script>
     export default {
-        name: "ManagNav",
+        name: "ManageNav",
 
-        methods:{
-
-        }
     }
 </script>
 

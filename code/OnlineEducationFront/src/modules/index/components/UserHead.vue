@@ -10,7 +10,7 @@
         name: "UserHead",
         data() {
             return {
-                userId: "Stark"
+                sno: "Stark"
             }
         }
     }

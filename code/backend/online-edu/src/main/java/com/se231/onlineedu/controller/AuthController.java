@@ -47,10 +47,10 @@ public class AuthController {
             @ApiResponse(code = 401, message = "Error -> Unauthorized"),
             @ApiResponse(code = 200, message = "sign in successfully")
     })
-
     @PostMapping("/signin")
+    @ResponseBody
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
-        return ResponseEntity.ok(authService.userSignIn(loginRequest.getUsername(),loginRequest.getPassword()));
+        return authService.userSignIn(loginRequest.getUsername(),loginRequest.getPassword());
     }
 
 
@@ -87,7 +87,7 @@ public class AuthController {
         }
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return ResponseEntity.badRequest().body("验证码已失效");
+            return ResponseEntity.badRequest().body("验证码无效");
         }
 
         User user = (User)httpSession.getAttribute("user");

@@ -1,9 +1,5 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import com.alibaba.excel.EasyExcelFactory;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.Role;
@@ -12,19 +8,19 @@ import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.UserExcel;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.UserRepository;
-import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -60,7 +56,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User manageUserInfo(Long id, PersonalInfo personalInfo) throws Exception {
         User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
-        checkSameEmailAndTel(personalInfo.getTel(),user);
+        if(!user.getTel().toString().equals(personalInfo.getTel())&&checkSameTel(personalInfo.getTel())){
+            throw new Exception("This telephone number is already token !");
+        }
+        checkSameTel(personalInfo.getTel());
         personalInfo.modifyUserInfo(user);
         return userRepository.save(user);
     }
@@ -83,13 +82,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkSameTel(String tel) {
         return userRepository.existsByTel(Long.parseLong(tel));
-    }
-
-    private void checkSameEmailAndTel(String tel,User originUser)throws Exception{
-        Long tele = Long.parseLong(tel);
-        if(!originUser.getTel().equals(tele)&&userRepository.existsByTel(tele)){
-            throw new Exception("This telephone number is already token !");
-        }
     }
 
     @Override
