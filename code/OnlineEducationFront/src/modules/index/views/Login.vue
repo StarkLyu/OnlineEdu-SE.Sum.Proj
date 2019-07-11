@@ -92,7 +92,7 @@
                             }).then((infoResponse) => {
                                 this.$store.commit("infoSet", infoResponse.data);
                                 //console.log(state);
-                                if (infoResponse.data.role === "ROLE_ADMIN") {
+                                if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
                                     localStorage.setItem("manageToken", getToken);
                                     window.location = "/manager";
                                 }

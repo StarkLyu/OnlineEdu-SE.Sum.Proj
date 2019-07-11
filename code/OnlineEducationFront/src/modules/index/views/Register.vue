@@ -80,6 +80,7 @@
                         confirm-type="register"
                         ref="emailConfirm"
                         @confirm-pass="finishRegister"
+                        @resend-request="resendRequest"
                 ></EmailConfirm>
                 <div class="center-layout button-group-size">
                     <el-button type="primary" @click="lastStep">返回</el-button>
@@ -89,7 +90,7 @@
         </div>
         <div v-else-if="currentStep === 3">
             <div class="step-layout">
-                <h3>恭喜你，注册成功！系统将在5秒后自动跳转至登录页面，如跳转失败，请点击下方链接</h3>
+                <h3>恭喜你，注册成功！请点击下方链接进行登录</h3>
             </div>
         </div>
         <div class="center-layout return-link">
@@ -138,8 +139,21 @@
                     email: FormRules.emailRule,
                     tel: FormRules.telRule,
                 },
+                totalRegisterInfo: {
+                    username: "",
+                    password: "",
+                    email: "",
+                    tel: "",
+                    realName: "",
+                    sex: "",
+                    university: "",
+                    sno: "",
+                    major: "",
+                    grade: 1,
+                },
                 registerDetailInfo: {
                     realName: "",
+                    tel: "",
                     sex: "",
                     university: "",
                     sno: "",
@@ -179,6 +193,7 @@
                     major: detailInfo.major,
                     grade: detailInfo.grade
                 };
+                this.totalRegisterInfo = totalRegisterInfo;
                 console.log(totalRegisterInfo);
                 this.$http.request({
                     url: "/api/auth/signup",
@@ -198,6 +213,21 @@
             finishRegister: function () {
                 alert("注册成功！");
                 this.nextStep();
+            },
+            resendRequest: function () {
+                this.$http.request({
+                    url: "/api/auth/signup",
+                    method: "post",
+                    data: this.totalRegisterInfo,
+                    withCredentials: true
+                }).then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    console.log(error.response);
+                    if (error.response.data === "Fail -> Email Address is already taken!") {
+                        alert("邮箱已被使用，请更换邮箱");
+                    }
+                })
             }
         }
     }

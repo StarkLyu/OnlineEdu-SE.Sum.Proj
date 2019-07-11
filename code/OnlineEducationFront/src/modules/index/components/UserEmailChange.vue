@@ -12,7 +12,12 @@
                 title="邮箱验证"
                 width="500px"
         >
-            <EmailConfirm confirm-type="email" ref="emailConfirm" @confirm-pass="confirmPass"></EmailConfirm>
+            <EmailConfirm
+                    confirm-type="email"
+                    ref="emailConfirm"
+                    @confirm-pass="confirmPass"
+                    @resend-request="resendRequest"
+            ></EmailConfirm>
             <div slot="footer">
                 <el-button @click="cancelChange">取消</el-button>
                 <el-button @click="submitConfirm">提交</el-button>
@@ -62,6 +67,25 @@
                     }
                 })
             },
+            resendRequest: function () {
+                this.$refs.emailForm.validate((value) => {
+                    if (value) {
+                        this.$http.request({
+                            url: this.requestUrl,
+                            method: "patch",
+                            data: {
+                                email: this.newEmailForm.newEmail
+                            },
+                            headers: this.requestHead
+                        }).then(() => {
+
+                        }).catch((error) => {
+                            alert("出错啦！");
+                            console.log(error.response);
+                        })
+                    }
+                })
+            },
             cancelChange: function () {
                 this.showConfirm = false;
                 this.$refs['emailConfirm'].clear();
@@ -72,7 +96,7 @@
             },
             submitConfirm: function() {
                 this.$refs.emailConfirm.sendConfirmCode();
-            }
+            },
         },
         computed: {
             requestUrl: function () {
