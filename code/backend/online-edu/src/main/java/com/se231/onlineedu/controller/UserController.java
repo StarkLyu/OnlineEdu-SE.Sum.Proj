@@ -143,7 +143,7 @@ public class UserController {
         file.createNewFile();
         multipartFile.transferTo(file);
 
-        Runtime.getRuntime().exec("sudo chmod 755" + fileName);
+        Runtime.getRuntime().exec("sudo chmod 755 " + fileName);
 
         return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
     }
