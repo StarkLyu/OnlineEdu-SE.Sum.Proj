@@ -12,7 +12,7 @@
                                 placeholder="用户名"
                                 suffix-icon="el-icon-user"
                                 id="userId"
-                                v-model="loginInfo.username"
+                                v-model="loginInfo.userName"
                         ></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
@@ -50,7 +50,7 @@
         data() {
             return {
                 loginInfo: {
-                    username: "",
+                    userName: "",
                     password: ""
                 },
                 rules: {
