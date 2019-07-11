@@ -145,8 +145,8 @@ public class UserController {
 
         file.createNewFile();
         multipartFile.transferTo(file);
-        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxrwxrwx"));
-        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rwxrw-r--"));
+        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rwxrwxrwx"));
+        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxr--r--"));
 
 
         return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
