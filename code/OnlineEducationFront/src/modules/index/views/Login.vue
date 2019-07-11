@@ -7,7 +7,7 @@
                          :rules="rules"
                          ref="loginInfo"
                 >
-                    <el-form-item prop="userName">
+                    <el-form-item prop="username">
                         <el-input
                                 placeholder="用户名"
                                 suffix-icon="el-icon-user"

@@ -10,6 +10,7 @@ import '../../assets/div-layout.css'
 import '../../assets/icon/iconfont.css'
 
 axios.defaults.withCredentials = true;
+//axios.defaults.baseURL = "http://localhost:8081/online-edu"
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
