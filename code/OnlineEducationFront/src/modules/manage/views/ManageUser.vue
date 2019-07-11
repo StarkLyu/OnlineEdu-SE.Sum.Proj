@@ -7,8 +7,10 @@
                         v-model="search"
                         placeholder="请输入用户名"
                         prefix-icon="el-icon-search"/>
+
                 <el-upload
                         class="upload-demo"
+                        ref="upload"
                         action="/api/users/bulkImport"
                         :http-request="uploadExcel"
                         :on-preview="handlePreview"
@@ -18,8 +20,10 @@
                         :before-remove="beforeRemove"
                         :limit="3"
                         :on-exceed="handleExceed"
+                        :auto-upload="false"
                         :file-list="fileList">
-                    <el-button size="small" type="primary">点击上传用户信息</el-button>
+                    <el-button slot="trigger" size="small" type="primary">点击选择用户信息</el-button>
+                    <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
                 <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>
@@ -202,9 +206,13 @@
 
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        console.log(error.response);
                         // alert("请求失败");
                     })
+            },
+
+            submitUpload() {
+                this.$refs.upload.submit();
             },
 
             handleRemove(file, fileList) {
@@ -237,6 +245,8 @@
 
             // 上传文件
             uploadExcel(file){
+                console.log("正在上传文件");
+
                 let param = new FormData();
                 param.append('excel',file.file);
 
@@ -244,7 +254,7 @@
                 this.$axios.request({
                     url: '/api/users/bulkImport',
                     method: "post",
-                    headers: getHeader.requestHeader()+{'Content-Type':'multipart/form-data'},
+                    headers: {Authorization: "Bearer " + localStorage.getItem("managerToken") ,'Content-Type':'multipart/form-data'},
                     data:param,
                 })
                     .then(function (response) {
