@@ -22,7 +22,7 @@
                                 type="text"
                                 suffix-icon="el-icon-user"
                                 placeholder="请在此创建你的用户名"
-                                v-model="registerUser.username"
+                                v-model="registerUser.userName"
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
