@@ -33,12 +33,31 @@
                     headers: this.requestHead
                 }).then(() => {
                     alert("修改成功！");
-                    this.$store.dispatch("loadUserInfo");
-                    this.$refs['userInfoManage'].uploadDetailInfo(this.userDetailInfo);
+                    this.updateUserInfo();
+                    //this.$refs['userInfoManage'].uploadDetailInfo(this.userDetailInfo);
                 }).catch((error) => {
                     console.log(error.response);
                     alert("出错啦");
                 })
+            },
+            updateUserInfo: function () {
+                this.$http.request({
+                    url: "/api/users/info",
+                    method: 'get',
+                    headers: {
+                        "Authorization": "Bearer " + this.$store.state.user.accessToken
+                    }
+                }).then((infoResponse) => {
+                    this.$store.commit("infoSet", infoResponse.data);
+                }).catch((error) => {
+                    console.log(error.response);
+                    if (error.response.data.status === 401) {
+                        alert("获取用户信息出错");
+                    }
+                    else {
+                        alert(error);
+                    }
+                });
             }
         },
         computed:{

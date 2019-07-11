@@ -34,7 +34,10 @@ const getters = {
         }
     },
     userAvatarUrl: state => {
-        return "http://202.120.40.8:30382/online-edu/static/" + state.userInfo.avatarUrl;
+        if (state.userInfo.avatarUrl !== "") {
+            return "http://202.120.40.8:30382/online-edu/static/" + state.userInfo.avatarUrl + "?a=" + Math.random();
+        }
+        else return "";
     }
 }
 

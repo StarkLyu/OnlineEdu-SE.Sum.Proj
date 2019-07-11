@@ -1,7 +1,7 @@
 <template>
     <div style="width: 103px">
         <div v-if="loginStatus">
-            <el-avatar :src="avatarUrl"></el-avatar>{{ username }}
+            <el-avatar :src="avatarUrl" fit="fill"></el-avatar>{{ username }}
         </div>
         <div v-else>
             <el-avatar icon="el-icon-user-solid"></el-avatar>
@@ -25,6 +25,7 @@
                 return this.$store.state.user.loginStatus;
             },
             avatarUrl() {
+                console.log(this.$store.getters.userAvatarUrl);
                 return this.$store.getters.userAvatarUrl;
             }
         }

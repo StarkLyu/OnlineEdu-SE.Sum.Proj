@@ -47,6 +47,23 @@
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
+                    this.$http.request({
+                        url: "/api/users/info",
+                        method: 'get',
+                        headers: {
+                            "Authorization": "Bearer " + this.$store.state.user.accessToken
+                        }
+                    }).then((infoResponse) => {
+                        this.$store.commit("infoSet", infoResponse.data);
+                    }).catch((error) => {
+                        console.log(error.response);
+                        if (error.response.data.status === 401) {
+                            alert("获取用户信息出错");
+                        }
+                        else {
+                            alert(error);
+                        }
+                    });
                 }).catch((error) => {
                     alert("修改失败");
                     console.log(error.response);
@@ -66,7 +83,7 @@
                 return "/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
             },
             imageUrl: function () {
-                return this.$store.state.user.userInfo.avatarUrl
+                return this.$store.getters.userAvatarUrl;
             },
             uploadHeader: function () {
                 return {
