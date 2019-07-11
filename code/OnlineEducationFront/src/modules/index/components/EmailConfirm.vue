@@ -9,7 +9,7 @@
                     <el-button
                             v-if="resendFlag"
                             slot="append"
-                            @click="sendConfirmRequest"
+                            @click="resendConfirmRequest"
                     >重新发送</el-button>
                     <el-button v-else slot="append" disabled>{{ countDown }}s后重新发送</el-button>
                 </el-input>
@@ -56,6 +56,9 @@
                 }
             },
             sendConfirmRequest: function () {
+                this.countTime();
+            },
+            resendConfirmRequest: function () {
                 this.$emit("resend-request");
                 this.countTime();
             },

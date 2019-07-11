@@ -1,7 +1,7 @@
 <template>
     <div class="info-form">
-        <el-form label-position="left" label-width="100px">
-            <el-form-item label="真实姓名">
+        <el-form label-position="left" label-width="100px" :model="userInfo">
+            <el-form-item label="真实姓名" prop="realName">
                 <el-input v-model="userInfo.realName"></el-input>
             </el-form-item>
             <el-form-item label="手机号">
@@ -110,7 +110,9 @@
             }
         },
         mounted() {
-            this.userInfo = this.userdata;
+            if (this.userdata !== {}) {
+                this.userInfo = this.userdata;
+            }
         }
     }
 </script>

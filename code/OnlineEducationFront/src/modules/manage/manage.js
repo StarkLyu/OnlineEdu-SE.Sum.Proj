@@ -6,6 +6,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "/online-edu";
 Vue.use(ElementUI);
 Vue.prototype.$axios=axios;
 axios.defaults.baseURL = "/online-edu";

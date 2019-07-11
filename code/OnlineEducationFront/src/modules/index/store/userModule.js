@@ -16,6 +16,7 @@ const state = {
         tno: "",
         tel: "",
         university: "",
+        avatarUrl: "",
         roles: [
             {
                 id: 0,
@@ -31,66 +32,15 @@ const getters = {
         return {
             Authorization: "Bearer " + state.accessToken
         }
+    },
+    userAvatarUrl: state => {
+        return "http://202.120.40.8:30382/online-edu/static/" + state.userInfo.avatarUrl;
     }
 }
 
 // actions
 const actions = {
-    /*login: ({ state,commit,dispatch }, loginInfo) => {
-        return new Promise((resolve, reject) => {
-            axios.request({
-                url: "/api/auth/signin",
-                method: "post",
-                data: {
-                    username: loginInfo.username,
-                    password: loginInfo.password
-                }
-            }).then((response) => {
-                console.log(response.data);
-                commit("loginSet", {
-                    username: loginInfo.username,
-                    accessToken: response.data.accessToken
-                });
-                alert("登录成功");
-                console.log(state);
-                dispatch("loadUserInfo");
-                resolve();
-            }).catch((error) => {
-                console.log(error.response);
-                if (error.response.data.status === 401) {
-                    alert("用户名或密码错误");
-                }
-                else {
-                    alert(error);
-                }
-                reject();
-            });
-        })
-    },
-    loadUserInfo: ({ state, commit }) => {
-        axios.request({
-            url: "/api/users/info",
-            method: 'get',
-            headers: {
-                "Authorization": "Bearer " + state.accessToken
-            }
-        }).then((infoResponse) => {
-            commit("infoSet", infoResponse.data);
-            console.log(state);
-            if (state.userInfo.roles[0].role === "ROLE_ADMIN") {
-                localStorage.setItem("managerToken", state.accessToken);
-                window.location = "/manager";
-            }
-        }).catch((error) => {
-            console.log(error.response);
-            if (error.response.data.status === 401) {
-                alert("获取用户信息出错");
-            }
-            else {
-                alert(error);
-            }
-        });
-    },*/
+
 }
 
 // mutations
@@ -119,6 +69,7 @@ const mutations = {
             tno: "",
             tel: "",
             university: "",
+            avatarUrl: "",
             roles: [
                 {
                     id: 0,
