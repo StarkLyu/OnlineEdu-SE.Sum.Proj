@@ -136,6 +136,7 @@ public class UserServiceImpl implements UserService {
                 return "Data Error -> Same Telephone Number In Row "+rowNumber;
             }
             User user =new User(userExcel);
+            user.setRoles(roles);
             user.setPassword(encoder.encode((userExcel.getPassword())));
             userList.add(user);
         }

@@ -50,7 +50,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
                     paperWithQuestionsRepository.findById(new PaperWithQuestionsPrimaryKey(paper,question))
                     .orElseThrow(()->new RuntimeException("Question Not Found"));
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
-            double score= entry.getValue().equals(question.getAnswer())?paperWithQuestions.getScore():0;
+            //若题目不为
+            double score= (entry.getValue().equals(question.getAnswer())&&
+                    !question.getQuestionType().equals(QuestionType.SUBJECTIVE))?paperWithQuestions.getScore():0;
             Answer answer = new Answer(answerPrimaryKey,entry.getValue(),score);
             answerList.add(answerRepository.save(answer));
             totalScore+=score;
