@@ -46,7 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 @PropertySource(value = {"classpath:user.properties"})
 public class UserController {
 
-    private String nginxPath = "/home/ubuntu/nginx/online-edu/";
+    private String nginxPath = "/home/liu/nginx/online-edu/";
 
     @Value("${app.file.limit}")
     private Long limit;
@@ -145,12 +145,13 @@ public class UserController {
             file.getParentFile().mkdir();
         }
         System.out.println(file.getAbsolutePath());
-        multipartFile.transferTo(file);
+
         Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
         FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
         Files.createFile(file.toPath(), permissions);
 
         multipartFile.transferTo(file);
+
 
         return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
     }
