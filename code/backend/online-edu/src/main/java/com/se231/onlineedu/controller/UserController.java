@@ -1,15 +1,5 @@
 package com.se231.onlineedu.controller;
 
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.List;
-import java.util.Set;
-
 import com.alibaba.fastjson.JSONObject;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
@@ -31,6 +21,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.List;
 
 /**
  * User Controller Class
@@ -148,8 +145,8 @@ public class UserController {
 
         file.createNewFile();
         multipartFile.transferTo(file);
-        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rw-r--r--"));
-        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rw-r--r--"));
+        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxrw-r--"));
+        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rwxrw-r--"));
 
 
         return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
