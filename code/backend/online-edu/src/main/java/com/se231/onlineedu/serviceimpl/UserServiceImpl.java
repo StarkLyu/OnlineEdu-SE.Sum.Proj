@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String bulkImportUser(MultipartFile excel) throws Exception {
+    public ResponseEntity<String> bulkImportUser(MultipartFile excel) throws Exception {
         Workbook workbook = null;
         //获取文件名字
         String fileName = excel.getOriginalFilename();
@@ -95,13 +96,13 @@ public class UserServiceImpl implements UserService {
         }else if(fileName.endsWith("xlsx")) {
             workbook = new XSSFWorkbook(excel.getInputStream());
         }else {
-            return "Import File Fail -> File Format Wrong,Only Support Xlsx And Xls";
+            return ResponseEntity.badRequest().body("Import File Fail -> File Format Wrong,Only Support Xlsx And Xls");
         }
         //获取工作sheet
         Sheet sheet = workbook.getSheet("sheet1");
         int rows = sheet.getLastRowNum();
-        if(rows==0||rows==1){
-            return "File Error -> File Is Empty.";
+        if(rows==0){
+            return ResponseEntity.badRequest().body("File Error -> File Is Empty.");
         }
 
         List<Role> roles=new ArrayList<>();
@@ -116,25 +117,29 @@ public class UserServiceImpl implements UserService {
         int rowNumber=1;
         //username,password,email,tel,university,major,sno,grade,real name,sex
         for(Object dataItem:data){
-            rowNumber++;
-            UserExcel userExcel=(UserExcel)dataItem;
-            if(userRepository.existsByUsername(userExcel.getUsername())){
-                return "Data Error -> Same Username In Row "+rowNumber;
+            try {
+                rowNumber++;
+                UserExcel userExcel = (UserExcel) dataItem;
+                if (userRepository.existsByUsername(userExcel.getUsername())) {
+                    return ResponseEntity.badRequest().body("Data Error -> Same Username In Row " + rowNumber);
+                }
+                if (userRepository.existsByEmail(userExcel.getEmail())) {
+                    return ResponseEntity.badRequest().body("Data Error -> Same Email In Row " + rowNumber);
+                }
+                if (userRepository.existsByTel(userExcel.getTel())) {
+                    return ResponseEntity.badRequest().body("Data Error -> Same Telephone Number In Row " + rowNumber);
+                }
+                User user = new User(userExcel);
+                user.setRoles(roles);
+                user.setPassword(encoder.encode((userExcel.getPassword())));
+                userList.add(user);
+            } catch (Exception e){
+                continue;
             }
-            if(userRepository.existsByEmail(userExcel.getEmail())){
-                return "Data Error -> Same Email In Row "+rowNumber;
-            }
-            if(userRepository.existsByTel(userExcel.getTel())){
-                return "Data Error -> Same Telephone Number In Row "+rowNumber;
-            }
-            User user =new User(userExcel);
-            user.setRoles(roles);
-            user.setPassword(encoder.encode((userExcel.getPassword())));
-            userList.add(user);
         }
 
         userRepository.saveAll(userList);
-        return "Import successfully.";
+        return ResponseEntity.ok("Import successfully.");
     }
 
     @Override

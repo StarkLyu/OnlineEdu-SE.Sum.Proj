@@ -39,8 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(tags = "用户信息控制类", value = "用户信息相关的api")
 @PropertySource(value = {"classpath:user.properties"})
 public class UserController {
-    @Value("${app.nginx.path}")
-    private String nginxPath;
+    private String nginxPath = "/home/ubuntu/nginx";
 
     @Value("${app.file.limit}")
     private Long limit;
@@ -196,7 +195,7 @@ public class UserController {
     @PostMapping("/bulkImport")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<?> buckImportUser(@RequestParam("excel") MultipartFile excel)throws Exception{
-        return ResponseEntity.ok(userService.bulkImportUser(excel));
+        return userService.bulkImportUser(excel);
     }
 
     private ResponseEntity<?> sendEmail(HttpSession httpSession, Long id) throws Exception {
