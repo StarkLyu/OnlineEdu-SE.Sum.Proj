@@ -24,7 +24,7 @@
                     <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
-                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>
+<!--                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>-->
             </div>
             <div class="divright">
                 <el-button @click="handleAdd">新增</el-button>
@@ -234,7 +234,7 @@
                 if (Xls[1] === 'xls' || Xls[1] === 'xlsx') {
                     return file
                 } else {
-                    this.$message.error('上传文件只能是 xls/xlsx 格式!')
+                    this.$message.error('上传文件只能是 xls/xlsx 格式!');
                     return false;
                 }
             },
@@ -244,7 +244,7 @@
                 console.log("正在上传文件");
 
                 // 进度条
-                this.excelFlag = true;
+                // this.excelFlag = true;
 
                 let param = new FormData();
                 param.append('excel',file.file);
@@ -268,7 +268,11 @@
                 )
                     .then(function (response) {
                         console.log(response.data);
-                        // alert("上传成功");
+                        if (response.data==='Import successfully.')
+                        {
+                            alert("上传成功");
+                            // this.$message.success('上传成功');
+                        }
                         that.excelFlag=false;
                         that.showAllUsers();
 
@@ -324,7 +328,7 @@
                 this.dialogFormVisible=false;
             },
 
-
+            // 编辑信息
             updateData(){
                 var that=this;
                 // 把学生修改为老师

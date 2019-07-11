@@ -8,6 +8,7 @@ import axios from 'axios'
 
 Vue.use(ElementUI);
 Vue.prototype.$axios=axios;
+axios.defaults.baseURL = "/online-edu";
 
 new Vue({
     router,
