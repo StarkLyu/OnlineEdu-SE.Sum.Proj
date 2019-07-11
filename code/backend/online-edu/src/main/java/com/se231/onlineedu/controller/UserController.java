@@ -196,7 +196,7 @@ public class UserController {
     @PostMapping("/bulkImport")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<?> buckImportUser(@RequestParam("excel") MultipartFile excel)throws Exception{
-        return ResponseEntity.ok(userService.bulkImportUser(excel));
+        return userService.bulkImportUser(excel);
     }
 
     private ResponseEntity<?> sendEmail(HttpSession httpSession, Long id) throws Exception {

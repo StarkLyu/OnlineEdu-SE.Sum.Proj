@@ -3,6 +3,7 @@ package com.se231.onlineedu.service;
 import java.util.List;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -65,7 +66,7 @@ public interface UserService {
      * @return  String to return hints
      * @throws Exception IO Exception
      */
-    String bulkImportUser(MultipartFile excel)throws Exception;
+    ResponseEntity<String> bulkImportUser(MultipartFile excel)throws Exception;
 
     /**
      * this service allows user to update his personal avatar

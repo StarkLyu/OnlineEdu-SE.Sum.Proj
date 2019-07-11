@@ -44,7 +44,7 @@ public class CourseServiceImpl implements CourseService {
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
         User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
         if(endDate.before(startDate)) {
-            throw new Exception("end date comes before start date!");
+            throw new RuntimeException("end date comes before start date!");
         }
         Course course=new Course(startDate,endDate,CourseState.APPLYING,coursePrototype,user);
         return courseRepository.save(course);

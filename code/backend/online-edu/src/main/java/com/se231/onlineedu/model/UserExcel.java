@@ -1,5 +1,8 @@
 package com.se231.onlineedu.model;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 
@@ -15,15 +18,19 @@ import com.alibaba.excel.metadata.BaseRowModel;
  */
 public class UserExcel extends BaseRowModel {
     @ExcelProperty(index = 0)
+    @Size(min = 4,max = 50)
     private String username;
 
     @ExcelProperty(index = 1)
+    @Size(min = 6,max = 40)
     private String password;
 
     @ExcelProperty(index = 2)
+    @Email
     private String email;
 
     @ExcelProperty(index = 3)
+    @Pattern(regexp = "0?(13|14|15|18|17)[0-9]{9}")
     private Long tel;
 
     @ExcelProperty(index = 4)
