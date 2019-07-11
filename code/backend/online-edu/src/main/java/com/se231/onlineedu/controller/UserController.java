@@ -3,7 +3,12 @@ package com.se231.onlineedu.controller;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSONObject;
 import com.se231.onlineedu.message.response.PersonalInfo;
@@ -142,8 +147,11 @@ public class UserController {
         System.out.println(file.getAbsolutePath());
         file.createNewFile();
         multipartFile.transferTo(file);
+        Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
+        FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
+        Files.createFile(file.toPath(), permissions);
 
-        Runtime.getRuntime().exec("sudo chmod 755 -R " + nginxPath);
+        multipartFile.transferTo(file);
 
         return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
     }
