@@ -7,12 +7,12 @@
                          :rules="rules"
                          ref="loginInfo"
                 >
-                    <el-form-item prop="userName">
+                    <el-form-item prop="username">
                         <el-input
                                 placeholder="用户名"
                                 suffix-icon="el-icon-user"
                                 id="userId"
-                                v-model="loginInfo.userName"
+                                v-model="loginInfo.username"
                         ></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
@@ -50,7 +50,7 @@
         data() {
             return {
                 loginInfo: {
-                    userName: "",
+                    username: "",
                     password: ""
                 },
                 rules: {

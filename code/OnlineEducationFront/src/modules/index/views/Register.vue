@@ -17,12 +17,12 @@
                         :rules="step1Rules"
                         ref="step1Form"
                 >
-                    <el-form-item label="用户名" prop="userName">
+                    <el-form-item label="用户名" prop="username">
                         <el-input
                                 type="text"
                                 suffix-icon="el-icon-user"
                                 placeholder="请在此创建你的用户名"
-                                v-model="registerUser.userName"
+                                v-model="registerUser.username"
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
@@ -125,7 +125,7 @@
                     tel: ""
                 },
                 step1Rules: {
-                    userName: FormRules.usernameRule,
+                    username: FormRules.usernameRule,
                     password: FormRules.passwordRule,
                     confirmPass: [
                         {required: true, message: "确认密码不能为空", trigger: "change"},
@@ -165,7 +165,7 @@
             },
             submitStep3: function(detailInfo) {
                 let totalRegisterInfo = {
-                    username: this.registerUser.userName,
+                    username: this.registerUser.username,
                     password: this.registerUser.password,
                     email: this.registerUser.email,
                     tel: this.registerUser.tel,

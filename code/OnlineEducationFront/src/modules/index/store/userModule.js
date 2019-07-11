@@ -3,7 +3,7 @@ import axios from 'axios'
  axios.defaults.withCredentials = true;
 
 const state = {
-    userName: "jjj",
+    username: "jjj",
     accessToken: "",
     loginStatus: false,
     userInfo: {
@@ -42,13 +42,13 @@ const actions = {
                 url: "/api/auth/signin",
                 method: "post",
                 data: {
-                    username: loginInfo.userName,
+                    username: loginInfo.username,
                     password: loginInfo.password
                 }
             }).then((response) => {
                 console.log(response.data);
                 commit("loginSet", {
-                    userName: loginInfo.userName,
+                    username: loginInfo.username,
                     accessToken: response.data.accessToken
                 });
                 alert("登录成功");
@@ -95,7 +95,7 @@ const actions = {
 // mutations
 const mutations = {
     loginSet (state, loginData) {
-        state.userName = loginData.username;
+        state.username = loginData.username;
         state.accessToken = loginData.accessToken;
         state.loginStatus = true;
         console.log(state);

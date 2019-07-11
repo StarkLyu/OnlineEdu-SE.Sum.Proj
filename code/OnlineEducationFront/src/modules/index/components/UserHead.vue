@@ -1,7 +1,7 @@
 <template>
     <div class="head-style">
         <el-avatar :size="80"></el-avatar>
-        <h2>{{ $store.state.user.userName }}</h2>
+        <h2>{{ $store.state.user.username }}</h2>
     </div>
 </template>
 
