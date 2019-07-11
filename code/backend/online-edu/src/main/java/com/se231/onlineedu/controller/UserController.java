@@ -41,7 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 @PropertySource(value = {"classpath:user.properties"})
 public class UserController {
 
-    private String nginxPath = "/home/ubuntu/nginx/online-edu";
+    private String nginxPath = "/home/ubuntu/nginx/online-edu/";
 
     @Value("${app.file.limit}")
     private Long limit;
