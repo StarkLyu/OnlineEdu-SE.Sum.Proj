@@ -145,7 +145,6 @@ public class UserController {
             file.getParentFile().mkdir();
         }
         System.out.println(file.getAbsolutePath());
-        file.createNewFile();
         multipartFile.transferTo(file);
         Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
         FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
