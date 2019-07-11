@@ -380,10 +380,4 @@ public class UserInfoTest {
                 .andExpect(status().isBadRequest());
 
     }
-
-    @Test
-    @WithMockUser(roles = {"ADMIN"})
-    public void importUserInfo(){
-
-    }
 }
