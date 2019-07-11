@@ -68,7 +68,7 @@
                 }).catch((error) => {
                     console.log(error.response);
                     if (error.response.status === 400) {
-                        alert("验证码失效");
+                        alert("验证码无效");
                     }
                     else {
                         alert("验证失败");
