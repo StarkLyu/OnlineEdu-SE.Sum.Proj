@@ -41,13 +41,14 @@
                 formData.append("avatar",param.file);
                 this.$http.request({
                     url: this.uploadUrl,
-                    method: "patch",
+                    method: "post",
                     data: formData,
                     headers: this.uploadHeader
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
                 }).catch((error) => {
+                    alert("修改失败");
                     console.log(error.response);
                 })
             },
@@ -62,7 +63,7 @@
         },
         computed: {
             uploadUrl: function () {
-                return "http://202.120.40.8:30382/online-edu/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
+                return "/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
             },
             imageUrl: function () {
                 return this.$store.state.user.userInfo.avatarUrl

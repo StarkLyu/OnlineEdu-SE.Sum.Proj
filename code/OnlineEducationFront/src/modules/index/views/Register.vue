@@ -76,7 +76,11 @@
         </div>
         <div v-else-if="currentStep === 2">
             <div class="step-layout">
-                <EmailConfirm confirm-type="register" ref="emailConfirm"></EmailConfirm>
+                <EmailConfirm
+                        confirm-type="register"
+                        ref="emailConfirm"
+                        @confirm-pass="finishRegister"
+                ></EmailConfirm>
                 <div class="center-layout button-group-size">
                     <el-button type="primary" @click="lastStep">返回</el-button>
                     <el-button type="primary" @click="submitStep2">提交</el-button>
@@ -152,12 +156,11 @@
                 this.currentStep--;
             },
             submitStep1: function () {
-                /*this.$refs["step1Form"].validate((valid) => {
+                this.$refs["step1Form"].validate((valid) => {
                     if (valid) {
                         this.nextStep();
                     }
-                })*/
-                this.nextStep();
+                })
             },
             submitStep2: function () {
                 this.$refs['emailConfirm'].sendConfirmCode();
@@ -191,6 +194,10 @@
                         alert("邮箱已被使用，请更换邮箱");
                     }
                 })
+            },
+            finishRegister: function () {
+                alert("注册成功！");
+                this.nextStep();
             }
         }
     }
