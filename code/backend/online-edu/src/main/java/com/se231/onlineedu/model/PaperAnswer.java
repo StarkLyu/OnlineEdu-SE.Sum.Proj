@@ -2,6 +2,8 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import java.util.List;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Paper Answer Entity Class
@@ -12,14 +14,18 @@ import java.util.List;
  *
  * @date 2019/7/4
  */
+@ApiModel("学生做一套试卷的答案")
 @Entity
 public class PaperAnswer {
+    @ApiModelProperty("联合主键,由学生,paper,次数组成,目前限答三次")
     @EmbeddedId
     private PaperAnswerPrimaryKey paperAnswerPrimaryKey;
 
+    @ApiModelProperty("学生对每道题的答案的集,详情请见answer")
     @OneToMany(mappedBy = "answerPrimaryKey.paperAnswer")
     private List<Answer> answers;
 
+    @ApiModelProperty("学生此次答题的成绩")
     private double grade;
 
     public PaperAnswer(PaperAnswerPrimaryKey paperAnswerPrimaryKey, List<Answer> answers, double grade) {

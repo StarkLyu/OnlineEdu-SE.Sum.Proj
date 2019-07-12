@@ -139,7 +139,7 @@ public class CourseTest {
         //store a prototype
         coursePrototype1.setTitle("English");
         coursePrototype1.setId(1L);
-        coursePrototype1.setState(CoursePrototypeState.NOT_PASS);
+        coursePrototype1.setState(CoursePrototypeState.NOT_DECIDE);
 
         //initialize several course test
         // valid apply
@@ -202,7 +202,7 @@ public class CourseTest {
 
         result = mvc.perform(post("/api/coursePrototypes/1/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("decision","using"))
+                .param("decision","approval"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -230,7 +230,7 @@ public class CourseTest {
 
         mvc.perform(post("/api/coursePrototypes/apply")
                 .param("decision","disapproval")
-                .param("course_id","1")
+                .param("coursePrototype_id","1")
                 .param("applicant_id","2"))
                 .andExpect(status().isOk());
 

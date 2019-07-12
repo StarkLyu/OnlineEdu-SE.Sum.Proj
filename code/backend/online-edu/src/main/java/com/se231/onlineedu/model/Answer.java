@@ -2,6 +2,8 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Answer Entity Class
@@ -12,13 +14,17 @@ import javax.persistence.Entity;
  *
  * @date 2019/7/4
  */
+@ApiModel("学生对一个特定试卷上特定题目的回答")
 @Entity
 public class Answer {
+    @ApiModelProperty("联合主键类,组成为paper answer和question")
     @EmbeddedId
     private AnswerPrimaryKey answerPrimaryKey;
 
+    @ApiModelProperty("学生的作答")
     private String answer;
 
+    @ApiModelProperty("该题的得分")
     private double grade;
 
     public Answer() {

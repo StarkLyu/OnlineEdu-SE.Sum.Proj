@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Paper with questions entity class
@@ -14,16 +16,20 @@ import javax.persistence.Table;
  *
  * @date 2019/7/5
  */
+@ApiModel("试卷中的一道题目,为弱实体集")
 @Entity
 @Table(name = "paper_with_questions")
 public class PaperWithQuestions {
 
+    @ApiModelProperty(value = "联合主键,由paper和question组成")
     @EmbeddedId
     private PaperWithQuestionsPrimaryKey paperWithQuestionsPrimaryKey;
 
+    @ApiModelProperty("题号")
     @Column(unique = true)
     private int questionNumber;
 
+    @ApiModelProperty("分值")
     private double score;
 
     public PaperWithQuestions(Paper paper, Question question, int questionNumber, double score) {

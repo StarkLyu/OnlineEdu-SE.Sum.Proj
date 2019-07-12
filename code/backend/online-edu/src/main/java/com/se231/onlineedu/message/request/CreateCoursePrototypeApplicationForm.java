@@ -1,8 +1,9 @@
 package com.se231.onlineedu.message.request;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Create Course Prototype form class
@@ -13,11 +14,14 @@ import javax.validation.constraints.Size;
  *
  * @date 2019/7/3
  */
+@ApiModel(value = "申请创建课程原型的表单")
 public class CreateCoursePrototypeApplicationForm {
+    @ApiModelProperty(value = "课程名称",dataType = "String",allowableValues = "长度在3-30")
     @NotBlank
     @Size(min = 3,max = 30)
     private String title;
 
+    @ApiModelProperty(value = "课程详情",allowableValues = "长度不超过1000，可为空")
     @Size(max=1000)
     private String description;
 
