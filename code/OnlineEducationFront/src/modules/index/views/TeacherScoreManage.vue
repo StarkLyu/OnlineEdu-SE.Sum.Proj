@@ -33,13 +33,13 @@
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="userId"
+                            prop="sno"
                             label="学号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userName"
+                            prop="username"
                             label="学生名"
                             min-width="35%"
                             sortable>
@@ -56,7 +56,7 @@
                             min-width="25%"
                     ></el-table-column>
                     <el-table-column
-                            prop="userId"
+                            prop="sno"
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
@@ -79,7 +79,7 @@
                     <h3>学生姓名</h3>
                     <span>
                             {{editForm.username}}
-                        </span>
+                    </span>
                 </el-form-item>
                 <el-form-item label="成绩">
                     <el-input type="number" v-model="editForm.score"></el-input>

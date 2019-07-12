@@ -18,13 +18,13 @@
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="userId"
+                            prop="sno"
                             label="学号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userName"
+                            prop="username"
                             label="学生名"
                             min-width="35%"
                             sortable>

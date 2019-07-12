@@ -27,7 +27,7 @@
 <!--                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>-->
             </div>
             <div class="divright">
-                <el-button @click="handleAdd">新增</el-button>
+<!--                <el-button @click="handleAdd">新增</el-button>-->
             </div>
             <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
@@ -66,6 +66,7 @@
                     <el-table-column
                             prop="userId"
                             label="操作"
+                            fixed="right"
                             min-width="40%">
                         <template slot-scope="scope">
                             <span v-if="scope.row.role!=='管理员'">
@@ -179,6 +180,11 @@
                         console.log(response.data);
                         // alert("请求成功");
                         that.UserData = response.data;
+
+                        if (response.data==="Unauthorized")
+                        {
+                            alert("您没有管理员权限！");
+                        }
 
                         // 存储role
                         for (let index=0; index<that.UserData.length; index++)
@@ -341,15 +347,12 @@
                         .then(function (response) {
                             console.log(response.data);
                             // alert("请求成功");
-                            // that.showAllUsers();
-
                         })
                         .catch(function (error) {
                             console.log(error);
                             // alert("请求失败");
                         });
                 }
-
                 // 修改用户信息
                 this.$axios.request({
                     url: '/api/users/'+this.editForm.id+'/info/modify',
@@ -363,16 +366,17 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        // alert("请求成功");
-                        that.showAllUsers();
+                        if(response.data.id===that.editForm.id)
+                        {
+                            that.showAllUsers();
+                            that.dialogFormVisible=false;
+                            alert("修改成功");
+                        }
 
                     })
                     .catch(function (error) {
                         console.log(error);
-                        // alert("请求失败");
                     })
-
-                this.dialogFormVisible=false;
             }
         },
 
