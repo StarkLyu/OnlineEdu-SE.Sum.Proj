@@ -139,7 +139,7 @@ public class CourseTest {
         //store a prototype
         coursePrototype1.setTitle("English");
         coursePrototype1.setId(1L);
-        coursePrototype1.setState(CoursePrototypeState.NOT_PASS);
+        coursePrototype1.setState(CoursePrototypeState.NOT_DECIDE);
 
         //initialize several course test
         // valid apply

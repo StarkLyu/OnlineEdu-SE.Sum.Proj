@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * CoursePrototype Class.
@@ -16,21 +18,27 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  *
  * @date 2019/7/3
  */
+@ApiModel(value = "课程原型的实体类")
 @Entity
 @Table(name = "coursePrototype")
 public class CoursePrototype {
+    @ApiModelProperty(dataType = "Long",value = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ApiModelProperty(value = "名称")
     @NotBlank
     private String title;
 
+    @ApiModelProperty(value = "详情")
     private String description;
 
+    @ApiModelProperty("该课程原型题库中的所有题目")
     @OneToMany(mappedBy = "coursePrototype")
     private List<Question> questions;
 
+    @ApiModelProperty("该课程原型的所有衍生课程")
     @OneToMany(mappedBy = "coursePrototype")
     private List<Course> courses;
 
@@ -41,6 +49,7 @@ public class CoursePrototype {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @ApiModelProperty("该课程原型资源库里的所有资源")
     @OneToMany(mappedBy = "coursePrototype")
     private List<Resource> resources;
 

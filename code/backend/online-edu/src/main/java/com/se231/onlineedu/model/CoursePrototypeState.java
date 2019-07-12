@@ -13,7 +13,7 @@ public enum CoursePrototypeState {
     /**
      * a teaching admin apply to create a course prototype , but the admin and super admin haven't examine yet.
      */
-    NOT_PASS,
+    NOT_DECIDE,
 
     /**
      * this course type can be used.

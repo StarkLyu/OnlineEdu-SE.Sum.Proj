@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Paper Entity Class
@@ -14,16 +16,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * @date 2019/7/10
  */
+@ApiModel("试卷,作业的实体类")
 @Entity
 public class Paper {
+    @ApiModelProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ApiModelProperty("开始时间")
     private Date start;
 
+    @ApiModelProperty("结束时间")
     private Date end;
 
+    @ApiModelProperty("试卷的习题集")
     @OneToMany
     private List<PaperWithQuestions> questions;
 

@@ -2,8 +2,9 @@ package com.se231.onlineedu.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.CourseState;
+import com.se231.onlineedu.model.User;
 
 /**
  * Course Service Interface
@@ -22,6 +23,7 @@ public interface CourseService {
      * @param endDate the end date of the course
      * @param userId    the id of applicant
      * @return  generated course entity
+     * @throws Exception mainly throw not found exception
      */
     Course applyToStartCourse(Long prototypeId, Date startDate, Date endDate, Long userId) throws Exception;
 
@@ -39,6 +41,29 @@ public interface CourseService {
      * @param userId    the id of applicant
      * @param courseId  the id of picked course
      * @return  applicant's course list
+     * @throws Exception mainly throws not found exception
      */
     List<Course> pickCourse(Long userId,Long courseId)throws Exception;
+
+    /**
+     * this service allow a teacher or admin to get the list of students who have picked this course
+     * @param courseId  id of the course
+     * @return  the set of students
+     * @throws Exception mainly throw not found exception
+     */
+    Set<User> getStudentsList(Long courseId)throws Exception;
+
+    /**
+     * this service allow user to get information of a specific course.
+     * @param courseId  id of the required course
+     * @return  the information of course
+     * @throws Exception    mainly throw not found exception
+     */
+    Course getCourseInfo(Long courseId)throws Exception;
+
+    /**
+     * this service allow user to get all courses.
+     * @return  the list of all course
+     */
+    List<Course> getAllCourse();
 }
