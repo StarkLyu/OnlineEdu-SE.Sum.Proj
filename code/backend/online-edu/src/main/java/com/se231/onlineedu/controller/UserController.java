@@ -203,7 +203,8 @@ public class UserController {
             "依次为username,password,email,tel,university,major,sno,grade,real name,sex", type = "FormData", name = "excel")
     @PostMapping("/bulkImport")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<?> buckImportUser(@RequestParam("excel") MultipartFile excel) throws Exception {
+
+    public ResponseEntity<?> bulkImportUser(@RequestParam("excel") MultipartFile excel) throws Exception {
         return userService.bulkImportUser(excel);
     }
 

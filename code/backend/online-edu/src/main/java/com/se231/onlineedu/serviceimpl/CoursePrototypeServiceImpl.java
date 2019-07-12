@@ -58,7 +58,7 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
             return applyRepository.save(application);
         }
         else {
-            return applyRepository.findById(id).orElseThrow(()->new Exception("No corresponding apply"));
+            return applyRepository.getOne(id);
         }
     }
 
