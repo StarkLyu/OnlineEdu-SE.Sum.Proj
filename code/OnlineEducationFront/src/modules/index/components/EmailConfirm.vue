@@ -9,7 +9,7 @@
                     <el-button
                             v-if="resendFlag"
                             slot="append"
-                            @click="sendConfirmRequest"
+                            @click="resendConfirmRequest"
                     >重新发送</el-button>
                     <el-button v-else slot="append" disabled>{{ countDown }}s后重新发送</el-button>
                 </el-input>
@@ -56,17 +56,19 @@
                 }
             },
             sendConfirmRequest: function () {
+                this.countTime();
+            },
+            resendConfirmRequest: function () {
                 this.$emit("resend-request");
                 this.countTime();
             },
             sendConfirmCode: function () {
                 this.$http.request(this.requestConfig).then(() => {
-                    alert("注册成功！");
                     this.$emit("confirm-pass");
                 }).catch((error) => {
                     console.log(error.response);
                     if (error.response.status === 400) {
-                        alert("验证码失效");
+                        alert("验证码无效");
                     }
                     else {
                         alert("验证失败");
@@ -94,8 +96,18 @@
                     },
                     withCredentials: true
                 };
-                else if (this.confirmType === "password") return "/api/auth/password/confirm";
-                else return "/api/auth/email/confirm";
+                else {
+                    let id = this.$store.state.user.userInfo.id;
+                    return {
+                        url: "/api/users/" + id + "/" + this.confirmType + "/confirm",
+                        method: "get",
+                        params: {
+                            verificationToken: this.confirmCode
+                        },
+                        headers: this.$store.getters.authRequestHead,
+                        withCredentials: true
+                    };
+                }
             }
         }
     }

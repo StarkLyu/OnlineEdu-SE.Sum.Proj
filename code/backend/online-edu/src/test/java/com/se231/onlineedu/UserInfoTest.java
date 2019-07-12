@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,7 +161,6 @@ public class UserInfoTest {
 
         Assert.assertEquals(personalInfo, JSON.parseObject(result, PersonalInfo.class));
 
-
         result = mvc.perform(post("/api/users/info/modify")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON.toJSONString(personalInfo)))
@@ -187,6 +187,7 @@ public class UserInfoTest {
                 .getContentAsString();
 
         Assert.assertEquals(userRepository.findAll(), JSON.parseArray(result, User.class));
+
 
         result = mvc.perform(post("/api/users/2/info/modify")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -254,37 +255,38 @@ public class UserInfoTest {
 
     }
 
-//    @Test
-//    public void updateAvatarTest() throws Exception {
-//        result = mvc.perform(post("/api/auth/signin")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(adminSignIn))
-//                .andExpect(status().isOk())
-//                .andReturn().getResponse().getContentAsString();
-//
-//        JwtResponse jwtResponse = JSON.parseObject(result, JwtResponse.class);
-//
-//        byte[] bytes = new byte[512001];
-//        MockMultipartFile avatarBig = new MockMultipartFile("avatar", "file1.jpg", "image/jpeg", bytes);
-//        MockMultipartFile avatarWrong = new MockMultipartFile("avatar", "file1.txt", "plain/text", "abcd".getBytes());
-//        MockMultipartFile avatar = new MockMultipartFile("avatar", "file1.jpg", "image/jpeg", "abcdefg".getBytes());
-//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
-//                .file(avatarBig)
-//                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().string("exceeded max size"));
-//
-//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
-//                .file(avatarWrong)
-//                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().string("file format not supported"));
-//
-//        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
-//                .file(avatar)
-//                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void updateAvatarTest() throws Exception {
+        result = mvc.perform(post("/api/auth/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(adminSignIn))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        JwtResponse jwtResponse = JSON.parseObject(result, JwtResponse.class);
+
+        byte[] bytes = new byte[512001];
+        MockMultipartFile avatarBig = new MockMultipartFile("avatar", "file1.jpg", "image/jpeg", bytes);
+        MockMultipartFile avatarWrong = new MockMultipartFile("avatar", "file1.txt", "plain/text", "abcd".getBytes());
+        MockMultipartFile avatar = new MockMultipartFile("avatar", "file1.jpg", "image/jpeg", "abcdefg".getBytes());
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
+                .file(avatarBig)
+                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("exceeded max size"));
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
+                .file(avatarWrong)
+                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("file format not supported"));
+
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/1/avatar")
+                .file(avatar)
+                .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
+                .andExpect(status().isOk());
+    }
 
     @Test
     public void updatePassword() throws Exception {
@@ -377,20 +379,55 @@ public class UserInfoTest {
                 .header("Authorization", jwtResponse.getTokenType() + " " + jwtResponse.getAccessToken()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest());
-
     }
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
     public void importUserTest() throws Exception {
-        InputStream inputStream = UserInfoTest.class.getClassLoader().getResourceAsStream("UserData.xlsx");
-        MockMultipartFile multipartFile = new MockMultipartFile("excel", "UserData.xlsx","multipart/form-data", IOUtils.toByteArray(inputStream));
+        String path = UserInfoTest.class.getClassLoader().getResource("UserData.xlsx").getPath();
+        String pathEmpty = UserInfoTest.class.getClassLoader().getResource("UserDataEmpty.xlsx").getPath();
+        String pathSameUsername = UserInfoTest.class.getClassLoader().getResource("UserDataSameUsername.xlsx").getPath();
+        String pathSameEmail = UserInfoTest.class.getClassLoader().getResource("UserDataSameEmail.xlsx").getPath();
+        String pathSameTel = UserInfoTest.class.getClassLoader().getResource("UserDataSameTel.xlsx").getPath();
 
+        MockMultipartFile multipartFile = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(path));
+        MockMultipartFile multipartFileWrongFormat = new MockMultipartFile("excel", "UserData.xl","plain/text", new FileInputStream(path));
+        MockMultipartFile multipartFileEmpty = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathEmpty));
+        MockMultipartFile multipartFileSameUsername = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathSameUsername));
+        MockMultipartFile multipartFileSameEmail = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathSameEmail));
+        MockMultipartFile multipartFileSameTel = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(pathSameTel));
+
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+                .file(multipartFileEmpty))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+                .file(multipartFileSameUsername))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+                .file(multipartFileSameEmail))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+                .file(multipartFileSameTel))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
 
         mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
                 .file(multipartFile))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
-    }
 
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/users/bulkImport")
+                .file(multipartFileWrongFormat))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
+
+
+    }
 }

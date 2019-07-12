@@ -39,12 +39,33 @@
             uploadProcess: function(param) {
                 let formData = new FormData();
                 formData.append("avatar",param.file);
-                this.$http.post(this.uploadUrl, formData, {
+                this.$http.request({
+                    url: this.uploadUrl,
+                    method: "post",
+                    data: formData,
                     headers: this.uploadHeader
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
+                    this.$http.request({
+                        url: "/api/users/info",
+                        method: 'get',
+                        headers: {
+                            "Authorization": "Bearer " + this.$store.state.user.accessToken
+                        }
+                    }).then((infoResponse) => {
+                        this.$store.commit("infoSet", infoResponse.data);
+                    }).catch((error) => {
+                        console.log(error.response);
+                        if (error.response.data.status === 401) {
+                            alert("获取用户信息出错");
+                        }
+                        else {
+                            alert(error);
+                        }
+                    });
                 }).catch((error) => {
+                    alert("修改失败");
                     console.log(error.response);
                 })
             },
@@ -59,10 +80,10 @@
         },
         computed: {
             uploadUrl: function () {
-                return "http://202.120.40.8:30382/online-edu/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
+                return "/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
             },
             imageUrl: function () {
-                return this.$store.state.user.userInfo.avatarUrl
+                return this.$store.getters.userAvatarUrl;
             },
             uploadHeader: function () {
                 return {

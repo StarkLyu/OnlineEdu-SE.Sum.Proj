@@ -17,7 +17,7 @@
                         :rules="step1Rules"
                         ref="step1Form"
                 >
-                    <el-form-item label="用户名" prop="userName">
+                    <el-form-item label="用户名" prop="username">
                         <el-input
                                 type="text"
                                 suffix-icon="el-icon-user"
@@ -76,7 +76,12 @@
         </div>
         <div v-else-if="currentStep === 2">
             <div class="step-layout">
-                <EmailConfirm confirm-type="register" ref="emailConfirm"></EmailConfirm>
+                <EmailConfirm
+                        confirm-type="register"
+                        ref="emailConfirm"
+                        @confirm-pass="finishRegister"
+                        @resend-request="resendRequest"
+                ></EmailConfirm>
                 <div class="center-layout button-group-size">
                     <el-button type="primary" @click="lastStep">返回</el-button>
                     <el-button type="primary" @click="submitStep2">提交</el-button>
@@ -85,7 +90,7 @@
         </div>
         <div v-else-if="currentStep === 3">
             <div class="step-layout">
-                <h3>恭喜你，注册成功！系统将在5秒后自动跳转至登录页面，如跳转失败，请点击下方链接</h3>
+                <h3>恭喜你，注册成功！请点击下方链接进行登录</h3>
             </div>
         </div>
         <div class="center-layout return-link">
@@ -125,7 +130,7 @@
                     tel: ""
                 },
                 step1Rules: {
-                    userName: FormRules.usernameRule,
+                    username: FormRules.usernameRule,
                     password: FormRules.passwordRule,
                     confirmPass: [
                         {required: true, message: "确认密码不能为空", trigger: "change"},
@@ -134,8 +139,21 @@
                     email: FormRules.emailRule,
                     tel: FormRules.telRule,
                 },
+                totalRegisterInfo: {
+                    username: "",
+                    password: "",
+                    email: "",
+                    tel: "",
+                    realName: "",
+                    sex: "",
+                    university: "",
+                    sno: "",
+                    major: "",
+                    grade: 1,
+                },
                 registerDetailInfo: {
                     realName: "",
+                    tel: "",
                     sex: "",
                     university: "",
                     sno: "",
@@ -152,12 +170,11 @@
                 this.currentStep--;
             },
             submitStep1: function () {
-                /*this.$refs["step1Form"].validate((valid) => {
+                this.$refs["step1Form"].validate((valid) => {
                     if (valid) {
                         this.nextStep();
                     }
-                })*/
-                this.nextStep();
+                })
             },
             submitStep2: function () {
                 this.$refs['emailConfirm'].sendConfirmCode();
@@ -165,7 +182,7 @@
             },
             submitStep3: function(detailInfo) {
                 let totalRegisterInfo = {
-                    username: this.registerUser.userName,
+                    username: this.registerUser.username,
                     password: this.registerUser.password,
                     email: this.registerUser.email,
                     tel: this.registerUser.tel,
@@ -176,6 +193,7 @@
                     major: detailInfo.major,
                     grade: detailInfo.grade
                 };
+                this.totalRegisterInfo = totalRegisterInfo;
                 console.log(totalRegisterInfo);
                 this.$http.request({
                     url: "/api/auth/signup",
@@ -185,6 +203,25 @@
                 }).then((response) => {
                     console.log(response);
                     this.nextStep();
+                }).catch((error) => {
+                    console.log(error.response);
+                    if (error.response.data === "Fail -> Email Address is already taken!") {
+                        alert("邮箱已被使用，请更换邮箱");
+                    }
+                })
+            },
+            finishRegister: function () {
+                alert("注册成功！");
+                this.nextStep();
+            },
+            resendRequest: function () {
+                this.$http.request({
+                    url: "/api/auth/signup",
+                    method: "post",
+                    data: this.totalRegisterInfo,
+                    withCredentials: true
+                }).then((response) => {
+                    console.log(response);
                 }).catch((error) => {
                     console.log(error.response);
                     if (error.response.data === "Fail -> Email Address is already taken!") {

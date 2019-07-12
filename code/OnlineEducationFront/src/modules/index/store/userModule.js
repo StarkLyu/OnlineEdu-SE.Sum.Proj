@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-axios.defaults.withCredentials = true;
+ axios.defaults.withCredentials = true;
 
 const state = {
-    userName: "jjj",
+    username: "",
     accessToken: "",
     loginStatus: false,
     userInfo: {
@@ -16,6 +16,7 @@ const state = {
         tno: "",
         tel: "",
         university: "",
+        avatarUrl: "",
         roles: [
             {
                 id: 0,
@@ -31,68 +32,24 @@ const getters = {
         return {
             Authorization: "Bearer " + state.accessToken
         }
+    },
+    userAvatarUrl: state => {
+        if (state.userInfo.avatarUrl !== "") {
+            return "http://202.120.40.8:30382/online-edu/static/" + state.userInfo.avatarUrl + "?a=" + Math.random();
+        }
+        else return "";
     }
 }
 
 // actions
 const actions = {
-    login: ({ state,commit,dispatch }, loginInfo) => {
-        return new Promise((resolve, reject) => {
-            axios.request({
-                url: "/api/auth/signin",
-                method: "post",
-                data: {
-                    username: loginInfo.userName,
-                    password: loginInfo.password
-                }
-            }).then((response) => {
-                console.log(response.data);
-                commit("loginSet", {
-                    userName: loginInfo.userName,
-                    accessToken: response.data.accessToken
-                });
-                alert("登录成功");
-                console.log(state);
-                dispatch("loadUserInfo");
-                resolve();
-            }).catch((error) => {
-                console.log(error.response);
-                if (error.response.data.status === 401) {
-                    alert("用户名或密码错误");
-                }
-                else {
-                    alert(error);
-                }
-                reject();
-            });
-        })
-    },
-    loadUserInfo: ({ state, commit }) => {
-        axios.request({
-            url: "/api/users/info",
-            method: 'get',
-            headers: {
-                "Authorization": "Bearer " + state.accessToken
-            }
-        }).then((infoResponse) => {
-            commit("infoSet", infoResponse.data);
-            console.log(state);
-        }).catch((error) => {
-            console.log(error.response);
-            if (error.response.data.status === 401) {
-                alert("获取用户信息出错");
-            }
-            else {
-                alert(error);
-            }
-        });
-    },
+
 }
 
 // mutations
 const mutations = {
     loginSet (state, loginData) {
-        state.userName = loginData.username;
+        state.username = loginData.username;
         state.accessToken = loginData.accessToken;
         state.loginStatus = true;
         console.log(state);
@@ -100,6 +57,29 @@ const mutations = {
     infoSet (state, infoData) {
         state.userInfo = infoData;
         console.log(state);
+    },
+    logOut (state) {
+        state.username = "";
+        state.accessToken = "";
+        state.loginStatus = false;
+        state.userInfo = {
+            email: "",
+            grade: 0,
+            major: "",
+            realName: "",
+            sex: "",
+            sno: "",
+            tno: "",
+            tel: "",
+            university: "",
+            avatarUrl: "",
+            roles: [
+                {
+                    id: 0,
+                    role: "",
+                }
+            ]
+        }
     }
 }
 

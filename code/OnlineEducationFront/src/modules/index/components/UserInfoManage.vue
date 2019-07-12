@@ -1,10 +1,10 @@
 <template>
     <div class="info-form">
-        <el-form label-position="left" label-width="100px">
-            <el-form-item label="真实姓名">
+        <el-form label-position="left" label-width="100px" :model="userInfo">
+            <el-form-item label="真实姓名" prop="realName">
                 <el-input v-model="userInfo.realName"></el-input>
             </el-form-item>
-            <el-form-item label="手机号">
+            <el-form-item label="手机号" v-if="type === 'modify'">
                 <el-input v-model="userInfo.tel"></el-input>
             </el-form-item>
             <el-form-item label="性别">
@@ -41,7 +41,7 @@
                         <el-button @click="backUp">返回</el-button>
                     </div>
                     <div class="float-right">
-                        <el-button>重置</el-button>
+                        <el-button @click="resetInfo">重置</el-button>
                     </div>
                 </div>
             </el-form-item>
@@ -61,6 +61,16 @@
         data() {
             return {
                 userInfo: {
+                    realName: "",
+                    sex: "",
+                    tel: "",
+                    university: "",
+                    sno: "",
+                    major: "",
+                    grade: 1,
+                    email: ""
+                },
+                cacheInfo: {
                     realName: "",
                     sex: "",
                     tel: "",
@@ -107,10 +117,16 @@
             },
             uploadInfo: function(newInfo) {
                 this.userInfo = newInfo;
+            },
+            resetInfo: function () {
+                this.userInfo = this.cacheInfo;
             }
         },
         mounted() {
-            this.userInfo = this.userdata;
+            if (this.userdata !== {}) {
+                this.userInfo = this.userdata;
+                this.cacheInfo = this.userInfo;
+            }
         }
     }
 </script>

@@ -26,12 +26,17 @@
                 </el-form>
             </div>
             <div v-if="changeStep === 1">
-                <EmailConfirm confirmType="password" ref="emailConfirm"></EmailConfirm>
+                <EmailConfirm
+                        confirmType="password"
+                        ref="emailConfirm"
+                        @confirm-pass="changeSuccess"
+                        @resend-request="resendRequest"
+                ></EmailConfirm>
             </div>
             <div slot="footer">
                 <el-button @click="cancelChange">取消</el-button>
                 <el-button v-if="changeStep === 0" @click="nextStep">下一步</el-button>
-                <el-button v-if="changeStep === 1">提交</el-button>
+                <el-button v-if="changeStep === 1" @click="sendConfirm">提交</el-button>
             </div>
         </el-dialog>
     </div>
@@ -76,7 +81,19 @@
         },
         methods: {
             nextStep: function () {
-                this.changeStep++;
+                this.$http.request({
+                    url: this.requestUrl,
+                    method: "patch",
+                    headers: this.requestHeader,
+                    data: {
+                        password: this.changePass.newPass
+                    }
+                }).then(() => {
+                    this.changeStep++;
+                }).catch((error) => {
+                    alert("出错啦！");
+                    console.log(error.response);
+                })
             },
             cancelChange: function () {
                 this.changePass.oldPass = "";
@@ -85,6 +102,36 @@
                 this.showDialog = false;
                 this.changeStep = 0;
                 this.$refs['emailConfirm'].clear();
+            },
+            changeSuccess: function () {
+                alert("修改成功！");
+                this.cancelChange();
+            },
+            sendConfirm: function () {
+                this.$refs.emailConfirm.sendConfirmCode();
+            },
+            resendRequest: function () {
+                this.$http.request({
+                    url: this.requestUrl,
+                    method: "patch",
+                    headers: this.requestHeader,
+                    data: {
+                        password: this.changePass.newPass
+                    }
+                }).then(() => {
+
+                }).catch((error) => {
+                    alert("出错啦！");
+                    console.log(error.response);
+                })
+            }
+        },
+        computed: {
+            requestUrl: function () {
+                return "/api/users/" + this.$store.state.user.userInfo.id + "/password";
+            },
+            requestHeader: function () {
+                return this.$store.getters.authRequestHead;
             }
         }
     }
