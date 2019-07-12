@@ -6,6 +6,8 @@ import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Zhe Li
  * @date 2019/7/4
  */
+@Api(tags = "课程相关的控制类")
 @RestController
 @RequestMapping("api/courses")
 public class CourseController {
@@ -26,6 +29,7 @@ public class CourseController {
     @Autowired
     CourseService courseService;
 
+    @ApiOperation(value = "")
     @PostMapping("/start")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public ResponseEntity<Course> applyToStartCourse(@RequestParam Long prototypeId,

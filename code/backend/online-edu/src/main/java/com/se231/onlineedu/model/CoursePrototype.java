@@ -41,6 +41,9 @@ public class CoursePrototype {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @OneToMany(mappedBy = "coursePrototype")
+    private List<Resource> resources;
+
     public CoursePrototype() {}
 
     public CoursePrototype(@NotBlank String title, String description, List<Question> questions, List<Course> courses, @NotBlank CoursePrototypeState state) {
@@ -50,8 +53,6 @@ public class CoursePrototype {
         this.courses = courses;
         this.state = state;
     }
-
-
 
     public User getUser() {
         return user;
