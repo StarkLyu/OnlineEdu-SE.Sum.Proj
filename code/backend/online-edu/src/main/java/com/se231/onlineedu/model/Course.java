@@ -47,6 +47,16 @@ public class Course {
     @OneToMany(mappedBy = "sectionPrimaryKey.course")
     private List<Section> sections;
 
+    @ApiModelProperty("课程名称")
+    private String courseTitle;
+
+    @ApiModelProperty("地点")
+    private String location;
+
+    @OneToMany
+    @ApiModelProperty("上课时间段")
+    private List<TimeSlot> timeSlots;
+
     @ApiModelProperty("选了该课程的学生")
     @JsonIgnore
     @ManyToMany(mappedBy = "courses")
@@ -54,7 +64,7 @@ public class Course {
 
     @ApiModelProperty("该课程的老师")
     @OneToOne
-    private User user;
+    private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")
     @OneToMany
@@ -112,11 +122,11 @@ public class Course {
     }
 
     public User getUser() {
-        return user;
+        return teacher;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.teacher = user;
     }
 
     public Set<User> getStudents() {
@@ -135,12 +145,44 @@ public class Course {
         this.papers = papers;
     }
 
+    public String getCourseTitle() {
+        return courseTitle;
+    }
+
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public List<TimeSlot> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public void setTimeSlots(List<TimeSlot> timeSlots) {
+        this.timeSlots = timeSlots;
+    }
+
+    public User getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(User teacher) {
+        this.teacher = teacher;
+    }
+
     public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, User user) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.state = state;
         this.coursePrototype = coursePrototype;
-        this.user = user;
+        this.teacher = user;
     }
 
     public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, List<Section> sections) {
