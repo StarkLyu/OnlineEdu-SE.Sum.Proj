@@ -8,11 +8,12 @@ import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.UserService;
 import com.se231.onlineedu.service.VerificationTokenService;
+import com.se231.onlineedu.util.FileCheckUtil;
+import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -24,9 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 
 /**
@@ -43,12 +41,8 @@ import java.util.List;
 @PropertySource(value = {"classpath:user.properties"})
 public class UserController {
 
-    private String nginxPath = "/home/ubuntu/nginx/online-edu/";
-
     @Value("${app.file.limit}")
-    private Long limit;
-
-    private static String fileExtension = ".jpg,.jpeg,.png,.svg,.tif";
+    private static int limit;
 
     @Autowired
     UserService userService;
@@ -124,32 +118,15 @@ public class UserController {
     @PostMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
     public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
-        if (multipartFile.getSize() > limit) {
+        if (FileCheckUtil.checkImageSizeExceed(multipartFile,limit)) {
             return ResponseEntity.badRequest().body("exceeded max size");
         }
-
         String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
-
-        if (!fileExtension.contains(suffix)) {
+        if (FileCheckUtil.checkImageTypeWrong(suffix)) {
             return ResponseEntity.badRequest().body("file format not supported");
         }
-        String fileName = nginxPath + id + "-avatar/" + id + "-avatar" + suffix;
-        File file = new File(fileName);
-
-        if (file.getParentFile().exists()) {
-            FileUtils.cleanDirectory(file.getParentFile());
-        } else {
-            file.getParentFile().mkdir();
-        }
-        System.out.println(file.getAbsolutePath());
-
-        file.createNewFile();
-        multipartFile.transferTo(file);
-        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rwxrwxrwx"));
-        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxr--r--"));
-
-
-        return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
+        SaveFileUtil.saveAvatar(id, multipartFile,suffix);
+        return ResponseEntity.ok(userService.updateUserAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix), id));
     }
 
 
@@ -203,7 +180,6 @@ public class UserController {
             "依次为username,password,email,tel,university,major,sno,grade,real name,sex", type = "FormData", name = "excel")
     @PostMapping("/bulkImport")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-
     public ResponseEntity<?> bulkImportUser(@RequestParam("excel") MultipartFile excel) throws Exception {
         return userService.bulkImportUser(excel);
     }
