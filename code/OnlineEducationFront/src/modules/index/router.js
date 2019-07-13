@@ -17,6 +17,7 @@ export default new Router({
         {
             path: '/viewcourses',
             name: 'viewCourses',
+            component: () => import('./views/CourseHall.vue')
         },
         {
             path: '/user',
