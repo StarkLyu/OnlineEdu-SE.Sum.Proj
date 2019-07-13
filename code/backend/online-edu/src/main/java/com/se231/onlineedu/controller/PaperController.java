@@ -5,6 +5,9 @@ import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.model.Paper;
 import com.se231.onlineedu.model.Section;
 import com.se231.onlineedu.service.PaperService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @date 2019/7/5
  */
+@Api(tags = "与作业，试卷相关的控制类")
 @RestController
 @RequestMapping("api/courses/{id}/papers")
 public class PaperController {
@@ -25,6 +29,8 @@ public class PaperController {
     @Autowired
     private PaperService paperService;
 
+    @ApiOperation("增加新试卷")
+    @ApiImplicitParam(name = "id",value = "课程的id",paramType = "path")
     @PostMapping
     public ResponseEntity<Paper> addNewPaper(@PathVariable("id")Long courseId,
                                              @Valid @RequestBody PaperForm form)throws Exception{
@@ -38,7 +44,4 @@ public class PaperController {
                                               @PathVariable("paperId")Long paperId)throws Exception{
         return ResponseEntity.ok(paperService.issuePaper(courseId, secNo, paperId));
     }
-
-
-
 }

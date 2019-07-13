@@ -113,7 +113,12 @@ export default new Router({
                         {
                             path: 'assignment',
                             name: 'TeacherCourseAssign',
-                            component: () => import('./views/TeacherCourseAssign')
+                            component: () => import('./views/TeacherCourseAssign'),
+                        },
+                        {
+                            path:'oneassignment',
+                            name:'TeacherCourseOneAssignment',
+                            component:() => import('./views/TeacherCourseOneAssignment')
                         },
                         {
                             path: 'bt',

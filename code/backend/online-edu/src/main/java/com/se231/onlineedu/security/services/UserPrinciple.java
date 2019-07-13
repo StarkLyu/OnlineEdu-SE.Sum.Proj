@@ -2,6 +2,8 @@ package com.se231.onlineedu.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.se231.onlineedu.model.User;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,13 +22,17 @@ import java.util.stream.Collectors;
  *
  * @date 2019/07/01
  */
+@ApiModel(value = "携带token的用户")
 public class UserPrinciple implements UserDetails {
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(hidden = true)
     private Long id;
 
+    @ApiModelProperty(hidden = true)
     private String username;
 
+    @ApiModelProperty(hidden = true)
     @JsonIgnore
     private String password;
 

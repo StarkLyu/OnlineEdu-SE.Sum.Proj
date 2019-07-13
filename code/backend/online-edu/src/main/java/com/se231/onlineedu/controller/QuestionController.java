@@ -7,6 +7,7 @@ import com.se231.onlineedu.message.request.SubmitQuestionForm;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
 import com.se231.onlineedu.service.QuestionService;
+import io.swagger.annotations.*;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import java.util.List;
  * @author Zhe Li
  * @date 2019/7/5
  */
+@Api(tags = "与课程原型中的题库有关的控制类")
 @RestController
 @RequestMapping("/api/coursePrototypes/{id}/questions")
 public class QuestionController {
@@ -32,7 +34,12 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
-    @PostMapping
+    @ApiOperation("上传题目")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "课程原型的id", paramType = "path"),
+            @ApiImplicitParam(name = "questionJSON", value = "题目的详细信息", paramType = "RequestBody")
+    })
+    @PostMapping("/submit")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public ResponseEntity<Question> submitQuestion(@RequestBody JSONObject questionJSON,
                                                    @PathVariable("id") Long coursePrototypeId) throws Exception {

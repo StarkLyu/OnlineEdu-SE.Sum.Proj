@@ -9,9 +9,7 @@
                           v-model="search"
                           placeholder="请输入用户名"
                           prefix-icon="el-icon-search"/>
-            </div>
-<!--            导入成绩，上传的组件-->
-            <div class="float-right">
+                <!--            导入成绩，上传的组件-->
                 <el-upload
                         class="upload-demo"
                         ref="upload"
@@ -22,7 +20,7 @@
                         :auto-upload="false">
                     <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                     <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
-                    <div slot="tip" class="el-upload__tip">上传成绩</div>
+                    <div slot="tip" class="el-upload__tip">上传格式只能为xls或xlsx</div>
                 </el-upload>
             </div>
 <!--            成绩显示-->
@@ -33,13 +31,13 @@
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="userId"
+                            prop="sno"
                             label="学号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userName"
+                            prop="username"
                             label="学生名"
                             min-width="35%"
                             sortable>
@@ -56,7 +54,7 @@
                             min-width="25%"
                     ></el-table-column>
                     <el-table-column
-                            prop="userId"
+                            prop="sno"
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
@@ -79,7 +77,7 @@
                     <h3>学生姓名</h3>
                     <span>
                             {{editForm.username}}
-                        </span>
+                    </span>
                 </el-form-item>
                 <el-form-item label="成绩">
                     <el-input type="number" v-model="editForm.score"></el-input>
@@ -99,15 +97,7 @@
 
         data(){
             return{
-                fileList: [
-                    {
-                        name: 'food.jpeg',
-                        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                    },
-                    {
-                        name: 'food2.jpeg',
-                        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                    }],
+                fileList: [],
 
                 search: '',
 

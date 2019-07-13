@@ -41,7 +41,7 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         CoursePrototype coursePrototype=new CoursePrototype();
         coursePrototype.setTitle(form.getTitle());
         coursePrototype.setDescription(form.getDescription());
-        coursePrototype.setState(CoursePrototypeState.NOT_PASS);
+        coursePrototype.setState(CoursePrototypeState.NOT_DECIDE);
         User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
         coursePrototype.setUser(user);
         return coursePrototypeRepository.save(coursePrototype);
@@ -65,7 +65,17 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     @Override
     public CoursePrototype decideCreateCourse(Long coursePrototypeId,String decision)throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(()->new Exception("No corresponding course"));
-        coursePrototype.setState(CoursePrototypeState.valueOf(decision.toUpperCase()));
+        switch (decision) {
+            case "approval":
+                coursePrototype.setState(CoursePrototypeState.USING);
+                break;
+            case "disapproval":
+                coursePrototype.setState(CoursePrototypeState.DENIAL);
+                break;
+            default:
+                coursePrototype.setState(CoursePrototypeState.NOT_DECIDE);
+                throw new RuntimeException("Unknown decision");
+        }
         return coursePrototypeRepository.save(coursePrototype);
     }
 

@@ -2,6 +2,7 @@ package com.se231.onlineedu.serviceimpl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.CourseState;
@@ -72,7 +73,6 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.save(course);
     }
 
-
     @Override
     public List<Course> pickCourse(Long userId,Long courseId)throws Exception{
         User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
@@ -80,5 +80,22 @@ public class CourseServiceImpl implements CourseService {
         user.getCourses().add(course);
         userRepository.save(user);
         return user.getCourses();
+    }
+
+    @Override
+    public Set<User> getStudentsList(Long courseId) throws Exception {
+        Course course=courseRepository.findById(courseId)
+                .orElseThrow(()->new RuntimeException("No corresponding course"));
+        return course.getStudents();
+    }
+
+    @Override
+    public Course getCourseInfo(Long courseId) throws Exception {
+        return courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
+    }
+
+    @Override
+    public List<Course> getAllCourse() {
+        return courseRepository.findAll();
     }
 }
