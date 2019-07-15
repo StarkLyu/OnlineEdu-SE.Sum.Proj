@@ -39,6 +39,12 @@ public class Paper {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ApiModelProperty("作业名称")
+    private String title;
+
+    @ApiModelProperty("作业描述")
+    private String description;
+
     public Paper(Date start, Date end, List<PaperWithQuestions> questions) {
         this.start = start;
         this.end = end;
@@ -90,5 +96,21 @@ public class Paper {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

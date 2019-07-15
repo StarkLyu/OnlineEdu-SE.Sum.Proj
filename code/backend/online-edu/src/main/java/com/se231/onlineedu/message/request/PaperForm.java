@@ -35,6 +35,13 @@ public class PaperForm {
     @Future
     private Date end;
 
+    @ApiModelProperty("名称")
+    @NotNull
+    private String title;
+
+    @ApiModelProperty("描述")
+    private String description;
+
     public PaperForm() {
     }
 
@@ -60,5 +67,21 @@ public class PaperForm {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
