@@ -9,8 +9,8 @@
             </el-form-item>
             <el-form-item label="性别">
                 <el-radio-group v-model="userInfo.sex">
-                    <el-radio label="M">男</el-radio>
-                    <el-radio label="W">女</el-radio>
+                    <el-radio label="男">男</el-radio>
+                    <el-radio label="女">女</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="学校">
@@ -119,14 +119,11 @@
                 this.userInfo = newInfo;
             },
             resetInfo: function () {
-                this.userInfo = this.cacheInfo;
+                this.userInfo = JSON.parse(JSON.stringify(this.userdata));
             }
         },
         mounted() {
-            if (this.userdata !== {}) {
-                this.userInfo = this.userdata;
-                this.cacheInfo = this.userInfo;
-            }
+            this.userInfo = JSON.parse(JSON.stringify(this.userdata));
         }
     }
 </script>

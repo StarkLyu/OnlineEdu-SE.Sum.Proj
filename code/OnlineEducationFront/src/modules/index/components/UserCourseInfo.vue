@@ -32,9 +32,9 @@
                     }
                 ],
                 courseInfo: {
-                    courseId: "SE996",
-                    courseName: "数据库没成绩导论",
-                    courseTeacher: "JBoss",
+                    id: "SE996",
+                    title: "数据库没成绩导论",
+                    teacher: "JBoss",
                     courseAssistance: [
                         "ASSI-1",
                         "ASSI-2",

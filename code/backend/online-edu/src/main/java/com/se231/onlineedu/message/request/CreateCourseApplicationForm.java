@@ -38,7 +38,7 @@ public class CreateCourseApplicationForm {
 
     @OneToMany
     @ApiModelProperty("上课时间段")
-    private List<TimeSlot> timeSlots;
+    private List<TimeSlotForm> timeSlots;
 
     public Date getStartDate() {
         return startDate;

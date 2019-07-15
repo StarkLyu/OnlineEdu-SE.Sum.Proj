@@ -17,6 +17,7 @@ export default new Router({
         {
             path: '/viewcourses',
             name: 'viewCourses',
+            component: () => import('./views/CourseHall.vue')
         },
         {
             path: '/user',
@@ -57,10 +58,12 @@ export default new Router({
                         {
                             path: 'chapters',
                             name: 'courseStudentChapters',
+                            component: () => import('./components/CourseChapters.vue')
                         },
                         {
                             path: 'homework',
                             name: 'courseStudentHomework',
+                            component: () => import('./components/UserCoursePaperList.vue')
                         },
                         {
                             path: 'resources',
@@ -126,6 +129,11 @@ export default new Router({
                             component: () => import('./views/TeacherCourseBT')
                         },
                     ]
+                },
+                {
+                    path: 'info',
+                    name: 'CourseInfo',
+                    component: () => import('./views/CourseEntry.vue')
                 }
             ]
         },
