@@ -63,7 +63,7 @@ public class Course {
     private Set<User> students;
 
     @ApiModelProperty("该课程的老师")
-    @OneToOne
+    @ManyToOne
     private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")

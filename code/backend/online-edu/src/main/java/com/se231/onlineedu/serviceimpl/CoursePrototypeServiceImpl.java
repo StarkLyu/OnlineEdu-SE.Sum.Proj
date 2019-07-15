@@ -100,5 +100,8 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         return applyRepository.save(apply);
     }
 
-
+    @Override
+    public List<CoursePrototype> getAllCoursePrototype() {
+        return coursePrototypeRepository.findAll();
+    }
 }

@@ -1,6 +1,7 @@
 package com.se231.onlineedu.controller;
 
 import javax.validation.Valid;
+import java.util.List;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
@@ -76,6 +77,12 @@ public class CoursePrototypeController {
                                                @RequestParam(name = "applicant_id")Long applicantId)throws Exception{
 
         return ResponseEntity.ok(coursePrototypeService.decideUseCourse(courseId,applicantId,decision));
+    }
+    
+    @GetMapping("/info/all")
+    @ApiOperation("获取所有课程原型的信息")
+    public ResponseEntity<List<CoursePrototype>> getAllCoursePrototype(){
+        return ResponseEntity.ok(coursePrototypeService.getAllCoursePrototype());
     }
 
 }

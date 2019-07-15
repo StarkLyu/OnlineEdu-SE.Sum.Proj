@@ -46,7 +46,7 @@ public class CoursePrototype {
     @Enumerated(EnumType.STRING)
     private CoursePrototypeState state;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<User> users;
 
     @ApiModelProperty("该课程原型资源库里的所有资源")
