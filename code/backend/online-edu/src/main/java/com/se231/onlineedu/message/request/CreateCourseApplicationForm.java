@@ -56,6 +56,27 @@ public class CreateCourseApplicationForm {
         this.endDate = endDate;
     }
 
+    public String getCourseTitle() {
+        return courseTitle;
+    }
 
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public List<TimeSlotForm> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public void setTimeSlots(List<TimeSlotForm> timeSlots) {
+        this.timeSlots = timeSlots;
+    }
 }

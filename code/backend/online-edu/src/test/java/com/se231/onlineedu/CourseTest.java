@@ -161,6 +161,12 @@ public class CourseTest {
         //test approval comes after start date
         applyCourse3.setEndDate(endDate2.getTime());
 
+        applyCourse1.setCourseTitle("Math");
+
+        applyCourse2.setCourseTitle("Physics");
+
+        applyCourse3.setCourseTitle("Chemistry");
+
         setUpIsDone=true;
     }
 

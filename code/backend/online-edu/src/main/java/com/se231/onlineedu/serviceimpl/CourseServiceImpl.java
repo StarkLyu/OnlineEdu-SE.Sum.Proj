@@ -1,14 +1,15 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.CourseState;
-import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
+import com.se231.onlineedu.message.request.TimeSlotForm;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.CourseRepository;
+import com.se231.onlineedu.repository.TimeSlotRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,28 +27,35 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    @Autowired
     private CoursePrototypeRepository coursePrototypeRepository;
 
+    @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    public CourseServiceImpl(CoursePrototypeRepository coursePrototypeRepository,
-                             CourseRepository courseRepository,UserRepository userRepository){
-        this.userRepository=userRepository;
-        this.coursePrototypeRepository=coursePrototypeRepository;
-        this.courseRepository=courseRepository;
-    }
+    private TimeSlotRepository timeSlotRepository;
 
     @Override
-    public Course applyToStartCourse(Long prototypeId, Date startDate, Date endDate, Long userId) throws Exception{
+    public Course applyToStartCourse(CreateCourseApplicationForm form,Long prototypeId, Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
         User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
-        if(endDate.before(startDate)) {
+        if(form.getEndDate().before(form.getStartDate())) {
             throw new RuntimeException("end date comes before start date!");
         }
-        Course course=new Course(startDate,endDate,CourseState.APPLYING,coursePrototype,user);
+        Course course=new Course(form.getStartDate(),form.getEndDate(),CourseState.APPLYING,coursePrototype,user);
+        course.setCourseTitle(form.getCourseTitle());
+        course.setLocation(form.getLocation());
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        for (TimeSlotForm slotForm:form.getTimeSlots()) {
+            TimeSlot slot = timeSlotRepository.findByDayAndAndStartAndAndEnd(WeekDay.values()[slotForm.getDay()]
+                    ,slotForm.getStart(),slotForm.getEnd()).orElse(new TimeSlot(slotForm));
+            timeSlots.add(timeSlotRepository.save(slot));
+        }
+        course.setTimeSlots(timeSlots);
         return courseRepository.save(course);
     }
 
@@ -97,5 +105,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getAllCourse() {
         return courseRepository.findAll();
+    }
+
+    @Override
+    public Boolean checkIfUserPick(Long courseId, Long userId) throws Exception {
+        User user=userRepository.getOne(userId);
+        Course course = courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
+        return user.getCourses().contains(course);
     }
 }

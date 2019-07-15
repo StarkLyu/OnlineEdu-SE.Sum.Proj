@@ -1,6 +1,6 @@
 package com.se231.onlineedu.service;
 
-import java.util.Map;
+import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.PaperAnswer;
 
 /**
@@ -18,9 +18,9 @@ public interface PaperAnswerService {
      * @param userId    id of user who answer the paper
      * @param courseId  id of the course
      * @param paperId   id of the answered paper
-     * @param answers   a map contains question number and answer
+     * @param form   a form contains answer and state.
      * @return  the paper with answers the user just submit.
      * @throws Exception    mainly not found exception.
      */
-    PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, Map<Long,String> answers)throws Exception;
+    PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form)throws Exception;
 }

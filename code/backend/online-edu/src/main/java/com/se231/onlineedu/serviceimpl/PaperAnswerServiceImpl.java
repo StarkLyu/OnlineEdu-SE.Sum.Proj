@@ -2,7 +2,8 @@ package com.se231.onlineedu.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import com.se231.onlineedu.message.request.QuestionAnswer;
+import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.PaperAnswerService;
@@ -30,8 +31,10 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Autowired PaperAnswerRepository paperAnswerRepository;
 
+    private static final int MAX_TIMES=3;
+
     @Override
-    public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, Map<Long, String> answers) throws Exception {
+    public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) throws Exception {
         double totalScore=0;
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new RuntimeException("User Not Found"));
@@ -40,7 +43,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         Paper paper = paperRepository.findById(paperId)
                 .orElseThrow(()->new RuntimeException("Paper Not Found"));
         int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
-        if(times==3){
+        if(times==MAX_TIMES){
             throw new RuntimeException("You Have Answered Three Times");
         }
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
@@ -50,17 +53,17 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
         paperAnswer = paperAnswerRepository.save(paperAnswer);
         List<Answer> answerList= new ArrayList<>();
-        for (Map.Entry<Long,String> entry : answers.entrySet()){
-            Question question = questionRepository.findById(entry.getKey())
+        for (QuestionAnswer questionAnswer :form.getAnswerList()){
+            Question question = questionRepository.findById(questionAnswer.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Question Not Found"));
             PaperWithQuestions paperWithQuestions =
                     paperWithQuestionsRepository.findById(new PaperWithQuestionsPrimaryKey(paper,question))
                     .orElseThrow(()->new RuntimeException("Question Not Found"));
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
             //若题目为主观题，默认不做批改，直接不打分留题。若为客观题则直接检测与答案是否匹配。
-            double score= (entry.getValue().equals(question.getAnswer())&&
-                    !question.getQuestionType().equals(QuestionType.SUBJECTIVE))?paperWithQuestions.getScore():0;
-            Answer answer = new Answer(answerPrimaryKey,entry.getValue(),score);
+            double score= (!question.getQuestionType().equals(QuestionType.SUBJECTIVE)&&
+                    questionAnswer.getAnswer().equals(question.getAnswer()))?paperWithQuestions.getScore():0;
+            Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),score);
             answerList.add(answerRepository.save(answer));
             totalScore+=score;
         }

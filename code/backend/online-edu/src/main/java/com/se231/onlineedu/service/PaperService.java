@@ -1,8 +1,6 @@
 package com.se231.onlineedu.service;
 
-import java.util.Date;
-import java.util.List;
-import com.se231.onlineedu.message.request.PaperQuestionForm;
+import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.model.Paper;
 import com.se231.onlineedu.model.Section;
 
@@ -19,15 +17,12 @@ public interface PaperService {
 
     /**
      * this service allowed teacher of a specific course to add a new paper into the course.
-     * @param paperQuestionFormsList    the questions of paper.
      * @param courseId  id of the course
-     * @param start the beginning time of the paper
-     * @param end the end time of the paper
+     * @param form form of add paper request
      * @return  the generated paper.
      * @throws Exception    mainly contains not found exception
      */
-    Paper addNewPaper(List<PaperQuestionForm> paperQuestionFormsList, Long courseId,
-                      Date start, Date end)throws Exception;
+    Paper addNewPaper(PaperForm form, Long courseId)throws Exception;
 
     /**
      * this service allow teacher to issue a existing paper to a section
