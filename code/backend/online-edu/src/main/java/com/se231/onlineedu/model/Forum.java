@@ -4,12 +4,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Document
 public class Forum {
+
     @Id
     private String id;
 
@@ -19,11 +21,33 @@ public class Forum {
 
     private Date createdAt = new Date();
 
+    @NotBlank
+    private Long courseId;
+
+    @NotBlank
+    private int secNo;
+
     private int likes = 0;
 
     private List<Reply> replies = new ArrayList<>();
 
     private List<String> imageUrls = new ArrayList<>();
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public int getSecNo() {
+        return secNo;
+    }
+
+    public void setSecNo(int secNo) {
+        this.secNo = secNo;
+    }
 
     public String getId() {
         return id;

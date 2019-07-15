@@ -19,6 +19,17 @@ public class ForumServiceImpl implements ForumService {
     private ForumRepository forumRepository;
 
     @Override
+    public List<Forum> getForumsBySection(Long courseId, int secNo){
+        return forumRepository.findByCourseIdAndSecNo(courseId, secNo);
+    }
+
+    @Override
+    public List<Forum> getForumsByCourse(Long courseId){
+        return forumRepository.findByCourseId(courseId);
+    }
+
+
+    @Override
     public  Forum updateForum(Forum forum){
         return forumRepository.save(forum);
     }
