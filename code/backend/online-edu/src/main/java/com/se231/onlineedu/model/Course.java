@@ -26,6 +26,16 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String avatarUrl;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     @ApiModelProperty(value = "开始日期",required = true)
     @NotNull
     private Date startDate;
@@ -62,8 +72,21 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     private Set<User> students;
 
+    @ApiModelProperty("该课程的助教")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "courses")
+    private Set<User> teacherAssistants;
+
+    public Set<User> getTeacherAssistants() {
+        return teacherAssistants;
+    }
+
+    public void setTeacherAssistants(Set<User> teacherAssistants) {
+        this.teacherAssistants = teacherAssistants;
+    }
+
     @ApiModelProperty("该课程的老师")
-    @OneToOne
+    @ManyToOne
     private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")

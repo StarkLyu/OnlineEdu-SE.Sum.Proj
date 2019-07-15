@@ -4,6 +4,7 @@ import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.ApplyRepository;
+import com.se231.onlineedu.repository.ResourceRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +22,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CoursePrototypeServiceImpl implements CoursePrototypeService {
 
+
+    @Autowired
     private CoursePrototypeRepository coursePrototypeRepository;
 
+    @Autowired
     private ApplyRepository applyRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    public CoursePrototypeServiceImpl(CoursePrototypeRepository coursePrototypeRepository,
-                                      ApplyRepository applyRepository,
-                                      UserRepository userRepository){
-        this.coursePrototypeRepository=coursePrototypeRepository;
-        this.applyRepository=applyRepository;
-        this.userRepository=userRepository;
-    }
+    private ResourceRepository resourceRepository;
+
 
     @Override
     public CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) throws Exception{
@@ -81,7 +81,6 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
 
     @Override
     public Apply decideUseCourse(Long courseId,Long applicantId,String decision)throws Exception{
-
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
         User user = userRepository.findById(applicantId).orElseThrow(()->new Exception("No corresponding user"));
         ApplyPrimaryKey applyPrimaryKey=new ApplyPrimaryKey(user,coursePrototype);
@@ -90,5 +89,11 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         return applyRepository.save(apply);
     }
 
-
+    @Override
+    public CoursePrototype saveResource(Long coursePrototypeId, Resource resource) throws Exception {
+        Resource resourceSaved = resourceRepository.save(resource);
+        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(()->new Exception("No corresponding course"));
+        coursePrototype.getResources().add(resourceSaved);
+        return coursePrototypeRepository.save(coursePrototype);
+    }
 }

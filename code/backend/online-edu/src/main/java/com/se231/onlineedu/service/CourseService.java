@@ -66,4 +66,8 @@ public interface CourseService {
      * @return  the list of all course
      */
     List<Course> getAllCourse();
+
+    Course updateCourseAvatar(String avatarUrl, Long id) throws Exception;
+
+    List<String> getTAAndTeacherEmail(Long id) throws Exception;
 }

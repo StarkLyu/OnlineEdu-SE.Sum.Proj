@@ -1,8 +1,10 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.CourseState;
@@ -16,11 +18,10 @@ import org.springframework.stereotype.Service;
 
 /**
  * the implementation class of course service
- *
+ * <p>
  * to finish the service logic of operation related to course
  *
  * @author Zhe Li
- *
  * @date 2019/7/4
  */
 @Service
@@ -34,32 +35,31 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     public CourseServiceImpl(CoursePrototypeRepository coursePrototypeRepository,
-                             CourseRepository courseRepository,UserRepository userRepository){
-        this.userRepository=userRepository;
-        this.coursePrototypeRepository=coursePrototypeRepository;
-        this.courseRepository=courseRepository;
+                             CourseRepository courseRepository, UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.coursePrototypeRepository = coursePrototypeRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
-    public Course applyToStartCourse(Long prototypeId, Date startDate, Date endDate, Long userId) throws Exception{
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
-        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
-        if(endDate.before(startDate)) {
+    public Course applyToStartCourse(Long prototypeId, Date startDate, Date endDate, Long userId) throws Exception {
+        CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(() -> new Exception("No corresponding course"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("No corresponding user!"));
+        if (endDate.before(startDate)) {
             throw new RuntimeException("end date comes before start date!");
         }
-        Course course=new Course(startDate,endDate,CourseState.APPLYING,coursePrototype,user);
+        Course course = new Course(startDate, endDate, CourseState.APPLYING, coursePrototype, user);
         return courseRepository.save(course);
     }
 
     @Override
-    public Course examineStartCourseApplication(Long courseId,String decision)throws Exception{
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
+    public Course examineStartCourseApplication(Long courseId, String decision) throws Exception {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new Exception("No corresponding course"));
         switch (decision) {
             case "approval":
-                if(course.getStartDate().before(new Date())) {
+                if (course.getStartDate().before(new Date())) {
                     course.setState(CourseState.TEACHING);
-                }
-                else {
+                } else {
                     course.setState(CourseState.READY_TO_START);
                 }
                 break;
@@ -74,9 +74,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> pickCourse(Long userId,Long courseId)throws Exception{
-        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
+    public List<Course> pickCourse(Long userId, Long courseId) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("No corresponding user!"));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new Exception("No corresponding course"));
         user.getCourses().add(course);
         userRepository.save(user);
         return user.getCourses();
@@ -84,18 +84,36 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Set<User> getStudentsList(Long courseId) throws Exception {
-        Course course=courseRepository.findById(courseId)
-                .orElseThrow(()->new RuntimeException("No corresponding course"));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("No corresponding course"));
         return course.getStudents();
     }
 
     @Override
     public Course getCourseInfo(Long courseId) throws Exception {
-        return courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
+        return courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("No corresponding course"));
     }
 
     @Override
     public List<Course> getAllCourse() {
         return courseRepository.findAll();
+    }
+
+    @Override
+    public Course updateCourseAvatar(String avatarUrl, Long id) throws Exception {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new Exception("No corresponding course"));
+        course.setAvatarUrl(avatarUrl);
+        return courseRepository.save(course);
+    }
+
+    @Override
+    public List<String> getTAAndTeacherEmail(Long id) throws Exception {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new Exception("No corresponding course"));
+        List<String> emails = new ArrayList<>();
+        emails.add(course.getTeacher().getEmail());
+        for(User ta: course.getTeacherAssistants()){
+            emails.add(ta.getEmail());
+        }
+        return emails;
     }
 }

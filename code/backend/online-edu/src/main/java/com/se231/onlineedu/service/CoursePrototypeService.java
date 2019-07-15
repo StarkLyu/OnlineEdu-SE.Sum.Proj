@@ -3,6 +3,7 @@ package com.se231.onlineedu.service;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
+import com.se231.onlineedu.model.Resource;
 
 
 /**
@@ -51,4 +52,6 @@ public interface CoursePrototypeService {
      * @return the application
      */
     Apply decideUseCourse(Long courseId, Long applicantId, String decision)throws Exception;
+
+    CoursePrototype saveResource(Long coursePrototypeId, Resource resource) throws Exception;
 }

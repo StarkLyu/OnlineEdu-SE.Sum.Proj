@@ -50,10 +50,18 @@ public class CoursePrototype {
     private User user;
 
     @ApiModelProperty("该课程原型资源库里的所有资源")
-    @OneToMany(mappedBy = "coursePrototype")
+    @OneToMany
     private List<Resource> resources;
 
     public CoursePrototype() {}
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<Resource> resources) {
+        this.resources = resources;
+    }
 
     public CoursePrototype(@NotBlank String title, String description, List<Question> questions, List<Course> courses, @NotBlank CoursePrototypeState state) {
         this.title = title;

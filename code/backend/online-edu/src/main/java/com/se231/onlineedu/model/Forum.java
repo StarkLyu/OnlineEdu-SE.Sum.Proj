@@ -17,6 +17,16 @@ public class Forum {
 
     private String title;
 
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     private Long userId;
 
     private Date createdAt = new Date();

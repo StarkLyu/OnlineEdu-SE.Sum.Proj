@@ -7,7 +7,7 @@ import com.se231.onlineedu.message.request.ReplyMessage;
 import com.se231.onlineedu.model.Forum;
 import com.se231.onlineedu.model.Reply;
 import com.se231.onlineedu.security.services.UserPrinciple;
-import com.se231.onlineedu.service.ForumService;
+import com.se231.onlineedu.service.*;
 import com.se231.onlineedu.util.ImageWithInfo;
 import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +27,27 @@ public class ForumController {
     @Autowired
     private ForumService forumService;
 
+    @Autowired
+    private DiscernSensitiveWordsService discernSensitiveWordsService;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
+
+    @Autowired
+    private CourseService courseService;
+
     @Value("${app.file.limit}")
     private int limit;
 
 
     @PostMapping("/courses/{courseId}/sections/{secNo}/forums")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN') and forum.getUserId() == authentication.principal.id")
-    public Forum updateForum(@RequestBody Forum forum, @PathVariable Long courseId, @PathVariable int secNo, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+    public Forum updateForum(@RequestBody Forum forum, @PathVariable Long courseId, @PathVariable int secNo, @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception {
+        if(!discernSensitiveWordsService.discern(forum.getTitle()) || !discernSensitiveWordsService.discern(forum.getContent())){
+            for(String email: courseService.getTAAndTeacherEmail(courseId)){
+                emailSenderService.sendSensitiveWordsDetectedWords(email);
+            }
+        }
         forum.setCourseId(courseId);
         forum.setSecNo(secNo);
         forum.setUserId(userPrinciple.getId());
