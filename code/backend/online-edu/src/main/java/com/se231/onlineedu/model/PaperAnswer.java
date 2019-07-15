@@ -28,6 +28,11 @@ public class PaperAnswer {
     @ApiModelProperty("学生此次答题的成绩")
     private double grade;
 
+    @ApiModelProperty(value = "学生这次作业的状态",example = "NOT_START:未开始,NOT_FINISH:开始为完成(暂存)," +
+            "FINISHED:已完成并提交,但未到批改阶段,NOT_MARKED:已到批改阶段但仍未被批改,MARKED:已被批改,有成绩")
+    @Enumerated(value = EnumType.STRING)
+    private PaperAnswerState state;
+
     public PaperAnswer(PaperAnswerPrimaryKey paperAnswerPrimaryKey, List<Answer> answers, double grade) {
         this.paperAnswerPrimaryKey = paperAnswerPrimaryKey;
         this.answers = answers;
@@ -63,5 +68,13 @@ public class PaperAnswer {
 
     public void setGrade(double grade) {
         this.grade = grade;
+    }
+
+    public PaperAnswerState getState() {
+        return state;
+    }
+
+    public void setState(PaperAnswerState state) {
+        this.state = state;
     }
 }

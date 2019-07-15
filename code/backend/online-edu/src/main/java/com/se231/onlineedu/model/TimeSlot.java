@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import java.sql.Time;
+import com.se231.onlineedu.message.request.TimeSlotForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.NaturalId;
@@ -25,7 +26,7 @@ public class TimeSlot {
     @ApiModelProperty("结束时间")
     private Time end;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated
     @ApiModelProperty("上课日期在周几")
     private WeekDay day;
 
@@ -59,5 +60,14 @@ public class TimeSlot {
 
     public void setDay(WeekDay day) {
         this.day = day;
+    }
+
+    public TimeSlot() {
+    }
+
+    public TimeSlot(TimeSlotForm form){
+        start=form.getStart();
+        end=form.getEnd();
+        day=WeekDay.values()[form.getDay()];
     }
 }

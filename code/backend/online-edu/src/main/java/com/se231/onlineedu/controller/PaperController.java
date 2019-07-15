@@ -34,8 +34,7 @@ public class PaperController {
     @PostMapping
     public ResponseEntity<Paper> addNewPaper(@PathVariable("id")Long courseId,
                                              @Valid @RequestBody PaperForm form)throws Exception{
-        return ResponseEntity.ok(paperService.addNewPaper(form.getQuestionFormList(),courseId,
-                form.getStart(),form.getEnd()));
+        return ResponseEntity.ok(paperService.addNewPaper(form,courseId));
     }
 
     @PostMapping("/{paperId}/issue")

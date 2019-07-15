@@ -1,5 +1,7 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
@@ -32,6 +34,8 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     @Autowired
     private UserRepository userRepository;
 
+    private static final String approval = ApplyState.APPROVAL.toString().toLowerCase();
+
     @Autowired
     private ResourceRepository resourceRepository;
 
@@ -43,7 +47,9 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         coursePrototype.setDescription(form.getDescription());
         coursePrototype.setState(CoursePrototypeState.NOT_DECIDE);
         User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
-        coursePrototype.setUser(user);
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
+        coursePrototype.setUser(userList);
         return coursePrototypeRepository.save(coursePrototype);
     }
 
@@ -86,14 +92,24 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         ApplyPrimaryKey applyPrimaryKey=new ApplyPrimaryKey(user,coursePrototype);
         Apply apply = applyRepository.findById(applyPrimaryKey).orElseThrow(()->new Exception("No corresponding application"));
         apply.setApplyState(ApplyState.valueOf(decision.toUpperCase()));
+        if(approval.equals(decision)){
+            coursePrototype.getUsers().add(user);
+            coursePrototypeRepository.save(coursePrototype);
+        }
         return applyRepository.save(apply);
     }
 
     @Override
     public CoursePrototype saveResource(Long coursePrototypeId, Resource resource) throws Exception {
         Resource resourceSaved = resourceRepository.save(resource);
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(()->new Exception("No corresponding course"));
+        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(() -> new Exception("No corresponding course"));
         coursePrototype.getResources().add(resourceSaved);
         return coursePrototypeRepository.save(coursePrototype);
+
+    }
+
+    @Override
+    public List<CoursePrototype> getAllCoursePrototype() {
+        return coursePrototypeRepository.findAll();
     }
 }

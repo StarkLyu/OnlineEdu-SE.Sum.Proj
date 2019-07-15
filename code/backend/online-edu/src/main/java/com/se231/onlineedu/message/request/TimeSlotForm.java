@@ -19,7 +19,7 @@ public class TimeSlotForm {
 
     @ApiModelProperty(value = "时间段在周几",allowableValues = "0-6依次代表SUNDAY-SATURDAY")
     @NotNull
-    private WeekDay day;
+    private Integer day;
 
     @ApiModelProperty("开始时间是几点")
     @NotNull
@@ -28,4 +28,31 @@ public class TimeSlotForm {
     @NotNull
     @ApiModelProperty("结束时间是几点")
     private Time end;
+
+    public TimeSlotForm() {
+    }
+
+    public Integer getDay() {
+        return day;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
+    }
+
+    public Time getStart() {
+        return start;
+    }
+
+    public void setStart(Time start) {
+        this.start = start;
+    }
+
+    public Time getEnd() {
+        return end;
+    }
+
+    public void setEnd(Time end) {
+        this.end = end;
+    }
 }

@@ -47,7 +47,7 @@ public class CourseController {
     public ResponseEntity<Course> applyToStartCourse(@RequestParam("prototypeId") Long prototypeId,
                                                      @Valid @RequestBody CreateCourseApplicationForm form,
                                                      @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
-        return ResponseEntity.ok(courseService.applyToStartCourse(prototypeId,form.getStartDate(),form.getEndDate(),userPrinciple.getId()));
+        return ResponseEntity.ok(courseService.applyToStartCourse(form,prototypeId,userPrinciple.getId()));
     }
 
     @ApiOperation(value = "管理员审核教师的开课申请")
@@ -109,4 +109,10 @@ public class CourseController {
         return ResponseEntity.ok(courseService.updateCourseAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "course"), id));
     }
 
+    @ApiOperation("查询用户是否选了某门课")
+    @GetMapping("/{id}/isPicked")
+    public ResponseEntity<Boolean> checkWhetherPicked(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                                                      @PathVariable("id")Long id)throws Exception{
+        return ResponseEntity.ok(courseService.checkIfUserPick(id,userPrinciple.getId()));
+    }
 }
