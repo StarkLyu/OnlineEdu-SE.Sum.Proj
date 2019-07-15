@@ -3,6 +3,7 @@ package com.se231.onlineedu.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 
@@ -19,13 +20,12 @@ public interface CourseService {
     /**
      * this service will allow a teaching admin(or higher priority)apply to start a course from a existing course prototype
      * @param prototypeId the prototype of applied course
-     * @param startDate the beginning date of the course
-     * @param endDate the end date of the course
+     * @param form information of course
      * @param userId    the id of applicant
      * @return  generated course entity
      * @throws Exception mainly throw not found exception
      */
-    Course applyToStartCourse(Long prototypeId, Date startDate, Date endDate, Long userId) throws Exception;
+    Course applyToStartCourse(CreateCourseApplicationForm form,Long prototypeId, Long userId) throws Exception;
 
     /**
      * this service allow a admin or super admin to examine a start course application.
@@ -66,4 +66,13 @@ public interface CourseService {
      * @return  the list of all course
      */
     List<Course> getAllCourse();
+
+    /**
+     * this service check whether the specific user has picked the course or not
+     * @param courseId  the checked course
+     * @param userId    the request user
+     * @return  true if the user has picked the course.
+     * @throws Exception    mainly not found exception
+     */
+    Boolean checkIfUserPick(Long courseId,Long userId)throws Exception;
 }

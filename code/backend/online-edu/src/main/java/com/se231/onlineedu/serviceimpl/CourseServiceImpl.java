@@ -3,6 +3,7 @@ package com.se231.onlineedu.serviceimpl;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.CourseState;
@@ -41,13 +42,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course applyToStartCourse(Long prototypeId, Date startDate, Date endDate, Long userId) throws Exception{
+    public Course applyToStartCourse(CreateCourseApplicationForm form,Long prototypeId, Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
         User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
-        if(endDate.before(startDate)) {
+        if(form.getEndDate().before(form.getStartDate())) {
             throw new RuntimeException("end date comes before start date!");
         }
-        Course course=new Course(startDate,endDate,CourseState.APPLYING,coursePrototype,user);
+        Course course=new Course(form.getStartDate(),form.getEndDate(),CourseState.APPLYING,coursePrototype,user);
+        course.setCourseTitle(form.getCourseTitle());
+        course.setLocation(form.getLocation());
         return courseRepository.save(course);
     }
 
@@ -97,5 +100,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getAllCourse() {
         return courseRepository.findAll();
+    }
+
+    @Override
+    public Boolean checkIfUserPick(Long courseId, Long userId) throws Exception {
+        User user=userRepository.getOne(userId);
+        Course course = courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
+        return user.getCourses().contains(course);
     }
 }

@@ -46,8 +46,8 @@ public class CoursePrototype {
     @Enumerated(EnumType.STRING)
     private CoursePrototypeState state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<User> users;
 
     @ApiModelProperty("该课程原型资源库里的所有资源")
     @OneToMany(mappedBy = "coursePrototype")
@@ -63,12 +63,12 @@ public class CoursePrototype {
         this.state = state;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(List<User> users) {
+        this.users = users;
     }
 
     public Long getId() {
@@ -130,11 +130,11 @@ public class CoursePrototype {
                 Objects.equals(questions, that.questions) &&
                 Objects.equals(courses, that.courses) &&
                 state == that.state &&
-                Objects.equals(user, that.user);
+                Objects.equals(users, that.users);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, questions, courses, state, user);
+        return Objects.hash(id, title, description, questions, courses, state, users);
     }
 }

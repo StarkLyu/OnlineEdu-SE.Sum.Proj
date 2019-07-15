@@ -1,12 +1,13 @@
 package com.se231.onlineedu.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.alibaba.fastjson.JSONObject;
+import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.PaperAnswer;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.PaperAnswerService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,24 +18,25 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019/07/10
  */
 @RestController
-@Api
+@Api(tags = "学生完成作业的控制类")
 @RequestMapping("/api/courses/{courseId}/papers/{paperId}/answer")
 public class PaperAnswerController {
 
     @Autowired
     PaperAnswerService paperAnswerService;
+
+    @ApiOperation("学生提交作业")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "课程id",name="courseId",paramType = "path"),
+            @ApiImplicitParam(value = "作业id",name="paperId",paramType = "path")
+    })
     @PostMapping
     public ResponseEntity<PaperAnswer> submitAnswer(@PathVariable("courseId")Long courseId,
                                                     @PathVariable("paperId")Long paperId,
                                                     @AuthenticationPrincipal UserPrinciple userPrinciple,
-                                                    @RequestBody JSONObject jsonObject)throws Exception{
-        Map<Long,String> map = new HashMap<>(10);
-        for(Map.Entry<String,Object> entry:jsonObject.entrySet()){
-            Long questionId=Long.parseLong(entry.getKey());
-            String answer =(String) entry.getValue();
-            map.put(questionId,answer);
-        }
-        return ResponseEntity.ok(paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,map));
+                                                    @RequestBody SubmitAnswerForm form)throws Exception{
+
+        return ResponseEntity.ok(paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,form));
     }
 
 }
