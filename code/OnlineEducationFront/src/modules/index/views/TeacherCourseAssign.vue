@@ -11,7 +11,7 @@
                         prop="date"
                         label="日期"
                         sortable
-                        min-width="30%">
+                        min-width="25%">
                 </el-table-column>
                 <el-table-column
                         prop="name"
@@ -20,11 +20,17 @@
                         min-width="50%">
                 </el-table-column>
                 <el-table-column
-                        min-width="30%">
+                        min-width="40%">
                     <template slot="header">
                         <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加作业</el-button>
                     </template>
                     <template slot-scope="scope">
+                        <el-button size="small"
+                                   type="success"
+                                   icon="el-icon-document-checked"
+                                   @click="handleAnnounce(scope.$index, scope.row)">
+                            发布
+                        </el-button>
                         <el-button size="small"
                                    icon="el-icon-edit"
                                    @click="handleDetail(scope.$index, scope.row)">
@@ -72,6 +78,10 @@
         methods:{
             handleAdd(){
                 alert("添加作业");
+            },
+
+            handleAnnounce:function(index, row){
+                alert("发布"+row.name);
             },
 
             handleDetail:function(index, row){
