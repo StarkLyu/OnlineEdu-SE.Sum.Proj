@@ -1,15 +1,15 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
-import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.CourseState;
-import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.message.request.TimeSlotForm;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.CourseRepository;
+import com.se231.onlineedu.repository.TimeSlotRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +27,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    @Autowired
     private CoursePrototypeRepository coursePrototypeRepository;
 
+    @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    public CourseServiceImpl(CoursePrototypeRepository coursePrototypeRepository,
-                             CourseRepository courseRepository,UserRepository userRepository){
-        this.userRepository=userRepository;
-        this.coursePrototypeRepository=coursePrototypeRepository;
-        this.courseRepository=courseRepository;
-    }
+    private TimeSlotRepository timeSlotRepository;
 
     @Override
     public Course applyToStartCourse(CreateCourseApplicationForm form,Long prototypeId, Long userId) throws Exception{
@@ -51,6 +49,13 @@ public class CourseServiceImpl implements CourseService {
         Course course=new Course(form.getStartDate(),form.getEndDate(),CourseState.APPLYING,coursePrototype,user);
         course.setCourseTitle(form.getCourseTitle());
         course.setLocation(form.getLocation());
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        for (TimeSlotForm slotForm:form.getTimeSlots()) {
+            TimeSlot slot = timeSlotRepository.findByDayAndAndStartAndAndEnd(WeekDay.values()[slotForm.getDay()]
+                    ,slotForm.getStart(),slotForm.getEnd()).orElse(new TimeSlot(slotForm));
+            timeSlots.add(timeSlotRepository.save(slot));
+        }
+        course.setTimeSlots(timeSlots);
         return courseRepository.save(course);
     }
 

@@ -78,7 +78,7 @@ public class CoursePrototypeController {
 
         return ResponseEntity.ok(coursePrototypeService.decideUseCourse(courseId,applicantId,decision));
     }
-    
+
     @GetMapping("/info/all")
     @ApiOperation("获取所有课程原型的信息")
     public ResponseEntity<List<CoursePrototype>> getAllCoursePrototype(){
