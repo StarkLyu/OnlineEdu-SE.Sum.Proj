@@ -40,6 +40,7 @@
                 teacher: String,
                 startDate: String,
                 endDate: String,
+                state: String
             }
         },
         data() {

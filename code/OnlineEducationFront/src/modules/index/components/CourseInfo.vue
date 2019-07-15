@@ -2,13 +2,13 @@
     <div>
         <el-row class="row-layout">
             <el-col :span="24">
-                <h2>{{ courseInfo.courseName }}</h2>
+                <h2>{{ courseInfo.title }}</h2>
             </el-col>
         </el-row>
         <el-row class="row-layout">
             <el-col :span="12">
                 <div class="float-left">教师：</div>
-                <UserUnit :user="courseInfo.courseTeacher" class="float-left"></UserUnit>
+                <UserUnit :user="courseInfo.teacher" class="float-left"></UserUnit>
             </el-col>
             <el-col :span="12">
                 <div class="float-left">助教：</div>
@@ -22,7 +22,7 @@
         </el-row>
         <el-row class="row-layout">
             <el-col :span="12">
-                时间：{{ courseInfo.courseTime1}} ~ {{ courseInfo.courseTime2 }}
+                时间：{{ courseInfo.startDate}} ~ {{ courseInfo.endDate }}
             </el-col>
             <el-col :span="12">
                 地点：{{ courseInfo.courseRoom }}
@@ -44,12 +44,12 @@
         components: {UserUnit},
         props: {
             courseInfo: {
-                courseId: String,
-                courseName: String,
-                courseTeacher: String,
+                id: String,
+                title: String,
+                teacher: String,
                 courseAssistance: Array,
-                courseTime1: String,
-                courseTime2: String,
+                startDate: String,
+                endDate: String,
                 courseWeek: Array,
                 courseRoom: String,
                 courseDes: String,

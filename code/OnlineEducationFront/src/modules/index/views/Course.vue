@@ -4,9 +4,9 @@
             <CourseHead></CourseHead>
             <UserCourseMenu></UserCourseMenu>
         </el-aside>
-        <eld-main>
+        <el-main>
             <router-view></router-view>
-        </eld-main>
+        </el-main>
     </el-container>
 </template>
 
