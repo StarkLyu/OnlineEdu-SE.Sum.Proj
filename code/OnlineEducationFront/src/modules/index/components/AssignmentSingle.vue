@@ -2,7 +2,7 @@
 <!--    单选题组件-->
     <div id="AssignmentSingle">
         <h4>
-            {{single.title}}
+            第{{single.key}}题:{{single.title}}
         </h4>
         <el-radio-group style="width: 80%" v-model="single.answer">
             <el-radio style="columns:4"

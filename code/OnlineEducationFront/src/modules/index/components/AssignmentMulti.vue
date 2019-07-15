@@ -2,7 +2,7 @@
 <!--    多选题组件-->
     <div id="AssignmentMulti">
         <h4>
-            {{multi.title}}
+            第{{multi.key}}题：{{multi.title}}
         </h4>
         <el-checkbox-group style="width: 80%" v-model="multi.answer">
             <el-checkbox style="columns:4"

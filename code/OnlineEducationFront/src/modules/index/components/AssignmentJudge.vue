@@ -1,7 +1,8 @@
 <template>
+<!--    判断题组件-->
     <div id="AssignmentJudge">
         <h4>
-            {{judge.title}}
+            第{{judge.key}}题：{{judge.title}}
         </h4>
         <el-radio-group style="width: 80%" v-model="judge.answer">
             <el-radio label="正确"></el-radio>
