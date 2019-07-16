@@ -4,7 +4,6 @@
             <el-col :span="16">
                 <h3>管理</h3>
                 <el-menu
-                        default-active="2"
                         class="el-menu-vertical-demo"
                         router="true">
                     <el-menu-item index="1" route="/ManageUser">
@@ -17,6 +16,12 @@
                         <i class="el-icon-copy-document"></i>
                         <span slot="title">
                             课程管理
+                        </span>
+                    </el-menu-item>
+                    <el-menu-item index="3" route="/ManageCoursePrototype">
+                        <i class="el-icon-copy-document"></i>
+                        <span slot="title">
+                            课程原型
                         </span>
                     </el-menu-item>
                 </el-menu>
