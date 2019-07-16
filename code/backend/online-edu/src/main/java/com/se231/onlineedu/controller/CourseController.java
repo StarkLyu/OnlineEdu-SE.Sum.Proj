@@ -77,7 +77,7 @@ public class CourseController {
     @ApiOperation("获取某课程的学生名单")
     @ApiImplicitParam(name = "id",value = "获取的课程的id",type = "path")
     @GetMapping("/{id}/students")
-    public ResponseEntity<Set<User>> getStudentsList(@PathVariable(name = "id")Long courseId)throws Exception{
+    public ResponseEntity<List<User>> getStudentsList(@PathVariable(name = "id")Long courseId)throws Exception{
         return ResponseEntity.ok(courseService.getStudentsList(courseId));
     }
 

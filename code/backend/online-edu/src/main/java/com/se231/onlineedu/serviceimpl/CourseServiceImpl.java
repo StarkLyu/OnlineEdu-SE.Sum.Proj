@@ -88,14 +88,14 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> pickCourse(Long userId, Long courseId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new Exception("No corresponding user!"));
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new Exception("No corresponding course"));
-        user.getCourses().add(course);
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new Exception("No corresponding course!"));
+        user.getLearns().add(new Learn(user, course));
         userRepository.save(user);
-        return user.getCourses();
+        return user.getLearnCourses();
     }
 
     @Override
-    public Set<User> getStudentsList(Long courseId) throws Exception {
+    public List<User> getStudentsList(Long courseId) throws Exception {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("No corresponding course"));
         return course.getStudents();
@@ -133,6 +133,6 @@ public class CourseServiceImpl implements CourseService {
     public Boolean checkIfUserPick(Long courseId, Long userId) throws Exception {
         User user=userRepository.getOne(userId);
         Course course = courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
-        return user.getCourses().contains(course);
+        return user.getLearnCourses().contains(course);
     }
 }

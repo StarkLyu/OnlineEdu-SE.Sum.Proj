@@ -6,6 +6,7 @@ import com.se231.onlineedu.message.request.SignUpForm;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -109,10 +110,32 @@ public class User{
     }
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "pick_course",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "courses_id"))
-    private List<Course> courses;
+    @JoinTable(name = "assist_course",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "courses_id"))
+    private List<Course> assistCourses;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teacher")
+    private List<Course> teachCourses;
+
+    @OneToMany
+    private List<Learn> learns;
+
+    public List<Learn> getLearns() {
+        return learns;
+    }
+
+    public void setLearns(List<Learn> learns) {
+        this.learns = learns;
+    }
+
+    public List<Course> getLearnCourses(){
+        List<Course> courses = new ArrayList<>();
+        for(Learn learn: getLearns()){
+            courses.add(learn.getLearnPrimaryKey().getCourse());
+        }
+        return courses;
+    }
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_roles",
@@ -174,12 +197,20 @@ public class User{
         this.roles = roles;
     }
 
-    public List<Course> getCourses() {
-        return courses;
+    public List<Course> getAssistCourses() {
+        return assistCourses;
     }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
+    public void setAssistCourses(List<Course> assistCourses) {
+        this.assistCourses = assistCourses;
+    }
+
+    public List<Course> getTeachCourses() {
+        return teachCourses;
+    }
+
+    public void setTeachCourses(List<Course> teachCourses) {
+        this.teachCourses = teachCourses;
     }
 
     public String getEmail() {

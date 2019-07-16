@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +12,7 @@ import org.apache.poi.ss.usermodel.DateUtil;
 
 /**
  * Course Class
- *
+ * <p>
  * Course class is the main class to manage course information.
  *
  * @author zhe li
@@ -36,15 +37,15 @@ public class Course {
         this.avatarUrl = avatarUrl;
     }
 
-    @ApiModelProperty(value = "开始日期",required = true)
+    @ApiModelProperty(value = "开始日期", required = true)
     @NotNull
     private Date startDate;
 
-    @ApiModelProperty(value = "结束日期",required = true)
+    @ApiModelProperty(value = "结束日期", required = true)
     @NotNull
     private Date endDate;
 
-    @ApiModelProperty(value = "课程的状态",example = "有以下几个状态： APPLYING,READY_TO_START,TEACHING,FINISHED,NOT_PASS")
+    @ApiModelProperty(value = "课程的状态", example = "有以下几个状态： APPLYING,READY_TO_START,TEACHING,FINISHED,NOT_PASS")
     @NotNull
     @Enumerated(EnumType.STRING)
     private CourseState state;
@@ -67,15 +68,30 @@ public class Course {
     @ApiModelProperty("上课时间段")
     private List<TimeSlot> timeSlots;
 
-    @ApiModelProperty("选了该课程的学生")
-    @JsonIgnore
-    @ManyToMany(mappedBy = "courses")
-    private Set<User> students;
 
     @ApiModelProperty("该课程的助教")
     @JsonIgnore
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "assistCourses")
     private Set<User> teacherAssistants;
+
+    @OneToMany
+    private List<Learn> learns;
+
+    public List<Learn> getLearns() {
+        return learns;
+    }
+
+    public void setLearns(List<Learn> learns) {
+        this.learns = learns;
+    }
+
+    public List<User> getStudents() {
+        List<User> students = new ArrayList<>();
+        for (Learn learn : getLearns()) {
+            students.add(learn.getLearnPrimaryKey().getStudent());
+        }
+        return students;
+    }
 
     public Set<User> getTeacherAssistants() {
         return teacherAssistants;
@@ -86,7 +102,10 @@ public class Course {
     }
 
     @ApiModelProperty("该课程的老师")
-    @ManyToOne
+    @ManyToOne()
+    @JoinTable(name = "teach_course",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "courses_id"))
     private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")
@@ -150,14 +169,6 @@ public class Course {
 
     public void setUser(User user) {
         this.teacher = user;
-    }
-
-    public Set<User> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Set<User> students) {
-        this.students = students;
     }
 
     public List<Paper> getPapers() {

@@ -51,7 +51,7 @@ public interface CourseService {
      * @return  the set of students
      * @throws Exception mainly throw not found exception
      */
-    Set<User> getStudentsList(Long courseId)throws Exception;
+    List<User> getStudentsList(Long courseId)throws Exception;
 
     /**
      * this service allow user to get information of a specific course.
