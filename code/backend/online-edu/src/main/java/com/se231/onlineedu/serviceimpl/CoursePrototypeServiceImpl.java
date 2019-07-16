@@ -104,4 +104,9 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     public List<CoursePrototype> getAllCoursePrototype() {
         return coursePrototypeRepository.findAll();
     }
+
+    @Override
+    public List<Apply> getApplyByCoursePrototype(Long prototypeId) {
+        return applyRepository.findAppliesByPrototypeId(prototypeId);
+    }
 }

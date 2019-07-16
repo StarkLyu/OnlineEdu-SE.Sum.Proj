@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
@@ -60,9 +60,9 @@ public class CourseTest {
 
     private static CoursePrototype coursePrototype1= new CoursePrototype();
 
-    private static CreateCourseApplicationForm applyCourse1 = new CreateCourseApplicationForm();
-    private static CreateCourseApplicationForm applyCourse2 = new CreateCourseApplicationForm();
-    private static CreateCourseApplicationForm applyCourse3 = new CreateCourseApplicationForm();
+    private static CourseApplicationForm applyCourse1 = new CourseApplicationForm();
+    private static CourseApplicationForm applyCourse2 = new CourseApplicationForm();
+    private static CourseApplicationForm applyCourse3 = new CourseApplicationForm();
 
     private static String nullString= JSONObject.toJSONString(new CreateCoursePrototypeApplicationForm());
 

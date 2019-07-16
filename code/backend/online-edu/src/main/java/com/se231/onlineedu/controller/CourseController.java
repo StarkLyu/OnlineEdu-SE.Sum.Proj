@@ -3,7 +3,7 @@ package com.se231.onlineedu.controller;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
-import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -38,7 +38,7 @@ public class CourseController {
     @PostMapping("/start")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public ResponseEntity<Course> applyToStartCourse(@RequestParam("prototypeId") Long prototypeId,
-                                                     @Valid @RequestBody CreateCourseApplicationForm form,
+                                                     @Valid @RequestBody CourseApplicationForm form,
                                                      @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
         return ResponseEntity.ok(courseService.applyToStartCourse(form,prototypeId,userPrinciple.getId()));
     }
@@ -92,5 +92,13 @@ public class CourseController {
     public ResponseEntity<Boolean> checkWhetherPicked(@AuthenticationPrincipal UserPrinciple userPrinciple,
                                                       @PathVariable("id")Long id)throws Exception{
         return ResponseEntity.ok(courseService.checkIfUserPick(id,userPrinciple.getId()));
+    }
+
+    @ApiOperation("管理员或教师修改课程信息")
+    @PutMapping("/{id}/modify")
+    public ResponseEntity<Course> modifyCourseInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                                                   @Valid @RequestBody CourseApplicationForm form,
+                                                   @PathVariable("id")Long id)throws Exception{
+        return ResponseEntity.ok(courseService.modifyCourseInfo(id,form,userPrinciple.getId()));
     }
 }

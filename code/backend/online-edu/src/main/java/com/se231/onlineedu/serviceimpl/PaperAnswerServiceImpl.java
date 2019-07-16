@@ -35,21 +35,30 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) throws Exception {
-        double totalScore=0;
+        //initialize( found corresponding user and paper)
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new RuntimeException("User Not Found"));
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(()->new RuntimeException("Course Not Found"));
         Paper paper = paperRepository.findById(paperId)
                 .orElseThrow(()->new RuntimeException("Paper Not Found"));
+        if(!paper.getCourse().equals(course)){
+            throw new RuntimeException("This Course Doesn't Have This Paper.");
+        }
+
+        //get times the user has answered
         int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
         if(times==MAX_TIMES){
             throw new RuntimeException("You Have Answered Three Times");
         }
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
-        if(!paper.getCourse().equals(course)){
-            throw new RuntimeException("This Course Doesn't Have This Paper.");
+
+        //if the paper hasn't finished , just simply save the paper and return
+        if(PaperAnswerState.valueOf(form.getState())==PaperAnswerState.NOT_FINISH){
+
         }
+        double totalScore=0;
+
         PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
         paperAnswer = paperAnswerRepository.save(paperAnswer);
         List<Answer> answerList= new ArrayList<>();

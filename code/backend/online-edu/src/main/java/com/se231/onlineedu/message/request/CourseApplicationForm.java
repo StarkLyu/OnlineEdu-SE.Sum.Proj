@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
  *  * @date 2019/7/4
  */
 @ApiModel("申请创建课程的表单")
-public class CreateCourseApplicationForm {
+public class CourseApplicationForm {
     @NotNull
     @FutureOrPresent
     private Date startDate;

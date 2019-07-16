@@ -1,9 +1,8 @@
 package com.se231.onlineedu.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 
@@ -25,7 +24,7 @@ public interface CourseService {
      * @return  generated course entity
      * @throws Exception mainly throw not found exception
      */
-    Course applyToStartCourse(CreateCourseApplicationForm form,Long prototypeId, Long userId) throws Exception;
+    Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) throws Exception;
 
     /**
      * this service allow a admin or super admin to examine a start course application.
@@ -75,4 +74,14 @@ public interface CourseService {
      * @throws Exception    mainly not found exception
      */
     Boolean checkIfUserPick(Long courseId,Long userId)throws Exception;
+
+    /**
+     * this service allow the teacher of a course or admin to modify information of the course
+     * @param courseId    id of course.
+     * @param form  form of course information.
+     * @param userId    id of the requesting user.
+     * @return  course info after modify
+     * @throws Exception    mainly not found exception
+     */
+    Course modifyCourseInfo(Long courseId,CourseApplicationForm form,Long userId)throws Exception;
 }

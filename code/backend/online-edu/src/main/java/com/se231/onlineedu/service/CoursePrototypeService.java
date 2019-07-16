@@ -58,4 +58,12 @@ public interface CoursePrototypeService {
      * @return  list of all prototypes
      */
     List<CoursePrototype> getAllCoursePrototype();
+
+    /**
+     * this service allow admin to get all the apply to a specific course prototype
+     * @param prototypeId   id of the prototype
+     * @return  list of apply
+     */
+    List<Apply> getApplyByCoursePrototype(Long prototypeId);
+
 }

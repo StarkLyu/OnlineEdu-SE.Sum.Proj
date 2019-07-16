@@ -85,4 +85,9 @@ public class CoursePrototypeController {
         return ResponseEntity.ok(coursePrototypeService.getAllCoursePrototype());
     }
 
+    @GetMapping("{id}/applications")
+    public ResponseEntity<List<Apply>> getApplyOPrototype(@PathVariable("id")Long prototypeId){
+        return ResponseEntity.ok(coursePrototypeService.getApplyByCoursePrototype(prototypeId));
+    }
+
 }
