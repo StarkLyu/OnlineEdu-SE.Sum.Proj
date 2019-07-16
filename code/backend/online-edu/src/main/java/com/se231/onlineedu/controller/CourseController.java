@@ -8,12 +8,16 @@ import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
+import com.se231.onlineedu.util.FileCheckUtil;
+import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Course Controller Class
@@ -26,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/courses")
 public class CourseController {
+
+    @Value("${app.file.limit}")
+    private static int limit;
 
     @Autowired
     CourseService courseService;
@@ -70,7 +77,7 @@ public class CourseController {
     @ApiOperation("获取某课程的学生名单")
     @ApiImplicitParam(name = "id",value = "获取的课程的id",type = "path")
     @GetMapping("/{id}/students")
-    public ResponseEntity<Set<User>> getStudentsList(@PathVariable(name = "id")Long courseId)throws Exception{
+    public ResponseEntity<List<User>> getStudentsList(@PathVariable(name = "id")Long courseId)throws Exception{
         return ResponseEntity.ok(courseService.getStudentsList(courseId));
     }
 
@@ -85,6 +92,21 @@ public class CourseController {
     @GetMapping("/all/info")
     public ResponseEntity<List<Course>> getAllCourse(){
         return ResponseEntity.ok(courseService.getAllCourse());
+    }
+
+    @ApiOperation(value = "用户可以课程的头像", httpMethod = "POST")
+    @ApiImplicitParam(name = "id", value = "上传的课程id", type = "path")
+    @PostMapping("/{id}/avatar")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
+        if (FileCheckUtil.checkImageSizeExceed(multipartFile,limit)) {
+            return ResponseEntity.badRequest().body("exceeded max size");
+        }
+        String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+        if (FileCheckUtil.checkImageTypeWrong(suffix)) {
+            return ResponseEntity.badRequest().body("file format not supported");
+        }
+        return ResponseEntity.ok(courseService.updateCourseAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "course"), id));
     }
 
     @ApiOperation("查询用户是否选了某门课")

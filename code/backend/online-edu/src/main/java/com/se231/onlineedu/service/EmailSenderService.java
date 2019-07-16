@@ -12,5 +12,7 @@ import org.springframework.stereotype.Service;
 public interface EmailSenderService {
     void sendEmail(SimpleMailMessage email);
 
-    String sendEmail(String email, VerificationToken token) throws Exception;
+    String sendVerificationEmail(String email, VerificationToken token) throws Exception;
+
+    void sendSensitiveWordsDetectedWords(String email);
 }

@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import com.alibaba.fastjson.JSON;
+import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.model.Course;
+import com.se231.onlineedu.model.CoursePrototype;
+import com.se231.onlineedu.model.CourseState;
+import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
 import com.se231.onlineedu.model.*;
@@ -15,11 +21,10 @@ import org.springframework.stereotype.Service;
 
 /**
  * the implementation class of course service
- *
+ * <p>
  * to finish the service logic of operation related to course
  *
  * @author Zhe Li
- *
  * @date 2019/7/4
  */
 @Service
@@ -40,6 +45,9 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private LearnRepository learnRepository;
+
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
@@ -55,14 +63,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course examineStartCourseApplication(Long courseId,String decision)throws Exception{
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
+    public Course examineStartCourseApplication(Long courseId, String decision) throws Exception {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new Exception("No corresponding course"));
         switch (decision) {
             case "approval":
-                if(course.getStartDate().before(new Date())) {
+                if (course.getStartDate().before(new Date())) {
                     course.setState(CourseState.TEACHING);
-                }
-                else {
+                } else {
                     course.setState(CourseState.READY_TO_START);
                 }
                 break;
@@ -77,27 +84,25 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> pickCourse(Long userId,Long courseId)throws Exception{
-        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
-        if(user.getCourses().contains(course)){
-            throw new RuntimeException("You have picked this course");
-        }
-        user.getCourses().add(course);
+    public List<Course> pickCourse(Long userId, Long courseId) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(() -> new Exception("No corresponding user!"));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new Exception("No corresponding course!"));
+        Learn learn = learnRepository.save(new Learn(user, course));
+        user.getLearns().add(learn);
         userRepository.save(user);
-        return user.getCourses();
+        return user.getLearnCourses();
     }
 
     @Override
-    public Set<User> getStudentsList(Long courseId) throws Exception {
-        Course course=courseRepository.findById(courseId)
-                .orElseThrow(()->new RuntimeException("No corresponding course"));
+    public List<User> getStudentsList(Long courseId) throws Exception {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("No corresponding course"));
         return course.getStudents();
     }
 
     @Override
     public Course getCourseInfo(Long courseId) throws Exception {
-        return courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
+        return courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("No corresponding course"));
     }
 
     @Override
@@ -106,10 +111,28 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course updateCourseAvatar(String avatarUrl, Long id) throws Exception {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new Exception("No corresponding course"));
+        course.setAvatarUrl(avatarUrl);
+        return courseRepository.save(course);
+    }
+
+    @Override
+    public List<String> getTAAndTeacherEmail(Long id) throws Exception {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new Exception("No corresponding course"));
+        List<String> emails = new ArrayList<>();
+        emails.add(course.getTeacher().getEmail());
+        for (User ta : course.getTeacherAssistants()) {
+            emails.add(ta.getEmail());
+        }
+        return emails;
+    }
+
+    @Override
     public Boolean checkIfUserPick(Long courseId, Long userId) throws Exception {
         User user=userRepository.getOne(userId);
         Course course = courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("No corresponding course"));
-        return user.getCourses().contains(course);
+        return user.getLearnCourses().contains(course);
     }
 
     @Override
@@ -132,9 +155,10 @@ public class CourseServiceImpl implements CourseService {
     private List<TimeSlot> handleTimeSlots(List<TimeSlotForm> slotFormList){
         List<TimeSlot> timeSlots = new ArrayList<>();
         for (TimeSlotForm slotForm:slotFormList) {
-            TimeSlot slot = timeSlotRepository.findByDayAndAndStartAndAndEnd(WeekDay.values()[slotForm.getDay()]
-                    , Time.valueOf(slotForm.getStart()),Time.valueOf(slotForm.getEnd())).orElse(new TimeSlot(slotForm));
-            timeSlots.add(timeSlotRepository.save(slot));
+            TimeSlot slot = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.values()[slotForm.getDay()]
+                    , Time.valueOf(slotForm.getStart()),Time.valueOf(slotForm.getEnd()))
+                    .orElse(timeSlotRepository.save(new TimeSlot(slotForm)));
+            timeSlots.add(slot);
         }
         return timeSlots;
     }

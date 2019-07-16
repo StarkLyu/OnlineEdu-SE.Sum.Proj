@@ -20,8 +20,8 @@ import java.util.UUID;
 public class SaveFileUtil {
     private static String nginxPath = "/home/liu/nginx/online-edu/";
 
-    public static String saveAvatar(Long id, MultipartFile multipartFile, String suffix) throws IOException {
-        String fileName = nginxPath + id + "-avatar/" + id + "-avatar" + suffix;
+    public static String saveAvatar(Long id, MultipartFile multipartFile, String suffix, String type) throws IOException {
+        String fileName = nginxPath + id + type +"-avatar/" + id + "-avatar" + suffix;
         File file = new File(fileName);
 
         if (file.getParentFile().exists()) {
@@ -36,10 +36,10 @@ public class SaveFileUtil {
         Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rwxrwxrwx"));
         Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxr--r--"));
 
-        return id + "-avatar/" + id + "-avatar" + suffix;
+        return id + type+ "-avatar/" + id + "-avatar" + suffix;
     }
 
-    public static String saveImage(MultipartFile multipartFile, String suffix) throws IOException {
+    public static String saveFile(MultipartFile multipartFile, String suffix) throws IOException {
         String uuid = UUID.randomUUID().toString();
         String fileName = uuid + suffix;
         String filePath = nginxPath + fileName;
@@ -52,6 +52,7 @@ public class SaveFileUtil {
 
         return fileName;
     }
+
 
     public static ImageWithInfo saveImages(MultipartFile[] multipartFiles, int limit) throws IOException {
         int num = 1;
@@ -67,7 +68,7 @@ public class SaveFileUtil {
                 imageWithInfo.setHasError(true);
                 errorString.append("image " + num + " format error");
             }
-            imageWithInfo.getImagesUrls().add(SaveFileUtil.saveImage(multipartFile, suffix));
+            imageWithInfo.getImagesUrls().add(SaveFileUtil.saveFile(multipartFile, suffix));
         }
         return imageWithInfo;
     }

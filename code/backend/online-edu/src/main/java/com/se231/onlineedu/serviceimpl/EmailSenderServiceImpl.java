@@ -23,7 +23,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public String sendEmail(String email, VerificationToken token) throws Exception {
+    public String sendVerificationEmail(String email, VerificationToken token) throws Exception {
         String subject = "验证码服务,请在20分钟内完成验证";
         String message = "您的验证码为：";
 
@@ -36,4 +36,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         return token.getToken();
     }
 
+    @Override
+    public void sendSensitiveWordsDetectedWords(String email) {
+        String subject = "处理违规言论";
+        String message = "系统监测到您的学生在论坛中发布了不当言论请前往处理。";
+    }
 }

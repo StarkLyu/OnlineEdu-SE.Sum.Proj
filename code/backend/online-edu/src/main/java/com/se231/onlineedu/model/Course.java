@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +12,7 @@ import org.apache.poi.ss.usermodel.DateUtil;
 
 /**
  * Course Class
- *
+ * <p>
  * Course class is the main class to manage course information.
  *
  * @author zhe li
@@ -26,15 +27,17 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ApiModelProperty(value = "开始日期",required = true)
+    private String avatarUrl;
+
+    @ApiModelProperty(value = "开始日期", required = true)
     @NotNull
     private Date startDate;
 
-    @ApiModelProperty(value = "结束日期",required = true)
+    @ApiModelProperty(value = "结束日期", required = true)
     @NotNull
     private Date endDate;
 
-    @ApiModelProperty(value = "课程的状态",example = "有以下几个状态： APPLYING,READY_TO_START,TEACHING,FINISHED,NOT_PASS")
+    @ApiModelProperty(value = "课程的状态", example = "有以下几个状态： APPLYING,READY_TO_START,TEACHING,FINISHED,NOT_PASS")
     @NotNull
     @Enumerated(EnumType.STRING)
     private CourseState state;
@@ -53,17 +56,27 @@ public class Course {
     @ApiModelProperty("地点")
     private String location;
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "course_id",insertable = false)
     @ApiModelProperty("上课时间段")
     private List<TimeSlot> timeSlots;
 
-    @ApiModelProperty("选了该课程的学生")
-    @JsonIgnore
-    @ManyToMany(mappedBy = "courses")
-    private Set<User> students;
 
+    @ApiModelProperty("该课程的助教")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "assistCourses")
+    private List<User> teacherAssistants;
+
+    @JsonBackReference
+    @OneToMany
+    private List<Learn> learns;
+
+    @JsonBackReference
     @ApiModelProperty("该课程的老师")
-    @ManyToOne
+    @ManyToOne()
+    @JoinTable(name = "teach_course",
+            joinColumns = @JoinColumn(name = "courses_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")
@@ -73,12 +86,39 @@ public class Course {
     public Course() {
     }
 
+
+    @Transient
+    @JsonIgnore
+    public List<User> getStudents() {
+        List<User> students = new ArrayList<>();
+        for (Learn learn : getLearns()) {
+            students.add(learn.getLearnPrimaryKey().getStudent());
+        }
+        return students;
+    }
+
+    public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, User teacher) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.state = state;
+        this.coursePrototype = coursePrototype;
+        this.teacher = teacher;
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public Date getStartDate() {
@@ -121,30 +161,6 @@ public class Course {
         this.sections = sections;
     }
 
-    public User getUser() {
-        return teacher;
-    }
-
-    public void setUser(User user) {
-        this.teacher = user;
-    }
-
-    public Set<User> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Set<User> students) {
-        this.students = students;
-    }
-
-    public List<Paper> getPapers() {
-        return papers;
-    }
-
-    public void setPapers(List<Paper> papers) {
-        this.papers = papers;
-    }
-
     public String getCourseTitle() {
         return courseTitle;
     }
@@ -169,6 +185,22 @@ public class Course {
         this.timeSlots = timeSlots;
     }
 
+    public List<User> getTeacherAssistants() {
+        return teacherAssistants;
+    }
+
+    public void setTeacherAssistants(List<User> teacherAssistants) {
+        this.teacherAssistants = teacherAssistants;
+    }
+
+    public List<Learn> getLearns() {
+        return learns;
+    }
+
+    public void setLearns(List<Learn> learns) {
+        this.learns = learns;
+    }
+
     public User getTeacher() {
         return teacher;
     }
@@ -177,20 +209,12 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, User user) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.state = state;
-        this.coursePrototype = coursePrototype;
-        this.teacher = user;
+    public List<Paper> getPapers() {
+        return papers;
     }
 
-    public Course(@NotNull Date startDate, @NotNull Date endDate, @NotNull CourseState state, CoursePrototype coursePrototype, List<Section> sections) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.state = state;
-        this.coursePrototype = coursePrototype;
-        this.sections = sections;
+    public void setPapers(List<Paper> papers) {
+        this.papers = papers;
     }
 
     @Override
