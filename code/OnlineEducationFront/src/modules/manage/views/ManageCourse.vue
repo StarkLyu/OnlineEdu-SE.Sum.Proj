@@ -10,7 +10,7 @@
                         prefix-icon="el-icon-search"/>
             </div>
             <div class="divright">
-                <el-button @click="handleAdd">新增</el-button>
+                <el-button @click="handleChooseProto">新增</el-button>
             </div>
             <el-table :data="CourseData.filter(data=>!search || data.courseTitle.includes(search))"
                       class="coursetable"
@@ -76,6 +76,24 @@
                 </el-table-column>
             </el-table>
         </div>
+<!--        选择课程原型-->
+        <el-dialog :title="'选择课程原型'"
+                   :visible.sync="dialogProtoVisible"
+                   :lock-scroll="false"
+                   top="5%">
+<!--            展示课程原型-->
+            <el-table :data="dialogProtoForm" height="300px">
+                <el-table-column type="index"></el-table-column>
+                <el-table-column property="title" label="原型名称" sortable></el-table-column>
+                <el-table-column property="description" label="描述"></el-table-column>
+            </el-table>
+            <span slot="footer">
+                <el-button @click.native="dialogProtoVisible=false">取消</el-button>
+                <el-button type="primary" @click="createData">
+                    添加
+                </el-button>
+            </span>
+        </el-dialog>
         <!--课程编辑页面弹窗-->
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
@@ -110,12 +128,12 @@
                 <el-form-item label="授课教师">
                     <el-input type="text" v-model="editForm.courseTeacher"></el-input>
                 </el-form-item>
-                <el-form-item label="课程状态">
+                <el-form-item label="课程状态" v-if="editForm.courseState!=='进行中' && editForm.courseState!=='已结束'">
                     <el-radio-group v-model="editForm.courseState">
                         <el-radio label="待审核"></el-radio>
                         <el-radio label="未开始"></el-radio>
-                        <el-radio label="进行中"></el-radio>
-                        <el-radio label="已结束"></el-radio>
+                        <!--                        <el-radio label="进行中"></el-radio>-->
+                        <!--                        <el-radio label="已结束"></el-radio>-->
                         <el-radio label="未通过"></el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -134,8 +152,8 @@
             </div>
             <el-table :data="StudentForm" height="300px">
                 <el-table-column type="index"></el-table-column>
-                <el-table-column property="userId" label="学号" sortable></el-table-column>
-                <el-table-column property="userName" label="学生"></el-table-column>
+                <el-table-column property="sno" label="学号" sortable></el-table-column>
+                <el-table-column property="username" label="学生"></el-table-column>
                 <el-table-column>
                     <template slot-scope="scope">
                         <el-button type="button" @click="DelStudent(scope.$index, scope.row)">
@@ -171,6 +189,8 @@
 
                 dialogFormVisible:false,
 
+                dialogProtoVisible:false,
+
                 dialogStatus: "",
 
                 textMap: {
@@ -187,25 +207,15 @@
                     location:"",
                     courseTeacher:"",
                     courseState:"",
+                    state:"",
                 },
+
+                dialogProtoForm:[],
 
                 addStudent:"",
 
                 // 课程的学生信息
-                StudentForm: [
-                    {
-                        sno:"124321",
-                        username:"刘鹏",
-                    },
-                    {
-                        sno:"3521",
-                        username:"达芙蓉",
-                    },
-                    {
-                        sno:"351131",
-                        username:"万格恩",
-                    },
-                ]
+                StudentForm: [],
             }
         },
 
@@ -254,7 +264,7 @@
                                 that.CourseData[index].courseStateTemp = 'info';
                                 that.CourseData[index].courseState='已结束';
                             }
-                            else if(tempState==='TEACHING'){
+                            else if(tempState==='NOT_PASS'){
                                 that.CourseData[index].courseStateTemp = 'danger';
                                 that.CourseData[index].courseState='未通过';
                             }
@@ -274,8 +284,33 @@
             //显示编辑界面
             handleEdit: function(index, row) {
                 this.dialogStatus = "update";
-                this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
+
+                // 该课程所有学生
+                var that=this;
+                this.$axios.request({
+                    url: '/api/courses/'+this.editForm.id+'/students',
+                    method: "get",
+                    headers: getHeader.requestHeader()
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        // alert("请求成功");
+                        that.StudentForm = response.data;
+
+
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    })
+
+                this.dialogFormVisible = true;
+            },
+
+            //显示选择原型弹窗
+            handleChooseProto(){
+                this.dialogProtoVisible=true;
             },
 
             //显示新增界面
@@ -284,22 +319,74 @@
                 this.dialogFormVisible = true;
                 this.editForm = {
                     id: "0",
-                    bookname: "",
-                    author:"",
-                    stocks:0,
+                    courseTitle:"",
+                    startDate:"",
+                    endDate:"",
+                    location:"",
+                    courseTeacher:"",
+                    courseState:"",
+                    state:"",
                 }
             },
 
             // 添加课程
             createData(){
-                alert("课程添加成功");
+                // alert("课程添加成功");
+                var that=this;
+
+                // this.$axios.request({
+                //     url: '/api/courses/start',
+                //     method: "post",
+                //     headers: getHeader.requestHeader(),
+                //     params:{
+                //         prototypeId:this.editForm.id,
+                //     }
+                // })
+                //     .then(function (response) {
+                //         console.log(response.data);
+                //
+                //         that.showAllCourse();
+                //         that.dialogFormVisible=false;
+                //         // alert("请求成功");
+                //     })
+                //     .catch(function (error) {
+                //         console.log(error);
+                //         // alert("请求失败");
+                //     });
+
                 this.dialogFormVisible=false;
             },
 
             // 修改课程
             updateData(){
-                alert("课程修改成功");
-                this.dialogFormVisible=false;
+                var that=this;
+
+                if (this.editForm.courseState==='未通过'){
+                    this.editForm.state='disapproval';
+                }
+                else if(this.editForm.courseState==='未开始'){
+                    this.editForm.state='approval';
+                }
+
+                this.$axios.request({
+                    url: '/api/courses/'+this.editForm.id+'/start',
+                    method: "post",
+                    headers: getHeader.requestHeader(),
+                    params:{
+                        decision:this.editForm.state,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        that.showAllCourse();
+                        that.dialogFormVisible=false;
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             },
 
             //课程添加学生
