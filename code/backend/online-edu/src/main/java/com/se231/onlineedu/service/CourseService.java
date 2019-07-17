@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
+import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 
@@ -91,4 +92,6 @@ public interface CourseService {
 
 
     Course saveSignIn(Long id, SignInCourseForm signInForm) throws Exception;
+
+    CourseWithIdentity getCourseInfoWithIdentity(Long courseId, Long userId) throws Exception;
 }
