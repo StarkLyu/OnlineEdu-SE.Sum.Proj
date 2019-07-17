@@ -75,7 +75,15 @@ public class User{
 
     private String avatarUrl;
 
+    private List<SignIn> signIns;
 
+    public List<SignIn> getSignIns() {
+        return signIns;
+    }
+
+    public void setSignIns(List<SignIn> signIns) {
+        this.signIns = signIns;
+    }
 
     @Column(name = "enabled")
     private boolean enabled;
