@@ -22,10 +22,10 @@
         </el-row>
         <el-row class="row-layout">
             <el-col :span="12">
-                时间：{{ courseInfo.startDate}} ~ {{ courseInfo.endDate }}
+                时间：<DateRangeFormat :start="courseInfo.startDate" :end="courseInfo.endDate"></DateRangeFormat>
             </el-col>
             <el-col :span="12">
-                地点：{{ courseInfo.courseRoom }}
+                地点：{{ courseInfo.location }}
             </el-col>
         </el-row>
         <el-row>
@@ -39,9 +39,11 @@
 
 <script>
     import UserUnit from "./UserUnit";
+    import DateRangeFormat from "./DateRangeFormat";
+
     export default {
         name: "CourseInfo",
-        components: {UserUnit},
+        components: {DateRangeFormat, UserUnit},
         props: {
             courseInfo: {
                 id: String,
@@ -51,10 +53,10 @@
                 startDate: String,
                 endDate: String,
                 courseWeek: Array,
-                courseRoom: String,
+                location: String,
                 courseDes: String,
             }
-        }
+        },
     }
 </script>
 

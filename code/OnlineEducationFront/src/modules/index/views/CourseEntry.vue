@@ -2,7 +2,7 @@
     <div>
         <div class="float-left left-div">
             <img class="img-size" :src="courseInfo.imgUrl">
-            <el-button class="entry-button" type="primary">
+            <el-button class="entry-button" type="primary" @click="attendCourse">
                 <h2>加入课程</h2>
             </el-button>
         </div>
@@ -32,6 +32,28 @@
                     state: String
                 }
             }
+        },
+        methods: {
+            attendCourse: function () {
+                let userId = this.$store.state.user.id;
+                this.$http.request({
+                    url: this.$store.getters.getCourseUrl + "pick",
+                    method: "post",
+                    params: {
+                        id: userId
+                    },
+                    headers: this.$store.getters.authRequestHead
+                }).then(() => {
+                    alert("选课成功！");
+                    this.$router.push("/course/student/info");
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
+                })
+            }
+        },
+        mounted() {
+            this.courseInfo = this.$store.getters.getCourseInfo;
         }
     }
 </script>

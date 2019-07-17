@@ -4,7 +4,7 @@
             <div @click="enterCourse" class="card-body">
                 <img :src="courseInfo.imgUrl" class="course-img">
                 <div class="card-content">
-                    <strong class="title-font">{{ courseInfo.title }}</strong>
+                    <strong class="title-font">{{ courseInfo.courseTitle }}</strong>
                     <div class="line-layout">
                         <div class="float-left">
                             <UserUnit :user="courseInfo.teacher"></UserUnit>
@@ -18,7 +18,7 @@
                     <div class="line-layout">
                     <span>
                         <i class="el-icon-date"></i>
-                        {{ courseInfo.startDate }} ~ {{ courseInfo.endDate }}
+                        {{ dateFilter(courseInfo.startDate) }} ~ {{ dateFilter(courseInfo.endDate) }}
                     </span>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
             courseInfo: {
                 imgUrl: String,
                 id: Number,
-                title: String,
+                courseTitle: String,
                 teacher: String,
                 startDate: String,
                 endDate: String,
@@ -52,7 +52,13 @@
         },
         methods: {
             enterCourse: function () {
-                this.$router.push("/course/student")
+                alert(this.courseInfo.id);
+                this.$store.commit("setCourseId", this.courseInfo.id);
+                alert(this.$store.getters.getCourseId);
+                this.$router.push("/course/info")
+            },
+            dateFilter: function (date) {
+                return date.substr(0,10);
             }
         }
     }
