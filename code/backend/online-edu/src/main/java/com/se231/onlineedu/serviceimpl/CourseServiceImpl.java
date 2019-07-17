@@ -157,7 +157,7 @@ public class CourseServiceImpl implements CourseService {
         for (TimeSlotForm slotForm:slotFormList) {
             TimeSlot slot = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.values()[slotForm.getDay()]
                     , Time.valueOf(slotForm.getStart()),Time.valueOf(slotForm.getEnd()))
-                    .orElse(timeSlotRepository.save(new TimeSlot(slotForm)));
+                    .orElse(new TimeSlot(slotForm));
             timeSlots.add(slot);
         }
         return timeSlots;

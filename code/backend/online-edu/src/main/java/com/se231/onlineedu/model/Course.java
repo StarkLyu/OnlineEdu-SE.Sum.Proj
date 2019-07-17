@@ -56,8 +56,10 @@ public class Course {
     @ApiModelProperty("地点")
     private String location;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "course_id",insertable = false)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="course_time_slots",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "time_slot_id"))
     @ApiModelProperty("上课时间段")
     private List<TimeSlot> timeSlots;
 
@@ -80,7 +82,7 @@ public class Course {
     private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")
-    @OneToMany
+    @OneToMany(mappedBy = "course")
     private List<Paper> papers;
 
     public Course() {

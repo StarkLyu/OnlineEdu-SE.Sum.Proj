@@ -52,32 +52,21 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             throw new RuntimeException("You Have Answered Three Times");
         }
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
-
-        //if the paper hasn't finished , just simply save the paper and return
-        if(PaperAnswerState.valueOf(form.getState())==PaperAnswerState.NOT_FINISH){
-
-        }
-        double totalScore=0;
-
         PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
         paperAnswer = paperAnswerRepository.save(paperAnswer);
         List<Answer> answerList= new ArrayList<>();
         for (QuestionAnswer questionAnswer :form.getAnswerList()){
             Question question = questionRepository.findById(questionAnswer.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Question Not Found"));
-            PaperWithQuestions paperWithQuestions =
-                    paperWithQuestionsRepository.findById(new PaperWithQuestionsPrimaryKey(paper,question))
-                    .orElseThrow(()->new RuntimeException("Question Not Found"));
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
             //若题目为主观题，默认不做批改，直接不打分留题。若为客观题则直接检测与答案是否匹配。
-            double score= (!question.getQuestionType().equals(QuestionType.SUBJECTIVE)&&
-                    questionAnswer.getAnswer().equals(question.getAnswer()))?paperWithQuestions.getScore():0;
-            Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),score);
+//            double score= (!question.getQuestionType().equals(QuestionType.SUBJECTIVE)&&
+//                    questionAnswer.getAnswer().equals(question.getAnswer()))?paperWithQuestions.getScore():0;
+            Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
             answerList.add(answerRepository.save(answer));
-            totalScore+=score;
         }
-        paperAnswer.setGrade(totalScore);
         paperAnswer.setAnswers(answerList);
+        paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
         return paperAnswerRepository.save(paperAnswer);
     }
 }

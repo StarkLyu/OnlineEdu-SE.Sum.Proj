@@ -75,8 +75,6 @@ public class User{
 
     private String avatarUrl;
 
-
-
     @Column(name = "enabled")
     private boolean enabled;
 
@@ -118,7 +116,6 @@ public class User{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teacher")
     private List<Course> teachCourses;
 
-    @Transient
     @OneToMany
     private List<Learn> learns;
 
