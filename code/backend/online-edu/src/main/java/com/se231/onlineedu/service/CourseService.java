@@ -89,6 +89,12 @@ public interface CourseService {
      */
     Course modifyCourseInfo(Long courseId,CourseApplicationForm form,Long userId)throws Exception;
 
-
     Course saveSignIn(Long id, SignInCourseForm signInForm) throws Exception;
+
+    /**
+     *this service mainly used to automatically set state of course.
+     * @param courseId  id of changed course
+     * @param state state after change.
+     */
+    void setState(Long courseId,String state);
 }

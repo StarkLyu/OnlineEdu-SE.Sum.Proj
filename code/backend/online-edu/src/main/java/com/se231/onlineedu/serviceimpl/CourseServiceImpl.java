@@ -1,5 +1,11 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import com.se231.onlineedu.SchedulerHandler;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
@@ -7,11 +13,9 @@ import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Service;
-
-import java.sql.Time;
-import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * the implementation class of course service
@@ -44,6 +48,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private SignInRepository signInRepository;
+
+    private final TaskScheduler taskScheduler=new ConcurrentTaskScheduler();
+
+    private final Timer timer = new Timer();
+
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
@@ -54,7 +63,9 @@ public class CourseServiceImpl implements CourseService {
         Course course=new Course(form.getStartDate(),form.getEndDate(),CourseState.APPLYING,coursePrototype,user);
         course.setCourseTitle(form.getCourseTitle());
         course.setLocation(form.getLocation());
-        course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
+            course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        }
         return courseRepository.save(course);
     }
 
@@ -67,6 +78,7 @@ public class CourseServiceImpl implements CourseService {
                     course.setState(CourseState.TEACHING);
                 } else {
                     course.setState(CourseState.READY_TO_START);
+                    SchedulerHandler.setCourseState(courseId,"TEACHING",course.getStartDate());
                 }
                 break;
             case "disapproval":
@@ -152,7 +164,7 @@ public class CourseServiceImpl implements CourseService {
         List<TimeSlot> timeSlots = new ArrayList<>();
         for (TimeSlotForm slotForm:slotFormList) {
             TimeSlot slot = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.values()[slotForm.getDay()]
-                    , Time.valueOf(slotForm.getStart()),Time.valueOf(slotForm.getEnd()))
+                    , Time.valueOf(slotForm.getStart()+":00"),Time.valueOf(slotForm.getEnd()+":00"))
                     .orElse(new TimeSlot(slotForm));
             timeSlots.add(slot);
         }
@@ -164,5 +176,12 @@ public class CourseServiceImpl implements CourseService {
         Course course = getCourseInfo(id);
         course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
         return courseRepository.save(course);
+    }
+
+    @Override
+    public void setState(Long courseId,String state) {
+        Course course = courseRepository.getOne(courseId);
+        course.setState(CourseState.valueOf(state));
+        courseRepository.save(course);
     }
 }
