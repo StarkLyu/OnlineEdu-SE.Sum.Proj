@@ -1,8 +1,7 @@
 package com.se231.onlineedu.message.request;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.sql.Time;
-import com.se231.onlineedu.model.WeekDay;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,12 +21,12 @@ public class TimeSlotForm {
     private Integer day;
 
     @ApiModelProperty("开始时间是几点")
-    @NotNull
-    private Time start;
+    @NotBlank
+    private String start;
 
-    @NotNull
     @ApiModelProperty("结束时间是几点")
-    private Time end;
+    @NotBlank
+    private String end;
 
     public TimeSlotForm() {
     }
@@ -40,19 +39,19 @@ public class TimeSlotForm {
         this.day = day;
     }
 
-    public Time getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
-    public Time getEnd() {
+    public String getEnd() {
         return end;
     }
 
-    public void setEnd(Time end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 }

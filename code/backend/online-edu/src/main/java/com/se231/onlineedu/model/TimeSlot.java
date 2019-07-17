@@ -5,7 +5,6 @@ import java.sql.Time;
 import com.se231.onlineedu.message.request.TimeSlotForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * @author Zhe Li
@@ -66,8 +65,8 @@ public class TimeSlot {
     }
 
     public TimeSlot(TimeSlotForm form){
-        start=form.getStart();
-        end=form.getEnd();
+        start=Time.valueOf(form.getStart());
+        end=Time.valueOf(form.getEnd());
         day=WeekDay.values()[form.getDay()];
     }
 }

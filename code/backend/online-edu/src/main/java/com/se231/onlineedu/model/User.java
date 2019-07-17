@@ -126,6 +126,7 @@ public class User{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teacher")
     private List<Course> teachCourses;
 
+    @Transient
     @OneToMany
     private List<Learn> learns;
 
@@ -137,6 +138,8 @@ public class User{
         this.learns = learns;
     }
 
+    @Transient
+    @JsonIgnore
     public List<Course> getLearnCourses(){
         List<Course> courses = new ArrayList<>();
         for(Learn learn: getLearns()){

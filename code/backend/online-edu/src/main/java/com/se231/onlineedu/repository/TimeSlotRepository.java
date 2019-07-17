@@ -22,5 +22,5 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot,Long> {
      * @param end   end time
      * @return  optional time slot
      */
-    Optional<TimeSlot> findByDayAndAndStartAndAndEnd(WeekDay day, Time start, Time end);
+    Optional<TimeSlot> findByDayAndStartAndEnd(WeekDay day,Time start,Time end);
 }

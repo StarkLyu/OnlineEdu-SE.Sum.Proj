@@ -19,7 +19,10 @@ public class Learn {
         this.signInTimes = signInTimes;
     }
 
-    public Learn(User user,  Course course) {
+    public Learn() {
+    }
+
+    public Learn(User user, Course course) {
         this.learnPrimaryKey = new LearnPrimaryKey(user, course);
     }
 

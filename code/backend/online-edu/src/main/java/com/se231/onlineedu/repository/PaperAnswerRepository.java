@@ -16,6 +16,12 @@ import org.springframework.data.jpa.repository.Query;
  * @date 2019/07/10
  */
 public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, PaperAnswerPrimaryKey> {
+    /**
+     * this function helps to get the max answer times of a user and a paper.
+     * @param user_id   id of user
+     * @param paper_id  id of paper
+     * @return  times of answer.
+     */
     @Query(value = "select max(times) from paper_answer where user_id = ?1 and paper_id=?2 ",nativeQuery = true)
     Optional<Integer> getMaxTimes(Long user_id,Long paper_id);
 }
