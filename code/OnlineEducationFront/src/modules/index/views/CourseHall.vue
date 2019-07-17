@@ -26,6 +26,19 @@
                     },
                 ]
             }
+        },
+        mounted() {
+            this.$http.request({
+                url: "/api/courses/all/info",
+                method: "get",
+                headers: this.$store.getters.authRequestHead
+            }).then((response) => {
+                console.log(response.data);
+                this.courseList = response.data;
+            }).catch((error) => {
+                alert(error);
+                console.log(error.response);
+            })
         }
     }
 </script>
