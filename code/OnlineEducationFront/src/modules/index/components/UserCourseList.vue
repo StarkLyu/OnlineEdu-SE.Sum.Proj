@@ -34,6 +34,9 @@
                     }
                 ]
             }
+        },
+        mounted() {
+            this.courseList = this.$store.state.user.userInfo.courses;
         }
     }
 </script>
