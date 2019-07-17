@@ -6,6 +6,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -56,8 +57,10 @@ public class Course {
     @ApiModelProperty("地点")
     private String location;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "course_id",insertable = false)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="course_time_slots",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "time_slot_id"))
     @ApiModelProperty("上课时间段")
     private List<TimeSlot> timeSlots;
 
@@ -80,12 +83,25 @@ public class Course {
     private User teacher;
 
     @ApiModelProperty("该课程的所有试卷")
-    @OneToMany
+    @OneToMany(mappedBy = "course")
     private List<Paper> papers;
+
+    @JsonManagedReference
+    @ApiModelProperty("该课程的所有签到")
+    @OneToMany(mappedBy = "signInPrimaryKey.course")
+    private List<SignIn> signIns;
 
     public Course() {
     }
 
+
+    public List<SignIn> getSignIns() {
+        return signIns;
+    }
+
+    public void setSignIns(List<SignIn> signIns) {
+        this.signIns = signIns;
+    }
 
     @Transient
     @JsonIgnore

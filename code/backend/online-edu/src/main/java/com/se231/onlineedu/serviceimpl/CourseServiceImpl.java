@@ -1,23 +1,17 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import com.alibaba.fastjson.JSON;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
-import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.CourseState;
-import com.se231.onlineedu.model.User;
-import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Time;
+import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * the implementation class of course service
@@ -48,6 +42,8 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private LearnRepository learnRepository;
 
+    @Autowired
+    private SignInRepository signInRepository;
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) throws Exception{
         CoursePrototype coursePrototype = coursePrototypeRepository.findById(prototypeId).orElseThrow(()->new Exception("No corresponding course"));
@@ -157,9 +153,16 @@ public class CourseServiceImpl implements CourseService {
         for (TimeSlotForm slotForm:slotFormList) {
             TimeSlot slot = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.values()[slotForm.getDay()]
                     , Time.valueOf(slotForm.getStart()),Time.valueOf(slotForm.getEnd()))
-                    .orElse(timeSlotRepository.save(new TimeSlot(slotForm)));
+                    .orElse(new TimeSlot(slotForm));
             timeSlots.add(slot);
         }
         return timeSlots;
+    }
+
+    @Override
+    public Course saveSignIn(Long id, SignInCourseForm signInForm) throws Exception {
+        Course course = getCourseInfo(id);
+        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
+        return courseRepository.save(course);
     }
 }

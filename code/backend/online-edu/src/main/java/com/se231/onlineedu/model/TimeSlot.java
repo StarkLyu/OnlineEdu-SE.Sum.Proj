@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.List;
 import com.se231.onlineedu.message.request.TimeSlotForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +29,9 @@ public class TimeSlot {
     @Enumerated
     @ApiModelProperty("上课日期在周几")
     private WeekDay day;
+
+    @ManyToMany(mappedBy = "timeSlots")
+    private List<Course> courseList;
 
     public Long getId() {
         return id;

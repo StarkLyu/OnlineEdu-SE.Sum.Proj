@@ -26,7 +26,6 @@ public class PaperWithQuestions {
     private PaperWithQuestionsPrimaryKey paperWithQuestionsPrimaryKey;
 
     @ApiModelProperty("题号")
-    @Column(unique = true)
     private int questionNumber;
 
     @ApiModelProperty("分值")

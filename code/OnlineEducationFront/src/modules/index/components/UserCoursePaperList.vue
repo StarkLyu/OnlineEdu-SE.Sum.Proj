@@ -5,8 +5,15 @@
         <el-table-column prop="end" label="结束时间"></el-table-column>
         <el-table-column prop="status" label="状态">
             <template slot-scope="scope">
-                <el-tag :type="statusTagType(scope.row.status)"></el-tag>
+                <el-tag :type="statusTagType(scope.row.status)">
+                    {{ statusTagText(scope.row.status) }}
+                </el-tag>
             </template>
+        </el-table-column>
+        <el-table-column label="链接">
+            <el-link>
+                进入作业
+            </el-link>
         </el-table-column>
     </el-table>
 </template>
@@ -21,7 +28,7 @@
                         title: "第一次作业",
                         start: "2019-07-15",
                         end: "2019-07-25",
-                        status: ""
+                        status: "NOT VIEWED"
                     }
                 ]
             }
@@ -32,6 +39,12 @@
                 else if (status === "DOING") return "warning";
                 else if (status === "SCORING") return "primary";
                 else if (status === "SUCCESS") return "success";
+            },
+            statusTagText: function (status) {
+                if (status === "NOT VIEWED") return "未查看";
+                else if (status === "DOING") return "未完成";
+                else if (status === "SCORING") return "已完成";
+                else if (status === "SUCCESS") return "已批改";
             }
         }
     }

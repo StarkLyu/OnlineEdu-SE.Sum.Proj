@@ -75,11 +75,19 @@ public class User{
 
     private String avatarUrl;
 
+    @ManyToMany
+    private List<SignIn> signIns;
 
+    public List<SignIn> getSignIns() {
+        return signIns;
+    }
+
+    public void setSignIns(List<SignIn> signIns) {
+        this.signIns = signIns;
+    }
 
     @Column(name = "enabled")
     private boolean enabled;
-
 
     public boolean isEnabled() {
         return enabled;
@@ -118,7 +126,6 @@ public class User{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teacher")
     private List<Course> teachCourses;
 
-    @Transient
     @OneToMany
     private List<Learn> learns;
 

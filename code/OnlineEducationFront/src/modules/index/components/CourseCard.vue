@@ -6,23 +6,23 @@
             </div>
             <div>
                 <div class="float-left course-title">
-                    <strong>{{ courseInfo.courseName }}</strong>
+                    <strong>{{ courseInfo.courseTitle }}</strong>
                     <p>
-                        <UserUnit :user="courseInfo.courseTeacher"></UserUnit>
+                        <UserUnit :user="courseInfo.teacher.username"></UserUnit>
                     </p>
                 </div>
                 <div class="float-right">
                     <div class="float-clear course-time">
                         <span>
                             <i class="el-icon-date"></i>
-                            {{ courseInfo.courseTime1 }} ~ {{ courseInfo.courseTime2 }}
+                            <DateRangeFormat :start="courseInfo.startDate" :end="courseInfo.endDate"></DateRangeFormat>
                         </span>
                         <p>
                             <el-progress type="line" :percentage="80"></el-progress>
                         </p>
                     </div>
                     <div class="enter-button">
-                        <el-button>进入课程</el-button>
+                        <el-button @click="enterCourse">进入课程</el-button>
                     </div>
                 </div>
             </div>
@@ -32,17 +32,25 @@
 
 <script>
     import UserUnit from "./UserUnit";
+    import DateRangeFormat from "./DateRangeFormat";
     export default {
         name: "CourseCard",
-        components: {UserUnit},
+        components: {DateRangeFormat, UserUnit},
         props: {
             courseInfo: {
-                courseName: String,
-                courseTime1: String,
-                courseTime2: String,
-                courseTeacher: String,
+                id: Number,
+                courseTitle: String,
+                startDate: String,
+                endDate: String,
+                teacher: String,
             }
         },
+        methods: {
+            enterCourse: function () {
+                this.$store.commit("setCourseId", this.courseInfo.id);
+                this.$router.push("/course/student")
+            }
+        }
     }
 </script>
 
