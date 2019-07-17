@@ -4,6 +4,7 @@ import java.util.List;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
+import com.se231.onlineedu.model.Resource;
 
 
 /**
@@ -53,9 +54,19 @@ public interface CoursePrototypeService {
      */
     Apply decideUseCourse(Long courseId, Long applicantId, String decision)throws Exception;
 
+    CoursePrototype saveResource(Long coursePrototypeId, Resource resource) throws Exception;
+
     /**
      * this service allow user to get all prototypes
      * @return  list of all prototypes
      */
     List<CoursePrototype> getAllCoursePrototype();
+
+    /**
+     * this service allow admin to get all the apply to a specific course prototype
+     * @param prototypeId   id of the prototype
+     * @return  list of apply
+     */
+    List<Apply> getApplyByCoursePrototype(Long prototypeId);
+
 }

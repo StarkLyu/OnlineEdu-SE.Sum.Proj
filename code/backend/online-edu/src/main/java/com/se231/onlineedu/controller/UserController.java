@@ -125,8 +125,7 @@ public class UserController {
         if (FileCheckUtil.checkImageTypeWrong(suffix)) {
             return ResponseEntity.badRequest().body("file format not supported");
         }
-        SaveFileUtil.saveAvatar(id, multipartFile,suffix);
-        return ResponseEntity.ok(userService.updateUserAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix), id));
+        return ResponseEntity.ok(userService.updateUserAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "user"), id));
     }
 
 
@@ -187,7 +186,7 @@ public class UserController {
     private ResponseEntity<?> sendEmail(HttpSession httpSession, Long id) throws Exception {
         VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);
-        emailSenderService.sendEmail(userService.getUserInfo(id).getEmail(), verificationToken);
+        emailSenderService.sendVerificationEmail(userService.getUserInfo(id).getEmail(), verificationToken);
         return ResponseEntity.ok("已发送验证码");
     }
 }

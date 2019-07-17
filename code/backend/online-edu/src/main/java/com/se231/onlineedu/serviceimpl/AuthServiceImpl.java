@@ -113,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
         httpSession.setAttribute("user", user);
         VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);
-        emailSenderService.sendEmail(user.getEmail(),verificationToken);
+        emailSenderService.sendVerificationEmail(user.getEmail(),verificationToken);
         return ResponseEntity.ok(user);
     }
 

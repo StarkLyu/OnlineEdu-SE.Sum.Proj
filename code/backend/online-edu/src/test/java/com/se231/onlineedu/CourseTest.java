@@ -1,16 +1,8 @@
 package com.se231.onlineedu;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.se231.onlineedu.message.request.CreateCourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
@@ -29,6 +21,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Course Test
@@ -60,9 +62,9 @@ public class CourseTest {
 
     private static CoursePrototype coursePrototype1= new CoursePrototype();
 
-    private static CreateCourseApplicationForm applyCourse1 = new CreateCourseApplicationForm();
-    private static CreateCourseApplicationForm applyCourse2 = new CreateCourseApplicationForm();
-    private static CreateCourseApplicationForm applyCourse3 = new CreateCourseApplicationForm();
+    private static CourseApplicationForm applyCourse1 = new CourseApplicationForm();
+    private static CourseApplicationForm applyCourse2 = new CourseApplicationForm();
+    private static CourseApplicationForm applyCourse3 = new CourseApplicationForm();
 
     private static String nullString= JSONObject.toJSONString(new CreateCoursePrototypeApplicationForm());
 

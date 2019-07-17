@@ -2,7 +2,6 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Resource Class
@@ -23,10 +22,6 @@ public class Resource {
 
     @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
-
-    @JsonBackReference
-    @ManyToOne()
-    private CoursePrototype coursePrototype;
 
     public Long getId() {
         return id;
@@ -52,18 +47,9 @@ public class Resource {
         this.resourceType = resourceType;
     }
 
-    public CoursePrototype getCoursePrototype() {
-        return coursePrototype;
-    }
-
-    public void setCoursePrototype(CoursePrototype coursePrototype) {
-        this.coursePrototype = coursePrototype;
-    }
-
-    public Resource(@NotBlank String url, ResourceType resourceType, CoursePrototype coursePrototype) {
+    public Resource(@NotBlank String url, ResourceType resourceType) {
         this.url = url;
         this.resourceType = resourceType;
-        this.coursePrototype = coursePrototype;
     }
 
     public Resource() {
