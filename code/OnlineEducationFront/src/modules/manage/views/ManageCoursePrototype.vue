@@ -30,6 +30,21 @@
                             min-width="40%"
                             sortable
                     ></el-table-column>
+<!--                    管理可使用该课程原型的用户-->
+                    <el-table-column
+                            prop="user"
+                            label="审核用户"
+                            min-width="20%"
+                            sortable>
+                        <template slot-scope="scope">
+                            <el-button type="info"
+                                       plain
+                                       size="small"
+                                       @click="showUsers(scope.$index, scope.row)">
+                                用户详情
+                            </el-button>
+                        </template>
+                    </el-table-column>
                     <!--                    显示课程状态的tab-->
                     <el-table-column
                             prop="courseState"
@@ -89,6 +104,38 @@
                 </el-button>
             </span>
         </el-dialog>
+<!--        课程原型申请使用审核弹窗-->
+        <el-dialog :title="课程原型可使用用户"
+                   :visible.sync="UserDialogVisible"
+                   :lock-scroll="false"
+                   top="5%">
+<!--            显示所有通过审核的用户和需要审核的用户-->
+            <el-table :data="UserForm" height="500px">
+                <el-table-column type="index"></el-table-column>
+                <el-table-column property="username"
+                                 label="用户名"
+                                 min-width="20%"
+                                 sortable></el-table-column>
+                <el-table-column property="state"
+                                 label="状态"
+                                 min-width="50%"
+                                 sortable>
+                    <template slot-scope="scope">
+                        <el-radio-group v-model="scope.row.state">
+                            <el-radio label="未通过">未通过</el-radio>
+                            <el-radio label="已通过">已通过</el-radio>
+                            <el-radio label="待审核">待审核</el-radio>
+                        </el-radio-group>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <span slot="footer">
+                <el-button @click.native="UserDialogVisible=false">取消</el-button>
+                <el-button type="primary" @click="updateData">
+                    修改
+                </el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -106,6 +153,8 @@
 
                 dialogFormVisible:false,
 
+                UserDialogVisible:false,
+
                 dialogStatus: "",
 
                 textMap: {
@@ -119,6 +168,26 @@
                     title:"",
                     description:"",
                     courseState:"",
+                    state:"",
+                },
+
+                UserForm:[
+                    {
+                        username:"aaa",
+                        state:"待审核",
+                    },
+                    {
+                        username:"bbb",
+                        state:"已通过",
+                    },
+                    {
+                        username:"ccc",
+                        state:"未通过",
+                    },
+                ],
+
+                UserEditForm:{
+                    username:"",
                     state:"",
                 },
             }
@@ -245,6 +314,16 @@
                         console.log(error);
                         // alert("请求失败");
                     });
+            },
+
+            showUsers:function(index,row){
+                this.UserDialogVisible=true;
+                this.UserForm=row.CourseData.users;
+                // this.UserEditForm=Object.assign({},row);
+            },
+
+            manageUser:function (index,row) {
+
             },
 
         },
