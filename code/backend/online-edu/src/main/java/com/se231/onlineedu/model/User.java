@@ -75,6 +75,7 @@ public class User{
 
     private String avatarUrl;
 
+    @ManyToMany
     private List<SignIn> signIns;
 
     public List<SignIn> getSignIns() {

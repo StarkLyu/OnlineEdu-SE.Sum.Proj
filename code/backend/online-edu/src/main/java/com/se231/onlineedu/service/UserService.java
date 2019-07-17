@@ -1,6 +1,8 @@
 package com.se231.onlineedu.service;
 
 import java.util.List;
+
+import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
 import org.springframework.http.ResponseEntity;
@@ -95,4 +97,6 @@ public interface UserService {
      * @throws Exception exception
      */
     User updateUserEmailConfirm(Long id, String email) throws Exception;
+
+    ResponseEntity<?> saveUserSignIn(Long id, SignInUserForm signInUserForm) throws Exception;
 }

@@ -1,13 +1,15 @@
 package com.se231.onlineedu.serviceimpl;
 
 import com.alibaba.excel.EasyExcelFactory;
+import com.se231.onlineedu.message.request.SignInCourseForm;
+import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
-import com.se231.onlineedu.model.Role;
-import com.se231.onlineedu.model.RoleType;
-import com.se231.onlineedu.model.User;
-import com.se231.onlineedu.model.UserExcel;
+import com.se231.onlineedu.model.*;
+import com.se231.onlineedu.repository.CourseRepository;
 import com.se231.onlineedu.repository.RoleRepository;
+import com.se231.onlineedu.repository.SignInRepository;
 import com.se231.onlineedu.repository.UserRepository;
+import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -47,6 +50,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private SignInRepository signInRepository;
+
+    @Autowired
+    private CourseService courseService;
 
     @Override
     public User getUserInfo(Long userId) throws Exception {
@@ -170,5 +179,21 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
         user.setEmail(email);
         return userRepository.save(user);
+    }
+
+    @Override
+    public ResponseEntity<?> saveUserSignIn(Long id, SignInUserForm signInUserForm) throws Exception {
+        User user = getUserInfo(id);
+        SignInPrimaryKey signInPrimaryKey = new SignInPrimaryKey(courseService.getCourseInfo(signInUserForm.getCourseId()),signInUserForm.getSignInNo());
+        SignIn signIn = signInRepository.findById(signInPrimaryKey).orElseThrow(()-> new Exception("Sign in not found"));
+        Date date = new Date();
+        if(date.before(signIn.getStartDate())){
+            return ResponseEntity.badRequest().body("签到还未开始");
+        }
+        if(date.after(signIn.getEndDate())){
+            return ResponseEntity.badRequest().body("签到已经结束");
+        }
+        user.getSignIns().add(signIn);
+        return ResponseEntity.ok(userRepository.save(user));
     }
 }
