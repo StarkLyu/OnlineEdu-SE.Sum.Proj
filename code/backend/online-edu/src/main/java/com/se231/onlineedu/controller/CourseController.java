@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -84,8 +85,8 @@ public class CourseController {
     @ApiImplicitParam(name = "id",value = "获取的课程的id",type = "path")
     @ApiOperation("获取某课程的信息")
     @GetMapping("/{id}/info")
-    public ResponseEntity<Course> getCourseInfo(@PathVariable(name = "id")Long courseId)throws Exception{
-        return ResponseEntity.ok(courseService.getCourseInfo(courseId));
+    public ResponseEntity<CourseWithIdentity> getCourseInfo(@PathVariable(name = "id")Long courseId, @AuthenticationPrincipal UserPrinciple userPrinciple)throws Exception{
+        return ResponseEntity.ok(courseService.getCourseInfoWithIdentity(courseId, userPrinciple.getId()));
     }
 
     @ApiOperation("获取所有课程的信息")

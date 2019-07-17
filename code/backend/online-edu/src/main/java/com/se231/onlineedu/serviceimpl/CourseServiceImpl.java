@@ -3,6 +3,8 @@ package com.se231.onlineedu.serviceimpl;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
+import com.se231.onlineedu.message.response.CourseWithIdentity;
+import com.se231.onlineedu.message.response.Identity;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
@@ -99,6 +101,36 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getCourseInfo(Long courseId) throws Exception {
         return courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("No corresponding course"));
+    }
+
+    @Override
+    public CourseWithIdentity getCourseInfoWithIdentity(Long courseId, Long userId) throws Exception {
+        CourseWithIdentity courseWithIdentity = new CourseWithIdentity();
+        Course course = getCourseInfo(courseId);
+        courseWithIdentity.setCourse(course);
+        boolean isSet = false;
+        for(User student: course.getStudents()){
+            if(student.getId().equals(userId)){
+                isSet = true;
+                courseWithIdentity.setIdentity(Identity.STUDENT);
+            }
+        }
+
+        for(User ta: course.getTeacherAssistants()){
+            if(ta.getId().equals(userId)){
+                isSet = true;
+                courseWithIdentity.setIdentity(Identity.TEACHER_ASSISTANT);
+            }
+        }
+
+        if(course.getTeacher().getId().equals(userId)){
+            isSet = true;
+            courseWithIdentity.setIdentity(Identity.TEACHER);
+        }
+        if(!isSet){
+            courseWithIdentity.setIdentity(Identity.VISITOR);
+        }
+        return courseWithIdentity;
     }
 
     @Override
