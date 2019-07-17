@@ -1,8 +1,9 @@
 package com.se231.onlineedu.service;
 
 import java.util.List;
-import java.util.Set;
+
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 
@@ -87,4 +88,7 @@ public interface CourseService {
      * @throws Exception    mainly not found exception
      */
     Course modifyCourseInfo(Long courseId,CourseApplicationForm form,Long userId)throws Exception;
+
+
+    Course saveSignIn(Long id, SignInCourseForm signInForm) throws Exception;
 }
