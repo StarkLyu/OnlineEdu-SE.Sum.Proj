@@ -83,17 +83,29 @@
                    top="5%">
 <!--            课程的基本信息-->
             <el-form :model="editForm" label-width="80px" ref="editForm">
-                <el-form-item label="课程号">
-                    <el-input type="text" v-model="editForm.courseId"></el-input>
-                </el-form-item>
                 <el-form-item label="课程名">
-                    <el-input type="text" v-model="editForm.courseName"></el-input>
+                    <el-input type="text" v-model="editForm.courseTitle"></el-input>
                 </el-form-item>
                 <el-form-item label="上课时间">
-                    <el-input type="text" v-model="editForm.courseTime"></el-input>
+                    <el-col :span="11">
+                        <el-date-picker placeholder="选择开始日期"
+                                        type="date"
+                                        v-model="editForm.startDate"
+                                        style="width: 100%;">
+
+                        </el-date-picker>
+                    </el-col>
+                    <el-col class="line" :span="2">-</el-col>
+                    <el-col :span="11">
+                        <el-date-picker placeholder="选择结束日期"
+                                        type="date"
+                                        v-model="editForm.endDate"
+                                        style="width: 100%;">
+                        </el-date-picker>
+                    </el-col>
                 </el-form-item>
                 <el-form-item label="上课地点">
-                    <el-input type="text" v-model="editForm.courseRoom"></el-input>
+                    <el-input type="text" v-model="editForm.location"></el-input>
                 </el-form-item>
                 <el-form-item label="授课教师">
                     <el-input type="text" v-model="editForm.courseTeacher"></el-input>
@@ -168,10 +180,11 @@
 
                 //编辑界面数据
                 editForm: {
-                    courseId:"",
-                    courseName:"",
-                    courseTime:"",
-                    courseRoom:"",
+                    id:"",
+                    courseTitle:"",
+                    startDate:"",
+                    endDate:"",
+                    location:"",
                     courseTeacher:"",
                     courseState:"",
                 },
@@ -197,7 +210,7 @@
         },
 
         methods:{
-            showAllCoursePrototypes(){
+            showAllCourse(){
                 var that=this;
                 this.$axios.request({
                         url: '/api/courses/all/info',
@@ -216,6 +229,15 @@
                             var tempState;
                             tempState=response.data[index].state;
 
+                            // 处理教师的显示
+                            if (response.data[index].teacher!=null)
+                            {
+                                var tempTeacher;
+                                tempTeacher=response.data[index].teacher.username;
+                                that.CourseData[index].courseTeacher=tempTeacher;
+                            }
+
+                            // 处理状态的显示
                             if (tempState==='APPLYING') {
                                 that.CourseData[index].courseStateTemp="warning";
                                 that.CourseData[index].courseState="待审核";
@@ -293,7 +315,7 @@
         },
 
         mounted() {
-            this.showAllCoursePrototypes();
+            this.showAllCourse();
         }
     }
 </script>
