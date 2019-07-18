@@ -3,6 +3,10 @@ package com.se231.onlineedu.util;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author liu
+ * @date 2019/07/11
+ */
 public class ImageWithInfo {
     private List<String> imagesUrls = new ArrayList<>();
     private boolean hasError;

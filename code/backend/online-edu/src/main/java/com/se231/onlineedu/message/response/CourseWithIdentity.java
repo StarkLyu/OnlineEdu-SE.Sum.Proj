@@ -2,6 +2,9 @@ package com.se231.onlineedu.message.response;
 
 import com.se231.onlineedu.model.Course;
 
+/**
+ * @author liu
+ */
 public class CourseWithIdentity {
     private Identity identity;
 

@@ -12,7 +12,7 @@ public interface ForumService {
 
     Forum getForum(String id);
 
-    ResponseEntity<?> insertReply(String id, ReplyMessage replyMessage);
+    Forum insertReply(String id, ReplyMessage replyMessage);
 
     Object getReplyOrForum(Forum forum, PathMessage pathMessage);
 

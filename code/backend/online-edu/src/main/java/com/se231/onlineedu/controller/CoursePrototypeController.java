@@ -1,7 +1,5 @@
 package com.se231.onlineedu.controller;
 
-import javax.validation.Valid;
-import java.util.List;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
@@ -12,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Course Controller Class
@@ -34,9 +34,9 @@ public class CoursePrototypeController {
     @ApiOperation(value = "教学管理员创建课程原型申请")
     @PostMapping("/")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<CoursePrototype> createCoursePrototype(@Valid @RequestBody CreateCoursePrototypeApplicationForm form,
-                                                         @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
-        return ResponseEntity.ok(coursePrototypeService.createCourse(form,userPrinciple.getId()));
+    public CoursePrototype createCoursePrototype(@Valid @RequestBody CreateCoursePrototypeApplicationForm form,
+                                                         @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        return coursePrototypeService.createCourse(form,userPrinciple.getId());
     }
 
     @ApiOperation("教师申请使用他人创建的课程原型")
@@ -44,7 +44,7 @@ public class CoursePrototypeController {
     @PostMapping("/{id}/apply")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public ResponseEntity<Apply> applyForCoursePrototype(@PathVariable(name = "id")Long coursePrototypeId,
-                                                @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception {
+                                                @AuthenticationPrincipal UserPrinciple userPrinciple) {
 
         return ResponseEntity.ok(coursePrototypeService.applyForCourse(coursePrototypeId,userPrinciple.getId()));
     }
@@ -60,7 +60,7 @@ public class CoursePrototypeController {
     @PostMapping("/{id}/create")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<CoursePrototype> decideApplicationOfCreatingCoursePrototype(@RequestParam(name = "decision")String decision,
-                                                  @PathVariable(name = "id") Long coursePrototypeId)throws Exception{
+                                                  @PathVariable(name = "id") Long coursePrototypeId) {
         return ResponseEntity.ok(coursePrototypeService.decideCreateCourse(coursePrototypeId,decision));
     }
 
@@ -74,7 +74,7 @@ public class CoursePrototypeController {
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<Apply> decideApplicationOfUsingCoursePrototype(@RequestParam(name = "decision")String decision,
                                                @RequestParam(name = "coursePrototype_id")Long courseId,
-                                               @RequestParam(name = "applicant_id")Long applicantId)throws Exception{
+                                               @RequestParam(name = "applicant_id")Long applicantId) {
 
         return ResponseEntity.ok(coursePrototypeService.decideUseCourse(courseId,applicantId,decision));
     }
@@ -86,7 +86,7 @@ public class CoursePrototypeController {
     }
 
     @GetMapping("{id}/applications")
-    public ResponseEntity<List<Apply>> getApplyOPrototype(@PathVariable("id")Long prototypeId){
+    public ResponseEntity<List<Apply>> getApplyPrototype(@PathVariable("id")Long prototypeId){
         return ResponseEntity.ok(coursePrototypeService.getApplyByCoursePrototype(prototypeId));
     }
 

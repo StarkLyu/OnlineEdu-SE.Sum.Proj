@@ -1,9 +1,9 @@
 package com.se231.onlineedu.message.response;
 
-import javax.validation.constraints.Email;
+import com.se231.onlineedu.model.User;
+
 import javax.validation.constraints.Pattern;
 import java.util.Objects;
-import com.se231.onlineedu.model.User;
 
 /**
  * Personal information form class
@@ -51,7 +51,6 @@ public class PersonalInfo {
         user.setRealName(realName);
         user.setSex(sex);
         user.setSno(sno);
-        user.setTel(Long.parseLong(tel));
         user.setUniversity(university);
     }
 

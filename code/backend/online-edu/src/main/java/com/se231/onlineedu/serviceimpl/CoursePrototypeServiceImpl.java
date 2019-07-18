@@ -2,6 +2,8 @@ package com.se231.onlineedu.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
@@ -9,6 +11,7 @@ import com.se231.onlineedu.repository.ApplyRepository;
 import com.se231.onlineedu.repository.ResourceRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.CoursePrototypeService;
+import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CoursePrototypeServiceImpl implements CoursePrototypeService {
+    private static final String approval = ApplyState.APPROVAL.toString().toLowerCase();
+
+    @Autowired
+    private UserService userService;
 
 
     @Autowired
@@ -32,21 +39,16 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     private ApplyRepository applyRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    private static final String approval = ApplyState.APPROVAL.toString().toLowerCase();
-
-    @Autowired
     private ResourceRepository resourceRepository;
 
 
     @Override
-    public CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) throws Exception{
-        CoursePrototype coursePrototype=new CoursePrototype();
+    public CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) {
+        CoursePrototype coursePrototype = new CoursePrototype();
         coursePrototype.setTitle(form.getTitle());
         coursePrototype.setDescription(form.getDescription());
         coursePrototype.setState(CoursePrototypeState.NOT_DECIDE);
-        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
+        User user = userService.getUserInfo(userId);
         List<User> userList = new ArrayList<>();
         userList.add(user);
         coursePrototype.setUser(userList);
@@ -54,9 +56,9 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     }
 
     @Override
-    public Apply applyForCourse(Long courseId,Long userId) throws Exception{
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
-        User user=userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user!"));
+    public Apply applyForCourse(Long coursePrototypeId,Long userId) {
+        CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
+        User user=userService.getUserInfo(userId);
         ApplyPrimaryKey id = new ApplyPrimaryKey(user,coursePrototype);
         Apply application;
         if(!applyRepository.existsById(id)){
@@ -69,8 +71,13 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     }
 
     @Override
-    public CoursePrototype decideCreateCourse(Long coursePrototypeId,String decision)throws Exception{
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(()->new Exception("No corresponding course"));
+    public CoursePrototype getCoursePrototypeInfo(Long id){
+        return coursePrototypeRepository.findById(id).orElseThrow(()->new NotFoundException("该课程原型不存在"));
+    }
+
+    @Override
+    public CoursePrototype decideCreateCourse(Long coursePrototypeId,String decision){
+        CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
         switch (decision) {
             case "approval":
                 coursePrototype.setState(CoursePrototypeState.USING);
@@ -86,11 +93,11 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     }
 
     @Override
-    public Apply decideUseCourse(Long courseId,Long applicantId,String decision)throws Exception{
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(courseId).orElseThrow(()->new Exception("No corresponding course"));
-        User user = userRepository.findById(applicantId).orElseThrow(()->new Exception("No corresponding user"));
+    public Apply decideUseCourse(Long coursePrototypeId,Long applicantId,String decision) {
+        CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
+        User user = userService.getUserInfo(applicantId);
         ApplyPrimaryKey applyPrimaryKey=new ApplyPrimaryKey(user,coursePrototype);
-        Apply apply = applyRepository.findById(applyPrimaryKey).orElseThrow(()->new Exception("No corresponding application"));
+        Apply apply = applyRepository.findById(applyPrimaryKey).orElseThrow(()->new NotFoundException("该申请不存在"));
         apply.setApplyState(ApplyState.valueOf(decision.toUpperCase()));
         if(approval.equals(decision)){
             coursePrototype.getUsers().add(user);
@@ -100,9 +107,9 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     }
 
     @Override
-    public CoursePrototype saveResource(Long coursePrototypeId, Resource resource) throws Exception {
+    public CoursePrototype saveResource(Long coursePrototypeId, Resource resource) {
         Resource resourceSaved = resourceRepository.save(resource);
-        CoursePrototype coursePrototype = coursePrototypeRepository.findById(coursePrototypeId).orElseThrow(() -> new Exception("No corresponding course"));
+        CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
         coursePrototype.getResources().add(resourceSaved);
         return coursePrototypeRepository.save(coursePrototype);
 

@@ -27,7 +27,7 @@ public class ForumRepositoryTest {
     private ForumRepository forumRepository;
 
     @Test
-    public void whenFindByCourseId_thenReturnForum() throws Exception {
+    public void whenFindByCourseId_thenReturnForum(){
         Forum forum = new Forum();
         forum.setUserId(1L);
         forum.setCourseId(1L);

@@ -15,6 +15,19 @@ import java.util.List;
  */
 @Repository
 public interface ForumRepository extends CrudRepository<Forum, String> {
+    /**
+     * get list of forums by course and section
+     * @param courseId course Id
+     * @param secNo sec No
+     * @return list of forum
+     */
     List<Forum> findByCourseIdAndSecNo(Long courseId, int secNo);
+
+
+    /**
+     * get list of forums by courses
+     * @param courseId
+     * @return list of forum
+     */
     List<Forum> findByCourseId(Long courseId);
 }

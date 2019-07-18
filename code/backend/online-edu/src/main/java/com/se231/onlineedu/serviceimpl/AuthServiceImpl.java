@@ -1,5 +1,7 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.se231.onlineedu.exception.NotFoundException;
+import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.SignUpForm;
 import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.Role;
@@ -43,6 +45,9 @@ import java.util.List;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -66,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ResponseEntity<?> userSignIn(String username, String password){
+    public JwtResponse userSignIn(String username, String password){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         username,
@@ -75,30 +80,23 @@ public class AuthServiceImpl implements AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        if(! userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("fail -> username not found")).isEnabled()){
-            return new ResponseEntity<>("请先激活账号",
-                    HttpStatus.BAD_REQUEST);
-        }
 
         String jwt = jwtProvider.generateJwtToken((UserPrinciple) authentication.getPrincipal());
-        return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
+        return new JwtResponse(jwt);
     }
 
     @Override
-    public ResponseEntity<?> userSignUp(SignUpForm form, HttpSession httpSession) throws Exception {
+    public User userSignUp(SignUpForm form, HttpSession httpSession) {
         if(userRepository.existsByUsername(form.getUsername())) {
-            return new ResponseEntity<>("Fail -> Username is already taken!",
-                    HttpStatus.BAD_REQUEST);
+            throw new ValidationException("Fail -> Username is already taken");
         }
 
         if(userRepository.existsByEmail(form.getEmail())) {
-            return new ResponseEntity<>("Fail -> Email Address is already taken!",
-                    HttpStatus.BAD_REQUEST);
+            throw new ValidationException("Fail -> Email Address is already taken!");
         }
 
         if(userRepository.existsByTel(Long.parseLong(form.getTel()))) {
-            return new ResponseEntity<>("Fail -> Telephone Number is already taken!",
-                    HttpStatus.BAD_REQUEST);
+            throw new ValidationException("Fail -> Telephone Number is already taken!");
         }
 
         User user = new User(form);
@@ -114,25 +112,25 @@ public class AuthServiceImpl implements AuthService {
         VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);
         emailSenderService.sendVerificationEmail(user.getEmail(),verificationToken);
-        return ResponseEntity.ok(user);
+        return user;
     }
 
     @Override
-    public ResponseEntity<String> addTeachingAdmin(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()->new RuntimeException(("Fail -> Case: User Not Found.")));
+    public String addTeachingAdmin(Long userId){
+        User user = userService.getUserInfo(userId);
         Role teachingAdmin = roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN)
-                .orElseThrow(()->new RuntimeException("Fail -> Case: Teaching Admin Role Not Found"));
+                .orElseThrow(()->new NotFoundException("Fail -> Case: Teaching Admin Role Not Found"));
         if(user.getRoles().contains(teachingAdmin)){
-            return ResponseEntity.ok("This User has already been a teaching admin.");
+            throw new ValidationException("This User has already been a teaching admin.");
         }
         user.getRoles().add(teachingAdmin);
         userRepository.save(user);
-        return ResponseEntity.ok("Add Teaching Admin successfully");
+        return "Add Teaching Admin successfully";
     }
 
     @Override
-    public void saveRegisteredUser(User user) {
-        userRepository.save(user);
+    public User saveRegisteredUser(User user) {
+        return userRepository.save(user);
     }
 
 

@@ -2,11 +2,16 @@ package com.se231.onlineedu.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.se231.onlineedu.exception.NotFoundException;
+import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
+import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,33 +22,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaperAnswerServiceImpl implements PaperAnswerService {
 
-    @Autowired UserRepository userRepository;
+    @Autowired
+    UserService userService;
 
-    @Autowired CourseRepository courseRepository;
+    @Autowired
+    CourseService courseService;
 
-    @Autowired PaperRepository paperRepository;
+    @Autowired
+    PaperRepository paperRepository;
 
-    @Autowired PaperWithQuestionsRepository paperWithQuestionsRepository;
+    @Autowired
+    QuestionRepository questionRepository;
 
-    @Autowired QuestionRepository questionRepository;
+    @Autowired
+    AnswerRepository answerRepository;
 
-    @Autowired AnswerRepository answerRepository;
-
-    @Autowired PaperAnswerRepository paperAnswerRepository;
+    @Autowired
+    PaperAnswerRepository paperAnswerRepository;
 
     private static final int MAX_TIMES=3;
 
     @Override
-    public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) throws Exception {
+    public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         //initialize( found corresponding user and paper)
-        User user = userRepository.findById(userId)
-                .orElseThrow(()->new RuntimeException("User Not Found"));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(()->new RuntimeException("Course Not Found"));
-        Paper paper = paperRepository.findById(paperId)
-                .orElseThrow(()->new RuntimeException("Paper Not Found"));
+        User user = userService.getUserInfo(userId);
+        Course course = courseService.getCourseInfo(courseId);
+        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("Paper Not Found"));
         if(!paper.getCourse().equals(course)){
-            throw new RuntimeException("This Course Doesn't Have This Paper.");
+            throw new ValidationException("This Course Doesn't Have This Paper.");
         }
 
         //get times the user has answered

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Zhe Li
  * @date 2019/07/10
  */
-
 @Controller
 public class SwaggerController {
     @RequestMapping("/api/swagger/swagger-resources")

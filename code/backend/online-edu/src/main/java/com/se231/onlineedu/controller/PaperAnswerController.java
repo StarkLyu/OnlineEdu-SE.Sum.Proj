@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +30,12 @@ public class PaperAnswerController {
             @ApiImplicitParam(value = "作业id",name="paperId",paramType = "path")
     })
     @PostMapping
-    public ResponseEntity<PaperAnswer> submitAnswer(@PathVariable("courseId")Long courseId,
+    public PaperAnswer submitAnswer(@PathVariable("courseId")Long courseId,
                                                     @PathVariable("paperId")Long paperId,
                                                     @AuthenticationPrincipal UserPrinciple userPrinciple,
                                                     @RequestBody SubmitAnswerForm form)throws Exception{
 
-        return ResponseEntity.ok(paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,form));
+        return paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,form);
     }
 
 }

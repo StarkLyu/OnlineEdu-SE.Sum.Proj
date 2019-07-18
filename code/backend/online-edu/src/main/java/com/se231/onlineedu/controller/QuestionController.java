@@ -1,21 +1,17 @@
 package com.se231.onlineedu.controller;
 
-import javax.validation.Valid;
-
 import com.alibaba.fastjson.JSONObject;
-import com.se231.onlineedu.message.request.SubmitQuestionForm;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
 import com.se231.onlineedu.service.QuestionService;
-import io.swagger.annotations.*;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -41,7 +37,7 @@ public class QuestionController {
     })
     @PostMapping("/submit")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<Question> submitQuestion(@RequestBody JSONObject questionJSON,
+    public Question submitQuestion(@RequestBody JSONObject questionJSON,
                                                    @PathVariable("id") Long coursePrototypeId) throws Exception {
         String type = ((String) questionJSON.get("type")).toUpperCase();
         StringBuilder questionBuilder = new StringBuilder();
@@ -53,8 +49,8 @@ public class QuestionController {
         String question = questionBuilder.toString();
 
         String answer = (String) questionJSON.get("answer");
-        return ResponseEntity.ok(questionService.submitQuestion(coursePrototypeId,
-                QuestionType.valueOf(type), question, answer));
+        return questionService.submitQuestion(coursePrototypeId,
+                QuestionType.valueOf(type), question, answer);
     }
 
 //    @PostMapping("/{questionId}")

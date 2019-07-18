@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+/**
+ * @author liu
+ * @date 2019/07/11
+ */
 @Service
 public class DiscernSensitiveWordsServiceImpl implements DiscernSensitiveWordsService {
     private static final String APP_ID = "16807628";

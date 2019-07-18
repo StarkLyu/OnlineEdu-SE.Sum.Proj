@@ -1,10 +1,9 @@
 package com.se231.onlineedu.exception;
 
-
 /**
  * @author liu
  */
-public class NotFoundException extends RuntimeException{
+public class EndBeforeStartException extends RuntimeException{
     private static final long serialVersionUID = 1L;
     private String msg;
 
@@ -12,7 +11,7 @@ public class NotFoundException extends RuntimeException{
         return msg;
     }
 
-    public NotFoundException(String msg) {
+    public EndBeforeStartException(String msg) {
         this.msg = msg;
     }
 }

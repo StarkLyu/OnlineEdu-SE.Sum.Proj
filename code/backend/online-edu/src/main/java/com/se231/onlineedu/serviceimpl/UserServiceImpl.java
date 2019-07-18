@@ -1,11 +1,10 @@
 package com.se231.onlineedu.serviceimpl;
 
 import com.alibaba.excel.EasyExcelFactory;
-import com.se231.onlineedu.message.request.SignInCourseForm;
+import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.CourseRepository;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.SignInRepository;
 import com.se231.onlineedu.repository.UserRepository;
@@ -21,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,27 +49,20 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
     private SignInRepository signInRepository;
 
     @Autowired
     private CourseService courseService;
 
     @Override
-    public User getUserInfo(Long userId) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow(()->new Exception("No corresponding user"));
+    public User getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("该用户不存在"));
         return user;
     }
 
     @Override
-    public User manageUserInfo(Long id, PersonalInfo personalInfo) throws Exception {
-        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
-        if(!user.getTel().toString().equals(personalInfo.getTel())&&checkSameTel(personalInfo.getTel())){
-            throw new Exception("This telephone number is already token !");
-        }
-        checkSameTel(personalInfo.getTel());
+    public User manageUserInfo(Long id, PersonalInfo personalInfo){
+        User user = getUserInfo(id);
         personalInfo.modifyUserInfo(user);
         return userRepository.save(user);
     }
@@ -95,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<String> bulkImportUser(MultipartFile excel) throws Exception {
+    public String bulkImportUser(MultipartFile excel) throws IOException {
         Workbook workbook = null;
         //获取文件名字
         String fileName = excel.getOriginalFilename();
@@ -105,13 +98,13 @@ public class UserServiceImpl implements UserService {
         }else if(fileName.endsWith("xlsx")) {
             workbook = new XSSFWorkbook(excel.getInputStream());
         }else {
-            return ResponseEntity.badRequest().body("Import File Fail -> File Format Wrong,Only Support Xlsx And Xls");
+            throw  new FileFormatNotSupportException( "Import File Fail -> File Format Wrong,Only Support Xlsx And Xls");
         }
         //获取工作sheet
         Sheet sheet = workbook.getSheet("sheet1");
         int rows = sheet.getLastRowNum();
         if(rows==0){
-            return ResponseEntity.badRequest().body("File Error -> File Is Empty.");
+            throw new EmptyFileException("File Error -> File Is Empty.");
         }
 
         List<Role> roles=new ArrayList<>();
@@ -147,53 +140,71 @@ public class UserServiceImpl implements UserService {
             }
             User user =new User(userExcel);
             user.setRoles(roles);
-            user.setPassword(encoder.encode((userExcel.getPassword())));
+            user.setPassword(passwordEncoder.encode((userExcel.getPassword())));
             userRepository.save(user);
         }
 
         if(!hasError) {
-            return ResponseEntity.ok("Import successfully.");
+            return "Import successfully.";
         }
         else {
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            throw new BulkImportDataException(errorMessage.toString());
         }
     }
 
     @Override
-    public User updateUserAvatar(String avatarUrl, Long id) throws Exception {
-        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+    public User updateUserAvatar(String avatarUrl, Long id) {
+        User user = getUserInfo(id);
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
         return user;
     }
 
     @Override
-    public User updateUserPasswordConfirm(Long id, String password) throws Exception {
-        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+    public User updateUserPasswordConfirm(Long id, String password) {
+        User user = getUserInfo(id);
         user.setPassword(passwordEncoder.encode(password));
         return userRepository.save(user);
     }
 
     @Override
-    public User updateUserEmailConfirm(Long id, String email) throws Exception {
-        User user = userRepository.findById(id).orElseThrow(()->new Exception("No corresponding user"));
+    public User updateUserEmailConfirm(Long id, String email) {
+        User user = getUserInfo(id);
         user.setEmail(email);
         return userRepository.save(user);
     }
 
     @Override
-    public ResponseEntity<?> saveUserSignIn(Long id, SignInUserForm signInUserForm) throws Exception {
+    public User saveUserSignIn(Long id, SignInUserForm signInUserForm){
         User user = getUserInfo(id);
         SignInPrimaryKey signInPrimaryKey = new SignInPrimaryKey(courseService.getCourseInfo(signInUserForm.getCourseId()),signInUserForm.getSignInNo());
-        SignIn signIn = signInRepository.findById(signInPrimaryKey).orElseThrow(()-> new Exception("Sign in not found"));
+        SignIn signIn = signInRepository.findById(signInPrimaryKey).orElseThrow(()-> new NotFoundException("该签到不存在"));
         Date date = new Date();
         if(date.before(signIn.getStartDate())){
-            return ResponseEntity.badRequest().body("签到还未开始");
+            throw new BeforeStartException("签到还未开始");
         }
         if(date.after(signIn.getEndDate())){
-            return ResponseEntity.badRequest().body("签到已经结束");
+            throw new AfterEndException("签到已经结束");
         }
         user.getSignIns().add(signIn);
-        return ResponseEntity.ok(userRepository.save(user));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public boolean checkIfSameAsOldPassword(Long id, String password) {
+        User user = getUserInfo(id);
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public boolean checkIfSameAsOldTel(Long id,Long tel) {
+        User user = getUserInfo(id);
+        return tel.equals(user.getTel());
+    }
+
+    @Override
+    public boolean checkIfSameAsOldEmail(Long id, String Email){
+        User user = getUserInfo(id);
+        return Email.equals(user.getEmail());
     }
 }

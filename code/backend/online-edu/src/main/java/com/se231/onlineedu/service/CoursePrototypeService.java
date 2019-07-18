@@ -26,7 +26,7 @@ public interface CoursePrototypeService {
      * @param form create application form
      * @return response for front
      */
-    CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) throws Exception;
+    CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) ;
 
     /**
      * Teaching Admin could apply for the usage of a course prototype.
@@ -34,7 +34,7 @@ public interface CoursePrototypeService {
      * @param userId the id of applicant
      * @return  response for front
      */
-    Apply applyForCourse(Long courseId,Long userId) throws Exception;
+    Apply applyForCourse(Long courseId,Long userId) ;
 
     /**
      * Admin approve the application of create course.
@@ -43,7 +43,7 @@ public interface CoursePrototypeService {
      * @param decision -1 represent disapproval while 1 represent approval
      * @return the course prototype
      */
-    CoursePrototype decideCreateCourse(Long coursePrototypeId, String decision)throws Exception;
+    CoursePrototype decideCreateCourse(Long coursePrototypeId, String decision);
 
     /**
      * Admin approve the application of using a course
@@ -52,9 +52,9 @@ public interface CoursePrototypeService {
      * @param decision -1 represent disapproval while 1 represent approval
      * @return the application
      */
-    Apply decideUseCourse(Long courseId, Long applicantId, String decision)throws Exception;
+    Apply decideUseCourse(Long courseId, Long applicantId, String decision);
 
-    CoursePrototype saveResource(Long coursePrototypeId, Resource resource) throws Exception;
+    CoursePrototype saveResource(Long coursePrototypeId, Resource resource);
 
     /**
      * this service allow user to get all prototypes
@@ -68,5 +68,7 @@ public interface CoursePrototypeService {
      * @return  list of apply
      */
     List<Apply> getApplyByCoursePrototype(Long prototypeId);
+
+    CoursePrototype getCoursePrototypeInfo(Long id);
 
 }
