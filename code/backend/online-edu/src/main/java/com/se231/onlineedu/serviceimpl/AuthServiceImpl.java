@@ -42,10 +42,19 @@ import java.util.List;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
     private JwtProvider jwtProvider;
 
     @Autowired
@@ -55,15 +64,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private EmailSenderService emailSenderService;
 
-    @Autowired
-    public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository,
-                           RoleRepository roleRepository, PasswordEncoder encoder, JwtProvider jwtProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.jwtProvider = jwtProvider;
-    }
 
     @Override
     public ResponseEntity<?> userSignIn(String username, String password){

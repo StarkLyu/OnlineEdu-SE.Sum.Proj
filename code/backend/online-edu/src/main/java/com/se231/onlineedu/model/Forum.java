@@ -31,6 +31,17 @@ public class Forum {
 
     private Date createdAt = new Date();
 
+    public Forum(String title, String content, Long userId, @NotBlank Long courseId, @NotBlank int secNo) {
+        this.title = title;
+        this.content = content;
+        this.userId = userId;
+        this.courseId = courseId;
+        this.secNo = secNo;
+    }
+
+    public Forum() {
+    }
+
     @NotBlank
     private Long courseId;
 

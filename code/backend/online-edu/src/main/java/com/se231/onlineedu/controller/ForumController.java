@@ -41,7 +41,7 @@ public class ForumController {
 
 
     @PostMapping("/courses/{courseId}/sections/{secNo}/forums")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN') and forum.getUserId() == authentication.principal.id")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN')")
     public Forum updateForum(@RequestBody Forum forum, @PathVariable Long courseId, @PathVariable int secNo, @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception {
         if(!discernSensitiveWordsService.discern(forum.getTitle()) || !discernSensitiveWordsService.discern(forum.getContent())){
             for(String email: courseService.getTAAndTeacherEmail(courseId)){
@@ -77,6 +77,7 @@ public class ForumController {
     }
 
     @PostMapping("/forums/{id}/images")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN') and forum.getUserId() == authentication.principal.id")
     public ResponseEntity<?> insertImages(@PathVariable String id, @RequestParam("images") MultipartFile[] multipartFiles, @RequestParam("path") String pathString) throws IOException {
         PathMessage pathMessage = JSONObject.parseObject(pathString, PathMessage.class);
         Forum forum = forumService.getForum(id);
@@ -94,6 +95,7 @@ public class ForumController {
     }
 
     @DeleteMapping("/forums/{id}/images/{filename}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN') and forum.getUserId() == authentication.principal.id")
     public boolean deleteImage(@PathVariable String id, @PathVariable String filename, @RequestParam("path") String pathString) throws IOException {
         PathMessage pathMessage = JSONObject.parseObject(pathString, PathMessage.class);
         Forum forum = forumService.getForum(id);

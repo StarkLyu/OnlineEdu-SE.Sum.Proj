@@ -1,8 +1,5 @@
 package com.se231.onlineedu.controller;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Set;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
@@ -19,6 +16,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Course Controller Class
@@ -123,5 +123,11 @@ public class CourseController {
                                                    @Valid @RequestBody CourseApplicationForm form,
                                                    @PathVariable("id")Long id)throws Exception{
         return ResponseEntity.ok(courseService.modifyCourseInfo(id,form,userPrinciple.getId()));
+    }
+
+    @ApiOperation("教师将课程内学生转变为助教")
+    @PostMapping("/{id}/teacherAssistant")
+    public ResponseEntity<?> selectTA(@PathVariable Long id, @RequestParam("teacherAssistantId") Long teacherAssistantId) throws Exception {
+        return courseService.selectTA(id, teacherAssistantId);
     }
 }

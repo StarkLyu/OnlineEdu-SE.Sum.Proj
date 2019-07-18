@@ -23,7 +23,6 @@ import java.util.Locale;
  *
  * log in and sign up controller
  *
- * need refraction
  *
  * @author Yuxuan Liu
  *

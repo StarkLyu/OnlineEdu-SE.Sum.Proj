@@ -9,6 +9,7 @@ import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -108,28 +109,22 @@ public class CourseServiceImpl implements CourseService {
         CourseWithIdentity courseWithIdentity = new CourseWithIdentity();
         Course course = getCourseInfo(courseId);
         courseWithIdentity.setCourse(course);
-        boolean isSet = false;
-        for(User student: course.getStudents()){
-            if(student.getId().equals(userId)){
-                isSet = true;
-                courseWithIdentity.setIdentity(Identity.STUDENT);
-            }
+
+        if(isUserInUserList(course.getStudents(), userId) != null){
+            courseWithIdentity.setIdentity(Identity.STUDENT);
+            return courseWithIdentity;
         }
 
-        for(User ta: course.getTeacherAssistants()){
-            if(ta.getId().equals(userId)){
-                isSet = true;
-                courseWithIdentity.setIdentity(Identity.TEACHER_ASSISTANT);
-            }
+        if(isUserInUserList(course.getTeacherAssistants(), userId) != null){
+            courseWithIdentity.setIdentity(Identity.TEACHER_ASSISTANT);
+            return courseWithIdentity;
         }
 
         if(course.getTeacher().getId().equals(userId)){
-            isSet = true;
             courseWithIdentity.setIdentity(Identity.TEACHER);
+            return courseWithIdentity;
         }
-        if(!isSet){
-            courseWithIdentity.setIdentity(Identity.VISITOR);
-        }
+        courseWithIdentity.setIdentity(Identity.VISITOR);
         return courseWithIdentity;
     }
 
@@ -189,6 +184,28 @@ public class CourseServiceImpl implements CourseService {
             timeSlots.add(slot);
         }
         return timeSlots;
+    }
+
+    private User isUserInUserList(List<User> users, Long userId){
+        for(User user: users){
+            if(user.getId().equals(userId)){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> selectTA(Long id, Long userId) throws Exception {
+        Course course = getCourseInfo(id);
+        User user = isUserInUserList(course.getStudents(), userId);
+        if(user == null){
+            return ResponseEntity.badRequest().body("请助教先加入课程");
+        } else {
+            course.getStudents().remove(user);
+            course.getTeacherAssistants().add(user);
+        }
+        return ResponseEntity.ok(courseRepository.save(course));
     }
 
     @Override

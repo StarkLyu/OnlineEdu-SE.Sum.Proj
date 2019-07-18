@@ -7,6 +7,7 @@ import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Course Service Interface
@@ -94,4 +95,6 @@ public interface CourseService {
     Course saveSignIn(Long id, SignInCourseForm signInForm) throws Exception;
 
     CourseWithIdentity getCourseInfoWithIdentity(Long courseId, Long userId) throws Exception;
+
+    ResponseEntity<?> selectTA(Long id, Long userId) throws Exception;
 }
