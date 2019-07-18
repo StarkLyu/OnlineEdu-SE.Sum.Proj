@@ -17,6 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author liu
+ */
 public class JwtProviderTest {
     private static final String TEST_USERNAME = "testUser";
     private static final String ERROR_INFO = "abcd";
