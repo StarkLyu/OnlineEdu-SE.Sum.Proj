@@ -42,11 +42,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @Api(tags = "用户信息控制类", value = "用户信息相关的api")
-@PropertySource(value = {"classpath:user.properties"})
 public class UserController {
-
-    @Value("${app.file.limit}")
-    private static int limit;
+    private static int limit = 5120000;
 
     @Autowired
     UserService userService;
@@ -145,7 +142,7 @@ public class UserController {
     @PreAuthorize("#id == authentication.principal.id")
     public User patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException {
         if (FileCheckUtil.checkImageSizeExceed(multipartFile, limit)) {
-            throw new FileSizeExceededException("文件请不要超过500K");
+            throw new FileSizeExceededException("文件请不要超过5M");
         }
         String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
         if (FileCheckUtil.checkImageTypeWrong(suffix)) {

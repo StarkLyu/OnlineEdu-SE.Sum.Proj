@@ -18,7 +18,7 @@ import java.util.UUID;
  * @date 2019/07/12
  */
 public class SaveFileUtil {
-    private static String nginxPath = "/home/liu/nginx/online-edu/";
+    private static String nginxPath = "/home/ubuntu/nginx/online-edu/";
 
     public static String saveAvatar(Long id, MultipartFile multipartFile, String suffix, String type) throws IOException {
         String fileName = nginxPath + id + type +"-avatar/" + id + "-avatar" + suffix;

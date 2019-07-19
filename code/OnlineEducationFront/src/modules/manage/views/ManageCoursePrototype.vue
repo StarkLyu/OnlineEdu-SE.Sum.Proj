@@ -73,12 +73,12 @@
                 </el-table-column>
             </el-table>
         </div>
-        <!--课程编辑页面弹窗-->
+        <!--课程原型编辑页面弹窗-->
         <el-dialog :title="textMap[dialogStatus]"
                    :visible.sync="dialogFormVisible"
                    :lock-scroll="false"
                    top="5%">
-            <!--            课程的基本信息-->
+            <!--            课程原型的基本信息-->
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item label="原型名">
                     <el-input type="text" v-model="editForm.title"></el-input>
@@ -257,7 +257,7 @@
                 }
             },
 
-            // 添加课程
+            // 添加课程原型
             createData(){
                 var that=this;
 

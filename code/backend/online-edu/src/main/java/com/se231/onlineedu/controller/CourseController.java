@@ -5,6 +5,7 @@ import com.se231.onlineedu.exception.FileSizeExceededException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
+import com.se231.onlineedu.model.Learn;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
@@ -34,8 +35,7 @@ import java.util.List;
 @RequestMapping("api/courses")
 public class CourseController {
 
-    @Value("${app.file.limit}")
-    private static int limit;
+    private static int limit = 5120000;
 
     @Autowired
     CourseService courseService;
@@ -72,8 +72,8 @@ public class CourseController {
     @ApiImplicitParam(name = "id",value = "选课的学生的id",paramType = "param")
     @PostMapping("/{id}/pick")
     @PreAuthorize("hasRole('USER')")
-    public List<Course> pickCourse(@PathVariable(name = "id")Long id,
-                                   @AuthenticationPrincipal UserPrinciple userPrinciple){
+    public Learn pickCourse(@PathVariable(name = "id")Long id,
+                            @AuthenticationPrincipal UserPrinciple userPrinciple){
         return courseService.pickCourse(userPrinciple.getId(),id);
     }
 

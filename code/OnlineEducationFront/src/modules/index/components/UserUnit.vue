@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-avatar :size="18"></el-avatar>
-        <span class="name-font">{{ user }}</span>
+        <el-avatar :size="18" :src="user.avatarUrl"></el-avatar>
+        <span class="name-font">{{ user.username }}</span>
     </div>
 </template>
 
@@ -9,7 +9,10 @@
     export default {
         name: "UserUnit",
         props: {
-            user: String
+            user: {
+                username: String,
+                avatarUrl: String
+            }
         }
     }
 </script>

@@ -1,5 +1,6 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.se231.onlineedu.exception.CoursePrototypeUnavailableException;
 import com.alibaba.fastjson.JSON;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
@@ -36,9 +37,6 @@ import java.util.Optional;
 @Service
 public class CourseServiceImpl implements CourseService {
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private CoursePrototypeService coursePrototypeService;
 
     @Autowired
@@ -60,6 +58,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {
         CoursePrototype coursePrototype = coursePrototypeService.getCoursePrototypeInfo(prototypeId);
+        if(coursePrototype.getState() != CoursePrototypeState.USING){
+            throw new CoursePrototypeUnavailableException();
+        }
         User user = userService.getUserInfo(userId);
         if (form.getEndDate().before(form.getStartDate())) {
             throw new EndBeforeStartException("开始时间晚于结束时间。");
@@ -106,11 +107,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> pickCourse(Long userId, Long courseId) {
+    public Learn pickCourse(Long userId, Long courseId) {
         User user = userService.getUserInfo(userId);
         Course course = getCourseInfo(courseId);
-        learnRepository.save(new Learn(user, course));
-        return user.getLearnCourses();
+        return learnRepository.save(new Learn(user, course));
+        //return user.getLearnCourses();
     }
 
     @Override
@@ -218,7 +219,10 @@ public class CourseServiceImpl implements CourseService {
     public Course selectTeacherAssistant(Long id, Long userId) {
         Course course = getCourseInfo(id);
         User user = userInUserList(course.getStudents(), userId).orElseThrow(() -> new IdentityException("请助教先加入课程"));
-        course.getStudents().remove(user);
+        LearnPrimaryKey learnPrimaryKey = new LearnPrimaryKey(user, course);
+        Learn learn = new Learn();
+        learn.setLearnPrimaryKey(learnPrimaryKey);
+        course.getLearns().remove(learn);
         course.getTeacherAssistants().add(user);
         return courseRepository.save(course);
     }
@@ -231,9 +235,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void setState(Long courseId,String state) {
-        Course course = courseRepository.getOne(courseId);
+    public Course setState(Long courseId,String state) {
+        Course course = getCourseInfo(courseId);
         course.setState(CourseState.valueOf(state));
-        courseRepository.save(course);
+        return courseRepository.save(course);
     }
 }

@@ -4,7 +4,18 @@
                 v-for="(chapter, indexChapter) in chapters"
                 :key="indexChapter"
         >
-            <h2 slot="title">{{ chapter.title }}</h2>
+            <h2 slot="title">{{ chapter.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+            <el-button
+                    slot="title"
+                    circle
+                    icon="el-icon-plus"
+                    size="small"
+                    v-if="managerMode"
+                    @click="showAddChapter = true"
+            ></el-button>
+            <el-dialog :visible.sync="showAddChapter">
+
+            </el-dialog>
             <div class="section-content">
                 <el-collapse>
                     <CourseSectionUnit
@@ -49,7 +60,28 @@
                                         title: "第一节PPT"
                                     }
                                 ],
-                                papers: []
+                                papers: [
+                                    {
+                                        state: "NOT FINISH",
+                                        title: "哈哈哈",
+                                    },
+                                    {
+                                        state: "NOT START",
+                                        title: "哈哈哈",
+                                    },
+                                    {
+                                        state: "FINISHED",
+                                        title: "哈哈哈",
+                                    },
+                                    {
+                                        state: "NOT MARKED",
+                                        title: "哈哈哈",
+                                    },
+                                    {
+                                        state: "MARKED",
+                                        title: "哈哈哈",
+                                    }
+                                ]
                             },
                             {
                                 title: "第一节：哈哈哈",
@@ -111,7 +143,13 @@
                             }
                         ]
                     }
-                ]
+                ],
+                showAddChapter: false
+            }
+        },
+        computed: {
+            managerMode: function () {
+                return true;
             }
         }
     }

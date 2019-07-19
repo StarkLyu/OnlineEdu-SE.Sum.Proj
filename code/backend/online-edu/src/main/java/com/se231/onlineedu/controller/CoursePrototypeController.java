@@ -90,5 +90,4 @@ public class CoursePrototypeController {
     public ResponseEntity<List<Apply>> getApplyPrototype(@PathVariable("id")Long prototypeId){
         return ResponseEntity.ok(coursePrototypeService.getApplyByCoursePrototype(prototypeId));
     }
-
 }
