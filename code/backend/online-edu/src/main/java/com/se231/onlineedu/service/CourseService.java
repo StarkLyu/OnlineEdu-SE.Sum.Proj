@@ -6,6 +6,7 @@ import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
+import com.se231.onlineedu.model.Learn;
 import com.se231.onlineedu.model.User;
 import org.springframework.http.ResponseEntity;
 
@@ -44,7 +45,7 @@ public interface CourseService {
      * @param courseId  the id of picked course
      * @return  applicant's course list
      */
-    List<Course> pickCourse(Long userId,Long courseId);
+    Learn pickCourse(Long userId, Long courseId);
 
     /**
      * this service allow a teacher or admin to get the list of students who have picked this course
@@ -68,6 +69,11 @@ public interface CourseService {
      */
     List<Course> getAllCourse();
 
+    /**
+     * @param avatarUrl
+     * @param id
+     * @return
+     */
     Course updateCourseAvatar(String avatarUrl, Long id);
 
     List<String> getTeacherAssistantAndTeacherEmail(Long id);
@@ -89,6 +95,11 @@ public interface CourseService {
      */
     Course modifyCourseInfo(Long courseId,CourseApplicationForm form);
 
+    /**
+     * @param id
+     * @param signInForm
+     * @return
+     */
     Course saveSignIn(Long id, SignInCourseForm signInForm);
 
     /**
@@ -96,9 +107,19 @@ public interface CourseService {
      * @param courseId  id of changed course
      * @param state state after change.
      */
-    void setState(Long courseId,String state);
+    Course setState(Long courseId,String state);
 
+    /**
+     * @param courseId
+     * @param userId
+     * @return
+     */
     CourseWithIdentity getCourseInfoWithIdentity(Long courseId, Long userId);
 
+    /**
+     * @param id
+     * @param userId
+     * @return
+     */
     Course selectTeacherAssistant(Long id, Long userId);
 }

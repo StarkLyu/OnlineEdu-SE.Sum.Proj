@@ -9,7 +9,6 @@ import com.se231.onlineedu.model.Reply;
 import com.se231.onlineedu.repository.ForumRepository;
 import com.se231.onlineedu.service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +31,6 @@ public class ForumServiceImpl implements ForumService {
     public List<Forum> getForumsByCourse(Long courseId){
         return forumRepository.findByCourseId(courseId);
     }
-
 
     @Override
     public  Forum updateForum(Forum forum){

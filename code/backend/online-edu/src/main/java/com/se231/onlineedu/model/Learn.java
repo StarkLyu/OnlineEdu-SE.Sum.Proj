@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import java.util.Objects;
 
 @Entity
 public class Learn {
@@ -48,5 +49,18 @@ public class Learn {
 
     public void setSignInTimes(int signInTimes) {
         this.signInTimes = signInTimes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Learn learn = (Learn) o;
+        return Objects.equals(learnPrimaryKey, learn.learnPrimaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(learnPrimaryKey);
     }
 }

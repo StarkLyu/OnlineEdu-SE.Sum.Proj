@@ -40,8 +40,7 @@ public class ForumController {
     @Autowired
     private CourseService courseService;
 
-    @Value("${app.file.limit}")
-    private int limit;
+    private int limit = 5120000;
 
 
     @PostMapping("/courses/{courseId}/sections/{secNo}/forums")

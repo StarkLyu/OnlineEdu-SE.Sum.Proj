@@ -62,17 +62,17 @@ public class Course {
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "time_slot_id"))
     @ApiModelProperty("上课时间段")
-    private List<TimeSlot> timeSlots;
+    private List<TimeSlot> timeSlots = new ArrayList<>();
 
 
     @ApiModelProperty("该课程的助教")
     @JsonManagedReference
     @ManyToMany(mappedBy = "assistCourses")
-    private List<User> teacherAssistants;
+    private List<User> teacherAssistants = new ArrayList<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "learnPrimaryKey.course")
-    private List<Learn> learns;
+    private List<Learn> learns = new ArrayList<>();
 
     @JsonManagedReference
     @ApiModelProperty("该课程的老师")
@@ -84,12 +84,12 @@ public class Course {
 
     @ApiModelProperty("该课程的所有试卷")
     @OneToMany(mappedBy = "course")
-    private List<Paper> papers;
+    private List<Paper> papers = new ArrayList<>();
 
     @JsonManagedReference
     @ApiModelProperty("该课程的所有签到")
     @OneToMany(mappedBy = "signInPrimaryKey.course")
-    private List<SignIn> signIns;
+    private List<SignIn> signIns = new ArrayList<>();
 
     public Course() {
     }
