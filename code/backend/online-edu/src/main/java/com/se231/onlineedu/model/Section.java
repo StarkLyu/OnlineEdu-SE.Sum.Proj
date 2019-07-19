@@ -28,8 +28,8 @@ public class Section {
     private List<Resource> resources;
 
     public Section() {
-    }
 
+    }
 
     public SectionPrimaryKey getSectionPrimaryKey() {
         return sectionPrimaryKey;

@@ -1,5 +1,6 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.alibaba.fastjson.JSON;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
@@ -180,7 +181,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course modifyCourseInfo(Long courseId, CourseApplicationForm form) {
         Course course = getCourseInfo(courseId);
-        course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
+            System.out.println(JSON.toJSONString(form));
+            course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        }
         course.setLocation(form.getLocation());
         course.setCourseTitle(form.getCourseTitle());
         course.setStartDate(course.getStartDate());

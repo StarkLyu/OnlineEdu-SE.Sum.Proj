@@ -1,6 +1,6 @@
 package com.se231.onlineedu.controller;
 
-import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
+import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -34,7 +34,7 @@ public class CoursePrototypeController {
     @ApiOperation(value = "教学管理员创建课程原型申请")
     @PostMapping("/")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public CoursePrototype createCoursePrototype(@Valid @RequestBody CreateCoursePrototypeApplicationForm form,
+    public CoursePrototype createCoursePrototype(@Valid @RequestBody TitleAndDes form,
                                                          @AuthenticationPrincipal UserPrinciple userPrinciple) {
         return coursePrototypeService.createCourse(form,userPrinciple.getId());
     }

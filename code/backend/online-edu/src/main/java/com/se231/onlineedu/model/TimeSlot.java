@@ -69,8 +69,8 @@ public class TimeSlot {
     }
 
     public TimeSlot(TimeSlotForm form){
-        start=Time.valueOf(form.getStart());
-        end=Time.valueOf(form.getEnd());
+        start=Time.valueOf(form.getStart()+":00");
+        end=Time.valueOf(form.getEnd()+":00");
         day=WeekDay.values()[form.getDay()];
     }
 }
