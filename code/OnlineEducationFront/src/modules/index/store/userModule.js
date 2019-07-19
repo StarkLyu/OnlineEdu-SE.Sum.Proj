@@ -7,6 +7,9 @@ const state = {
     accessToken: "",
     loginStatus: false,
     userInfo: {
+        assistCourses: [],
+        learnCourses: [],
+        teachCourses: [],
         email: "",
         grade: 0,
         major: "",
@@ -40,11 +43,37 @@ const getters = {
         else return "";
     },
     userRole: state => {
-        return state.userInfo.roles[0].role;
+        let transRoles = [];
+        for (let role of state.userInfo.roles) {
+            transRoles.push(role.role);
+        }
+        return transRoles;
     },
     assistCourses: state => {
-        return state.userInfo.
-    }
+        return state.userInfo.assistCourses;
+    },
+    learnCourses: state => {
+        return state.userInfo.learnCourses;
+    },
+    teachCourses: state => {
+        return state.userInfo.teachCourses;
+    },
+    isStudent: function () {
+        let transRoles = [];
+        for (let role of state.userInfo.roles) {
+            transRoles.push(role.role);
+        }
+        if (transRoles.indexOf("ROLE_USER") !== -1) return true;
+        else return false;
+    },
+    isTeacher: function () {
+        let transRoles = [];
+        for (let role of state.userInfo.roles) {
+            transRoles.push(role.role);
+        }
+        if (transRoles.indexOf("ROLE_TEACHING_ADMIN") !== -1) return true;
+        else return false;
+    },
 }
 
 // actions
