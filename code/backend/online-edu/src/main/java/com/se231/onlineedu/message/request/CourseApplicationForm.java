@@ -4,6 +4,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.se231.onlineedu.model.TimeSlot;
@@ -38,7 +39,7 @@ public class CourseApplicationForm {
 
     @OneToMany
     @ApiModelProperty("上课时间段")
-    private List<TimeSlotForm> timeSlots;
+    private List<TimeSlotForm> timeSlots = new ArrayList<>();
 
     public Date getStartDate() {
         return startDate;

@@ -1,18 +1,18 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.ApplyRepository;
+import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.ResourceRepository;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of course service interface
@@ -55,7 +55,7 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     }
 
     @Override
-    public Apply applyForCourse(Long coursePrototypeId,Long userId) {
+    public Apply applyForCourse(Long coursePrototypeId, Long userId) {
         CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
         User user=userService.getUserInfo(userId);
         ApplyPrimaryKey id = new ApplyPrimaryKey(user,coursePrototype);

@@ -1,6 +1,7 @@
 package com.se231.onlineedu.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,8 @@ public class Section {
     private List<Resource> resources;
 
     public Section() {
-
+        resources=new ArrayList<>();
+        papers=new ArrayList<>();
     }
 
     public SectionPrimaryKey getSectionPrimaryKey() {

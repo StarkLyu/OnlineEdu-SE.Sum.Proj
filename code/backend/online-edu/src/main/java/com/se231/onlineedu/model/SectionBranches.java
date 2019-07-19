@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public class SectionBranches {
     private List<Resource> resources;
 
     public SectionBranches() {
+        papers = new ArrayList<>();
+        resources = new ArrayList<>();
     }
 
     public SectionBranches(SectionBranchesPrimaryKey sectionBranchesPrimaryKey, String title, List<Paper> papers, List<Resource> resources) {

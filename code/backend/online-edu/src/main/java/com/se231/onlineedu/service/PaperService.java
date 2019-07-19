@@ -24,13 +24,4 @@ public interface PaperService {
      */
     Paper addNewPaper(PaperForm form, Long courseId)throws Exception;
 
-    /**
-     * this service allow teacher to issue a existing paper to a section
-     * @param courseId  id of the course
-     * @param secNo number of the section
-     * @param paperId id of issued paper
-     * @return  the section which is modified
-     * @throws Exception    mainly contain not found exception
-     */
-    Section issuePaper(Long courseId,int secNo,Long paperId)throws Exception;
 }

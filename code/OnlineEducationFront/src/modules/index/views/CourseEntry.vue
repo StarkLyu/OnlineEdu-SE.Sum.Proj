@@ -5,6 +5,9 @@
             <el-button class="entry-button" type="primary" @click="attendCourse">
                 <h2>加入课程</h2>
             </el-button>
+            <div class="apply-link">
+                <el-link>申请助教</el-link>
+            </div>
         </div>
         <div class="float-right right-div">
             <CourseInfo :course-info="courseInfo"></CourseInfo>
@@ -77,5 +80,10 @@
 
     .right-div {
         width: 900px;
+    }
+
+    .apply-link {
+        margin-top: 30px;
+        text-align: center;
     }
 </style>

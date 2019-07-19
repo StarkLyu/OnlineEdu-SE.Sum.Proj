@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -36,10 +37,12 @@ public class CoursePrototype {
 
     @ApiModelProperty("该课程原型题库中的所有题目")
     @OneToMany(mappedBy = "coursePrototype")
+    @JsonManagedReference
     private List<Question> questions;
 
     @ApiModelProperty("该课程原型的所有衍生课程")
     @OneToMany(mappedBy = "coursePrototype")
+    @JsonManagedReference
     private List<Course> courses;
 
     @NotNull
