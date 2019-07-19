@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import com.se231.onlineedu.service.PaperAnswerService;
 import com.se231.onlineedu.service.PaperService;
 import org.quartz.Job;
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AnswerAutoMark implements Job {
-    @Autowired
-    PaperService paperService;
 
     @Autowired
     PaperAnswerService paperAnswerService;
@@ -30,6 +29,7 @@ public class AnswerAutoMark implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+        JobDetail detail = jobExecutionContext.getJobDetail();
+        answerAutoMark.paperAnswerService.autoMark(detail.getJobDataMap().getLongValue("paperId"));
     }
 }
