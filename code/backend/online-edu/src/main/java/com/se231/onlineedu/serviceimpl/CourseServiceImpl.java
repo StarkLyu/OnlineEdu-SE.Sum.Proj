@@ -1,12 +1,5 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
@@ -17,12 +10,18 @@ import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.Identity;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -109,11 +108,7 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> pickCourse(Long userId, Long courseId) {
         User user = userService.getUserInfo(userId);
         Course course = getCourseInfo(courseId);
-        Learn learn = learnRepository.save(new Learn(user, course));
-        user.getLearns().add(learn);
-        userRepository.save(user);
-        course.getStudents().add(user);
-        courseRepository.save(course);
+        learnRepository.save(new Learn(user, course));
         return user.getLearnCourses();
     }
 

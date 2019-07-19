@@ -131,7 +131,7 @@ public class User{
     private List<Course> teachCourses = new ArrayList<>();
 
     @JsonBackReference
-    @OneToMany
+    @OneToMany(mappedBy = "learnPrimaryKey.student")
     private List<Learn> learns = new ArrayList<>();
 
     public List<Learn> getLearns() {

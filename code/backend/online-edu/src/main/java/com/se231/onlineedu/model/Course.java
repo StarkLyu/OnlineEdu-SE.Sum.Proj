@@ -71,7 +71,7 @@ public class Course {
     private List<User> teacherAssistants;
 
     @JsonManagedReference
-    @OneToMany
+    @OneToMany(mappedBy = "learnPrimaryKey.course")
     private List<Learn> learns;
 
     @JsonManagedReference
