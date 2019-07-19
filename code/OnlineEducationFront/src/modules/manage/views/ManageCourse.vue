@@ -111,7 +111,6 @@
                                         type="date"
                                         v-model="editForm.startDate"
                                         style="width: 100%;">
-
                         </el-date-picker>
                     </el-col>
                     <el-col class="line" :span="2">-</el-col>
@@ -129,17 +128,16 @@
                             v-for="(timeslot, index) in editForm.timeSlots"
                             :label="'时间段'+(index+1)"
                             :key="timeslot.day"
-
                             :rules="{required: true, message: '内容不能为空', trigger: 'blur'}">
                         <el-input v-model="timeslot.day" placeholder="输入0-6，0代表周日"></el-input>
                         <el-time-select
                                 v-model="timeslot.start"
-                                :picker-options="{start: '08:00',step: '00:30',end: '20:00'}"
+                                :picker-options="{start: '08:00',step: '00:30',end: '20:30'}"
                                 placeholder="选择开始时间">
                         </el-time-select>
                         <el-time-select
                                 v-model="timeslot.end"
-                                :picker-options="{start: '08:00',step: '00:30',end: '20:00'}"
+                                :picker-options="{start: '08:00',step: '00:30',end: '20:30'}"
                                 placeholder="选择结束时间">
                         </el-time-select>
                         <el-button @click.prevent="removeTimeslot(timeslot)">删除</el-button>

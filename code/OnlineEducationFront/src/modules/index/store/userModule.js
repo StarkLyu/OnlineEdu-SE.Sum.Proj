@@ -16,6 +16,7 @@ const state = {
         realName: "",
         sex: "",
         sno: "",
+        id:"",
         tno: "",
         tel: "",
         university: "",
@@ -74,6 +75,9 @@ const getters = {
         if (transRoles.indexOf("ROLE_TEACHING_ADMIN") !== -1) return true;
         else return false;
     },
+    getUserId: state => {
+        return state.userInfo.id;
+    }
 }
 
 // actions

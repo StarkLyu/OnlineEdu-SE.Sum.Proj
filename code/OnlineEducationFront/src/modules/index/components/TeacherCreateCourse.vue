@@ -4,7 +4,6 @@
             <el-step title="课程原型"></el-step>
             <el-step title="创建课程"></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
 <!--        申请使用课程原型或创建-->
         <div v-if="active===0">
             <el-table :data="ProtoTable"  height="300px">
@@ -15,10 +14,21 @@
                 </el-table-column>
                 <el-table-column property="title" label="原型名称" sortable></el-table-column>
                 <el-table-column property="description" label="描述"></el-table-column>
+                <el-table-column
+                        prop="ableToUse"
+                        label="使用权限"
+                        sortable>
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.tempUse">
+                            {{scope.row.ableToUse}}
+                        </el-tag>
+                    </template>
+                </el-table-column>
             </el-table>
             <span slot="footer">
-                <el-button type="primary" @click="showCreateDialog">创建课程原型</el-button>
+                <el-button type="primary" @click="showCreateProtoDialog">创建课程原型</el-button>
                 <el-button @click="applyProto">申请使用该原型</el-button>
+                <el-button type="primary" @click="chooseProto">选择该原型</el-button>
             </span>
             <!--课程原型新增页面弹窗-->
             <el-dialog :title="'创建课程原型'"
@@ -26,12 +36,12 @@
                        :lock-scroll="false"
                        top="5%">
                 <!--            课程原型的基本信息-->
-                <el-form :model="createForm" label-width="80px" ref="editForm">
+                <el-form :model="protoForm" label-width="80px" ref="editForm">
                     <el-form-item label="原型名">
-                        <el-input type="text" v-model="createForm.title"></el-input>
+                        <el-input type="text" v-model="protoForm.title"></el-input>
                     </el-form-item>
                     <el-form-item label="描述">
-                        <el-input type="text" v-model="createForm.description"></el-input>
+                        <el-input type="text" v-model="protoForm.description"></el-input>
                     </el-form-item>
                 </el-form>
                 <span slot="footer">
@@ -44,12 +54,64 @@
         </div>
 <!--        申请开课-->
         <div v-if="active===1">
-            这是第二步
+            <el-form :model="courseForm" label-width="80px" ref="courseForm">
+                <el-form-item label="课程名">
+                    <el-input type="text" v-model="courseForm.courseTitle"></el-input>
+                </el-form-item>
+                <el-form-item label="上课日程">
+                    <el-col :span="11">
+                        <el-date-picker placeholder="选择开始时间"
+                                        type="date"
+                                        v-model="courseForm.startDate"
+                                        style="width: 100%;">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col class="line" :span="2">-</el-col>
+                    <el-col :span="11">
+                        <el-date-picker placeholder="选择结束时间"
+                                        type="date"
+                                        v-model="courseForm.endDate"
+                                        style="width: 100%;">
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <!--                课程的上课时间段-->
+                <el-form-item label="课时">
+                    <el-form-item
+                            v-for="(timeslot, index) in courseForm.timeSlots"
+                            :label="'时间段'+(index+1)"
+                            :key="timeslot.day"
+                            :rules="{required: true, message: '内容不能为空', trigger: 'blur'}">
+                        <el-input v-model="timeslot.day" placeholder="输入0-6，0代表周日"></el-input>
+                        <el-time-select
+                                v-model="timeslot.start"
+                                :picker-options="{selectableRange: '8:00:00 - 20:30:00'}"
+                                placeholder="选择开始时间">
+                        </el-time-select>
+                        <el-time-select
+                                v-model="timeslot.end"
+                                :picker-options="{selectableRange: '8:00:00 - 20:30:00'}"
+                                placeholder="选择结束时间">
+                        </el-time-select>
+                        <el-button @click.prevent="removeTimeslot(timeslot)">删除</el-button>
+                    </el-form-item>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="addTimeslot">新增时间段</el-button>
+                </el-form-item>
+                <el-form-item label="上课地点">
+                    <el-input type="text" v-model="courseForm.location"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer">
+                <el-button type="primary" @click="createCourse">创建课程</el-button>
+            </span>
         </div>
     </div>
 </template>
 
 <script>
+
     export default {
         name: "TeacherCreateCourse",
 
@@ -63,10 +125,28 @@
 
                 dialogFormVisible:false,
 
-                createForm: {
+                protoForm: {
                     title: "",
                     description:"",
-                }
+                },
+
+                courseForm: {
+                    id:0,
+                    courseTitle:"",
+                    startDate:"",
+                    endDate:"",
+                    location:"",
+                    courseTeacher:"",
+                    courseState:"",
+                    state:"",
+                    timeSlots:[
+                        {
+                            day:0,
+                            end:"",
+                            start:"",
+                        },
+                    ]
+                },
             };
         },
 
@@ -81,18 +161,38 @@
                 var that=this;
                 that.ProtoTable=[];
 
-                this.$axios.request({
+                // alert("第一步");
+
+                this.$http.request({
                     url: '/api/coursePrototypes/info/all',
                     method: "get",
+                    headers:this.$store.getters.authRequestHead,
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        let xx=0;
 
                         for (let x=0; x<response.data.length; x++){
+                            //可使用的课程原型展示出来
                             if (response.data[x].state==='USING'){
-                                that.dialogProtoForm.push(response.data[x]);
+                                that.ProtoTable.push(response.data[x]);
+
+                                let tempTeacher=response.data[x].users;
+                                that.ProtoTable[xx].ableToUse=false;
+                                that.ProtoTable[xx].tempUse='danger';
+                                var tempId=that.$store.getters.getUserId;
+
+                                //看该教师是否能使用该课程原型
+                                for (let y=0; y<tempTeacher.length; y++) {
+                                    if (tempTeacher[y].id===tempId){
+                                        that.ProtoTable[xx].ableToUse=true;
+                                        that.ProtoTable[xx].tempUse='success';
+                                    }
+                                }
+                                xx++;
                             }
                         }
+                        console.log(that.ProtoTable);
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -101,9 +201,9 @@
             },
 
             // 显示创建课程原型页面
-            showCreateDialog(){
+            showCreateProtoDialog(){
                 this.dialogFormVisible=true;
-                this.createForm={
+                this.protoForm={
                     id:"",
                     title: "",
                     description:"",
@@ -114,13 +214,13 @@
             createProto(){
                 var that=this;
 
-                this.$axios.request({
+                this.$http.request({
                     url: '/api/coursePrototypes/',
                     method: "post",
-                    // headers: getHeader.requestHeader(),
+                    headers:this.$store.getters.authRequestHead,
                     data:{
-                        title:this.createForm.title,
-                        description:this.createForm.description,
+                        title:this.protoForm.title,
+                        description:this.protoForm.description,
                     }
                 })
                     .then(function (response) {
@@ -139,14 +239,10 @@
             applyProto(){
                 var that=this;
 
-                this.$axios.request({
-                    url: '/api/coursePrototypes/',
+                this.$http.request({
+                    url: '/api/coursePrototypes/'+that.ProtoChoose+'/apply',
                     method: "post",
-                    // headers: getHeader.requestHeader(),
-                    data:{
-                        title:this.createForm.title,
-                        description:this.createForm.description,
-                    }
+                    headers:this.$store.getters.authRequestHead,
                 })
                     .then(function (response) {
                         console.log(response.data);
@@ -158,6 +254,69 @@
                         console.log(error);
                         // alert("请求失败");
                     });
+            },
+
+            // 选择课程原型
+            chooseProto(){
+                // console.log(this.ProtoChoose);
+                for(let x=0; x<this.ProtoTable.length; x++) {
+                    if(this.ProtoTable[x].id===this.ProtoChoose) {
+                        if (this.ProtoTable[x].ableToUse===true) {
+                            this.active++;
+                        }
+                        else {
+                            alert("您不能使用该课程原型！");
+                        }
+                    }
+                }
+            },
+
+            // 创建课程
+            createCourse(){
+                var that=this;
+
+                this.$http.request({
+                    url: '/api/courses/start',
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead,
+                    params:{
+                        prototypeId:this.ProtoChoose,
+                    },
+                    data:{
+                        courseTitle:this.courseForm.courseTitle,
+                        startDate:this.courseForm.startDate,
+                        endDate:this.courseForm.endDate,
+                        location:this.courseForm.location,
+                        timeSlots:this.courseForm.timeSlots
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            },
+
+            // 移除时间段
+            removeTimeslot(item) {
+                var index = this.courseForm.timeSlots.indexOf(item);
+                if (index !== -1) {
+                    this.courseForm.timeSlots.splice(index, 1)
+                }
+            },
+
+            // 添加时间段
+            addTimeslot() {
+                this.courseForm.timeSlots.push({
+                    day:'',
+                    start:'',
+                    end:'',
+                });
             },
         },
 

@@ -19,7 +19,7 @@
                         </span>
                     </el-menu-item>
                     <el-menu-item index="3" route="/ManageCoursePrototype">
-                        <i class="el-icon-copy-document"></i>
+                        <i class="el-icon-c-scale-to-original"></i>
                         <span slot="title">
                             课程原型
                         </span>
