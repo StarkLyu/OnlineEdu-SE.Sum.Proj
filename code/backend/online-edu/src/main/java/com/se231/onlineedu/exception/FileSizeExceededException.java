@@ -5,13 +5,8 @@ package com.se231.onlineedu.exception;
  */
 public class FileSizeExceededException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    private String msg;
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public FileSizeExceededException(String msg) {
-        this.msg = msg;
+    public FileSizeExceededException(String message) {
+        super(message);
     }
 }

@@ -1,7 +1,10 @@
 package com.se231.onlineedu.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.se231.onlineedu.message.request.SignUpForm;
 
 import javax.persistence.*;
@@ -26,6 +29,9 @@ import java.util.Objects;
                 "username"
         })
 })
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,7 +81,7 @@ public class User{
     private String avatarUrl;
 
     @ManyToMany
-    private List<SignIn> signIns;
+    private List<SignIn> signIns = new ArrayList<>();
 
     public List<SignIn> getSignIns() {
         return signIns;
@@ -120,13 +126,13 @@ public class User{
     @JoinTable(name = "assist_course",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
-    private List<Course> assistCourses;
+    private List<Course> assistCourses = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teacher")
-    private List<Course> teachCourses;
+    private List<Course> teachCourses = new ArrayList<>();
 
     @OneToMany
-    private List<Learn> learns;
+    private List<Learn> learns = new ArrayList<>();
 
     public List<Learn> getLearns() {
         return learns;
@@ -137,7 +143,6 @@ public class User{
     }
 
     @Transient
-    @JsonIgnore
     public List<Course> getLearnCourses(){
         List<Course> courses = new ArrayList<>();
         for(Learn learn: getLearns()){
@@ -150,7 +155,7 @@ public class User{
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     public Long getId() {
         return id;

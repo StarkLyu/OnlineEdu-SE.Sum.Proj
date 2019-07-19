@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
         }else if(fileName.endsWith("xlsx")) {
             workbook = new XSSFWorkbook(excel.getInputStream());
         }else {
-            throw  new FileFormatNotSupportException( "Import File Fail -> File Format Wrong,Only Support Xlsx And Xls");
+            throw new FileFormatNotSupportException("Import File Fail -> File Format Wrong,Only Support Xlsx And Xls");
         }
         //获取工作sheet
         Sheet sheet = workbook.getSheet("sheet1");
@@ -108,8 +108,7 @@ public class UserServiceImpl implements UserService {
         }
 
         List<Role> roles=new ArrayList<>();
-        Role userRole = roleRepository.findByRole(RoleType.ROLE_USER).
-                orElseThrow(()->new RuntimeException("Fail -> Cause: User Role Not Found"));
+        Role userRole = new Role(RoleType.ROLE_USER);
         roles.add(userRole);
 
         InputStream file = excel.getInputStream();
@@ -123,6 +122,9 @@ public class UserServiceImpl implements UserService {
         for(Object dataItem:data){
             rowNumber++;
             UserExcel userExcel=(UserExcel)dataItem;
+            if(userExcel.getPassword() == null){
+                continue;
+            }
             if(userRepository.existsByUsername(userExcel.getUsername())){
                 hasError=true;
                 errorMessage.append("Data Error -> Same Username In Row "+rowNumber+"\n");
@@ -140,12 +142,12 @@ public class UserServiceImpl implements UserService {
             }
             User user =new User(userExcel);
             user.setRoles(roles);
-            user.setPassword(passwordEncoder.encode((userExcel.getPassword())));
+            user.setPassword(passwordEncoder.encode(userExcel.getPassword()));
             userRepository.save(user);
         }
 
         if(!hasError) {
-            return "Import successfully.";
+            return "导入成功";
         }
         else {
             throw new BulkImportDataException(errorMessage.toString());

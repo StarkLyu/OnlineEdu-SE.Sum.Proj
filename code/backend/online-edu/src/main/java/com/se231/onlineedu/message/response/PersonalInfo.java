@@ -52,6 +52,7 @@ public class PersonalInfo {
         user.setSex(sex);
         user.setSno(sno);
         user.setUniversity(university);
+        user.setTel(Long.parseLong(tel));
     }
 
     public String getTel() {

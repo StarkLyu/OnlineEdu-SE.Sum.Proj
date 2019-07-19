@@ -4,9 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -22,6 +20,9 @@ import org.apache.poi.ss.usermodel.DateUtil;
 @ApiModel(value = "课程，即基于课程原型衍生的实际的课程，有老师有学生")
 @Entity
 @Table(name = "Courses")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Course {
     @ApiModelProperty("id")
     @Id
@@ -74,7 +75,6 @@ public class Course {
     @OneToMany
     private List<Learn> learns;
 
-    @JsonBackReference
     @ApiModelProperty("该课程的老师")
     @ManyToOne()
     @JoinTable(name = "teach_course",
@@ -104,7 +104,6 @@ public class Course {
     }
 
     @Transient
-    @JsonIgnore
     public List<User> getStudents() {
         List<User> students = new ArrayList<>();
         for (Learn learn : getLearns()) {

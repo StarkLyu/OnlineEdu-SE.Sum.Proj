@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Interface of service related to auth.
- * <p>
  * contains interface of main auth service.
  *
  * @author Zhe Li
@@ -31,12 +30,23 @@ public interface AuthService {
      * this service allow user to register
      *
      * @param form register form
+     * @param httpSession input httpSession
      * @return a http response entity
      */
-    User userSignUp(SignUpForm form,  HttpSession httpSession) throws Exception;
+    User userSignUp(SignUpForm form,  HttpSession httpSession);
 
+    /**
+     * convert user to TEACHING_ADMIN
+     * @param userId
+     * @return string
+     */
     String addTeachingAdmin(Long userId);
 
+    /**
+     * save user
+     * @param user
+     * @return user
+     */
     User saveRegisteredUser(User user);
 
 }
