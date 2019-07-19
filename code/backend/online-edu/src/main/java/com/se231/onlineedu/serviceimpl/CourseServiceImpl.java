@@ -48,9 +48,6 @@ public class CourseServiceImpl implements CourseService {
     private TimeSlotRepository timeSlotRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private LearnRepository learnRepository;
 
     @Autowired
@@ -98,6 +95,8 @@ public class CourseServiceImpl implements CourseService {
         Learn learn = learnRepository.save(new Learn(user, course));
         user.getLearns().add(learn);
         userRepository.save(user);
+        course.getStudents().add(user);
+        courseRepository.save(course);
         return user.getLearnCourses();
     }
 
