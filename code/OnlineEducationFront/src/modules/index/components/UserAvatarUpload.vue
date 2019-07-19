@@ -25,16 +25,12 @@
         methods: {
             beforeAvatarUpload: function(file) {
                 console.log(file);
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
+                const isLt2M = file.size / 1024 < 500;
 
-                if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
-                }
                 if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    this.$message.error('上传头像图片大小不能超过 500KB!');
                 }
-                return isJPG && isLt2M;
+                return isLt2M;
             },
             uploadProcess: function(param) {
                 let formData = new FormData();
@@ -47,23 +43,7 @@
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
-                    this.$http.request({
-                        url: "/api/users/info",
-                        method: 'get',
-                        headers: {
-                            "Authorization": "Bearer " + this.$store.state.user.accessToken
-                        }
-                    }).then((infoResponse) => {
-                        this.$store.commit("infoSet", infoResponse.data);
-                    }).catch((error) => {
-                        console.log(error.response);
-                        if (error.response.data.status === 401) {
-                            alert("获取用户信息出错");
-                        }
-                        else {
-                            alert(error);
-                        }
-                    });
+                    this.$store.commit("infoSet", response.data);
                 }).catch((error) => {
                     alert("修改失败");
                     console.log(error.response);

@@ -17,6 +17,7 @@ const state = {
         sex: "",
         sno: "",
         tno: "",
+        id: "",
         tel: "",
         university: "",
         avatarUrl: "",
