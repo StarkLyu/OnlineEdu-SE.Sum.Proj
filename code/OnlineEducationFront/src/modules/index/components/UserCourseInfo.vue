@@ -31,20 +31,25 @@
                         content: "哈哈哈哈哈吼吼吼吼吼呵呵呵呵呵font-family: \"Helvetica Neue\",Helvetica,\"PingFang SC\",\"Hiragino Sans GB\",\"Microsoft YaHei\",\"微软雅黑\",Arial,sans-serif;font-family: \"Helvetica Neue\",Helvetica,\"PingFang SC\",\"Hiragino Sans GB\",\"Microsoft YaHei\",\"微软雅黑\",Arial,sans-serif;\n耶呵呵呵呵呵呵呵呵"
                     }
                 ],
-                courseInfo: {
-                    id: "SE996",
-                    title: "数据库没成绩导论",
-                    teacher: "JBoss",
-                    courseAssistance: [
-                        "ASSI-1",
-                        "ASSI-2",
-                        "ASSI-3"
-                    ],
-                    courseTime1: "2019-07-02",
-                    courseTime2: "2019-08-02",
-                    courseRoom: "软件学院大楼1111",
-                    courseDes: "我我也爱喝的健康放假啊扩大解放咔叽打开"
-                }
+                // courseInfo: {
+                //     id: "SE996",
+                //     title: "数据库没成绩导论",
+                //     teacher: "JBoss",
+                //     courseAssistance: [
+                //         "ASSI-1",
+                //         "ASSI-2",
+                //         "ASSI-3"
+                //     ],
+                //     courseTime1: "2019-07-02",
+                //     courseTime2: "2019-08-02",
+                //     courseRoom: "软件学院大楼1111",
+                //     courseDes: "我我也爱喝的健康放假啊扩大解放咔叽打开"
+                // }
+            }
+        },
+        computed: {
+            courseInfo: function () {
+                return this.$store.state.course.courseInfo;
             }
         }
     }

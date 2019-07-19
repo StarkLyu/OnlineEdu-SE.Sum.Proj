@@ -38,6 +38,12 @@ const getters = {
             return "http://202.120.40.8:30382/online-edu/static/" + state.userInfo.avatarUrl + "?a=" + Math.random();
         }
         else return "";
+    },
+    userRole: state => {
+        return state.userInfo.roles[0].role;
+    },
+    assistCourses: state => {
+        return state.userInfo.
     }
 }
 

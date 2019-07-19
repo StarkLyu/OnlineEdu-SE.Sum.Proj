@@ -2,7 +2,7 @@
     <div>
         <el-row class="row-layout">
             <el-col :span="24">
-                <h2>{{ courseInfo.title }}</h2>
+                <h2>{{ courseInfo.courseTitle }}</h2>
             </el-col>
         </el-row>
         <el-row class="row-layout">
@@ -47,7 +47,7 @@
         props: {
             courseInfo: {
                 id: String,
-                title: String,
+                courseTitle: String,
                 teacher: String,
                 courseAssistance: Array,
                 startDate: String,
