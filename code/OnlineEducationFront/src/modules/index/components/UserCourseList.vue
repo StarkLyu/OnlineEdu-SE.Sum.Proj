@@ -3,7 +3,11 @@
         <el-tabs type="border-card">
             <el-tab-pane>
                 <span slot="label">全部课程</span>
-                <CourseCard :course-info="courseList[0]"></CourseCard>
+                <CourseCard
+                        v-for="(course, index) in courseList"
+                        :key="index"
+                        :course-info="course"
+                ></CourseCard>
             </el-tab-pane>
             <el-tab-pane>
                 <span slot="label">正在学习</span>
@@ -13,6 +17,9 @@
             </el-tab-pane>
             <el-tab-pane>
                 <span slot="label">已结束</span>
+            </el-tab-pane>
+            <el-tab-pane>
+
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -34,6 +41,12 @@
                     }
                 ]
             }
+        },
+        computed: {
+            userRole: function () {
+                return this.$store.getters.userRole;
+            },
+
         },
         mounted() {
             this.courseList = this.$store.state.user.userInfo.courses;
