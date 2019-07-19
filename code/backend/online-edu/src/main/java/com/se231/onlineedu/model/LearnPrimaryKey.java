@@ -14,6 +14,7 @@ public class LearnPrimaryKey implements Serializable {
     @JoinColumn(name = "user_id")
     private User student;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;

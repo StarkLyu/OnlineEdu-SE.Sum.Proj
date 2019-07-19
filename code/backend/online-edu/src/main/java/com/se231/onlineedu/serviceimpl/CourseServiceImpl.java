@@ -1,5 +1,6 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.alibaba.fastjson.JSON;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
@@ -10,9 +11,11 @@ import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.Identity;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +51,11 @@ public class CourseServiceImpl implements CourseService {
     private TimeSlotRepository timeSlotRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private LearnRepository learnRepository;
 
     @Autowired
     private SignInRepository signInRepository;
+
 
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {
@@ -63,10 +64,13 @@ public class CourseServiceImpl implements CourseService {
         if (form.getEndDate().before(form.getStartDate())) {
             throw new EndBeforeStartException("开始时间晚于结束时间。");
         }
+
         Course course = new Course(form.getStartDate(), form.getEndDate(), CourseState.APPLYING, coursePrototype, user);
         course.setCourseTitle(form.getCourseTitle());
         course.setLocation(form.getLocation());
-        course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
+            course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        }
         return courseRepository.save(course);
     }
 
@@ -78,7 +82,17 @@ public class CourseServiceImpl implements CourseService {
                 if (course.getStartDate().before(new Date())) {
                     course.setState(CourseState.TEACHING);
                 } else {
-                    course.setState(CourseState.READY_TO_START);
+                    try{
+                        course.setState(CourseState.READY_TO_START);
+                        SchedulerHandler.setCourseState(courseId,"TEACHING",course.getStartDate());
+                    }catch(SchedulerException e){
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    SchedulerHandler.setCourseState(courseId, "FINISHED", course.getEndDate());
+                } catch (SchedulerException e){
+                    e.printStackTrace();
                 }
                 break;
             case "disapproval":
@@ -95,9 +109,7 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> pickCourse(Long userId, Long courseId) {
         User user = userService.getUserInfo(userId);
         Course course = getCourseInfo(courseId);
-        Learn learn = learnRepository.save(new Learn(user, course));
-        user.getLearns().add(learn);
-        userRepository.save(user);
+        learnRepository.save(new Learn(user, course));
         return user.getLearnCourses();
     }
 
@@ -169,7 +181,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course modifyCourseInfo(Long courseId, CourseApplicationForm form) {
         Course course = getCourseInfo(courseId);
-        course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
+            System.out.println(JSON.toJSONString(form));
+            course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        }
         course.setLocation(form.getLocation());
         course.setCourseTitle(form.getCourseTitle());
         course.setStartDate(course.getStartDate());
@@ -181,7 +196,7 @@ public class CourseServiceImpl implements CourseService {
         List<TimeSlot> timeSlots = new ArrayList<>();
         for (TimeSlotForm slotForm : slotFormList) {
             TimeSlot slot = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.values()[slotForm.getDay()]
-                    , Time.valueOf(slotForm.getStart()), Time.valueOf(slotForm.getEnd()))
+                    , Time.valueOf(slotForm.getStart()+":00"),Time.valueOf(slotForm.getEnd()+":00"))
                     .orElse(new TimeSlot(slotForm));
             timeSlots.add(slot);
         }
@@ -213,5 +228,12 @@ public class CourseServiceImpl implements CourseService {
         Course course = getCourseInfo(id);
         course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
         return courseRepository.save(course);
+    }
+
+    @Override
+    public void setState(Long courseId,String state) {
+        Course course = courseRepository.getOne(courseId);
+        course.setState(CourseState.valueOf(state));
+        courseRepository.save(course);
     }
 }

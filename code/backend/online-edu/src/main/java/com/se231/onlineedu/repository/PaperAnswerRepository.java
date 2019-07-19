@@ -1,5 +1,6 @@
 package com.se231.onlineedu.repository;
 
+import java.util.List;
 import java.util.Optional;
 import com.se231.onlineedu.model.PaperAnswer;
 import com.se231.onlineedu.model.PaperAnswerPrimaryKey;
@@ -24,4 +25,7 @@ public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, PaperA
      */
     @Query(value = "select max(times) from paper_answer where user_id = ?1 and paper_id=?2 ",nativeQuery = true)
     Optional<Integer> getMaxTimes(Long user_id,Long paper_id);
+
+    @Query(value = "select * from paper_answer where paper_id = ?1",nativeQuery = true)
+    List<PaperAnswer> getPaperAnswers(Long paperId);
 }
