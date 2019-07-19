@@ -32,8 +32,14 @@
 //        timeSlot.setDay(WeekDay.FRIDAY);
 //        timeSlot.setEnd(time);
 //        timeSlot.setStart(time);
-//        timeSlotRepository.save(timeSlot);
-//        TimeSlot found = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.FRIDAY, time, time).orElseThrow(()->new Exception("hah"));
+//        TimeSlot found = timeSlotRepository.save(timeSlot);
+//        System.out.println(found.getDay());
+//        System.out.println(found.getEnd());
+//        System.out.println(found.getStart());
+//        System.out.println(time);
+//        TimeSlot found1 = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.FRIDAY, time, time).orElseThrow(()->new Exception("hah"));
+//
+//        System.out.println(found.getDay());
 //
 //        assertThat(found.getDay()).isEqualTo(WeekDay.FRIDAY);
 //    }

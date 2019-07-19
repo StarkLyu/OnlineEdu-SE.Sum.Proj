@@ -25,31 +25,31 @@ public class AppExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<String> handleException(NotFoundException exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMsg());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = AfterEndException.class)
     public ResponseEntity<String> handlerException(AfterEndException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = BeforeStartException.class)
     public ResponseEntity<String> handlerException(BeforeStartException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = FileFormatNotSupportException.class)
     public ResponseEntity<String> handlerException(FileFormatNotSupportException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = FileSizeExceededException.class)
     public ResponseEntity<String> handlerException(FileSizeExceededException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
@@ -61,25 +61,25 @@ public class AppExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = EmptyFileException.class)
     public ResponseEntity<String> handlerException(EmptyFileException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = BulkImportDataException.class)
     public ResponseEntity<String> handlerException(BulkImportDataException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = IdentityException.class)
     public ResponseEntity<String> handlerException(IdentityException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(value = EndBeforeStartException.class)
     public ResponseEntity<String> handlerException(EndBeforeStartException exception){
-        return ResponseEntity.badRequest().body(exception.getMsg());
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }
 

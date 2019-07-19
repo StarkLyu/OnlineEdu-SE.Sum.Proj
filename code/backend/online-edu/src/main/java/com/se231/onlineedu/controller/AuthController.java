@@ -79,7 +79,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "验证码已失效"),
     })
     @GetMapping("/registrationConfirm")
-    public String confirmRegistration(HttpSession httpSession, @RequestParam("verificationToken") String token){
+    public User confirmRegistration(HttpSession httpSession, @RequestParam("verificationToken") String token){
         VerificationToken verificationToken = (VerificationToken)httpSession.getAttribute("token");
         if(!verificationToken.getToken().equals(token)){
             throw new VerificationTokenWrongException();
@@ -90,8 +90,6 @@ public class AuthController {
         }
 
         User user = (User)httpSession.getAttribute("user");
-        user.setEnabled(true);
-        authService.saveRegisteredUser(user);
-        return "已激活";
+        return authService.saveRegisteredUser(user);
     }
 }

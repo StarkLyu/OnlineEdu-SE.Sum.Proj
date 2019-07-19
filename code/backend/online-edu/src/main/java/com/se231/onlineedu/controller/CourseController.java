@@ -122,8 +122,7 @@ public class CourseController {
     @ApiOperation("管理员或教师修改课程信息")
     @PutMapping("/{id}/modify")
     @PreAuthorize("hasRole('ADMIN')")
-    public Course modifyCourseInfo(@Valid @RequestBody CourseApplicationForm form,
-                                                   @PathVariable("id")Long id) {
+    public Course modifyCourseInfo(@Valid @RequestBody CourseApplicationForm form, @PathVariable("id")Long id) {
         return courseService.modifyCourseInfo(id,form);
     }
 

@@ -118,8 +118,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String addTeachingAdmin(Long userId){
         User user = userService.getUserInfo(userId);
-        Role teachingAdmin = roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN)
-                .orElseThrow(()->new NotFoundException("Fail -> Case: Teaching Admin Role Not Found"));
+        Role teachingAdmin = new Role(RoleType.ROLE_TEACHING_ADMIN);
         if(user.getRoles().contains(teachingAdmin)){
             throw new ValidationException("This User has already been a teaching admin.");
         }
@@ -130,6 +129,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User saveRegisteredUser(User user) {
+        user.setEnabled(true);
         return userRepository.save(user);
     }
 

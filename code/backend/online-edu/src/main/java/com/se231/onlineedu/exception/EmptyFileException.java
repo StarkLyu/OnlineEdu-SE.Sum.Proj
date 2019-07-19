@@ -5,13 +5,8 @@ package com.se231.onlineedu.exception;
  */
 public class EmptyFileException extends RuntimeException{
     private static final long serialVersionUID = 1L;
-    private String msg;
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public EmptyFileException(String msg) {
-        this.msg = msg;
+    public EmptyFileException(String message) {
+        super(message);
     }
 }
