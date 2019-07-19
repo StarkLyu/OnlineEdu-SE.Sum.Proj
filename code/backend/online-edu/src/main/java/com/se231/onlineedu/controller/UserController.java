@@ -5,6 +5,7 @@ import com.se231.onlineedu.exception.FileFormatNotSupportException;
 import com.se231.onlineedu.exception.FileSizeExceededException;
 import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -61,6 +62,28 @@ public class UserController {
     public User getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) {
         return userService.getUserInfo(userPrinciple.getId());
     }
+
+    @ApiOperation(value = "已登录用户查询个人信息的已教课程", notes = "已登录用户查询个人信息", httpMethod = "GET")
+    @GetMapping("/info/courses/teach")
+    public List<Course> getPersonalInfoTeach(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        User user = userService.getUserInfo(userPrinciple.getId());
+        return user.getTeachCourses();
+    }
+
+    @ApiOperation(value = "已登录用户查询个人信息的TA课程", notes = "已登录用户查询个人信息", httpMethod = "GET")
+    @GetMapping("/info/courses/assist")
+    public List<Course> getPersonalInfoAssist(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        User user = userService.getUserInfo(userPrinciple.getId());
+        return user.getAssistCourses();
+    }
+
+    @ApiOperation(value = "已登录用户查询个人信息的学习课程", notes = "已登录用户查询个人信息", httpMethod = "GET")
+    @GetMapping("/info/courses/learn")
+    public List<Course> getPersonalInfoLearn(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        User user = userService.getUserInfo(userPrinciple.getId());
+        return user.getLearnCourses();
+    }
+
 
     @ApiOperation(value = "用户修改自己的个人信息", httpMethod = "POST")
     @PostMapping("/info/modify")
@@ -195,4 +218,5 @@ public class UserController {
         emailSenderService.sendVerificationEmail(userService.getUserInfo(id).getEmail(), verificationToken);
         return "已发送验证码";
     }
+
 }

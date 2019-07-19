@@ -115,8 +115,6 @@ public class ForumServiceImplTest {
 //        Forum found = forumService.insertReply("uftf", replyMessage);
 //        assertThat(found.getReplies().size()).isEqualTo(1);
 //        assertThat(found.getReplies().get(0).getContent()).isEqualTo("content");
-//
-//
 //    }
 
 }
