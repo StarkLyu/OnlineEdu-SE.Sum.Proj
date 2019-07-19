@@ -90,4 +90,6 @@ public class CoursePrototypeImplTest {
         Apply apply = coursePrototypeService.applyForCourse(1L,1L);
         assertThat(apply.getApplicationForCoursePK().getCoursePrototype().getId()).isEqualTo(1L);
     }
+
+
 }
