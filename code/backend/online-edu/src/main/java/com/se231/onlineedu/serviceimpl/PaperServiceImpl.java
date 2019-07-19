@@ -70,15 +70,4 @@ public class PaperServiceImpl implements PaperService {
         }
         return paper;
     }
-
-    @Override
-    public Section issuePaper(Long courseId, int secNo, Long paperId) {
-        Course course = courseService.getCourseInfo(courseId);
-        Section section = sectionRepository.findById(new SectionPrimaryKey(course,secNo))
-                .orElseThrow(()->new NotFoundException("No corresponding question"));
-        Paper paper = paperRepository.findById(paperId)
-                .orElseThrow(()->new NotFoundException("No corresponding paper"));
-        section.getPapers().add(paper);
-        return sectionRepository.save(section);
-    }
 }
