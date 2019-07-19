@@ -67,7 +67,7 @@
 
         data(){
             return{
-                courseTitle:"软件工程导论",
+                courseTitle:this.$store.getters.getCourseTitle,
             }
         }
     }
