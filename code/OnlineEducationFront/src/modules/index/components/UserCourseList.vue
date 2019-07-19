@@ -1,25 +1,33 @@
 <template>
     <div class="content-body-layout">
         <el-tabs type="border-card">
-            <el-tab-pane>
-                <span slot="label">全部课程</span>
+            <el-tab-pane v-if="isTeacher">
+                <span slot="label">教授课程</span>
                 <CourseCard
-                        v-for="(course, index) in courseList"
+                        v-for="(course, index) in teachCourses"
                         :key="index"
                         :course-info="course"
                 ></CourseCard>
             </el-tab-pane>
-            <el-tab-pane>
-                <span slot="label">正在学习</span>
+            <el-tab-pane v-if="isStudent">
+                <span slot="label">学习课程</span>
+                <CourseCard
+                        v-for="(course, index) in learnCourses"
+                        :key="index"
+                        :course-info="course"
+                ></CourseCard>
             </el-tab-pane>
-            <el-tab-pane>
-                <span slot="label">未开始</span>
+            <el-tab-pane v-if="isStudent">
+                <span slot="label">担任助教</span>
+                <CourseCard
+                        v-for="(course, index) in assistCourses"
+                        :key="index"
+                        :course-info="course"
+                ></CourseCard>
             </el-tab-pane>
-            <el-tab-pane>
-                <span slot="label">已结束</span>
-            </el-tab-pane>
-            <el-tab-pane>
-
+            <el-tab-pane v-if="isTeacher">
+                <span slot="label">创建课程</span>
+                <TeacherCreateCourse></TeacherCreateCourse>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -27,9 +35,12 @@
 
 <script>
     import CourseCard from "./CourseCard";
+    import { mapGetters } from "vuex"
+    import TeacherCreateCourse from "./TeacherCreateCourse";
+
     export default {
         name: "UserCourseList",
-        components: {CourseCard},
+        components: {TeacherCreateCourse, CourseCard},
         data() {
             return {
                 courseList: [
@@ -43,10 +54,14 @@
             }
         },
         computed: {
-            userRole: function () {
-                return this.$store.getters.userRole;
-            },
-
+            ...mapGetters([
+                'assistCourses',
+                'learnCourses',
+                'teachCourses',
+                'userRole',
+                'isTeacher',
+                'isStudent'
+            ]),
         },
         mounted() {
             this.courseList = this.$store.state.user.userInfo.courses;
