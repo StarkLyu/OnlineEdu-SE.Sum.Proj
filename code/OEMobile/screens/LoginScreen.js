@@ -32,7 +32,8 @@ export default class LoginScreen extends Component {
                     <Item>
                         <Input
                             placeholder='Icon Alignment in Textbox'
-                            onChangeText={(text) => this.setState({password: text})} secureTextEntry = {true}/>
+                            onChangeText={(text) => this.setState({password: text})}
+                            secureTextEntry = {true}/>
                         <Icon active name='swap' />
                     </Item>
                     <Button full onPress={this.onLogin}>

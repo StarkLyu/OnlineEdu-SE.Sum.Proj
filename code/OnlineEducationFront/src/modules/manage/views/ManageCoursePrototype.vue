@@ -105,7 +105,7 @@
             </span>
         </el-dialog>
 <!--        课程原型申请使用审核弹窗-->
-        <el-dialog :title="课程原型可使用用户"
+        <el-dialog :title="'课程原型相关用户'"
                    :visible.sync="UserDialogVisible"
                    :lock-scroll="false"
                    top="5%">
@@ -121,9 +121,9 @@
                                  min-width="50%"
                                  sortable>
                     <template slot-scope="scope">
-                        <el-radio-group v-model="scope.row.state">
+                        <el-radio-group v-model="scope.row.userState">
                             <el-radio label="未通过">未通过</el-radio>
-                            <el-radio label="已通过">已通过</el-radio>
+                            <el-radio label="可使用">可使用</el-radio>
                             <el-radio label="待审核">待审核</el-radio>
                         </el-radio-group>
                     </template>
@@ -131,9 +131,7 @@
             </el-table>
             <span slot="footer">
                 <el-button @click.native="UserDialogVisible=false">取消</el-button>
-                <el-button type="primary" @click="updateData">
-                    修改
-                </el-button>
+                <el-button type="primary" @click="manageUser">修改</el-button>
             </span>
         </el-dialog>
     </div>
@@ -171,25 +169,14 @@
                     state:"",
                 },
 
-                UserForm:[
-                    {
-                        username:"aaa",
-                        state:"待审核",
-                    },
-                    {
-                        username:"bbb",
-                        state:"已通过",
-                    },
-                    {
-                        username:"ccc",
-                        state:"未通过",
-                    },
-                ],
+                UserForm:[],
 
                 UserEditForm:{
                     username:"",
                     state:"",
                 },
+
+                CourseIdtoUser:"",
             }
         },
 
@@ -316,14 +303,99 @@
                     });
             },
 
+            // 展示所有与该课程原型相关的用户
             showUsers:function(index,row){
+                var that=this;
+
+                that.CourseIdtoUser=row.id;
+                that.UserForm=[];
+
+                this.$axios.request({
+                    url: '/api/coursePrototypes/'+row.id+'/applications',
+                    method: "get",
+                    headers: getHeader.requestHeader(),
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        for (let x=0; x<response.data.length; x++){
+                            var res=response.data[x];
+                            var userState;
+
+                            if (res.state==='NOT_DECIDE'){
+                                userState="待审核";
+                            }
+                            else if (res.state==='APPROVAL') {
+                                userState='可使用';
+                            }
+                            else if (res.state==='DISAPPROVAL'){
+                                userState='未通过';
+                            }
+
+                            var tempTeachingAdmin=res.applicationForCoursePK.teachingAdmin;
+
+                            var tempUser={
+                                id:tempTeachingAdmin.id,
+                                username:tempTeachingAdmin.username,
+                                userState:userState,
+                                decision:"",
+                            };
+
+                            that.UserForm.push(tempUser);
+                        }
+
+                        console.log(that.UserForm);
+                        // that.showAllCoursePrototypes();
+                        // that.dialogFormVisible=false;
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+
                 this.UserDialogVisible=true;
-                this.UserForm=row.CourseData.users;
-                // this.UserEditForm=Object.assign({},row);
             },
 
-            manageUser:function (index,row) {
+            // 审核教师对课程原型使用的申请
+            manageUser:function () {
+                var that=this;
 
+                console.log(that.UserForm);
+
+                for (let x=0; x<that.UserForm.length; x++)
+                {
+                    if (that.UserForm[x].userState==='未通过'){
+                        that.UserForm[x].decision='disapproval';
+                    }
+                    else if(that.UserForm[x].userState==='可使用'){
+                        that.UserForm[x].decision='approval';
+                    }
+
+                    this.$axios.request({
+                        url: '/api/coursePrototypes/apply',
+                        method: "post",
+                        headers: getHeader.requestHeader(),
+                        params:{
+                            applicant_id:this.UserForm[x].id,
+                            coursePrototype_id:this.CourseIdtoUser,
+                            decision:this.UserForm[x].decision,
+                        }
+                    })
+                        .then(function (response) {
+                            console.log(response.data);
+
+                            that.showAllCoursePrototypes();
+                            that.UserDialogVisible=false;
+                            // alert("请求成功");
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            // alert("请求失败");
+                        });
+
+                    console.log(that.UserForm[x]);
+                }
             },
 
         },

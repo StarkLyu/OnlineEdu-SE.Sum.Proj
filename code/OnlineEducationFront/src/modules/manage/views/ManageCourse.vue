@@ -321,6 +321,13 @@
             handleEdit: function(index, row) {
                 this.dialogStatus = "update";
                 this.editForm = Object.assign({}, row);
+                this.editForm.timeSlots=[
+                    {
+                        day:0,
+                        end:"",
+                        start:"",
+                    },
+                ];
 
                 // 该课程所有学生
                 var that=this;
@@ -333,8 +340,6 @@
                         console.log(response.data);
                         // alert("请求成功");
                         that.StudentForm = response.data;
-
-
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -482,7 +487,7 @@
 
                         that.showAllCourse();
                         that.dialogFormVisible=false;
-                        alert("修改课程信息");
+                        alert("修改课程信息成功");
                     })
                     .catch(function (error) {
                         console.log(error);

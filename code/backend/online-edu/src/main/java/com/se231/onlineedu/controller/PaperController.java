@@ -37,10 +37,4 @@ public class PaperController {
         return ResponseEntity.ok(paperService.addNewPaper(form,courseId));
     }
 
-    @PostMapping("/{paperId}/issue")
-    public Section issuePaper(@PathVariable("id")Long courseId,
-                                              @RequestParam("section")int secNo,
-                                              @PathVariable("paperId")Long paperId)throws Exception{
-        return paperService.issuePaper(courseId, secNo, paperId);
-    }
 }

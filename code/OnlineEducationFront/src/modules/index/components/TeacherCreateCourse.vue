@@ -151,11 +151,7 @@
         },
 
         methods:{
-            next() {
-                if (this.active++ > 1) this.active = 0;
-            },
-
-            // 选择课程原型
+            // 展示可用课程原型
             showAllProtos(){
                 //显示所有课程原型
                 var that=this;
@@ -272,6 +268,7 @@
             },
 
             // 创建课程
+            // 前端报错后端正确？
             createCourse(){
                 var that=this;
 
@@ -287,19 +284,19 @@
                         startDate:this.courseForm.startDate,
                         endDate:this.courseForm.endDate,
                         location:this.courseForm.location,
-                        timeSlots:this.courseForm.timeSlots
+                        timeSlots:this.courseForm.timeSlots,
                     }
                 })
                     .then(function (response) {
                         console.log(response.data);
-
-
-                        alert("请求成功");
+                        that.$router.push('/user');
+                        // alert("请求成功");
                     })
                     .catch(function (error) {
                         console.log(error);
                         // alert("请求失败");
                     });
+
             },
 
             // 移除时间段

@@ -12,8 +12,19 @@
                 headers: this.$store.getters.authRequestHead
             }).then((response) => {
                 console.log(response.data);
-                this.$store.commit("setCourseInfo", response.data);
+                let identity = response.data.identity;
+                this.$store.commit("setCourseInfo", response.data.course);
+                this.$store.commit("setIdentity", identity);
                 console.log(this.$store.getters.getCourseInfo);
+                if (identity === "VISITOR") {
+                    this.$router.push('/course/info');
+                }
+                else if (identity === "STUDENT") {
+                    this.$router.push('/course/student');
+                }
+                else {
+                    this.$router.push('/course/manager');
+                }
             }).catch((error) => {
                 alert(error);
                 console.log(error.response);
