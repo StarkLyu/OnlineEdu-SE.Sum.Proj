@@ -60,6 +60,7 @@ public class CourseServiceImpl implements CourseService {
         if(form.getEndDate().before(form.getStartDate())) {
             throw new RuntimeException("end date comes before start date!");
         }
+        System.out.println(form.getStartDate().toString());
         Course course=new Course(form.getStartDate(),form.getEndDate(),CourseState.APPLYING,coursePrototype,user);
         course.setCourseTitle(form.getCourseTitle());
         course.setLocation(form.getLocation());
