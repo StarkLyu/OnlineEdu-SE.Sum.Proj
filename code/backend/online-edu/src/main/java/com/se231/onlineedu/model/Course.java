@@ -3,11 +3,12 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
-
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.poi.ss.usermodel.DateUtil;
 
 /**
  * Course Class
@@ -67,7 +68,6 @@ public class Course {
 
 
     @ApiModelProperty("该课程的助教")
-    @JsonIgnore
     @ManyToMany(mappedBy = "assistCourses")
     private List<User> teacherAssistants;
 

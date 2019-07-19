@@ -85,6 +85,7 @@ public class CoursePrototypeController {
         return ResponseEntity.ok(coursePrototypeService.getAllCoursePrototype());
     }
 
+    @ApiOperation("查看所有对特定课程原型的申请")
     @GetMapping("{id}/applications")
     public ResponseEntity<List<Apply>> getApplyPrototype(@PathVariable("id")Long prototypeId){
         return ResponseEntity.ok(coursePrototypeService.getApplyByCoursePrototype(prototypeId));

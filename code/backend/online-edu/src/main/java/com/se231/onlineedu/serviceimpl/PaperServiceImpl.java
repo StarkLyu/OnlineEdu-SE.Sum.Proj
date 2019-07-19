@@ -60,6 +60,7 @@ public class PaperServiceImpl implements PaperService {
         paper.setTitle(form.getTitle());
         paper.setDescription(form.getDescription());
         paper.setCourse(course);
+
         return paperRepository.save(paper);
     }
 
