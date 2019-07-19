@@ -78,7 +78,7 @@ public interface UserService {
      * @return  user info
      *
      */
-    User updateUserAvatar(String avatarUrl, Long id) ;
+     String updateUserAvatar(String avatarUrl, Long id) ;
 
 
     /**
