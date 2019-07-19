@@ -28,5 +28,5 @@ public interface PaperAnswerService {
      * this service will mark all answer of a specific paper.
      * @param paperId
      */
-    void autoMark(Long paperId);
+//    void autoMark(Long paperId);
 }
