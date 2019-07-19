@@ -1,13 +1,19 @@
 package com.se231.onlineedu.controller;
 
+import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.SignInUserForm;
+import com.se231.onlineedu.model.Course;
+import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author liu
+ * @date 2019/07/11
+ */
 @RestController
 @RequestMapping("/api")
 public class SignInController {
@@ -18,15 +24,15 @@ public class SignInController {
     private UserService userService;
 
     @PostMapping("/courses/{courseId}/signIns/")
-    public ResponseEntity<?> postSignIn(@PathVariable Long courseId, @RequestBody SignInCourseForm signInForm) throws Exception {
+    public Course postSignIn(@PathVariable Long courseId, @RequestBody SignInCourseForm signInForm) {
         if(signInForm.getStartDate().after(signInForm.getEndDate())){
-            return ResponseEntity.badRequest().body("开始时间必须早于结束时间");
+           throw new EndBeforeStartException("开始时间晚于结束时间");
         }
-        return ResponseEntity.ok(courseService.saveSignIn(courseId, signInForm));
+        return courseService.saveSignIn(courseId, signInForm);
     }
 
     @PostMapping("/users/{userId}/signIns")
-    public ResponseEntity<?> userSignIn(@PathVariable Long userId, @RequestBody SignInUserForm signInUserForm) throws Exception {
+    public User userSignIn(@PathVariable Long userId, @RequestBody SignInUserForm signInUserForm) {
         return userService.saveUserSignIn(userId, signInUserForm);
     }
 }

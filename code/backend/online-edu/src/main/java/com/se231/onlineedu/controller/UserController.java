@@ -1,6 +1,9 @@
 package com.se231.onlineedu.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.se231.onlineedu.exception.FileFormatNotSupportException;
+import com.se231.onlineedu.exception.FileSizeExceededException;
+import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
@@ -17,7 +20,6 @@ import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -55,15 +58,15 @@ public class UserController {
 
     @ApiOperation(value = "已登录用户查询个人信息", notes = "已登录用户查询个人信息", httpMethod = "GET")
     @GetMapping("/info")
-    public ResponseEntity<?> getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception {
-        return ResponseEntity.ok(userService.getUserInfo(userPrinciple.getId()));
+    public User getPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        return userService.getUserInfo(userPrinciple.getId());
     }
 
     @ApiOperation(value = "用户修改自己的个人信息", httpMethod = "POST")
     @PostMapping("/info/modify")
-    public ResponseEntity<?> modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
-                                                @Valid @RequestBody PersonalInfo personalInfo) throws Exception {
-        return ResponseEntity.ok(userService.manageUserInfo(userPrinciple.getId(), personalInfo));
+    public User modifyPersonalInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                                   @Valid @RequestBody PersonalInfo personalInfo) {
+        return userService.manageUserInfo(userPrinciple.getId(), personalInfo);
     }
 
 
@@ -71,16 +74,16 @@ public class UserController {
     @ApiImplicitParam(value = "修改的用户的id", name = "id", type = "path", dataTypeClass = Long.class)
     @PostMapping("{id}/info/modify")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<?> managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
-                                                @PathVariable("id") Long id) throws Exception {
-        return ResponseEntity.ok(userService.manageUserInfo(id, personalInfo));
+    public User managePersonalInfo(@Valid @RequestBody PersonalInfo personalInfo,
+                                   @PathVariable("id") Long id){
+        return userService.manageUserInfo(id, personalInfo);
     }
 
     @ApiOperation(value = "管理员获取全部用户的信息", httpMethod = "GET")
     @GetMapping("/info/all")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.ok(userService.getAllUser());
+    public List<User> getAllUser() {
+        return userService.getAllUser();
     }
 
 
@@ -89,8 +92,8 @@ public class UserController {
     @ApiImplicitParam(name = "username", value = "待查的用户名",
             required = true, dataTypeClass = String.class, type = "param")
     @GetMapping("/checkSame/username")
-    public ResponseEntity<Boolean> checkSameUsername(@RequestParam("username") String username) {
-        return ResponseEntity.ok(userService.checkSameUsername(username));
+    public Boolean checkSameUsername(@RequestParam("username") String username) {
+        return userService.checkSameUsername(username);
     }
 
 
@@ -99,8 +102,8 @@ public class UserController {
     @ApiImplicitParam(value = "待查询的邮箱地址", name = "email",
             required = true, dataTypeClass = String.class, type = "param")
     @GetMapping("/checkSame/email")
-    public ResponseEntity<Boolean> checkSameEmail(@RequestParam("email") String email) {
-        return ResponseEntity.ok(userService.checkSameEmail(email));
+    public Boolean checkSameEmail(@RequestParam("email") String email) {
+        return userService.checkSameEmail(email);
     }
 
     @ApiOperation(value = "查询是否存在重复的电话号码", httpMethod = "GET")
@@ -108,8 +111,8 @@ public class UserController {
     @ApiImplicitParam(value = "待查询的电话号码", name = "tel",
             required = true, dataTypeClass = String.class)
     @GetMapping("/checkSame/tel")
-    public ResponseEntity<Boolean> checkSameTel(@RequestParam("tel") String tel) {
-        return ResponseEntity.ok(userService.checkSameTel(tel));
+    public Boolean checkSameTel(@RequestParam("tel") String tel) {
+        return userService.checkSameTel(tel);
     }
 
 
@@ -117,61 +120,64 @@ public class UserController {
     @ApiImplicitParam(name = "id", value = "上传的用户id", type = "path")
     @PostMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
-        if (FileCheckUtil.checkImageSizeExceed(multipartFile,limit)) {
-            return ResponseEntity.badRequest().body("exceeded max size");
+    public User patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException {
+        if (FileCheckUtil.checkImageSizeExceed(multipartFile, limit)) {
+            throw new FileSizeExceededException("文件请不要超过500K");
         }
         String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
         if (FileCheckUtil.checkImageTypeWrong(suffix)) {
-            return ResponseEntity.badRequest().body("file format not supported");
+            throw new FileFormatNotSupportException("文件格式不支持");
         }
-        return ResponseEntity.ok(userService.updateUserAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "user"), id));
+        return userService.updateUserAvatar(SaveFileUtil.saveAvatar(id, multipartFile, suffix, "user"), id);
     }
 
 
     @ApiOperation(value = "用户修改个人的密码", httpMethod = "PATCH")
     @PatchMapping("/{id}/password")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<?> patchPassword(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
+    public String patchPassword(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON){
+        String password = (String) passwordJSON.get("password");
+        if (userService.checkIfSameAsOldPassword(id, password)) {
+            throw new ValidationException("新密码不可与旧密码相同");
+        }
         httpSession.setAttribute("password", passwordJSON.get("password"));
         return sendEmail(httpSession, id);
     }
 
-    @ApiOperation(value = "用户邮箱确认修改", httpMethod = "GET")
+    @ApiOperation(value = "用户密码确认修改", httpMethod = "GET")
     @GetMapping("/{id}/password/confirm")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<?> patchPasswordConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) throws Exception {
+    public String patchPasswordConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) {
         VerificationToken verificationToken = (VerificationToken) httpSession.getAttribute("token");
-        if (verificationTokenService.verify(verificationToken, token)) {
-            String password = (String) httpSession.getAttribute("password");
-            userService.updateUserPasswordConfirm(id, password);
-            return ResponseEntity.ok("修改成功");
-        } else {
-            return ResponseEntity.badRequest().body("验证码无效");
-        }
+        verificationTokenService.verify(verificationToken, token);
+        String password = (String) httpSession.getAttribute("password");
+        userService.updateUserPasswordConfirm(id, password);
+        return "修改成功";
+
     }
 
 
     @ApiOperation(value = "用户修改个人的邮箱", httpMethod = "PATCH")
     @PatchMapping("/{id}/email")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<?> patchEmail(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject passwordJSON) throws Exception {
-        httpSession.setAttribute("email", passwordJSON.get("email"));
+    public String patchEmail(@PathVariable Long id, HttpSession httpSession, @RequestBody JSONObject emailJSON) {
+        String email = (String) emailJSON.get("email");
+        if (userService.checkIfSameAsOldEmail(id, email)) {
+            throw new ValidationException("新邮箱不可与旧邮箱相同");
+        }
+        httpSession.setAttribute("email", email);
         return sendEmail(httpSession, id);
     }
 
     @ApiOperation(value = "用户邮箱确认修改", httpMethod = "GET")
     @GetMapping("/{id}/email/confirm")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<?> patchEmailConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) throws Exception {
+    public String patchEmailConfirm(@PathVariable Long id, HttpSession httpSession, @RequestParam("verificationToken") String token) {
         VerificationToken verificationToken = (VerificationToken) httpSession.getAttribute("token");
-        if (verificationTokenService.verify(verificationToken, token)) {
-            String email = (String) httpSession.getAttribute("email");
-            userService.updateUserEmailConfirm(id, email);
-            return ResponseEntity.ok("修改成功");
-        } else {
-            return ResponseEntity.badRequest().body("验证码无效");
-        }
+        verificationTokenService.verify(verificationToken, token);
+        String email = (String) httpSession.getAttribute("email");
+        userService.updateUserEmailConfirm(id, email);
+        return "修改成功";
     }
 
     @ApiOperation(value = "管理员或老师批量导入学生信息", httpMethod = "POST")
@@ -179,14 +185,14 @@ public class UserController {
             "依次为username,password,email,tel,university,major,sno,grade,real name,sex", type = "FormData", name = "excel")
     @PostMapping("/bulkImport")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<?> bulkImportUser(@RequestParam("excel") MultipartFile excel) throws Exception {
+    public String bulkImportUser(@RequestParam("excel") MultipartFile excel) throws IOException {
         return userService.bulkImportUser(excel);
     }
 
-    private ResponseEntity<?> sendEmail(HttpSession httpSession, Long id) throws Exception {
+    private String sendEmail(HttpSession httpSession, Long id)  {
         VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);
         emailSenderService.sendVerificationEmail(userService.getUserInfo(id).getEmail(), verificationToken);
-        return ResponseEntity.ok("已发送验证码");
+        return "已发送验证码";
     }
 }

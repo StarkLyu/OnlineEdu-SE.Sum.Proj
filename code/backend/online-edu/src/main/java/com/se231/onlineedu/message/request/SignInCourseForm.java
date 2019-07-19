@@ -2,6 +2,9 @@ package com.se231.onlineedu.message.request;
 
 import java.util.Date;
 
+/**
+ * @author liu
+ */
 public class SignInCourseForm {
     private Date startDate;
     private Date endDate;

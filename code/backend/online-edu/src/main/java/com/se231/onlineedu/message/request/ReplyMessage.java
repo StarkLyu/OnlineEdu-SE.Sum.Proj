@@ -4,6 +4,9 @@ import com.se231.onlineedu.model.Reply;
 
 import java.util.List;
 
+/**
+ * @author liu
+ */
 public class ReplyMessage {
     private List<Integer> path;
     private Reply reply;

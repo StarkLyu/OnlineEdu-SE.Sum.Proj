@@ -1,6 +1,5 @@
 package com.se231.onlineedu.serviceimpl;
 
-import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
 import com.se231.onlineedu.service.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ThreadLocalRandom;
-
+/**
+ * @author liu
+ * @date 2019/07/11
+ */
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {
     @Autowired
@@ -23,7 +24,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public String sendVerificationEmail(String email, VerificationToken token) throws Exception {
+    public String sendVerificationEmail(String email, VerificationToken token){
         String subject = "验证码服务,请在20分钟内完成验证";
         String message = "您的验证码为：";
 

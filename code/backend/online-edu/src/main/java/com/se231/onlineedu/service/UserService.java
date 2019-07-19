@@ -1,5 +1,6 @@
 package com.se231.onlineedu.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.se231.onlineedu.message.request.SignInUserForm;
@@ -22,18 +23,18 @@ public interface UserService {
      * this service allow user to get his own information
      * @param userId the id of the getting user
      * @return  user information form
-     * @throws Exception mainly throw not found exception
+     *
      */
-    User getUserInfo(Long userId)throws Exception;
+    User getUserInfo(Long userId);
 
     /**
      * this service allow admin to manage users' personal information or a user to modify his personal information.
      * @param id    the id of managed user
      * @param personalInfo  the form admin submit
      * @return  user information form after changing.
-     * @throws Exception    mainly throw not found exception
+     *
      */
-    User manageUserInfo(Long id,PersonalInfo personalInfo)throws Exception;
+    User manageUserInfo(Long id,PersonalInfo personalInfo);
 
     /**
      * this service allow admin to get a list of all user
@@ -66,18 +67,18 @@ public interface UserService {
      * this service allows admin or super admin to buck import users' information.
      * @param excel the excel used to bulk import user information
      * @return  String to return hints
-     * @throws Exception IO Exception
+     * @IOException save failed
      */
-    ResponseEntity<String> bulkImportUser(MultipartFile excel)throws Exception;
+    String bulkImportUser(MultipartFile excel) throws IOException;
 
     /**
      * this service allows user to update his personal avatar
      * @param avatarUrl url of upload image
      * @param id    id of requesting user
      * @return  user info
-     * @throws Exception    mainly not found exception
+     *
      */
-    User updateUserAvatar(String avatarUrl, Long id) throws Exception;
+    User updateUserAvatar(String avatarUrl, Long id) ;
 
 
     /**
@@ -85,18 +86,49 @@ public interface UserService {
      * @param id  user id request to verify
      * @param password new password
      * @return  user info
-     * @throws Exception exception
+     *
      */
-    User updateUserPasswordConfirm(Long id, String password) throws Exception;
+    User updateUserPasswordConfirm(Long id, String password) ;
 
     /**
      * this service confirm to change password
      * @param id  user id request to verify
      * @param email new email
      * @return  user info
-     * @throws Exception exception
+     *
      */
-    User updateUserEmailConfirm(Long id, String email) throws Exception;
+    User updateUserEmailConfirm(Long id, String email) ;
 
-    ResponseEntity<?> saveUserSignIn(Long id, SignInUserForm signInUserForm) throws Exception;
+
+    /**
+     * save user sign in
+     * @param id user id requested to sign in
+     * @param signInUserForm sign in form
+     * @return
+     */
+    User saveUserSignIn(Long id, SignInUserForm signInUserForm);
+
+    /**
+     * check if new is same as old
+     * @param id user id
+     * @param password user password
+     * @return true if new password is the same as the old
+     */
+    boolean checkIfSameAsOldPassword(Long id, String password);
+
+    /**
+     * check if new is same as old
+     * @param id user id
+     * @param tel user telephone number
+     * @return true if tel is the same as old
+     */
+    boolean checkIfSameAsOldTel(Long id, Long tel);
+
+    /**
+     * check if new is same as old
+     * @param id
+     * @param email
+     * @return true if email is the same as old
+     */
+    boolean checkIfSameAsOldEmail(Long id, String email);
 }

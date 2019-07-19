@@ -1,8 +1,6 @@
-package com.se231.onlineedu;
+package com.se231.onlineedu.scheduler;
 
 import javax.annotation.PostConstruct;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import com.se231.onlineedu.service.CourseService;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -16,15 +14,15 @@ import org.springframework.stereotype.Component;
  * @date 2019/07/17
  */
 @Component
-public class HandleJob implements Job {
+public class SetCourseState implements Job {
     @Autowired
     private CourseService courseService;
 
-    public static HandleJob handleJob;
+    public static SetCourseState setCourseState;
 
     @PostConstruct
     public void init(){
-        handleJob=this;
+        setCourseState =this;
     }
 
     @Override
@@ -32,6 +30,6 @@ public class HandleJob implements Job {
         JobDetail detail = context.getJobDetail();
         String state = detail.getJobDataMap().getString("state");
         Long courseId = detail.getJobDataMap().getLongValue("courseId");
-        handleJob.courseService.setState(courseId,state);
+        setCourseState.courseService.setState(courseId,state);
     }
 }

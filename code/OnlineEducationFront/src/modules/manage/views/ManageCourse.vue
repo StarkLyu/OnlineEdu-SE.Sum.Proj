@@ -81,17 +81,18 @@
                    :visible.sync="dialogProtoVisible"
                    :lock-scroll="false"
                    top="5%">
-<!--            展示课程原型-->
-            <el-table :data="dialogProtoForm" height="300px">
-                <el-table-column type="index"></el-table-column>
+            <el-table :data="dialogProtoForm"  height="300px">
+                <el-table-column type="index" width="80%">
+                    <template slot-scope="scope">
+                        <el-radio v-model="dialogProtoChoose" :label="scope.row.id">&nbsp;</el-radio>
+                    </template>
+                </el-table-column>
                 <el-table-column property="title" label="原型名称" sortable></el-table-column>
                 <el-table-column property="description" label="描述"></el-table-column>
             </el-table>
             <span slot="footer">
                 <el-button @click.native="dialogProtoVisible=false">取消</el-button>
-                <el-button type="primary" @click="createData">
-                    添加
-                </el-button>
+                <el-button type="primary" @click="handleAdd">创建课程</el-button>
             </span>
         </el-dialog>
         <!--课程编辑页面弹窗-->
@@ -104,9 +105,9 @@
                 <el-form-item label="课程名">
                     <el-input type="text" v-model="editForm.courseTitle"></el-input>
                 </el-form-item>
-                <el-form-item label="上课时间">
+                <el-form-item label="上课日程">
                     <el-col :span="11">
-                        <el-date-picker placeholder="选择开始日期"
+                        <el-date-picker placeholder="选择开始时间"
                                         type="date"
                                         v-model="editForm.startDate"
                                         style="width: 100%;">
@@ -115,53 +116,80 @@
                     </el-col>
                     <el-col class="line" :span="2">-</el-col>
                     <el-col :span="11">
-                        <el-date-picker placeholder="选择结束日期"
+                        <el-date-picker placeholder="选择结束时间"
                                         type="date"
                                         v-model="editForm.endDate"
                                         style="width: 100%;">
                         </el-date-picker>
                     </el-col>
                 </el-form-item>
+<!--                课程的上课时间段-->
+                <el-form-item label="课时">
+                    <el-form-item
+                            v-for="(timeslot, index) in editForm.timeSlots"
+                            :label="'时间段'+(index+1)"
+                            :key="timeslot.day"
+
+                            :rules="{required: true, message: '内容不能为空', trigger: 'blur'}">
+                        <el-input v-model="timeslot.day" placeholder="输入0-6，0代表周日"></el-input>
+                        <el-time-select
+                                v-model="timeslot.start"
+                                :picker-options="{start: '08:00',step: '00:30',end: '20:00'}"
+                                placeholder="选择开始时间">
+                        </el-time-select>
+                        <el-time-select
+                                v-model="timeslot.end"
+                                :picker-options="{start: '08:00',step: '00:30',end: '20:00'}"
+                                placeholder="选择结束时间">
+                        </el-time-select>
+                        <el-button @click.prevent="removeTimeslot(timeslot)">删除</el-button>
+                    </el-form-item>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="addTimeslot">新增时间段</el-button>
+                </el-form-item>
                 <el-form-item label="上课地点">
                     <el-input type="text" v-model="editForm.location"></el-input>
                 </el-form-item>
-                <el-form-item label="授课教师">
+                <el-form-item label="授课教师" v-if="dialogStatus==='update'">
                     <el-input type="text" v-model="editForm.courseTeacher"></el-input>
                 </el-form-item>
-                <el-form-item label="课程状态" v-if="editForm.courseState!=='进行中' && editForm.courseState!=='已结束'">
+<!--                编辑时才显示-->
+                <el-form-item label="课程状态"
+                              v-if="editForm.courseState!=='进行中' && editForm.courseState!=='已结束' && dialogStatus==='update'">
                     <el-radio-group v-model="editForm.courseState">
                         <el-radio label="待审核"></el-radio>
                         <el-radio label="未开始"></el-radio>
-                        <!--                        <el-radio label="进行中"></el-radio>-->
-                        <!--                        <el-radio label="已结束"></el-radio>-->
                         <el-radio label="未通过"></el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
-<!--            编辑页面下的学生信息-->
-            <div class="divleftmargin">
-                <el-input type="text"
-                          placeholder="请输入学生学号"
-                          v-model="addStudent">
-                </el-input>
+<!--            编辑页面下的学生信息，编辑时才显示-->
+            <div v-if="dialogStatus==='update'">
+<!--                <div class="divleftmargin">-->
+<!--                    <el-input type="text"-->
+<!--                              placeholder="请输入学生学号"-->
+<!--                              v-model="addStudent">-->
+<!--                    </el-input>-->
+<!--                </div>-->
+<!--                <div class="divleft">-->
+<!--                    <el-button @click="AddCourseStudent">-->
+<!--                        增加学生-->
+<!--                    </el-button>-->
+<!--                </div>-->
+                <el-table :data="StudentForm" height="300px">
+                    <el-table-column type="index"></el-table-column>
+                    <el-table-column property="sno" label="学号" sortable></el-table-column>
+                    <el-table-column property="username" label="学生"></el-table-column>
+                    <el-table-column>
+                        <template slot-scope="scope">
+                            <el-button type="button" @click="DelStudent(scope.$index, scope.row)">
+                                删除
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
-            <div class="divleft">
-                <el-button @click="AddCourseStudent">
-                    增加学生
-                </el-button>
-            </div>
-            <el-table :data="StudentForm" height="300px">
-                <el-table-column type="index"></el-table-column>
-                <el-table-column property="sno" label="学号" sortable></el-table-column>
-                <el-table-column property="username" label="学生"></el-table-column>
-                <el-table-column>
-                    <template slot-scope="scope">
-                        <el-button type="button" @click="DelStudent(scope.$index, scope.row)">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
             <span slot="footer">
                 <el-button @click.native="dialogFormVisible=false">取消</el-button>
                 <el-button v-if="dialogStatus==='create'" type="primary" @click="createData">
@@ -200,7 +228,7 @@
 
                 //编辑界面数据
                 editForm: {
-                    id:"",
+                    id:0,
                     courseTitle:"",
                     startDate:"",
                     endDate:"",
@@ -208,9 +236,19 @@
                     courseTeacher:"",
                     courseState:"",
                     state:"",
+                    timeSlots:[
+                        {
+                            day:0,
+                            end:"",
+                            start:"",
+                        },
+                    ]
                 },
 
+                //课程原型，和选择的课程原型
                 dialogProtoForm:[],
+
+                dialogProtoChoose:"",
 
                 addStudent:"",
 
@@ -303,22 +341,47 @@
                     .catch(function (error) {
                         console.log(error.response);
                         // alert("请求失败");
-                    })
+                    });
 
                 this.dialogFormVisible = true;
             },
 
-            //显示选择原型弹窗
+            //显示选择课程原型弹窗
             handleChooseProto(){
+                //显示所有课程原型
+                var that=this;
+                that.dialogProtoForm=[];
+
+                this.$axios.request({
+                    url: '/api/coursePrototypes/info/all',
+                    method: "get",
+                    headers: getHeader.requestHeader()
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        for (let x=0; x<response.data.length; x++){
+                            if (response.data[x].state==='USING'){
+                                that.dialogProtoForm.push(response.data[x]);
+                            }
+                        }
+                        // console.log(that.dialogProtoForm);
+                        // that.dialogProtoForm=response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
+
                 this.dialogProtoVisible=true;
             },
 
-            //显示新增界面
+            //显示新增课程界面
             handleAdd: function() {
+                this.dialogProtoVisible=false;
                 this.dialogStatus = "create";
-                this.dialogFormVisible = true;
                 this.editForm = {
-                    id: "0",
+                    id:0,
                     courseTitle:"",
                     startDate:"",
                     endDate:"",
@@ -326,33 +389,43 @@
                     courseTeacher:"",
                     courseState:"",
                     state:"",
-                }
+                    timeSlots:[],
+                };
+                this.editForm.id=this.dialogProtoChoose;
+                // alert(this.editForm.id);
+                this.dialogFormVisible = true;
             },
 
             // 添加课程
             createData(){
-                // alert("课程添加成功");
                 var that=this;
 
-                // this.$axios.request({
-                //     url: '/api/courses/start',
-                //     method: "post",
-                //     headers: getHeader.requestHeader(),
-                //     params:{
-                //         prototypeId:this.editForm.id,
-                //     }
-                // })
-                //     .then(function (response) {
-                //         console.log(response.data);
-                //
-                //         that.showAllCourse();
-                //         that.dialogFormVisible=false;
-                //         // alert("请求成功");
-                //     })
-                //     .catch(function (error) {
-                //         console.log(error);
-                //         // alert("请求失败");
-                //     });
+                this.$axios.request({
+                    url: '/api/courses/start',
+                    method: "post",
+                    headers: getHeader.requestHeader(),
+                    params:{
+                        prototypeId:this.editForm.id,
+                    },
+                    data:{
+                        courseTitle:this.editForm.courseTitle,
+                        startDate:this.editForm.startDate,
+                        endDate:this.editForm.endDate,
+                        location:this.editForm.location,
+                        timeSlots:this.editForm.timeSlots
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        that.showAllCourse();
+                        that.dialogFormVisible=false;
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
 
                 this.dialogFormVisible=false;
             },
@@ -368,6 +441,7 @@
                     this.editForm.state='approval';
                 }
 
+                // 修改权限
                 this.$axios.request({
                     url: '/api/courses/'+this.editForm.id+'/start',
                     method: "post",
@@ -387,6 +461,35 @@
                         console.log(error);
                         // alert("请求失败");
                     });
+
+                // if (this.editForm.timeSlots.day==='MONDAY')
+                // {
+                //     this.editForm.timeSlots.day='1';
+                // }
+                //编辑课程信息
+                this.$axios.request({
+                    url: '/api/courses/'+this.editForm.id+'/modify',
+                    method: "put",
+                    headers: getHeader.requestHeader(),
+                    data:{
+                        courseTitle:this.editForm.courseTitle,
+                        startDate:this.editForm.startDate,
+                        endDate:this.editForm.endDate,
+                        location:this.editForm.location,
+                        timeSlots:this.editForm.timeSlots,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        that.showAllCourse();
+                        that.dialogFormVisible=false;
+                        alert("修改课程信息");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             },
 
             //课程添加学生
@@ -397,7 +500,24 @@
             //课程删除学生
             DelStudent: function(index, row){
                 alert(row.username+"已删除");
-            }
+            },
+
+            // 移除时间段
+            removeTimeslot(item) {
+                var index = this.editForm.timeSlots.indexOf(item)
+                if (index !== -1) {
+                    this.editForm.timeSlots.splice(index, 1)
+                }
+            },
+
+            // 添加时间段
+            addTimeslot() {
+                this.editForm.timeSlots.push({
+                    day:'',
+                    start:'',
+                    end:'',
+                });
+            },
 
         },
 

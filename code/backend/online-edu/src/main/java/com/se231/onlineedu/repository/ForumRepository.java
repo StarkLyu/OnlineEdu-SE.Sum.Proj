@@ -2,6 +2,7 @@ package com.se231.onlineedu.repository;
 
 import com.se231.onlineedu.model.Forum;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,7 +13,21 @@ import java.util.List;
  *
  * @author YuxuanLiu
  */
+@Repository
 public interface ForumRepository extends CrudRepository<Forum, String> {
+    /**
+     * get list of forums by course and section
+     * @param courseId course Id
+     * @param secNo sec No
+     * @return list of forum
+     */
     List<Forum> findByCourseIdAndSecNo(Long courseId, int secNo);
+
+
+    /**
+     * get list of forums by courses
+     * @param courseId
+     * @return list of forum
+     */
     List<Forum> findByCourseId(Long courseId);
 }

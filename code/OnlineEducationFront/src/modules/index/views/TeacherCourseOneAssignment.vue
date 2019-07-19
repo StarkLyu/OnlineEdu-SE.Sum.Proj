@@ -153,7 +153,7 @@
             AssignmentSingle,
             AssignmentMulti,
             AssignmentJudge,
-            AssignmentSub,
+            // AssignmentSub,
         },
 
         data(){

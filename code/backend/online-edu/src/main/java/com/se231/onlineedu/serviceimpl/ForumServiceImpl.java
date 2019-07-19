@@ -1,5 +1,6 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.se231.onlineedu.exception.ForumReplyOutOfIndexException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.PathMessage;
 import com.se231.onlineedu.message.request.ReplyMessage;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author liu
+ * @date 2019/07/11
+ */
 @Service
 public class ForumServiceImpl implements ForumService {
     @Autowired
@@ -36,23 +41,23 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public Forum getForum(String id){
-        return forumRepository.findById(id).orElseThrow(() -> new NotFoundException());
+        return forumRepository.findById(id).orElseThrow(() -> new NotFoundException("该论坛不存在"));
     }
 
     @Override
-    public ResponseEntity<?> insertReply(String id, ReplyMessage replyMessage){
+    public Forum insertReply(String id, ReplyMessage replyMessage){
         List<Integer> path = replyMessage.getPath();
         Reply reply = replyMessage.getReply();
         Forum forum = getForum(id);
         List<Reply> replies = forum.getReplies();
         for (int index : path) {
             if(index >= replies.size()){
-                return ResponseEntity.badRequest().body("out of index");
+                throw new ForumReplyOutOfIndexException();
             }
             replies = replies.get(index).getReplies();
         }
         replies.add(reply);
-        return ResponseEntity.ok(updateForum(forum));
+        return updateForum(forum);
     }
 
     @Override

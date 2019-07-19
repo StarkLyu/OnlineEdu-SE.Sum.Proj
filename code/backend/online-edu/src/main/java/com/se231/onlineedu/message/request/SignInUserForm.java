@@ -1,5 +1,8 @@
 package com.se231.onlineedu.message.request;
 
+/**
+ * @author liu
+ */
 public class SignInUserForm {
     private Long courseId;
     private int signInNo;

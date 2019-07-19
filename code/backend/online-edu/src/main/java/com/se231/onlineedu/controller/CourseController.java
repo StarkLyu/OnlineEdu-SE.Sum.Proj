@@ -1,9 +1,9 @@
 package com.se231.onlineedu.controller;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Set;
+import com.se231.onlineedu.exception.FileFormatNotSupportException;
+import com.se231.onlineedu.exception.FileSizeExceededException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -13,11 +13,14 @@ import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Course Controller Class
@@ -44,10 +47,10 @@ public class CourseController {
     })
     @PostMapping("/start")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<Course> applyToStartCourse(@RequestParam("prototypeId") Long prototypeId,
+    public Course applyToStartCourse(@RequestParam("prototypeId") Long prototypeId,
                                                      @Valid @RequestBody CourseApplicationForm form,
-                                                     @AuthenticationPrincipal UserPrinciple userPrinciple) throws Exception{
-        return ResponseEntity.ok(courseService.applyToStartCourse(form,prototypeId,userPrinciple.getId()));
+                                                     @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        return courseService.applyToStartCourse(form,prototypeId,userPrinciple.getId());
     }
 
     @ApiOperation(value = "管理员审核教师的开课申请")
@@ -60,7 +63,7 @@ public class CourseController {
     @PostMapping("{id}/start")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public Course examineStartCourse(@RequestParam String decision,
-                                     @PathVariable("id") Long courseId) throws Exception{
+                                     @PathVariable("id") Long courseId) {
         return courseService.examineStartCourseApplication(courseId, decision);
     }
 
@@ -69,58 +72,64 @@ public class CourseController {
     @ApiImplicitParam(name = "id",value = "选课的学生的id",paramType = "param")
     @PostMapping("/{id}/pick")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<Course>> pickCourse(@PathVariable(name = "id")Long id,
-                                   @AuthenticationPrincipal UserPrinciple userPrinciple)throws Exception{
-        return ResponseEntity.ok(courseService.pickCourse(userPrinciple.getId(),id));
+    public List<Course> pickCourse(@PathVariable(name = "id")Long id,
+                                   @AuthenticationPrincipal UserPrinciple userPrinciple){
+        return courseService.pickCourse(userPrinciple.getId(),id);
     }
 
     @ApiOperation("获取某课程的学生名单")
     @ApiImplicitParam(name = "id",value = "获取的课程的id",type = "path")
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<User>> getStudentsList(@PathVariable(name = "id")Long courseId)throws Exception{
-        return ResponseEntity.ok(courseService.getStudentsList(courseId));
+    public List<User> getStudentsList(@PathVariable(name = "id")Long courseId) {
+        return courseService.getStudentsList(courseId);
     }
 
     @ApiImplicitParam(name = "id",value = "获取的课程的id",type = "path")
     @ApiOperation("获取某课程的信息")
     @GetMapping("/{id}/info")
-    public ResponseEntity<Course> getCourseInfo(@PathVariable(name = "id")Long courseId)throws Exception{
-        return ResponseEntity.ok(courseService.getCourseInfo(courseId));
+    public CourseWithIdentity getCourseInfo(@PathVariable(name = "id")Long courseId, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        return courseService.getCourseInfoWithIdentity(courseId, userPrinciple.getId());
     }
 
     @ApiOperation("获取所有课程的信息")
     @GetMapping("/all/info")
-    public ResponseEntity<List<Course>> getAllCourse(){
-        return ResponseEntity.ok(courseService.getAllCourse());
+    public List<Course> getAllCourse() {
+        return courseService.getAllCourse();
     }
 
-    @ApiOperation(value = "用户可以课程的头像", httpMethod = "POST")
+    @ApiOperation(value = "用户可以上传课程的头像", httpMethod = "POST")
     @ApiImplicitParam(name = "id", value = "上传的课程id", type = "path")
     @PostMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<?> patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws Exception {
+    public Course patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException {
         if (FileCheckUtil.checkImageSizeExceed(multipartFile,limit)) {
-            return ResponseEntity.badRequest().body("exceeded max size");
+            throw new FileSizeExceededException("exceeded max size");
         }
         String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
         if (FileCheckUtil.checkImageTypeWrong(suffix)) {
-            return ResponseEntity.badRequest().body("file format not supported");
+            throw new FileFormatNotSupportException("file format not supported");
         }
-        return ResponseEntity.ok(courseService.updateCourseAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "course"), id));
+        return courseService.updateCourseAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "course"), id);
     }
 
     @ApiOperation("查询用户是否选了某门课")
     @GetMapping("/{id}/isPicked")
-    public ResponseEntity<Boolean> checkWhetherPicked(@AuthenticationPrincipal UserPrinciple userPrinciple,
-                                                      @PathVariable("id")Long id)throws Exception{
-        return ResponseEntity.ok(courseService.checkIfUserPick(id,userPrinciple.getId()));
+    public Boolean checkWhetherPicked(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                                                      @PathVariable("id")Long id) {
+        return courseService.checkIfUserPick(id,userPrinciple.getId());
     }
 
     @ApiOperation("管理员或教师修改课程信息")
     @PutMapping("/{id}/modify")
-    public ResponseEntity<Course> modifyCourseInfo(@AuthenticationPrincipal UserPrinciple userPrinciple,
-                                                   @Valid @RequestBody CourseApplicationForm form,
-                                                   @PathVariable("id")Long id)throws Exception{
-        return ResponseEntity.ok(courseService.modifyCourseInfo(id,form,userPrinciple.getId()));
+    @PreAuthorize("hasRole('ADMIN')")
+    public Course modifyCourseInfo(@Valid @RequestBody CourseApplicationForm form,
+                                                   @PathVariable("id")Long id) {
+        return courseService.modifyCourseInfo(id,form);
+    }
+
+    @ApiOperation("教师将课程内学生转变为助教")
+    @PostMapping("/{id}/teacherAssistant")
+    public Course selectTeacherAssistant(@PathVariable Long id, @RequestParam("teacherAssistantId") Long teacherAssistantId) {
+        return courseService.selectTeacherAssistant(id, teacherAssistantId);
     }
 }

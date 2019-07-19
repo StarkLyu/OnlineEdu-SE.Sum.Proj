@@ -1,29 +1,28 @@
 package com.se231.onlineedu.controller;
 
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
+import com.se231.onlineedu.exception.VerificationTokenExpiredException;
+import com.se231.onlineedu.exception.VerificationTokenWrongException;
 import com.se231.onlineedu.message.request.LoginForm;
 import com.se231.onlineedu.message.request.SignUpForm;
+import com.se231.onlineedu.message.response.JwtResponse;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
 import com.se231.onlineedu.service.AuthService;
 import com.se231.onlineedu.service.UserService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * AuthController Class
  *
  * log in and sign up controller
  *
- * need refraction
  *
  * @author Yuxuan Liu
  *
@@ -49,7 +48,7 @@ public class AuthController {
     })
     @PostMapping("/signin")
     @ResponseBody
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
+    public JwtResponse authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
         return authService.userSignIn(loginRequest.getUsername(),loginRequest.getPassword());
     }
 
@@ -61,7 +60,7 @@ public class AuthController {
                     "mainly because of existing same username/email/tel,or invalid param"),
     })
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(HttpSession httpSession, @Valid @RequestBody SignUpForm signUpRequest) throws Exception {
+    public User registerUser(HttpSession httpSession, @Valid @RequestBody SignUpForm signUpRequest) throws Exception {
         return authService.userSignUp(signUpRequest, httpSession);
     }
 
@@ -70,7 +69,7 @@ public class AuthController {
             paramType = "path",required = true)
     @PostMapping("/{id}/teachingAdmin")
     @PreAuthorize("hasAnyRole('ADMIN','SPUER_ADMIN')")
-    public ResponseEntity<String> addTeachingAdmin(@PathVariable(name = "id")Long id){
+    public String addTeachingAdmin(@PathVariable(name = "id")Long id){
         return authService.addTeachingAdmin(id);
     }
 
@@ -80,19 +79,19 @@ public class AuthController {
             @ApiResponse(code = 400, message = "验证码已失效"),
     })
     @GetMapping("/registrationConfirm")
-    public ResponseEntity<?> confirmRegistration(HttpSession httpSession, @RequestParam("verificationToken") String token){
+    public String confirmRegistration(HttpSession httpSession, @RequestParam("verificationToken") String token){
         VerificationToken verificationToken = (VerificationToken)httpSession.getAttribute("token");
         if(!verificationToken.getToken().equals(token)){
-            return ResponseEntity.badRequest().body("验证码无效");
+            throw new VerificationTokenWrongException();
         }
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return ResponseEntity.badRequest().body("验证码无效");
+            throw new VerificationTokenExpiredException();
         }
 
         User user = (User)httpSession.getAttribute("user");
         user.setEnabled(true);
         authService.saveRegisteredUser(user);
-        return ResponseEntity.ok("已激活");
+        return "已激活";
     }
 }

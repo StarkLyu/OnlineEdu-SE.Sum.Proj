@@ -3,6 +3,9 @@ package com.se231.onlineedu.message.request;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author liu
+ */
 public class PathMessage {
     List<Integer> path = new ArrayList<>();
 
