@@ -1,5 +1,12 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
@@ -13,13 +20,9 @@ import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -53,6 +56,7 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private SignInRepository signInRepository;
 
+
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {
         CoursePrototype coursePrototype = coursePrototypeService.getCoursePrototypeInfo(prototypeId);
@@ -60,10 +64,13 @@ public class CourseServiceImpl implements CourseService {
         if (form.getEndDate().before(form.getStartDate())) {
             throw new EndBeforeStartException("开始时间晚于结束时间。");
         }
+
         Course course = new Course(form.getStartDate(), form.getEndDate(), CourseState.APPLYING, coursePrototype, user);
         course.setCourseTitle(form.getCourseTitle());
         course.setLocation(form.getLocation());
-        course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
+            course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
+        }
         return courseRepository.save(course);
     }
 
@@ -75,7 +82,17 @@ public class CourseServiceImpl implements CourseService {
                 if (course.getStartDate().before(new Date())) {
                     course.setState(CourseState.TEACHING);
                 } else {
-                    course.setState(CourseState.READY_TO_START);
+                    try{
+                        course.setState(CourseState.READY_TO_START);
+                        SchedulerHandler.setCourseState(courseId,"TEACHING",course.getStartDate());
+                    }catch(SchedulerException e){
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    SchedulerHandler.setCourseState(courseId, "FINISHED", course.getEndDate());
+                } catch (SchedulerException e){
+                    e.printStackTrace();
                 }
                 break;
             case "disapproval":
@@ -180,7 +197,7 @@ public class CourseServiceImpl implements CourseService {
         List<TimeSlot> timeSlots = new ArrayList<>();
         for (TimeSlotForm slotForm : slotFormList) {
             TimeSlot slot = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.values()[slotForm.getDay()]
-                    , Time.valueOf(slotForm.getStart()), Time.valueOf(slotForm.getEnd()))
+                    , Time.valueOf(slotForm.getStart()+":00"),Time.valueOf(slotForm.getEnd()+":00"))
                     .orElse(new TimeSlot(slotForm));
             timeSlots.add(slot);
         }
@@ -212,5 +229,12 @@ public class CourseServiceImpl implements CourseService {
         Course course = getCourseInfo(id);
         course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
         return courseRepository.save(course);
+    }
+
+    @Override
+    public void setState(Long courseId,String state) {
+        Course course = courseRepository.getOne(courseId);
+        course.setState(CourseState.valueOf(state));
+        courseRepository.save(course);
     }
 }

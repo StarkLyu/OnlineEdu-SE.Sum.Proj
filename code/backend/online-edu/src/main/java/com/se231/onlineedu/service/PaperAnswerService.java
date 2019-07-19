@@ -23,4 +23,10 @@ public interface PaperAnswerService {
      * @throws Exception    mainly not found exception.
      */
     PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form)throws Exception;
+
+    /**
+     * this service will mark all answer of a specific paper.
+     * @param paperId
+     */
+//    void autoMark(Long paperId);
 }
