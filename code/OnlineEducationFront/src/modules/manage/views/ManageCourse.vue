@@ -504,7 +504,7 @@
 
             // 移除时间段
             removeTimeslot(item) {
-                var index = this.editForm.timeSlots.indexOf(item)
+                var index = this.editForm.timeSlots.indexOf(item);
                 if (index !== -1) {
                     this.editForm.timeSlots.splice(index, 1)
                 }
