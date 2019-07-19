@@ -8,7 +8,7 @@
                 <div class="float-left course-title">
                     <strong>{{ courseInfo.courseTitle }}</strong>
                     <p>
-                        <UserUnit :user="courseInfo.teacher.username"></UserUnit>
+                        <UserUnit :user="courseInfo.teacher"></UserUnit>
                     </p>
                 </div>
                 <div class="float-right">

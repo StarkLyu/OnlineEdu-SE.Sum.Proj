@@ -1,6 +1,13 @@
 <template>
     <el-collapse-item>
-        <h3 slot="title">{{ sectionInfo.title }}</h3>
+        <h3 slot="title">{{ sectionInfo.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+        <el-button
+                slot="title"
+                circle
+                icon="el-icon-plus"
+                size="small"
+                v-if="managerMode"
+        ></el-button>
         <el-divider>章节介绍</el-divider>
         <pre>{{ sectionInfo.description }}</pre>
         <el-divider>章节资源</el-divider>
@@ -13,11 +20,15 @@
             <div class="float-clear"></div>
         </div>
         <el-divider>章节作业</el-divider>
-        <PaperUnit
-                v-for="(paper, index) in sectionInfo.papers"
-                :key="index"
-                :paper-info="paper"
-        ></PaperUnit>
+        <div>
+            <PaperUnit
+                    v-for="(paper, index) in sectionInfo.papers"
+                    :key="index"
+                    :paper-info="paper"
+            ></PaperUnit>
+            <div class="float-clear"></div>
+        </div>
+        <el-divider></el-divider>
     </el-collapse-item>
 </template>
 
@@ -33,6 +44,11 @@
                 description: "",
                 resources: [],
                 papers: []
+            }
+        },
+        computed: {
+            managerMode: function () {
+                return true;
             }
         }
     }

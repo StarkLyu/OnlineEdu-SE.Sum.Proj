@@ -4,7 +4,8 @@ axios.defaults.withCredentials = true;
 
 const state = {
     id: 0,
-    courseInfo: {}
+    courseInfo: {},
+    identity: "",
 }
 
 // getters
@@ -39,6 +40,9 @@ const mutations = {
     setCourseInfo: (state, info) => {
         state.courseInfo = info;
     },
+    setIdentity: (state, identity) => {
+        state.identity = identity;
+    }
 }
 
 export default {

@@ -18,6 +18,7 @@ const state = {
         sno: "",
         id:"",
         tno: "",
+        id: "",
         tel: "",
         university: "",
         avatarUrl: "",

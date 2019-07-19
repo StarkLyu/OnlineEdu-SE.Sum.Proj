@@ -50,21 +50,65 @@
                         courseTime2: "2019-08-02",
                         courseTeacher: "JBoss"
                     }
-                ]
+                ],
+                teachCourses: [],
+                learnCourses: [],
+                assistCourses: [],
+            }
+        },
+        methods: {
+            getTeachCourses: function () {
+                this.$http.request({
+                    url: "/api/users/info/courses/teach",
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    this.teachCourses = response.data;
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
+                })
+            },
+            getAssistCourses: function () {
+                this.$http.request({
+                    url: "/api/users/info/courses/assist",
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    this.assistCourses = response.data;
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
+                })
+            },
+            getLearnCourses: function () {
+                this.$http.request({
+                    url: "/api/users/info/courses/learn",
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    this.learnCourses = response.data;
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
+                })
             }
         },
         computed: {
             ...mapGetters([
-                'assistCourses',
-                'learnCourses',
-                'teachCourses',
                 'userRole',
                 'isTeacher',
                 'isStudent'
             ]),
         },
         mounted() {
-            this.courseList = this.$store.state.user.userInfo.courses;
+            if (this.isTeacher) {
+                this.getTeachCourses();
+            }
+            if (this.isStudent) {
+                this.getLearnCourses();
+                this.getAssistCourses();
+            }
         }
     }
 </script>
