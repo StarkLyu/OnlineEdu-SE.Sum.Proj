@@ -1,10 +1,9 @@
 package com.se231.onlineedu.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.se231.onlineedu.message.request.SignUpForm;
 
 import javax.persistence.*;
@@ -29,9 +28,6 @@ import java.util.Objects;
                 "username"
         })
 })
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,6 +77,7 @@ public class User{
     private String avatarUrl;
 
     @ManyToMany
+    @JsonBackReference
     private List<SignIn> signIns = new ArrayList<>();
 
     public List<SignIn> getSignIns() {
@@ -122,15 +119,18 @@ public class User{
         this.roles = roles;
     }
 
+    @JsonBackReference
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "assist_course",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
     private List<Course> assistCourses = new ArrayList<>();
 
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teacher")
     private List<Course> teachCourses = new ArrayList<>();
 
+    @JsonBackReference
     @OneToMany
     private List<Learn> learns = new ArrayList<>();
 
@@ -143,6 +143,7 @@ public class User{
     }
 
     @Transient
+    @JsonBackReference
     public List<Course> getLearnCourses(){
         List<Course> courses = new ArrayList<>();
         for(Learn learn: getLearns()){
