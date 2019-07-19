@@ -42,7 +42,26 @@ public class SchedulerHandler {
         scheduler.start();
     }
 
-    public static void setAnswerStateAndAutoMark(){
+    public static void setAnswerStateAndAutoMark(Date triggerDate,Long paperId)throws SchedulerException{
+        //创建调度器
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
+        //定义一个触发器
+        Trigger trigger = newTrigger().withIdentity("paperTrigger"+paperTimes, "paper")
+                .startNow()
+                .startAt(triggerDate)
+                .build();
+
+        //定义一个JobDetail
+        JobDetail job = newJob(AnswerAutoMark.class)
+                .withIdentity("paper"+(paperTimes++), "paper")
+                .usingJobData("paperId", paperId)
+                .build();
+
+        //调度加入这个job
+        scheduler.scheduleJob(job, trigger);
+
+        //启动
+        scheduler.start();
     }
 }

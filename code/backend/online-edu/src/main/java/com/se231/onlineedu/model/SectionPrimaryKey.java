@@ -1,10 +1,8 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * SectionRepository Primary Key Class
@@ -19,15 +17,17 @@ import java.io.Serializable;
 public class SectionPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;
 
+    @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int secNo;
 
-    public SectionPrimaryKey(Course course, int secNo) {
-        this.course = course;
-        this.secNo = secNo;
+    public SectionPrimaryKey(Course course,int secNo){
+        this.course=course;
+        this.secNo=secNo;
     }
 
     public SectionPrimaryKey() {

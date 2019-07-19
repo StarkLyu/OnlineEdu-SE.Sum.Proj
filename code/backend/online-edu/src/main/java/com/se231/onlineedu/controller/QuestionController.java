@@ -30,6 +30,9 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
+    private final String subjectiveString = QuestionType.SUBJECTIVE.toString();
+    private final String trueOrFalseString = QuestionType.T_OR_F.toString();
+
     @ApiOperation("上传题目")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "课程原型的id", paramType = "path"),
@@ -43,8 +46,10 @@ public class QuestionController {
         StringBuilder questionBuilder = new StringBuilder();
         questionBuilder.append((String) questionJSON.get("content"));
         List<String> options = (List<String>) questionJSON.get("options");
-        for (String option : options) {
-            questionBuilder.append("\r\n" + option);
+        if(!(subjectiveString.equals(type)||trueOrFalseString.equals(type))) {
+            for (String option : options) {
+                questionBuilder.append("\r\n" + option);
+            }
         }
         String question = questionBuilder.toString();
 

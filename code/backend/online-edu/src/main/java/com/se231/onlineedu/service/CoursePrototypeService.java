@@ -1,7 +1,7 @@
 package com.se231.onlineedu.service;
 
 import java.util.List;
-import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
+import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.Resource;
@@ -26,7 +26,7 @@ public interface CoursePrototypeService {
      * @param form create application form
      * @return response for front
      */
-    CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) ;
+    CoursePrototype createCourse(TitleAndDes form, Long userId) ;
 
     /**
      * Teaching Admin could apply for the usage of a course prototype.

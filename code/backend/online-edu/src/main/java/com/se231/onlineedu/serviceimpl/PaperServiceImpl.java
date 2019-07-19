@@ -8,8 +8,10 @@ import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.message.request.PaperQuestionForm;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperService;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,8 +62,13 @@ public class PaperServiceImpl implements PaperService {
         paper.setTitle(form.getTitle());
         paper.setDescription(form.getDescription());
         paper.setCourse(course);
-
-        return paperRepository.save(paper);
+        paper=paperRepository.save(paper);
+        try{
+            SchedulerHandler.setAnswerStateAndAutoMark(form.getEnd(),paper.getId());
+        }catch (SchedulerException e){
+            e.printStackTrace();
+        }
+        return paper;
     }
 
     @Override

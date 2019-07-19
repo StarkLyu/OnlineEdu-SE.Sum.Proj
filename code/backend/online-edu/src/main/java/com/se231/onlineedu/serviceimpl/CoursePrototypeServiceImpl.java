@@ -1,7 +1,7 @@
 package com.se231.onlineedu.serviceimpl;
 
 import com.se231.onlineedu.exception.NotFoundException;
-import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
+import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.ApplyRepository;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
@@ -42,7 +42,7 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
 
 
     @Override
-    public CoursePrototype createCourse(CreateCoursePrototypeApplicationForm form, Long userId) {
+    public CoursePrototype createCourse(TitleAndDes form, Long userId) {
         CoursePrototype coursePrototype = new CoursePrototype();
         coursePrototype.setTitle(form.getTitle());
         coursePrototype.setDescription(form.getDescription());

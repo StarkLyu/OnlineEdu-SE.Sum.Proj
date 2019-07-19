@@ -1,7 +1,9 @@
 package com.se231.onlineedu.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.ValidationException;
@@ -65,14 +67,43 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             Question question = questionRepository.findById(questionAnswer.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Question Not Found"));
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
-            //若题目为主观题，默认不做批改，直接不打分留题。若为客观题则直接检测与答案是否匹配。
-//            double score= (!question.getQuestionType().equals(QuestionType.SUBJECTIVE)&&
-//                    questionAnswer.getAnswer().equals(question.getAnswer()))?paperWithQuestions.getScore():0;
             Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
             answerList.add(answerRepository.save(answer));
         }
         paperAnswer.setAnswers(answerList);
         paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
         return paperAnswerRepository.save(paperAnswer);
+    }
+
+    @Override
+    public void autoMark(Long paperId) {
+        Paper paper = paperRepository.getOne(paperId);
+        Map<Long,Double> scoreTable= new HashMap<>(paper.getQuestions().size());
+        boolean hasSubjective=false;
+        for (PaperWithQuestions questions:paper.getQuestions()) {
+            if(questions.getPaperWithQuestionsPrimaryKey().getQuestion().getQuestionType().equals(QuestionType.SUBJECTIVE)){
+                hasSubjective=true;
+            }
+            scoreTable.put(questions.getPaperWithQuestionsPrimaryKey().getQuestion().getId(),questions.getScore());
+        }
+        final boolean sub = hasSubjective;
+        List<PaperAnswer> paperAnswerList = paperAnswerRepository.getPaperAnswers(paperId);
+        paperAnswerList.forEach(paperAnswer ->{
+            double totalScore=0D;
+            for(Answer answer:paperAnswer.getAnswers()){
+                //若题目为主观题，默认不做批改，直接不打分留题。若为客观题则直接检测与答案是否匹配。
+                Question question = answer.getAnswerPrimaryKey().getQuestion();
+                double score= (!question.getQuestionType().equals(QuestionType.SUBJECTIVE)&&
+                    answer.getAnswer().equals(question.getAnswer()))?scoreTable.get(question.getId()):0;
+                answer.setGrade(score);
+                answerRepository.save(answer);
+                totalScore+=score;
+            }
+            PaperAnswerState state = sub ? PaperAnswerState.NOT_MARKED : PaperAnswerState.MARKED;
+            paperAnswer.setGrade(totalScore);
+            paperAnswer.setState(state);
+            paperAnswerRepository.save(paperAnswer);
+        });
+
     }
 }

@@ -3,7 +3,7 @@
 //import com.alibaba.fastjson.JSON;
 //import com.alibaba.fastjson.JSONObject;
 //import com.se231.onlineedu.message.request.CourseApplicationForm;
-//import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
+//import com.se231.onlineedu.message.request.TitleAndDes;
 //import com.se231.onlineedu.model.*;
 //import com.se231.onlineedu.repository.RoleRepository;
 //import com.se231.onlineedu.repository.UserRepository;
@@ -66,9 +66,9 @@
 //    private static CourseApplicationForm applyCourse2 = new CourseApplicationForm();
 //    private static CourseApplicationForm applyCourse3 = new CourseApplicationForm();
 //
-//    private static String nullString= JSONObject.toJSONString(new CreateCoursePrototypeApplicationForm());
+//    private static String nullString= JSONObject.toJSONString(new TitleAndDes());
 //
-//    private static String shortTitle= JSONObject.toJSONString(new CreateCoursePrototypeApplicationForm("as",""));
+//    private static String shortTitle= JSONObject.toJSONString(new TitleAndDes("as",""));
 //
 //
 //
