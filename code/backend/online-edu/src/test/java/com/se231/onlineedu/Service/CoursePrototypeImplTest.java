@@ -1,6 +1,6 @@
 package com.se231.onlineedu.Service;
 
-import com.se231.onlineedu.message.request.CreateCoursePrototypeApplicationForm;
+import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.Apply;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.User;
@@ -63,7 +63,7 @@ public class CoursePrototypeImplTest {
 
     @Test
     public void createCourse(){
-        CreateCoursePrototypeApplicationForm form = new CreateCoursePrototypeApplicationForm();
+        TitleAndDes form = new TitleAndDes();
         form.setDescription("des");
         form.setTitle("123");
 
