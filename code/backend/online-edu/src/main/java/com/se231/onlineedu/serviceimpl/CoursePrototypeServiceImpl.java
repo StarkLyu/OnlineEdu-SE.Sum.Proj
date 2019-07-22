@@ -111,7 +111,6 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
         coursePrototype.getResources().add(resourceSaved);
         return coursePrototypeRepository.save(coursePrototype);
-
     }
 
     @Override

@@ -15,4 +15,6 @@ public interface EmailSenderService {
     String sendVerificationEmail(String email, VerificationToken token);
 
     void sendSensitiveWordsDetectedWords(String email);
+
+    void sendNotification(String email);
 }

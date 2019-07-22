@@ -1,9 +1,7 @@
 package com.se231.onlineedu.Service;
 
 import com.se231.onlineedu.message.request.TitleAndDes;
-import com.se231.onlineedu.model.Apply;
-import com.se231.onlineedu.model.CoursePrototype;
-import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.ApplyRepository;
 import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.ResourceRepository;
@@ -20,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,6 +88,92 @@ public class CoursePrototypeImplTest {
         Mockito.when(coursePrototypeRepository.findById(1L)).thenReturn(coursePrototypeOptional);
         Apply apply = coursePrototypeService.applyForCourse(1L,1L);
         assertThat(apply.getApplicationForCoursePK().getCoursePrototype().getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void getCoursePrototypeInfo(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+        Optional<CoursePrototype> coursePrototypeOptional = Optional.of(coursePrototype);
+        Mockito.when(coursePrototypeRepository.findById(1L)).thenReturn(coursePrototypeOptional);
+        CoursePrototype found = coursePrototypeService.getCoursePrototypeInfo(1L);
+        assertThat(found.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void decideCreateCourse(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+        Optional<CoursePrototype> coursePrototypeOptional = Optional.of(coursePrototype);
+        Mockito.when(coursePrototypeRepository.findById(1L)).thenReturn(coursePrototypeOptional);
+        CoursePrototype found = coursePrototypeService.decideCreateCourse(1L, "approval");
+        assertThat(found.getState()).isEqualTo(CoursePrototypeState.USING);
+        found = coursePrototypeService.decideCreateCourse(1L, "disapproval");
+        assertThat(found.getState()).isEqualTo(CoursePrototypeState.DENIAL);
+    }
+
+    @Test
+    public void decideUseCourse(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+        Optional<CoursePrototype> coursePrototypeOptional = Optional.of(coursePrototype);
+        Mockito.when(coursePrototypeRepository.findById(1L)).thenReturn(coursePrototypeOptional);
+
+        User user = new User();
+        user.setId(1L);
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+
+        Apply apply = new Apply();
+        ApplyPrimaryKey applyPrimaryKey = new ApplyPrimaryKey(user, coursePrototype);
+        Optional<Apply> applyOption = Optional.of(apply);
+        Mockito.when(applyRepository.findById(any(ApplyPrimaryKey.class))).thenReturn(applyOption);
+
+        Apply found = coursePrototypeService.decideUseCourse(1L,1L,ApplyState.APPROVAL.name());
+        assertThat(found.getState()).isEqualTo(ApplyState.APPROVAL);
+    }
+
+    @Test
+    public void saveResource(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+        Optional<CoursePrototype> coursePrototypeOptional = Optional.of(coursePrototype);
+        Mockito.when(coursePrototypeRepository.findById(1L)).thenReturn(coursePrototypeOptional);
+
+        Resource resource = new Resource();
+        resource.setId(1L);
+        resource.setUrl("123456");
+        resource.setResourceType(ResourceType.PDF);
+        CoursePrototype found = coursePrototypeService.saveResource(1L, resource);
+
+        assertThat(found.getResources().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void getApplyByCoursePrototype(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+        Optional<CoursePrototype> coursePrototypeOptional = Optional.of(coursePrototype);
+        Mockito.when(coursePrototypeRepository.findById(1L)).thenReturn(coursePrototypeOptional);
+
+        User user = new User();
+        user.setId(1L);
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+
+        Apply apply = new Apply();
+        ApplyPrimaryKey applyPrimaryKey = new ApplyPrimaryKey(user, coursePrototype);
+        apply.setApplicationForCoursePK(applyPrimaryKey);
+        Mockito.when(applyRepository.findAppliesByPrototypeId(1L)).thenReturn(List.of(apply));
+
+        List<Apply> found = coursePrototypeService.getApplyByCoursePrototype(1L);
+        assertThat(found.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void getAllCoursePrototype(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+        Mockito.when(coursePrototypeRepository.findAll()).thenReturn(List.of(coursePrototype));
+        assertThat(coursePrototypeService.getAllCoursePrototype().size()).isEqualTo(1);
     }
 
 
