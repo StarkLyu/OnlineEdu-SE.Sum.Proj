@@ -8,7 +8,7 @@
                 @click="showAddSection = true"
         ></el-button>
         <el-dialog :visible.sync="showAddSection">
-            <h2 slot="title">添加章</h2>
+            <h2 slot="title">添加节</h2>
             <el-input v-model="newTitle" placeholder="新节标题"></el-input>
             <el-input v-model="newDescription" placeholder="新节描述"></el-input>
             <div slot="footer">
@@ -22,7 +22,8 @@
     export default {
         name: "AddNewSection",
         props: {
-            lastChapter: Number
+            chapterId: Number,
+            lastSection: Number,
         },
         data() {
             return {
@@ -33,8 +34,28 @@
         },
         methods: {
             addSection: function () {
-                alert("插入成功！");
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/append',
+                    method: "post",
+                    headers:this.$store.getters.authRequestHead,
+                    params:{
+                        branchNo:this.lastSection,
+                    },
+                    data:{
+                        title:this.newTitle,
+                        description:this.newDescription,
+                    },
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
                 this.newTitle = "";
+                this.newDescription="";
                 this.showAddSection = false;
             }
         },

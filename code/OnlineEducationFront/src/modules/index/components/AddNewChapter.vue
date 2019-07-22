@@ -31,7 +31,23 @@
         },
         methods: {
             addChapter: function () {
-                alert("插入成功！");
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/append',
+                    method: "post",
+                    headers:{Authorization: "Bearer " + this.$store.state.user.accessToken,'Content-Type':'text/plain'},
+                    params:{
+                        secNo:this.lastChapter,
+                    },
+                    data:this.newTitle,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
                 this.newTitle = "";
                 this.showAddChapter = false;
             }

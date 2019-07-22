@@ -45,11 +45,11 @@
                     </el-form-item>
                 </el-form>
                 <span slot="footer">
-                <el-button @click.native="dialogFormVisible=false">取消</el-button>
-                <el-button type="primary" @click="createProto">
-                    创建
-                </el-button>
-            </span>
+                    <el-button @click.native="dialogFormVisible=false">取消</el-button>
+                    <el-button type="primary" @click="createProto">
+                        创建
+                    </el-button>
+                </span>
             </el-dialog>
         </div>
 <!--        申请开课-->

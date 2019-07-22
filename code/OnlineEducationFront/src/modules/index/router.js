@@ -94,9 +94,9 @@ export default new Router({
                             component: () => import('./views/TeacherCourseDetail')
                         },
                         {
-                            path: 'edit',
-                            name: 'TeacherCourseManage',
-                            component: () => import('./views/TeacherCourseManage')
+                            path: 'chapters',
+                            name: 'TeacherCourseChapters',
+                            component: () => import('./views/TeacherCourseChapters')
                         },
                         {
                             path: 'student',
