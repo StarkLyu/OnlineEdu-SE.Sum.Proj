@@ -56,7 +56,15 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
         //get times the user has answered
         int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
-        if(times==MAX_TIMES){
+        if(times>0) {
+            PaperAnswerPrimaryKey lastAnswerPrimaryKey = new PaperAnswerPrimaryKey(user, paper, times);
+            PaperAnswer lastAnswer = paperAnswerRepository.findById(lastAnswerPrimaryKey)
+                    .orElseThrow(() -> new NotFoundException("No corresponding answer"));
+            if (lastAnswer.getState().equals(PaperAnswerState.NOT_FINISH)){
+                paperAnswerRepository.delete(lastAnswer);
+                times--;
+            }
+        }if(times==MAX_TIMES){
             throw new RuntimeException("You Have Answered Three Times");
         }
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
