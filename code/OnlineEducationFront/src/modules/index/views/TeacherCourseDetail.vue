@@ -8,48 +8,48 @@
                 <img src="../../../assets/logo.png" height="200" width="200"/>
             </div>
             <div class="coursedes">
-                <p>
-                    课程号：
-                    <span class="detail">
-                        {{CourseForm.courseId}}
-                    </span>
-                </p>
+<!--                <p>-->
+<!--                    课程号：-->
+<!--                    <span class="detail">-->
+<!--                        {{CourseForm.id}}-->
+<!--                    </span>-->
+<!--                </p>-->
                 <p>
                     课程名称：
                     <span class="detail">
-                        {{CourseForm.courseName}}
+                        {{CourseForm.courseTitle}}
                     </span>
                 </p>
-                <p>
-                    授课教师：
-                    <span class="detail">
-                        {{CourseForm.courseTeacher}}
-                    </span>
-                </p>
-                <p>
-                    上课时间：
-                    <span class="detail">
-                        {{CourseForm.courseTime}}
-                    </span>
-                </p>
-                <p>
-                    上课地点：
-                    <span class="detail">
-                        {{CourseForm.courseRoom}}
-                    </span>
-                </p>
-                <p>
-                    上课助教：
-                    <span class="detail">
-                        {{CourseForm.courseAssistance}}
-                    </span>
-                </p>
-                <p>
-                    课程详细信息：
-                    <span class="detail">
-                        {{CourseForm.courseDes}}
-                    </span>
-                </p>
+<!--                <p>-->
+<!--                    授课教师：-->
+<!--                    <span class="detail">-->
+<!--                        {{CourseForm.courseTeacher}}-->
+<!--                    </span>-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                    上课时间：-->
+<!--                    <span class="detail">-->
+<!--                        {{CourseForm.courseTime}}-->
+<!--                    </span>-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                    上课地点：-->
+<!--                    <span class="detail">-->
+<!--                        {{CourseForm.courseRoom}}-->
+<!--                    </span>-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                    上课助教：-->
+<!--                    <span class="detail">-->
+<!--                        {{CourseForm.courseAssistance}}-->
+<!--                    </span>-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                    课程详细信息：-->
+<!--                    <span class="detail">-->
+<!--                        {{CourseForm.courseDes}}-->
+<!--                    </span>-->
+<!--                </p>-->
             </div>
         </el-main>
     </div>
@@ -61,15 +61,7 @@
 
         data(){
             return{
-                CourseForm:{
-                    courseId: "CS-524",
-                    courseName: "java设计思想",
-                    courseTime: "1-16周 12:00-14:00",
-                    courseRoom: "东下院201",
-                    courseTeacher: "zang",
-                    courseAssistance:"张，刘，俄",
-                    courseDes:"数据库管理已经从一种专门的计算机应用发展为现代计算环境的一个核心部分。因此，有关数据库系统的知识已经成为计算机教育中的一个必不可少的部分，也是软件工程专业学生必须掌握的基本技术。本课程主要讲述数据库管理的基本概念，包括数据库设计、数据库语言及数据库管理等多个方面。",
-                },
+                CourseForm:this.$store.getters.getCourseInfo,
             }
         },
     }

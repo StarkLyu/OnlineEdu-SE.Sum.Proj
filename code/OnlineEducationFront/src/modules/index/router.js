@@ -119,9 +119,9 @@ export default new Router({
                             component: () => import('./views/TeacherCourseAssign'),
                         },
                         {
-                            path:'oneassignment',
-                            name:'TeacherCourseOneAssignment',
-                            component:() => import('./views/TeacherCourseOneAssignment')
+                            path:'questionBank',
+                            name:'TeacherCourseQuestionBank',
+                            component:() => import('./views/TeacherCourseQuestionBank')
                         },
                         {
                             path: 'bt',

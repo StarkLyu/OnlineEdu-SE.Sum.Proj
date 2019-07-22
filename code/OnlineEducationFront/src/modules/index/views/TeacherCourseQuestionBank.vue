@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-header>
-            <h1 class="titlesytle">第一份作业</h1>
+            <h1 class="titlesytle">课程题库</h1>
         </el-header>
         <el-main>
 <!--            作业显示部分-->
@@ -12,36 +12,44 @@
                 <el-button @click="showSubDialog">添加主观题</el-button>
 <!--                单选题-->
                 <div v-for="single in oneAssignment.quesitons" :key="single.key">
-                    <div v-if="single.type==='single'">
+                    <div v-if="single.type==='SINGLE_ANSWER'">
+                        <div style="float: right">
+                            <el-button size="small" @click="showSingleEditDialog(single)">编辑</el-button>
+                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
+                        </div>
                         <AssignmentSingle :single="single"></AssignmentSingle>
-                        <el-button size="small" @click="showSingleEditDialog(single)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
                     </div>
                 </div>
 <!--                多选题-->
                 <div v-for="multi in oneAssignment.quesitons" :key="multi.key">
-                    <div v-if="multi.type==='multi'">
+                    <div v-if="multi.type==='MULTIPLE_ANSWER'">
+                        <div style="float: right">
+                            <el-button size="small" @click="showMultiEditDialog(multi)">编辑</el-button>
+                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
+                        </div>
                         <AssignmentMulti :multi="multi"></AssignmentMulti>
-                        <el-button size="small" @click="showMultiEditDialog(multi)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
                     </div>
                 </div>
 <!--                判断题-->
                 <div v-for="judge in oneAssignment.quesitons" :key="judge.key">
-                    <div v-if="judge.type==='judge'">
+                    <div v-if="judge.type==='T_OR_F'">
+                        <div style="float: right">
+                            <el-button size="small" @click="showJudgeEditDialog(judge)">编辑</el-button>
+                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
+                        </div>
                         <AssignmentJudge :judge="judge"></AssignmentJudge>
-                        <el-button size="small" @click="showJudgeEditDialog(judge)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
                     </div>
                 </div>
 <!--                主观题-->
                 <div v-for="sub in oneAssignment.quesitons" :key="sub.key">
-                    <div v-if="sub.type==='sub'">
+                    <div v-if="sub.type==='SUBJECTIVE'">
+                        <div style="float: right">
+                            <el-button size="small" @click="showSubEditDialog(sub)">编辑</el-button>
+                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
+                        </div>
                         <h4>
-                            第{{sub.key}}题:{{sub.title}}
+                            {{sub.title}}
                         </h4>
-                        <el-button size="small" @click="showSubEditDialog(sub)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
                     </div>
                 </div>
             </div>
@@ -70,8 +78,10 @@
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="singleVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createSingleData">编辑</el-button>
+                    <el-button type="primary" @click="createSingleData">添加/编辑</el-button>
                 </span>
+                <span slot="footer" class="el-dialog__footer">
+            </span>
             </el-dialog>
 <!--            添加多选题弹窗部分-->
             <el-dialog :title="'多选题'"
@@ -133,10 +143,6 @@
                 </span>
             </el-dialog>
         </el-main>
-        <el-footer>
-            <el-button @click="handleCancel">取消</el-button>
-            <el-button type="primary">提交</el-button>
-        </el-footer>
     </div>
 </template>
 
@@ -144,7 +150,7 @@
     import AssignmentSingle from "../components/AssignmentSingle"
     import AssignmentMulti from "../components/AssignmentMulti"
     import AssignmentJudge from "../components/AssignmentJudge"
-    import AssignmentSub from "../components/AssignmentSub"
+    // import AssignmentSub from "../components/AssignmentSub"
 
     export default {
         name: "TeacherCourseOneAssignment",
@@ -205,7 +211,7 @@
                     assignTitle:"作业标题",
                     quesitons:[
                         {
-                            type:"single",
+                            type:"SINGLE_ANSWER",
                             key:1,
                             title:"这是一道单选题，请选择下列选项。",
                             choices:[
@@ -230,7 +236,7 @@
                             correctAnswer:"A",
                         },
                         {
-                            type:"multi",
+                            type:"MULTIPLE_ANSWER",
                             key:2,
                             title:"这是一道多选题，请选择下列选项。",
                             choices:[
@@ -255,14 +261,14 @@
                             correctAnswer:"AB",
                         },
                         {
-                            type:"judge",
+                            type:"T_OR_F",
                             key:3,
                             title:"这是一道判断题，请选择下列选项。",
                             answer:"",
                             correctAnswer:"正确",
                         },
                         {
-                            type:"single",
+                            type:"SINGLE_ANSWER",
                             key:4,
                             title:"这是一道单选题，请选择下列选项。",
                             choices:[
@@ -287,7 +293,7 @@
                             correctAnswer:"B",
                         },
                         {
-                            type:"sub",
+                            type:"SUBJECTIVE",
                             key:5,
                             title:"这是一道主观题，请在文本框里填写或添加图片或添加附件。",
                             answer:"",
@@ -300,8 +306,8 @@
         },
 
         methods:{
-            handleCancel(){
-                this.$router.push("/course/manager/assignment");
+            showAllQuestions(){
+
             },
 
             // 显示各种题型的新建dialog
@@ -375,7 +381,32 @@
 
             // 新建各种题型
             createSingleData(){
-                alert("编辑成功");
+                var that=this;
+
+                var singleChoices=[];
+                for (let x=0; x<that.singleEditForm.choices.length; x++){
+                    singleChoices.push(that.singleEditForm.choices[x].content);
+                }
+
+                this.$http.request({
+                    url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
+                    method: "post",
+                    headers:this.$store.getters.authRequestHead,
+                    data:{
+                        type:"single_answer",
+                        content:this.singleEditForm.title,
+                        options:singleChoices,
+                        answer:this.singleEditForm.correctAnswer,
+                    },
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
                 this.singleVisible=false;
             },
 
@@ -428,6 +459,7 @@
                     tag:'',
                 });
             },
+
         }
     }
 </script>
