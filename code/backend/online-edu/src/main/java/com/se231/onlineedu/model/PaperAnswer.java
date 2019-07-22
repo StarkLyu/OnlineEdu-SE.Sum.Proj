@@ -22,7 +22,7 @@ public class PaperAnswer {
     private PaperAnswerPrimaryKey paperAnswerPrimaryKey;
 
     @ApiModelProperty("学生对每道题的答案的集,详情请见answer")
-    @OneToMany(mappedBy = "answerPrimaryKey.paperAnswer")
+    @OneToMany(mappedBy = "answerPrimaryKey.paperAnswer",cascade = CascadeType.ALL)
     private List<Answer> answers;
 
     @ApiModelProperty("学生此次答题的成绩")

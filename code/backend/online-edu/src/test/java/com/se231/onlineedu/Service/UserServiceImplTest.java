@@ -228,10 +228,9 @@ public class UserServiceImplTest {
 
         Mockito.when(userRepository.findById(1L)).thenReturn(userOptional);
         Mockito.when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
-        User found = userService.updateUserAvatar("hehe", 1L);
+        String url = userService.updateUserAvatar("hehe", 1L);
 
-        assertThat(found.getUsername()).isEqualTo("Liu");
-        assertThat(found.getAvatarUrl()).isEqualTo("hehe");
+        assertThat(url).isEqualTo("hehe");
     }
 
     @Test

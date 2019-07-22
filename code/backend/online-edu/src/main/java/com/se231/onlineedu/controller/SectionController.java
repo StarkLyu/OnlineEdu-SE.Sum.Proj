@@ -1,9 +1,11 @@
 package com.se231.onlineedu.controller;
 
-import javax.validation.Valid;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.Section;
 import com.se231.onlineedu.model.SectionBranches;
+import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.service.CourseService;
+import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.SectionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,19 +25,36 @@ public class SectionController {
     @Autowired
     SectionService sectionService;
 
+    @Autowired
+    CourseService courseService;
+
+    @Autowired
+    EmailSenderService emailSenderService;
+
     @ApiOperation("创建章节")
-    @PostMapping("/create")
+    @PostMapping("/append")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseId",value = "课程id",paramType = "path"),
+            @ApiImplicitParam(name = "secNo",value = "插入的章节的前一章节的序号",paramType = "param")
+    })
     public Section createSection(@PathVariable("courseId")Long courseId,
-                                 @Valid @RequestBody TitleAndDes form){
-        return sectionService.createSection(courseId, form);
+                                 @RequestParam("secNo")Integer secNo,
+                                 @RequestBody String title){
+        return sectionService.createSection(courseId, secNo, title);
     }
 
     @ApiOperation("创建小节")
-    @PostMapping("/{secNo}/create")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseId",value = "课程id",paramType = "path"),
+            @ApiImplicitParam(name = "secId",value = "章节id",paramType = "path"),
+            @ApiImplicitParam(name = "branchNo",value = "插入的小节的前一小节的序号",paramType = "param")
+    })
+    @PostMapping("/{secId}/append")
     public SectionBranches createBranch(@PathVariable("courseId")Long courseId,
-                                        @PathVariable("secNo")int secNo,
-                                        @RequestBody String title) {
-        return sectionService.createBranch(courseId, secNo,title);
+                                        @PathVariable("secId")int secId,
+                                        @RequestParam("branchNo")Integer branchNo,
+                                        @RequestBody TitleAndDes form) {
+        return sectionService.createBranch(courseId, secId,branchNo, form);
     }
 
 
@@ -51,6 +70,9 @@ public class SectionController {
                               @PathVariable("secNo")int secNo,
                               @PathVariable("branchNo")int branchNo,
                               @RequestParam("paperId")Long paperId)throws Exception{
+        for(User student: courseService.getCourseInfo(courseId).getStudents()){
+            emailSenderService.sendNotification(student.getEmail());
+        }
         return sectionService.issuePaper(courseId, secNo, branchNo,paperId);
     }
 

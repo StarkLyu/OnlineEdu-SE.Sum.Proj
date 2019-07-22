@@ -1,7 +1,10 @@
 package com.se231.onlineedu.serviceimpl;
 
+import javax.persistence.EntityManager;
+import java.util.List;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
+import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
@@ -34,27 +37,40 @@ public class SectionServiceImpl implements SectionService {
     @Autowired
     ResourceRepository resourceRepository;
 
+    @Autowired
+    EntityManager entityManager;
+
     @Override
-    public Section createSection(Long courseId, TitleAndDes form) {
+    public Section createSection(Long courseId, Integer secNo, String title) {
         Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
+        if(secNo>sectionRepository.currentSecNo(courseId).orElse(0)||secNo<0){
+            throw new ValidationException("Invalid section number.");
+        }
+        int secId = sectionRepository.currentSecId(courseId).orElse(0);
+        sectionRepository.updateSecNo(courseId,secNo);
         Section section = new Section();
-        section.setTitle(form.getTitle());
-        section.setDescription(form.getDescription());
-        int secNo = sectionRepository.currentSec(courseId).orElse(0);
-        SectionPrimaryKey sectionPrimaryKey = new SectionPrimaryKey(course,secNo+1);
+        section.setTitle(title);
+        SectionPrimaryKey sectionPrimaryKey = new SectionPrimaryKey(course,secId+1);
+        section.setSecNo(secNo+1);
         section.setSectionPrimaryKey(sectionPrimaryKey);
         return sectionRepository.save(section);
     }
 
     @Override
-    public SectionBranches createBranch(Long courseId, int secNo,String title) {
+    public SectionBranches createBranch(Long courseId, int secId,int branchNo, TitleAndDes form) {
         Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
-        SectionPrimaryKey sectionPrimaryKey = new SectionPrimaryKey(course,secNo);
+        SectionPrimaryKey sectionPrimaryKey = new SectionPrimaryKey(course,secId);
         Section section = sectionRepository.findById(sectionPrimaryKey).orElseThrow(()->new NotFoundException("章节不存在"));
-        int branchNo = sectionBranchRepository.currentBranch(courseId,secNo).orElse(0);
-        SectionBranchesPrimaryKey sectionBranchesPrimaryKey = new SectionBranchesPrimaryKey(section,branchNo+1);
+        if(branchNo>sectionBranchRepository.currentBranchNo(courseId,secId).orElse(0)||branchNo<0){
+            throw new ValidationException("Invalid branch number.");
+        }
+        int branchId = sectionBranchRepository.currentBranchId(courseId,secId).orElse(0);
+        sectionBranchRepository.updateSecBranchNo(courseId, secId, branchNo);
+        SectionBranchesPrimaryKey sectionBranchesPrimaryKey = new SectionBranchesPrimaryKey(section,branchId+1);
         SectionBranches sectionBranches = new SectionBranches();
-        sectionBranches.setTitle(title);
+        sectionBranches.setTitle(form.getTitle());
+        sectionBranches.setDescription(form.getDescription());
+        sectionBranches.setBranchNo(branchNo+1);
         sectionBranches.setSectionBranchesPrimaryKey(sectionBranchesPrimaryKey);
         return sectionBranchRepository.save(sectionBranches);
     }

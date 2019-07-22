@@ -140,7 +140,7 @@ public class UserController {
     @ApiImplicitParam(name = "id", value = "上传的用户id", type = "path")
     @PostMapping("/{id}/avatar")
     @PreAuthorize("#id == authentication.principal.id")
-    public User patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException {
+    public String patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException {
         if (FileCheckUtil.checkImageSizeExceed(multipartFile, limit)) {
             throw new FileSizeExceededException("文件请不要超过5M");
         }

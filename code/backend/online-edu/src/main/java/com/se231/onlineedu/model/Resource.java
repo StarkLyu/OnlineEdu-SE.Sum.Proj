@@ -24,6 +24,16 @@ public class Resource {
     @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
 
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,9 +58,10 @@ public class Resource {
         this.resourceType = resourceType;
     }
 
-    public Resource(@NotBlank String url, ResourceType resourceType) {
+    public Resource(@NotBlank String url, ResourceType resourceType, String title) {
         this.url = url;
         this.resourceType = resourceType;
+        this.title = title;
     }
 
     public Resource() {

@@ -155,11 +155,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserAvatar(String avatarUrl, Long id) {
+    public String updateUserAvatar(String avatarUrl, Long id) {
         User user = getUserInfo(id);
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
-        return user;
+        return avatarUrl;
     }
 
     @Override

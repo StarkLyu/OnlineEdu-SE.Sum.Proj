@@ -41,5 +41,25 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public void sendSensitiveWordsDetectedWords(String email) {
         String subject = "处理违规言论";
         String message = "系统监测到您的学生在论坛中发布了不当言论请前往处理。";
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(email);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setFrom("sjtu_se231_1@126.com");
+        simpleMailMessage.setText(message);
+        sendEmail(simpleMailMessage);
+    }
+
+    @Override
+    public void sendNotification(String email){
+        String subject = "作业发布通知";
+        String message="您的作业已发布，请前往查看";
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(email);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setFrom("sjtu_se231_1@126.com");
+        simpleMailMessage.setText(message);
+        sendEmail(simpleMailMessage);
     }
 }

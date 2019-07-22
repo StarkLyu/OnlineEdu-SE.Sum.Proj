@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public class CoursePrototype {
 
     @ApiModelProperty("该课程原型的所有衍生课程")
     @OneToMany(mappedBy = "coursePrototype")
-    @JsonManagedReference
+    @JsonBackReference
     private List<Course> courses;
 
     @NotNull
@@ -54,7 +55,7 @@ public class CoursePrototype {
 
     @ApiModelProperty("该课程原型资源库里的所有资源")
     @OneToMany
-    private List<Resource> resources;
+    private List<Resource> resources = new ArrayList<>();
 
     public CoursePrototype() {}
 

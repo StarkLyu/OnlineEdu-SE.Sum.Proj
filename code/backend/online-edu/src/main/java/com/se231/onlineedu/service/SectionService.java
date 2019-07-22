@@ -16,19 +16,21 @@ public interface SectionService {
     /**
      * this service allow teacher to create a new section
      * @param courseId  id of course
-     * @param form  title and description of new section
+     * @param secNo section number of current section
+     * @param title  title  of new section
      * @return  section info
      */
-    Section createSection(Long courseId, TitleAndDes form);
+    Section createSection(Long courseId, Integer secNo, String title);
 
     /**
-     * this service allow teacher to create a new branch in section
+     * this service allow teacher to append a new branch after current branch in section
      * @param courseId  id of course
      * @param secNo number of section
-     * @param title title of branch
+     * @param branchNo number of current branch
+     * @param form title and description of branch
      * @return  branch info
      */
-    SectionBranches createBranch(Long courseId,int secNo,String title);
+    SectionBranches createBranch(Long courseId,int secNo,int branchNo,TitleAndDes form);
 
     /**
      * this service allow teacher to issue a existing paper to a section
