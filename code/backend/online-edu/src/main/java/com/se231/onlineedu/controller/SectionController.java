@@ -4,6 +4,9 @@ import javax.validation.Valid;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.Section;
 import com.se231.onlineedu.model.SectionBranches;
+import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.service.CourseService;
+import com.se231.onlineedu.service.EmailSenderService;
 import com.se231.onlineedu.service.SectionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,6 +25,12 @@ import org.springframework.web.bind.annotation.*;
 public class SectionController {
     @Autowired
     SectionService sectionService;
+
+    @Autowired
+    CourseService courseService;
+
+    @Autowired
+    EmailSenderService emailSenderService;
 
     @ApiOperation("创建章节")
     @PostMapping("/create")
@@ -51,6 +60,9 @@ public class SectionController {
                               @PathVariable("secNo")int secNo,
                               @PathVariable("branchNo")int branchNo,
                               @RequestParam("paperId")Long paperId)throws Exception{
+        for(User student: courseService.getCourseInfo(courseId).getStudents()){
+            emailSenderService.sendNotification(student.getEmail());
+        }
         return sectionService.issuePaper(courseId, secNo, branchNo,paperId);
     }
 

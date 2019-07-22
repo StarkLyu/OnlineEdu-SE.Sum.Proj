@@ -45,7 +45,7 @@ public class Course {
 
     @ApiModelProperty(value = "该课程基于的课程原型")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference
     private CoursePrototype coursePrototype;
 
     @OneToMany(mappedBy = "sectionPrimaryKey.course")

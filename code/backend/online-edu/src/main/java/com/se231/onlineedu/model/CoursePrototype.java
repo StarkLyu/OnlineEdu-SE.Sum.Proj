@@ -43,7 +43,7 @@ public class CoursePrototype {
 
     @ApiModelProperty("该课程原型的所有衍生课程")
     @OneToMany(mappedBy = "coursePrototype")
-    @JsonManagedReference
+    @JsonBackReference
     private List<Course> courses;
 
     @NotNull
