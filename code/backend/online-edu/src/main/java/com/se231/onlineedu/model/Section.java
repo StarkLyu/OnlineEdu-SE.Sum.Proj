@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  * SectionRepository Entity Class
@@ -20,13 +21,18 @@ public class Section {
 
     private String title;
 
-    private String description;
-
     @OneToMany
     private List<Paper> papers;
 
+    private int secNo;
+
     @OneToMany
     private List<Resource> resources;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "sectionBranchesPrimaryKey.section")
+    private List<SectionBranches> sectionBranchesList;
+
 
     public Section() {
         resources=new ArrayList<>();
@@ -49,14 +55,6 @@ public class Section {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public List<Paper> getPapers() {
         return papers;
     }
@@ -71,5 +69,21 @@ public class Section {
 
     public void setResources(List<Resource> resources) {
         this.resources = resources;
+    }
+
+    public List<SectionBranches> getSectionBranchesList() {
+        return sectionBranchesList;
+    }
+
+    public void setSectionBranchesList(List<SectionBranches> sectionBranchesList) {
+        this.sectionBranchesList = sectionBranchesList;
+    }
+
+    public int getSecNo() {
+        return secNo;
+    }
+
+    public void setSecNo(int secNo) {
+        this.secNo = secNo;
     }
 }

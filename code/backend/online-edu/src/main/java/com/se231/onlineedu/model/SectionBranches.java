@@ -21,8 +21,12 @@ public class SectionBranches {
 
     private String title;
 
+    private String description;
+
     @OneToMany
     private List<Paper> papers;
+
+    private int branchNo;
 
     @OneToMany
     private List<Resource> resources;
@@ -55,6 +59,14 @@ public class SectionBranches {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<Paper> getPapers() {
         return papers;
     }
@@ -69,5 +81,13 @@ public class SectionBranches {
 
     public void setResources(List<Resource> resources) {
         this.resources = resources;
+    }
+
+    public int getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(int branchNo) {
+        this.branchNo = branchNo;
     }
 }

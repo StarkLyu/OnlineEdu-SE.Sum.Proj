@@ -26,6 +26,20 @@ public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, PaperA
     @Query(value = "select max(times) from paper_answer where user_id = ?1 and paper_id=?2 ",nativeQuery = true)
     Optional<Integer> getMaxTimes(Long user_id,Long paper_id);
 
+    /**
+     * get list of all paper answer of a specific paper
+     * @param paperId   id of the paper
+     * @return
+     */
     @Query(value = "select * from paper_answer where paper_id = ?1",nativeQuery = true)
     List<PaperAnswer> getPaperAnswers(Long paperId);
+
+    /**
+     * get a student's answer list
+     * @param paperId   id of paper
+     * @param userId    id of user
+     * @return  user's answer list
+     */
+    @Query(value = "select * from paper_answer where paperId = ?1 and userId = ?2",nativeQuery = true)
+    List<PaperAnswer> getPersonalPaperAnswer(Long paperId, Long userId);
 }

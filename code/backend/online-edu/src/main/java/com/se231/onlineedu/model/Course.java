@@ -91,6 +91,9 @@ public class Course {
     @OneToMany(mappedBy = "signInPrimaryKey.course")
     private List<SignIn> signIns = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sectionPrimaryKey.course")
+    private List<Section> sectionList;
+
     public Course() {
     }
 
@@ -230,6 +233,14 @@ public class Course {
 
     public void setPapers(List<Paper> papers) {
         this.papers = papers;
+    }
+
+    public List<Section> getSectionList() {
+        return sectionList;
+    }
+
+    public void setSectionList(List<Section> sectionList) {
+        this.sectionList = sectionList;
     }
 
     @Override

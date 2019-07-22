@@ -23,11 +23,11 @@ public class SectionPrimaryKey implements Serializable {
     private Course course;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int secNo;
+    private int secId;
 
-    public SectionPrimaryKey(Course course,int secNo){
+    public SectionPrimaryKey(Course course,int secId){
         this.course=course;
-        this.secNo=secNo;
+        this.secId=secId;
     }
 
     public SectionPrimaryKey() {
@@ -41,11 +41,11 @@ public class SectionPrimaryKey implements Serializable {
         this.course = course;
     }
 
-    public int getSecNo() {
-        return secNo;
+    public int getSecId() {
+        return secId;
     }
 
-    public void setSecNo(int secNo) {
-        this.secNo = secNo;
+    public void setSecId(int secId) {
+        this.secId = secId;
     }
 }
