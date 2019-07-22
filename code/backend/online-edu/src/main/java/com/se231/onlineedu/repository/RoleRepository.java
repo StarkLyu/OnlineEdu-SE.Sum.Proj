@@ -25,11 +25,4 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
      * @return Optional<Role>
      */
     Optional<Role> findByRole(RoleType role);
-
-    /**
-     * get role by RoleType
-     * @param roleType role type
-     * @return
-     */
-    Role getByRole(RoleType roleType);
 }

@@ -8,6 +8,17 @@ import com.se231.onlineedu.model.VerificationToken;
  */
 public interface VerificationTokenService {
 
+    /**
+     * verify if token correct
+     * @param verificationToken
+     * @param token
+     */
     void verify(VerificationToken verificationToken, String token);
+
+    /**
+     * generate verification token
+     *
+     * @return
+     */
     VerificationToken generateToken();
 }
