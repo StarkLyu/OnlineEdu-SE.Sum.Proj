@@ -2,13 +2,13 @@
 <!--    判断题组件-->
     <div id="AssignmentJudge">
         <h4>
-            第{{judge.key}}题：{{judge.title}}
+            {{judge.title}}
         </h4>
         <el-radio-group style="width: 80%" v-model="judge.answer">
             <el-radio label="正确"></el-radio>
             <el-radio label="错误"></el-radio>
         </el-radio-group>
-        <p>
+        <p style="color:red">
             正确答案为：( {{judge.correctAnswer}} )
         </p>
 <!--        <div v-for="judge in JudgeQuestion" :key="judge.key">-->

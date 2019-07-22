@@ -1,13 +1,7 @@
 <template>
     <el-collapse-item>
         <h3 slot="title">{{ sectionInfo.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h3>
-        <el-button
-                slot="title"
-                circle
-                icon="el-icon-plus"
-                size="small"
-                v-if="managerMode"
-        ></el-button>
+        <AddNewSection slot="title"></AddNewSection>
         <el-divider>章节介绍</el-divider>
         <pre>{{ sectionInfo.description }}</pre>
         <el-divider>章节资源</el-divider>
@@ -35,9 +29,10 @@
 <script>
     import ResourceUnit from "./ResourceUnit";
     import PaperUnit from "./PaperUnit";
+    import AddNewSection from "./AddNewSection";
     export default {
         name: "CourseSectionUnit",
-        components: {PaperUnit, ResourceUnit},
+        components: {AddNewSection, PaperUnit, ResourceUnit},
         props: {
             sectionInfo: {
                 title: "",
@@ -46,11 +41,6 @@
                 papers: []
             }
         },
-        computed: {
-            managerMode: function () {
-                return true;
-            }
-        }
     }
 </script>
 

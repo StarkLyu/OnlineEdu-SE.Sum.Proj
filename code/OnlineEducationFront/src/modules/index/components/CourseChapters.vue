@@ -5,17 +5,7 @@
                 :key="indexChapter"
         >
             <h2 slot="title">{{ chapter.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h2>
-            <el-button
-                    slot="title"
-                    circle
-                    icon="el-icon-plus"
-                    size="small"
-                    v-if="managerMode"
-                    @click="showAddChapter = true"
-            ></el-button>
-            <el-dialog :visible.sync="showAddChapter">
-
-            </el-dialog>
+            <AddNewChapter slot="title" :last-chapter="chapter.sectionPrimaryKey.secNo"></AddNewChapter>
             <div class="section-content">
                 <el-collapse>
                     <CourseSectionUnit
@@ -31,14 +21,18 @@
 
 <script>
     import CourseSectionUnit from "./CourseSectionUnit";
+    import AddNewChapter from "./AddNewChapter";
     export default {
         name: "CourseChapters",
-        components: {CourseSectionUnit},
+        components: {AddNewChapter, CourseSectionUnit},
         data() {
             return {
                 chapters: [
                     {
                         title: "第一章",
+                        sectionPrimaryKey: {
+                            secNo: 0,
+                        },
                         sections: [
                             {
                                 title: "第一节：哈哈哈",
@@ -111,6 +105,9 @@
                     },
                     {
                         title: "第一章",
+                        sectionPrimaryKey: {
+                            secNo: 0,
+                        },
                         sections: [
                             {
                                 title: "第一节：哈哈哈",
@@ -128,6 +125,9 @@
                     },
                     {
                         title: "第一章",
+                        sectionPrimaryKey: {
+                            secNo: 0,
+                        },
                         sections: [
                             {
                                 title: "第一节：哈哈哈",
@@ -144,14 +144,13 @@
                         ]
                     }
                 ],
-                showAddChapter: false
+                showAddChapter: false,
+                addAfterChapter: {
+                    id: 0,
+                    title: "",
+                }
             }
         },
-        computed: {
-            managerMode: function () {
-                return true;
-            }
-        }
     }
 </script>
 

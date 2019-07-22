@@ -51,6 +51,12 @@
                             课程作业
                         </span>
                         </el-menu-item>
+                        <el-menu-item index="8" route="/course/manager/questionBank">
+                            <i class="el-icon-notebook-2"></i>
+                            <span slot="title">
+                            课程题库
+                        </span>
+                        </el-menu-item>
                     </el-menu>
                 </el-col>
             </el-row>
