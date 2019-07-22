@@ -2,7 +2,9 @@ package com.se231.onlineedu.model;
 
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -45,6 +47,12 @@ public class Question {
     @ElementCollection
     @CollectionTable(name="QuestionImage", joinColumns = @JoinColumn(name="question_id"))
     private List<String> images;
+
+    @Transient
+    private Map<String,String> options;
+
+    @Transient
+    public String content;
 
     public Question() {
     }
@@ -103,5 +111,32 @@ public class Question {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public Map<Character, String> getOptions() {
+        Map<Character,String> options = new HashMap<>(10);
+        int optionIndex = question.indexOf('\0');
+        String optionString = question.substring(optionIndex+2);
+        List<String> stringList = List.of(optionString.split("\0\r"));
+        char op = 'A';
+        for (String option:stringList) {
+            options.put(op,option);
+            op++;
+        }
+        return options;
+    }
+
+    public void setOptions(Map<String, String> options) {
+        this.options = options;
+    }
+
+    public String getContent() {
+        int firstDelim = question.indexOf('\0');
+        String tmp = question.substring(0,firstDelim);
+        return tmp;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
