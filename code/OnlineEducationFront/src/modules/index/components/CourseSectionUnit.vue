@@ -62,8 +62,8 @@
                 description: "",
                 resources: [],
                 papers: [],
-                sectionPrimaryKey:{
-                    secId:"",
+                sectionBranchesPrimaryKey:{
+                    branchId:"",
                 },
             },
             chapterId: Number,
@@ -88,7 +88,7 @@
             // 加入资源
             chooseResource(){
                 this.$http.request({
-                    url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/'+this.sectionInfo.sectionPrimaryKey.secId+'/resources/issue',
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/'+this.sectionInfo.sectionBranchesPrimaryKey.branchId+'/resources/issue',
                     method: "post",
                     headers: this.$store.getters.authRequestHead,
                     params:{

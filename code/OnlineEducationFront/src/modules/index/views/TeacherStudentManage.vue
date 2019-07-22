@@ -11,7 +11,7 @@
                           prefix-icon="el-icon-search"/>
             </div>
 <!--            学生信息显示table-->
-            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
+            <el-table :data="StudentData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
                       stripe>
                 <el-table-column >
@@ -54,28 +54,54 @@
             return{
                 search: '',
 
-                UserData: [
-                    {
-                        sno:"45112323",
-                        username:"kamen",
-                        userCollege:"化学化工",
-                        email:"1099@fg.co"
-                    },
-                    {
-                        sno:"2144641",
-                        username:"student",
-                        userCollege:"电子信息",
-                        email:"1daswew9@fger.coq"
-                    },
-                    {
-                        sno:"78089870",
-                        username:"zhujiao",
-                        userCollege:"机动",
-                        email:"df633339@qq.com"
-                    }
+                StudentData: [
+                    // {
+                    //     sno:"45112323",
+                    //     username:"kamen",
+                    //     userCollege:"化学化工",
+                    //     email:"1099@fg.co"
+                    // },
+                    // {
+                    //     sno:"2144641",
+                    //     username:"student",
+                    //     userCollege:"电子信息",
+                    //     email:"1daswew9@fger.coq"
+                    // },
+                    // {
+                    //     sno:"78089870",
+                    //     username:"zhujiao",
+                    //     userCollege:"机动",
+                    //     email:"df633339@qq.com"
+                    // }
                 ],
             }
         },
+
+        methods:{
+            showAllStudents(){
+                // 该课程所有学生
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/students',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        // alert("请求成功");
+                        that.StudentData = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
+
+            }
+        },
+
+        mounted() {
+            this.showAllStudents();
+        }
     }
 </script>
 

@@ -81,6 +81,12 @@
                     <el-input type="textarea" v-model="AssignEditForm.description"></el-input>
                 </el-form-item>
             </el-form>
+<!--            问题table-->
+            <el-table :data="questions" ref="multipleTable" height="300px" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" min-width="10%"></el-table-column>
+                <el-table-column property="questionType" label="题型" sortable min-width="20%"></el-table-column>
+                <el-table-column property="question" label="题目" min-width="40%" show-overflow-tooltip="true"></el-table-column>
+            </el-table>
             <span slot="footer" class="el-dialog__footer">
                 <el-button @click.native="AssignVisible=false">取消</el-button>
                 <el-button v-if="AssignStatus==='create'" type="primary" @click="createAssign">添加</el-button>
@@ -126,12 +132,18 @@
                 },
 
                 AssignStatus:"",
+
+                questions:this.$store.getters.getCourseInfo.coursePrototype.questions,
+
+                multipleSelection:[],
             }
         },
 
         methods:{
             // 显示增加作业弹窗
             handleAdd(){
+                this.AssignEditForm.questionFormList=this.multipleSelection;
+
                 this.AssignStatus="create";
                 this.AssignVisible=true;
             },
@@ -150,8 +162,23 @@
 
             // 新增一份作业
             createAssign(){
-                this.AssignData.push(this.AssignEditForm);
-                console.log(this.AssignEditForm);
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/papers',
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead,
+                    data:{
+                        form:this.AssignEditForm,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        alert("请求失败");
+                    });
+
                 this.AssignVisible=false;
             },
 
@@ -159,6 +186,10 @@
             updateAssign(){
 
             },
+
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            }
         }
     }
 </script>

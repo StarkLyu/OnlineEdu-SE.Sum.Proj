@@ -21,12 +21,6 @@
                                 课程章节
                             </span>
                         </el-menu-item>
-                        <el-menu-item index="3" route="/course/manager/student">
-                            <i class="el-icon-user"></i>
-                            <span slot="title">
-                                选课学生
-                            </span>
-                        </el-menu-item>
 <!--                        <el-menu-item index="4" route="/course/manager/edit">-->
 <!--                            <i class="el-icon-edit-outline"></i>-->
 <!--                            <span slot="title">-->
@@ -39,28 +33,34 @@
                                 课程公告
                             </span>
                         </el-menu-item>
-                        <el-menu-item index="5" route="/course/manager/BT">
-                            <i class="el-icon-folder"></i>
-                            <span slot="title">
-                                课程资源
-                            </span>
-                        </el-menu-item>
                         <el-menu-item index="7" route="/course/manager/assignment">
                             <i class="el-icon-notebook-1"></i>
                             <span slot="title">
                                 课程作业
                             </span>
                         </el-menu-item>
-                        <el-menu-item index="8" route="/course/manager/questionBank">
-                            <i class="el-icon-notebook-2"></i>
+                        <el-menu-item index="3" route="/course/manager/student">
+                            <i class="el-icon-user"></i>
                             <span slot="title">
-                                课程题库
+                                选课学生
                             </span>
                         </el-menu-item>
                         <el-menu-item index="6" route="/course/manager/score">
                             <i class="el-icon-data-analysis"></i>
                             <span slot="title">
                                 成绩管理
+                            </span>
+                        </el-menu-item>
+                        <el-menu-item index="5" route="/course/manager/BT">
+                            <i class="el-icon-folder"></i>
+                            <span slot="title">
+                                课程资源
+                            </span>
+                        </el-menu-item>
+                        <el-menu-item index="8" route="/course/manager/questionBank">
+                            <i class="el-icon-notebook-2"></i>
+                            <span slot="title">
+                                课程题库
                             </span>
                         </el-menu-item>
                     </el-menu>
