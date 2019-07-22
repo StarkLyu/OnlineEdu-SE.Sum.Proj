@@ -48,11 +48,6 @@ public class Question {
     @CollectionTable(name="QuestionImage", joinColumns = @JoinColumn(name="question_id"))
     private List<String> images;
 
-    @Transient
-    private Map<String,String> options;
-
-    @Transient
-    public String content;
 
     public Question() {
     }
@@ -113,6 +108,7 @@ public class Question {
         this.images = images;
     }
 
+    @Transient
     public Map<Character, String> getOptions() {
         Map<Character,String> options = new HashMap<>(10);
         int optionIndex = question.indexOf('\0');
@@ -126,17 +122,13 @@ public class Question {
         return options;
     }
 
-    public void setOptions(Map<String, String> options) {
-        this.options = options;
-    }
-
+    @Transient
     public String getContent() {
         int firstDelim = question.indexOf('\0');
-        String tmp = question.substring(0,firstDelim);
-        return tmp;
+        String tmp =null;
+        if(firstDelim>0) {
+            tmp = question.substring(0, firstDelim);
+        }return tmp;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 }
