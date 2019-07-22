@@ -1,6 +1,5 @@
 package com.se231.onlineedu.controller;
 
-import javax.validation.Valid;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.Section;
 import com.se231.onlineedu.model.SectionBranches;
