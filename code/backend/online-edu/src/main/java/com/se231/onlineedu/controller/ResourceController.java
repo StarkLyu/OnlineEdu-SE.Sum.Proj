@@ -34,7 +34,7 @@ public class ResourceController {
     public String uploadFiles(@RequestParam("resource")MultipartFile multipartFile, @PathVariable Long courseProtoTypeId, @PathVariable String resourceType) throws IOException {
         String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
         String url = SaveFileUtil.saveFile(multipartFile, suffix);
-        Resource resource = new Resource(url, ResourceType.valueOf(resourceType.toUpperCase()));
+        Resource resource = new Resource(url, ResourceType.valueOf(resourceType.toUpperCase()), multipartFile.getOriginalFilename());
         coursePrototypeService.saveResource(courseProtoTypeId, resource);
         return url;
     }
