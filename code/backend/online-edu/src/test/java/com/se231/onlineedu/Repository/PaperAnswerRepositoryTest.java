@@ -32,18 +32,18 @@ public class PaperAnswerRepositoryTest {
     @Autowired
     QuestionRepository questionRepository;
 
-    @Before
-    public void setup(){
-        User user = new User();
-        user.setUsername("admin");
-        userRepository.save(user);
-        Course course = new Course();
-        course.setCourseTitle("shit");
-        courseRepository.save(course);
-
-    }
-
-    @Test
-    public void getMaxTimesTest(){
-    }
+//    @Before
+//    public void setup(){
+//        User user = new User();
+//        user.setUsername("admin");
+//        userRepository.save(user);
+//        Course course = new Course();
+//        course.setCourseTitle("shit");
+//        courseRepository.save(course);
+//
+//    }
+//
+//    @Test
+//    public void getMaxTimesTest(){
+//    }
 }
