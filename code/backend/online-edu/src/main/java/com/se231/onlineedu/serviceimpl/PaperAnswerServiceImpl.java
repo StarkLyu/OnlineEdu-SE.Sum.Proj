@@ -104,6 +104,10 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             paperAnswer.setState(state);
             paperAnswerRepository.save(paperAnswer);
         });
+    }
 
+    @Override
+    public List<PaperAnswer> getPersonalPaperAnswer(Long paperId, Long userId) {
+        return paperAnswerRepository.getPersonalPaperAnswer(paperId,userId);
     }
 }

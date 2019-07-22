@@ -24,18 +24,29 @@ public class SectionController {
     SectionService sectionService;
 
     @ApiOperation("创建章节")
-    @PostMapping("/create")
+    @PostMapping("/append")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseId",value = "课程id",paramType = "path"),
+            @ApiImplicitParam(name = "secNo",value = "插入的章节的前一章节的序号",paramType = "param")
+    })
     public Section createSection(@PathVariable("courseId")Long courseId,
-                                 @Valid @RequestBody TitleAndDes form){
-        return sectionService.createSection(courseId, form);
+                                 @RequestParam("secNo")Integer secNo,
+                                 @RequestBody String title){
+        return sectionService.createSection(courseId, secNo, title);
     }
 
     @ApiOperation("创建小节")
-    @PostMapping("/{secNo}/create")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseId",value = "课程id",paramType = "path"),
+            @ApiImplicitParam(name = "secId",value = "章节id",paramType = "path"),
+            @ApiImplicitParam(name = "branchNo",value = "插入的小节的前一小节的序号",paramType = "param")
+    })
+    @PostMapping("/{secId}/append")
     public SectionBranches createBranch(@PathVariable("courseId")Long courseId,
-                                        @PathVariable("secNo")int secNo,
-                                        @RequestBody String title) {
-        return sectionService.createBranch(courseId, secNo,title);
+                                        @PathVariable("secId")int secId,
+                                        @RequestParam("branchNo")Integer branchNo,
+                                        @RequestBody TitleAndDes form) {
+        return sectionService.createBranch(courseId, secId,branchNo, form);
     }
 
 

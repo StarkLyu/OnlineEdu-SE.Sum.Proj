@@ -45,7 +45,7 @@ public class Course {
 
     @ApiModelProperty(value = "该课程基于的课程原型")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference
     private CoursePrototype coursePrototype;
 
     @OneToMany(mappedBy = "sectionPrimaryKey.course")
@@ -90,6 +90,9 @@ public class Course {
     @ApiModelProperty("该课程的所有签到")
     @OneToMany(mappedBy = "signInPrimaryKey.course")
     private List<SignIn> signIns = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sectionPrimaryKey.course")
+    private List<Section> sectionList;
 
     public Course() {
     }
@@ -230,6 +233,14 @@ public class Course {
 
     public void setPapers(List<Paper> papers) {
         this.papers = papers;
+    }
+
+    public List<Section> getSectionList() {
+        return sectionList;
+    }
+
+    public void setSectionList(List<Section> sectionList) {
+        this.sectionList = sectionList;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.se231.onlineedu.controller;
 
+import java.util.List;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.PaperAnswer;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -36,6 +37,12 @@ public class PaperAnswerController {
                                                     @RequestBody SubmitAnswerForm form)throws Exception{
 
         return paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,form);
+    }
+
+    @GetMapping
+    public List<PaperAnswer> getPersonalPaperAnswer(@PathVariable("paperId")Long paperId,
+                                                    @AuthenticationPrincipal UserPrinciple userPrinciple){
+        return paperAnswerService.getPersonalPaperAnswer(paperId,userPrinciple.getId());
     }
 
 }

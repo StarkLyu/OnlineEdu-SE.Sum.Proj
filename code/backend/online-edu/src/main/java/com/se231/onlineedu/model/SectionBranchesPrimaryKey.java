@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Section Branches' Primary Key
@@ -17,13 +18,14 @@ public class SectionBranchesPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;
 
     @ManyToOne
+    @JsonBackReference
     private Section section;
 
-    private int branchNo;
+    private int branchId;
 
-    public SectionBranchesPrimaryKey(Section section, int branchNo) {
+    public SectionBranchesPrimaryKey(Section section, int branchId) {
         this.section = section;
-        this.branchNo = branchNo;
+        this.branchId = branchId;
     }
 
     public SectionBranchesPrimaryKey() {
@@ -37,11 +39,11 @@ public class SectionBranchesPrimaryKey implements Serializable {
         this.section = section;
     }
 
-    public int getBranchNo() {
-        return branchNo;
+    public int getBranchId() {
+        return branchId;
     }
 
-    public void setBranchNo(int branchNo) {
-        this.branchNo = branchNo;
+    public void setBranchNo(int branchId) {
+        this.branchId = branchId;
     }
 }
