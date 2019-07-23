@@ -55,6 +55,15 @@ public class SectionRepositoryTest extends BaseTest {
         int currentSecNo1 = sectionRepository.currentSecNo(course.getId()).orElseThrow();
         sectionRepository.updateSecNo(course.getId(),2);
         int currentSecNo2 =sectionRepository.currentSecNo(course.getId()).orElseThrow();
+        assertThat(currentSecNo1).isEqualTo(3);
+        assertThat(currentSecNo2).isEqualTo(4);
 
+        createSectionBranches(2,"branch_2",2,section);
+        createSectionBranches(3,"branch_3",3,section);
+        int currentBranchNo1 = sectionBranchRepository.currentBranchNo(course.getId(),section.getSectionPrimaryKey().getSecId()).orElseThrow();
+        sectionBranchRepository.updateSecBranchNo(course.getId(),section.getSectionPrimaryKey().getSecId(),2);
+        int currentBranchNo2 =sectionBranchRepository.currentBranchNo(course.getId(),section.getSectionPrimaryKey().getSecId()).orElseThrow();
+        assertThat(currentBranchNo1).isEqualTo(3);
+        assertThat(currentBranchNo2).isEqualTo(4);
     }
 }
