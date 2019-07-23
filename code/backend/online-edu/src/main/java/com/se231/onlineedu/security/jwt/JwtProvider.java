@@ -21,7 +21,6 @@ import java.util.Date;
  */
 @Component
 public class JwtProvider {
-
     private Clock clock = DefaultClock.INSTANCE;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);

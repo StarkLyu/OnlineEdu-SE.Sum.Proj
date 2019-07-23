@@ -1,15 +1,17 @@
 spring:
   mail:
-    host: smtp.126.com
-    username: sjtu_se231_1@126.com
-    password: abcd1234
+    default-encoding: UTF-8
+    host: localhost
+    jndi-name:
+    username: username
+    password: secret
+    port: 2525
+    properties:
+      mail:
+        debug: false
+        smtp:
+          debug: false
+          auth: true
+          starttls: true
     protocol: smtp
-    properties.mail.smtp.auth: true
-    properties.mail.smtp.port: 994
-    properties.mail.display.sendmail: Javen
-    properties.mail.display.sendname: Spring Boot Guide Email
-    properties.mail.smtp.starttls.enable: true
-    properties.mail.smtp.starttls.required: true
-    properties.mail.smtp.ssl.enable: true
-    default-encoding: utf-8
-    from: sjtu_se231_1@126.com
+    test-connection: false

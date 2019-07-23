@@ -209,6 +209,7 @@ public class UserController {
         return userService.bulkImportUser(excel);
     }
 
+
     private String sendEmail(HttpSession httpSession, Long id)  {
         VerificationToken verificationToken = verificationTokenService.generateToken();
         httpSession.setAttribute("token", verificationToken);

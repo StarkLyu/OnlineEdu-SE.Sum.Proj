@@ -1,9 +1,12 @@
 package com.se231.onlineedu.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.se231.onlineedu.exception.BulkImportDataException;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
 import com.se231.onlineedu.service.QuestionService;
+import com.se231.onlineedu.util.ImageWithInfo;
+import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -11,7 +14,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,6 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/coursePrototypes/{id}/questions")
 public class QuestionController {
+    private static int limit=5120000;
 
     @Autowired
     QuestionService questionService;
@@ -58,34 +64,15 @@ public class QuestionController {
                 QuestionType.valueOf(type), question, answer);
     }
 
-//    @PostMapping("/{questionId}")
-//    @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
-//    public ResponseEntity<Question> submitQuestionImage(@PathVariable("questionId") Long questionId,
-//                                                        @PathVariable("id") Long coursePrototypeId, @RequestParam("file") MultipartFile[] files) throws Exception {
-//        for (MultipartFile multipartFile : files) {
-//            if (multipartFile.getSize() > limit) {
-//                return ResponseEntity.badRequest().body("exceeded max size");
-//            }
-//
-//            String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
-//
-//            if (!fileExtension.contains(suffix)) {
-//                return ResponseEntity.badRequest().body("file format not supported");
-//            }
-//            String fileName = nginxPath + id + "-avatar/" + id + "-avatar" + suffix;
-//            File file = new File(fileName);
-//
-//            if (file.getParentFile().exists()) {
-//                FileUtils.cleanDirectory(file.getParentFile());
-//            } else {
-//                file.getParentFile().mkdir();
-//            }
-//            file.createNewFile();
-//            multipartFile.transferTo(file);
-//
-//            return ResponseEntity.ok(userService.updateUserAvatar(id + "-avatar/" + id + "-avatar" + suffix, id));
-//        }
-//    }
+    @PostMapping("/{questionId}")
+    @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
+    public Question submitQuestionImage(@PathVariable("questionId") Long questionId, @RequestParam("file") MultipartFile[] multipartFiles) throws IOException {
+        ImageWithInfo imageWithInfo = SaveFileUtil.saveImages(multipartFiles, limit);
+        if (imageWithInfo.isHasError()) {
+            throw new BulkImportDataException(imageWithInfo.getErrorMessage());
+        }
+        return questionService.saveImages(questionId, imageWithInfo.getImagesUrls());
+    }
 
 
 }

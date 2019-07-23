@@ -83,4 +83,13 @@ public class UserRepositoryTest {
         Boolean flag = userRepository.existsByTel(46114L);
         assertThat(flag).isEqualTo(true);
     }
+
+    @Test
+    public void sav(){
+        String a = "123\0\r4567893\0\r456cd6";
+        String[] strings = a.split("\0\r");
+        for(String string: strings){
+            System.out.println(string);
+        }
+    }
 }
