@@ -4,6 +4,7 @@ import java.util.*;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -150,5 +151,10 @@ public class BaseTest {
         sectionBranches1.setTitle(title);
         sectionBranches1.setSectionBranchesPrimaryKey(new SectionBranchesPrimaryKey(section,branchId));
         return sectionBranchRepository.save(sectionBranches1);
+    }
+
+    @Test
+    public void init(){
+        System.out.println(section.getTitle());
     }
 }
