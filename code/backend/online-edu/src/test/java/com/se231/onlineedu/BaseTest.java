@@ -155,6 +155,6 @@ public class BaseTest {
 
     @Test
     public void init(){
-        System.out.println(section.getTitle());
+        System.out.println("1");
     }
 }
