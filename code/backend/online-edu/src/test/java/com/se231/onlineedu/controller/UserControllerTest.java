@@ -228,14 +228,14 @@ public class UserControllerTest {
 
     @Test
     public void checkSameEmail() throws Exception {
-        mvc.perform(get("/api/users/checkSame/email").param("username","username"))
+        mvc.perform(get("/api/users/checkSame/email").param("email","email"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
 
     @Test
     public void checkSameTel() throws Exception {
-        mvc.perform(get("/api/users/checkSame/tel").param("username","username"))
+        mvc.perform(get("/api/users/checkSame/tel").param("tel","18621107375"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }

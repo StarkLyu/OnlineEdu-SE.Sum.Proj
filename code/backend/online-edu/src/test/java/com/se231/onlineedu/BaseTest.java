@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @date 2019/07/22
  */
 @RunWith(SpringRunner.class)
+@DataJpaTest
 public class BaseTest {
 
     protected User user;
