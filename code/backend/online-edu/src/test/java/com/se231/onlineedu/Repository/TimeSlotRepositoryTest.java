@@ -33,6 +33,6 @@ public class TimeSlotRepositoryTest {
         timeSlot.setStart(time);
         TimeSlot found = timeSlotRepository.save(timeSlot);
         TimeSlot found1 = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.FRIDAY, time, time).orElseThrow(()->new Exception("hah"));
-        assertThat(found.getDay()).isEqualTo(WeekDay.FRIDAY);
+        assertThat(found1.getDay()).isEqualTo(WeekDay.FRIDAY);
     }
 }

@@ -40,6 +40,6 @@ public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, PaperA
      * @param userId    id of user
      * @return  user's answer list
      */
-    @Query(value = "select * from paper_answer where paperId = ?1 and userId = ?2",nativeQuery = true)
+    @Query(value = "select * from paper_answer where paper_id = ?1 and user_id = ?2",nativeQuery = true)
     List<PaperAnswer> getPersonalPaperAnswer(Long paperId, Long userId);
 }
