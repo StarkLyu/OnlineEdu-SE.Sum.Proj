@@ -1,5 +1,6 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
@@ -7,8 +8,11 @@ import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.QuestionService;
+import com.se231.onlineedu.util.ImageWithInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Question Service Interface Implementation Class
@@ -36,6 +40,18 @@ public class QuestionServiceImpl implements QuestionService {
         question.setAnswer(answer);
         question.setCoursePrototype(coursePrototype);
         question.setQuestionType(questionType);
+        return questionRepository.save(question);
+    }
+
+    @Override
+    public Question getQuestionInfo(Long id){
+        return questionRepository.findById(id).orElseThrow(()-> new NotFoundException("该问题不存在"));
+    }
+
+    @Override
+    public Question saveImages(Long questionId, List<String> urls){
+        Question question = getQuestionInfo(questionId);
+        question.setImages(urls);
         return questionRepository.save(question);
     }
 }

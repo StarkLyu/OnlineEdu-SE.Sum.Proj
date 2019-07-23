@@ -3,6 +3,8 @@ package com.se231.onlineedu.service;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
 
+import java.util.List;
+
 /**
  * Service Interface related to questions
  *
@@ -24,5 +26,20 @@ public interface QuestionService {
      * @throws Exception    mainly contains not found exception
      */
     Question submitQuestion(Long coursePrototypeId, QuestionType questionType,
-                            String questionText,String answer)throws Exception;
+                            String questionText,String answer);
+
+    /**
+     * get info question
+     * @param id
+     * @return
+     */
+    Question getQuestionInfo(Long id);
+
+    /**
+     * save images
+     * @param questionId
+     * @param urls
+     * @return
+     */
+    Question saveImages(Long questionId, List<String> urls);
 }

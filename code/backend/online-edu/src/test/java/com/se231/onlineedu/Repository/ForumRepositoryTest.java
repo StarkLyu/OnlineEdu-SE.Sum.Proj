@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @DataMongoTest
+
 public class ForumRepositoryTest {
 
 

@@ -240,4 +240,11 @@ public class CourseServiceImpl implements CourseService {
         course.setState(CourseState.valueOf(state));
         return courseRepository.save(course);
     }
+
+    @Override
+    public Course saveNotice(Long id, Notice notice){
+        Course course = getCourseInfo(id);
+        course.getNotices().add(notice);
+        return courseRepository.save(course);
+    }
 }

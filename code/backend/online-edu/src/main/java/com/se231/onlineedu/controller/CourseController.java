@@ -6,6 +6,7 @@ import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.Learn;
+import com.se231.onlineedu.model.Notice;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
@@ -39,6 +40,15 @@ public class CourseController {
 
     @Autowired
     CourseService courseService;
+
+    @ApiOperation(value = "教师上传公告")
+    @PostMapping("/{id}/notices/")
+    @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
+    public Course uploadNotice(@PathVariable Long id, @RequestBody Notice notice){
+        return courseService.saveNotice(id, notice);
+    }
+
+
 
     @ApiOperation(value = "教师基于已有的课程原型申请开课")
     @ApiImplicitParams({

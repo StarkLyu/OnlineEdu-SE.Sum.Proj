@@ -2,6 +2,7 @@ package com.se231.onlineedu.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.se231.onlineedu.exception.BulkImportDataException;
 import com.se231.onlineedu.message.request.PathMessage;
 import com.se231.onlineedu.message.request.ReplyMessage;
 import com.se231.onlineedu.model.Forum;
@@ -81,20 +82,20 @@ public class ForumController {
 
     @PostMapping("/forums/{id}/images")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN')")
-    public ResponseEntity<?> insertImages(@PathVariable String id, @RequestParam("images") MultipartFile[] multipartFiles, @RequestParam("path") String pathString) throws IOException {
+    public Forum insertImages(@PathVariable String id, @RequestParam("images") MultipartFile[] multipartFiles, @RequestParam("path") String pathString) throws IOException {
         PathMessage pathMessage = JSONObject.parseObject(pathString, PathMessage.class);
         Forum forum = forumService.getForum(id);
         Object forumOrReply = forumService.getReplyOrForum(forum, pathMessage);
         ImageWithInfo imageWithInfo = SaveFileUtil.saveImages(multipartFiles, limit);
         if (imageWithInfo.isHasError()) {
-            return ResponseEntity.badRequest().body(imageWithInfo.getErrorMessage());
+            throw new BulkImportDataException(imageWithInfo.getErrorMessage());
         }
         if(pathMessage.getPath().isEmpty()){
             ((Forum)forumOrReply).setImageUrls(imageWithInfo.getImagesUrls());
         } else {
             ((Reply)forumOrReply).setImageUrls(imageWithInfo.getImagesUrls());
         }
-        return ResponseEntity.ok(forumService.updateForum(forum));
+        return forumService.updateForum(forum);
     }
 
     @DeleteMapping("/forums/{id}/images/{filename}")
