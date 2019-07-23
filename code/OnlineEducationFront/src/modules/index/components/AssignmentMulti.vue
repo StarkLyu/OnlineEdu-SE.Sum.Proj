@@ -2,7 +2,7 @@
 <!--    多选题组件-->
     <div id="AssignmentMulti">
         <h4>
-            第{{multi.key}}题：{{multi.title}}
+            {{multi.title}}
         </h4>
         <el-checkbox-group style="width: 80%" v-model="multi.answer">
             <el-checkbox style="columns:4"
@@ -12,7 +12,7 @@
                 {{choice.tag+'. '+choice.content}}
             </el-checkbox>
         </el-checkbox-group>
-        <p>
+        <p style="color:red">
             正确答案为：( {{multi.correctAnswer}} )
         </p>
 <!--        <div v-for="multi in MultiQuestion" :key="multi.key">-->

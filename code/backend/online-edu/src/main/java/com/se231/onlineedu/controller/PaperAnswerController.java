@@ -39,6 +39,7 @@ public class PaperAnswerController {
         return paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,form);
     }
 
+    @ApiOperation("学生获取试卷信息")
     @GetMapping
     public List<PaperAnswer> getPersonalPaperAnswer(@PathVariable("paperId")Long paperId,
                                                     @AuthenticationPrincipal UserPrinciple userPrinciple){

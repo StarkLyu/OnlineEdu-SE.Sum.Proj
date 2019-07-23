@@ -54,7 +54,7 @@ public class QuestionController {
         List<String> options = (List<String>) questionJSON.get("options");
         if(!(subjectiveString.equals(type)||trueOrFalseString.equals(type))) {
             for (String option : options) {
-                questionBuilder.append("\r\n" + option);
+                questionBuilder.append("\0\r" + option);
             }
         }
         String question = questionBuilder.toString();

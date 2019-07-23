@@ -177,14 +177,6 @@ public class Course {
         this.coursePrototype = coursePrototype;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
-    }
-
     public String getCourseTitle() {
         return courseTitle;
     }

@@ -2,12 +2,16 @@ package com.se231.onlineedu.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.message.request.PaperQuestionForm;
-import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.model.Course;
+import com.se231.onlineedu.model.Paper;
+import com.se231.onlineedu.model.PaperWithQuestions;
+import com.se231.onlineedu.model.Question;
+import com.se231.onlineedu.repository.PaperRepository;
+import com.se231.onlineedu.repository.PaperWithQuestionsRepository;
+import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperService;
@@ -35,9 +39,6 @@ public class PaperServiceImpl implements PaperService {
 
     @Autowired
     private PaperRepository paperRepository;
-
-    @Autowired
-    private SectionRepository sectionRepository;
 
     @Autowired
     private CourseService courseService;

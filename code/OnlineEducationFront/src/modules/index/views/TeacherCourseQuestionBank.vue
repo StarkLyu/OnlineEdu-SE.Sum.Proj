@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-header>
-            <h1 class="titlesytle">第一份作业</h1>
+            <h1 class="titlesytle">课程题库</h1>
         </el-header>
         <el-main>
 <!--            作业显示部分-->
@@ -10,40 +10,71 @@
                 <el-button @click="showMultiDialog">添加多选题</el-button>
                 <el-button @click="showJudgeDialog">添加判断题</el-button>
                 <el-button @click="showSubDialog">添加主观题</el-button>
-<!--                单选题-->
-                <div v-for="single in oneAssignment.quesitons" :key="single.key">
-                    <div v-if="single.type==='single'">
-                        <AssignmentSingle :single="single"></AssignmentSingle>
-                        <el-button size="small" @click="showSingleEditDialog(single)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
-                    </div>
-                </div>
-<!--                多选题-->
-                <div v-for="multi in oneAssignment.quesitons" :key="multi.key">
-                    <div v-if="multi.type==='multi'">
-                        <AssignmentMulti :multi="multi"></AssignmentMulti>
-                        <el-button size="small" @click="showMultiEditDialog(multi)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
-                    </div>
-                </div>
-<!--                判断题-->
-                <div v-for="judge in oneAssignment.quesitons" :key="judge.key">
-                    <div v-if="judge.type==='judge'">
-                        <AssignmentJudge :judge="judge"></AssignmentJudge>
-                        <el-button size="small" @click="showJudgeEditDialog(judge)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
-                    </div>
-                </div>
-<!--                主观题-->
-                <div v-for="sub in oneAssignment.quesitons" :key="sub.key">
-                    <div v-if="sub.type==='sub'">
+<!--                所有题目展示-->
+                <div v-for="question in questions" :key="question.id">
+<!--                    <div style="float: right">-->
+<!--                        <el-button size="small" @click="showQuestionEdit(question)">编辑</el-button>-->
+<!--                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
+<!--                    </div>-->
+                    <div v-if="question.questionType==='SINGLE_ANSWER'|| question.questionType==='MULTIPLE_ANSWER'">
                         <h4>
-                            第{{sub.key}}题:{{sub.title}}
+                            Question: {{question.content}}
                         </h4>
-                        <el-button size="small" @click="showSubEditDialog(sub)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>
+                        <div v-for="choice in question.options" :key="choice">
+                            {{choice}}
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h4>
+                            Question: {{question.question}}
+                        </h4>
+                    </div>
+                    <div style="color:red" v-if="question.questionType!=='SUBJECTIVE'">
+                        <p>Answer: {{question.answer}}</p>
                     </div>
                 </div>
+<!--                单选题-->
+<!--                <div v-for="single in oneAssignment.quesitons" :key="single.key">-->
+<!--                    <div v-if="single.type==='SINGLE_ANSWER'">-->
+<!--                        <div style="float: right">-->
+<!--                            <el-button size="small" @click="showSingleEditDialog(single)">编辑</el-button>-->
+<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
+<!--                        </div>-->
+<!--                        <AssignmentSingle :single="single"></AssignmentSingle>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                多选题-->
+<!--                <div v-for="multi in oneAssignment.quesitons" :key="multi.key">-->
+<!--                    <div v-if="multi.type==='MULTIPLE_ANSWER'">-->
+<!--                        <div style="float: right">-->
+<!--                            <el-button size="small" @click="showMultiEditDialog(multi)">编辑</el-button>-->
+<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
+<!--                        </div>-->
+<!--                        <AssignmentMulti :multi="multi"></AssignmentMulti>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                判断题-->
+<!--                <div v-for="judge in oneAssignment.quesitons" :key="judge.key">-->
+<!--                    <div v-if="judge.type==='T_OR_F'">-->
+<!--                        <div style="float: right">-->
+<!--                            <el-button size="small" @click="showJudgeEditDialog(judge)">编辑</el-button>-->
+<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
+<!--                        </div>-->
+<!--                        <AssignmentJudge :judge="judge"></AssignmentJudge>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                主观题-->
+<!--                <div v-for="sub in oneAssignment.quesitons" :key="sub.key">-->
+<!--                    <div v-if="sub.type==='SUBJECTIVE'">-->
+<!--                        <div style="float: right">-->
+<!--                            <el-button size="small" @click="showSubEditDialog(sub)">编辑</el-button>-->
+<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
+<!--                        </div>-->
+<!--                        <h4>-->
+<!--                            {{sub.title}}-->
+<!--                        </h4>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
 <!--            添加单选题弹窗部分-->
             <el-dialog :title="'单选题'"
@@ -70,8 +101,10 @@
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="singleVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createSingleData">编辑</el-button>
+                    <el-button type="primary" @click="createSingleData">添加</el-button>
                 </span>
+                <span slot="footer" class="el-dialog__footer">
+            </span>
             </el-dialog>
 <!--            添加多选题弹窗部分-->
             <el-dialog :title="'多选题'"
@@ -98,7 +131,7 @@
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="multiVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createMultiData">编辑</el-button>
+                    <el-button type="primary" @click="createMultiData">添加</el-button>
                 </span>
             </el-dialog>
 <!--            添加判断题弹窗部分-->
@@ -115,7 +148,7 @@
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="judgeVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createJudgeData">编辑</el-button>
+                    <el-button type="primary" @click="createJudgeData">添加</el-button>
                 </span>
             </el-dialog>
 <!--            添加主观题弹窗部分-->
@@ -129,30 +162,26 @@
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="subVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createSubData">编辑</el-button>
+                    <el-button type="primary" @click="createSubData">添加</el-button>
                 </span>
             </el-dialog>
         </el-main>
-        <el-footer>
-            <el-button @click="handleCancel">取消</el-button>
-            <el-button type="primary">提交</el-button>
-        </el-footer>
     </div>
 </template>
 
 <script>
-    import AssignmentSingle from "../components/AssignmentSingle"
-    import AssignmentMulti from "../components/AssignmentMulti"
-    import AssignmentJudge from "../components/AssignmentJudge"
-    import AssignmentSub from "../components/AssignmentSub"
+    // import AssignmentSingle from "../components/AssignmentSingle"
+    // import AssignmentMulti from "../components/AssignmentMulti"
+    // import AssignmentJudge from "../components/AssignmentJudge"
+    // import AssignmentSub from "../components/AssignmentSub"
 
     export default {
         name: "TeacherCourseOneAssignment",
 
         components:{
-            AssignmentSingle,
-            AssignmentMulti,
-            AssignmentJudge,
+            // AssignmentSingle,
+            // AssignmentMulti,
+            // AssignmentJudge,
             // AssignmentSub,
         },
 
@@ -205,7 +234,7 @@
                     assignTitle:"作业标题",
                     quesitons:[
                         {
-                            type:"single",
+                            type:"SINGLE_ANSWER",
                             key:1,
                             title:"这是一道单选题，请选择下列选项。",
                             choices:[
@@ -230,7 +259,7 @@
                             correctAnswer:"A",
                         },
                         {
-                            type:"multi",
+                            type:"MULTIPLE_ANSWER",
                             key:2,
                             title:"这是一道多选题，请选择下列选项。",
                             choices:[
@@ -255,14 +284,14 @@
                             correctAnswer:"AB",
                         },
                         {
-                            type:"judge",
+                            type:"T_OR_F",
                             key:3,
                             title:"这是一道判断题，请选择下列选项。",
                             answer:"",
                             correctAnswer:"正确",
                         },
                         {
-                            type:"single",
+                            type:"SINGLE_ANSWER",
                             key:4,
                             title:"这是一道单选题，请选择下列选项。",
                             choices:[
@@ -287,7 +316,7 @@
                             correctAnswer:"B",
                         },
                         {
-                            type:"sub",
+                            type:"SUBJECTIVE",
                             key:5,
                             title:"这是一道主观题，请在文本框里填写或添加图片或添加附件。",
                             answer:"",
@@ -296,13 +325,40 @@
 
                 },
 
+                questions:this.$store.getters.getCourseInfo.coursePrototype.questions,
+
             }
         },
 
         methods:{
-            handleCancel(){
-                this.$router.push("/course/manager/assignment");
+            showAllQuestions(){
+                this.$http.request({
+                    url: this.$store.getters.getCourseUrl + "info",
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    console.log(response.data);
+                    let identity = response.data.identity;
+                    this.$store.commit("setCourseInfo", response.data.course);
+                    this.$store.commit("setIdentity", identity);
+                    console.log(this.$store.getters.getCourseInfo);
+                    // if (identity === "VISITOR") {
+                    //     this.$router.push('/course/info');
+                    // }
+                    // else if (identity === "STUDENT") {
+                    //     this.$router.push('/course/student');
+                    // }
+                    // else {
+                    //     this.$router.push('/course/manager');
+                    // }
+                    this.$router.push('/course/manager/questionBank');
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
+                });
             },
+
+
 
             // 显示各种题型的新建dialog
             showSingleDialog(){
@@ -352,6 +408,12 @@
                 }
             },
 
+            showQuestionEdit(question){
+                if (question.questionType==='SINGLE_ANSWER'){
+                    this.showSingleEditDialog(question);
+                }
+            },
+
             // 显示各种题型的编辑dialog
             showSingleEditDialog(single){
                 this.singleVisible=true;
@@ -375,22 +437,105 @@
 
             // 新建各种题型
             createSingleData(){
-                alert("编辑成功");
+                var that=this;
+
+                var singleChoices=[];
+                for (let x=0; x<that.singleEditForm.choices.length; x++){
+                    singleChoices.push(that.singleEditForm.choices[x].content);
+                }
+
+                this.$http.request({
+                    url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
+                    method: "post",
+                    headers:this.$store.getters.authRequestHead,
+                    data:{
+                        type:"single_answer",
+                        content:this.singleEditForm.title,
+                        options:singleChoices,
+                        answer:this.singleEditForm.correctAnswer,
+                    },
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
                 this.singleVisible=false;
             },
 
             createMultiData(){
-                alert("编辑成功");
+                var that=this;
+
+                var multiChoices=[];
+                for (let x=0; x<that.multiEditForm.choices.length; x++){
+                    multiChoices.push(that.multiEditForm.choices[x].content);
+                }
+
+                this.$http.request({
+                    url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
+                    method: "post",
+                    headers:this.$store.getters.authRequestHead,
+                    data:{
+                        type:"multiple_answer",
+                        content:this.multiEditForm.title,
+                        options:multiChoices,
+                        answer:this.multiEditForm.correctAnswer,
+                    },
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
                 this.multiVisible=false;
             },
 
             createJudgeData(){
-                alert("编辑成功");
+                this.$http.request({
+                    url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
+                    method: "post",
+                    headers:this.$store.getters.authRequestHead,
+                    data:{
+                        type:"t_or_f",
+                        content:this.judgeEditForm.title,
+                        answer:this.judgeEditForm.correctAnswer,
+                    },
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
                 this.judgeVisible=false;
             },
 
             createSubData(){
-                alert("编辑成功");
+                this.$http.request({
+                    url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
+                    method: "post",
+                    headers:this.$store.getters.authRequestHead,
+                    data:{
+                        type:"subjective",
+                        content:this.subEditForm.title,
+                    },
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
                 this.subVisible=false;
             },
 
@@ -399,7 +544,7 @@
                 alert("删除成功");
             },
 
-            // 单选和多选添加选项
+            // 单选和多选移除选项
             removeChoiceSingle(item) {
                 var index = this.singleEditForm.choices.indexOf(item)
                 if (index !== -1) {
@@ -414,7 +559,7 @@
                 }
             },
 
-            // 单选和多选移除选项
+            // 单选和多选添加选项
             addChoiceSingle() {
                 this.singleEditForm.choices.push({
                     content: '',
@@ -428,6 +573,7 @@
                     tag:'',
                 });
             },
+
         }
     }
 </script>

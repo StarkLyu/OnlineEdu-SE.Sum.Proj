@@ -76,9 +76,9 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public Section issuePaper(Long courseId, int secNo, int branchNo, Long paperId) {
+    public Section issuePaper(Long courseId, int secId, int branchId, Long paperId) {
         Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
-        Section section = sectionRepository.findById(new SectionPrimaryKey(course,secNo))
+        Section section = sectionRepository.findById(new SectionPrimaryKey(course,secId))
                 .orElseThrow(()->new NotFoundException("No corresponding question"));
         Paper paper = paperRepository.findById(paperId)
                 .orElseThrow(()->new NotFoundException("No corresponding paper"));
@@ -86,7 +86,7 @@ public class SectionServiceImpl implements SectionService {
             throw new NotMatchException("该试卷不在课程中");
         }
         section.getPapers().add(paper);
-        SectionBranches sectionBranches = sectionBranchRepository.findById(new SectionBranchesPrimaryKey(section,branchNo))
+        SectionBranches sectionBranches = sectionBranchRepository.findById(new SectionBranchesPrimaryKey(section,branchId))
                 .orElseThrow(()->new NotFoundException("小节不存在"));
         sectionBranches.getPapers().add(paper);
         sectionBranchRepository.save(sectionBranches);
@@ -94,17 +94,20 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public Section issueResource(Long courseId, int secNo, int branchNo, Long resourceId) {
+    public Section issueResource(Long courseId, int secId, int branchId, Long resourceId) {
         Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
-        Section section = sectionRepository.findById(new SectionPrimaryKey(course,secNo))
-                .orElseThrow(()->new NotFoundException("No corresponding question"));
+        Section section = sectionRepository.findById(new SectionPrimaryKey(course,secId))
+                .orElseThrow(()->new NotFoundException("No corresponding section"));
         Resource resource = resourceRepository.findById(resourceId)
                 .orElseThrow(()->new NotFoundException("No corresponding paper"));
+        if(section.getResources().contains(resource)){
+            throw new ValidationException("This resource has already been issued.");
+        }
         section.getResources().add(resource);
         if(!course.getCoursePrototype().getResources().contains(resource)){
             throw new NotMatchException("该课程原型中无该资源");
         }
-        SectionBranches sectionBranches = sectionBranchRepository.findById(new SectionBranchesPrimaryKey(section,branchNo))
+        SectionBranches sectionBranches = sectionBranchRepository.findById(new SectionBranchesPrimaryKey(section,branchId))
                 .orElseThrow(()->new NotFoundException("小节不存在"));
         sectionBranches.getResources().add(resource);
         sectionBranchRepository.save(sectionBranches);

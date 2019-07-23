@@ -94,9 +94,9 @@ export default new Router({
                             component: () => import('./views/TeacherCourseDetail')
                         },
                         {
-                            path: 'edit',
-                            name: 'TeacherCourseManage',
-                            component: () => import('./views/TeacherCourseManage')
+                            path: 'chapters',
+                            name: 'TeacherCourseChapters',
+                            component: () => import('./views/TeacherCourseChapters')
                         },
                         {
                             path: 'student',
@@ -119,9 +119,9 @@ export default new Router({
                             component: () => import('./views/TeacherCourseAssign'),
                         },
                         {
-                            path:'oneassignment',
-                            name:'TeacherCourseOneAssignment',
-                            component:() => import('./views/TeacherCourseOneAssignment')
+                            path:'questionBank',
+                            name:'TeacherCourseQuestionBank',
+                            component:() => import('./views/TeacherCourseQuestionBank')
                         },
                         {
                             path: 'bt',

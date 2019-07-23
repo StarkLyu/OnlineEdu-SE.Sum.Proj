@@ -2,7 +2,7 @@
 <!--    主观题组件-->
     <div id="AssignmentSub">
         <h4>
-            第{{sub.key}}题:{{sub.title}}
+            {{sub.title}}
         </h4>
         <el-input type="textarea" v-model="sub.answer" style="width: 80%;"></el-input>
 <!--        上传图片-->

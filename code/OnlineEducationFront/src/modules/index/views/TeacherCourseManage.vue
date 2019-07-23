@@ -14,8 +14,8 @@
                 <el-form-item label="授课教师">
                     <el-input v-model="CourseForm.courseTeacher"></el-input>
                 </el-form-item><el-form-item label="课程助教">
-                <el-input v-model="CourseForm.courseAssistance"></el-input>
-            </el-form-item>
+                    <el-input v-model="CourseForm.courseAssistance"></el-input>
+                </el-form-item>
                 <el-form-item label="上课地点">
                     <el-select v-model="CourseForm.courseRoom" placeholder="请选择上课地点">
                         <el-option label="东上院211" value="shanghai"></el-option>

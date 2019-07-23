@@ -61,14 +61,14 @@ public class SectionController {
     @ApiOperation("发布试卷/作业")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "课程id",name = "courseId",paramType = "path"),
-            @ApiImplicitParam(value = "章节序号",name = "secNo",paramType = "path"),
-            @ApiImplicitParam(value = "小节序号",name = "branchNo",paramType = "path"),
+            @ApiImplicitParam(value = "章节id",name = "secNo",paramType = "path"),
+            @ApiImplicitParam(value = "小节id",name = "branchId",paramType = "path"),
             @ApiImplicitParam(value = "试卷id",name = "paperId",paramType = "param")
     })
-    @PostMapping("/{secNo}/{branchNo}/papers/issue")
+    @PostMapping("/{secId}/{branchId}/papers/issue")
     public Section issuePaper(@PathVariable("courseId")Long courseId,
-                              @PathVariable("secNo")int secNo,
-                              @PathVariable("branchNo")int branchNo,
+                              @PathVariable("secId")int secNo,
+                              @PathVariable("branchId")int branchNo,
                               @RequestParam("paperId")Long paperId)throws Exception{
         for(User student: courseService.getCourseInfo(courseId).getStudents()){
             emailSenderService.sendNotification(student.getEmail());
@@ -79,14 +79,14 @@ public class SectionController {
     @ApiOperation("发布资源")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "课程id",name = "courseId",paramType = "path"),
-            @ApiImplicitParam(value = "章节序号",name = "secNo",paramType = "path"),
-            @ApiImplicitParam(value = "小节序号",name = "branchNo",paramType = "path"),
+            @ApiImplicitParam(value = "章节id",name = "secId",paramType = "path"),
+            @ApiImplicitParam(value = "小节id",name = "branchId",paramType = "path"),
             @ApiImplicitParam(value = "资源id",name = "resourceId",paramType = "param")
     })
-    @PostMapping("/{secNo}/{branchNo}/resources/issue")
+    @PostMapping("/{secId}/{branchId}/resources/issue")
     public Section issueResources(@PathVariable("courseId")Long courseId,
-                                  @PathVariable("secNo")int secNo,
-                                  @PathVariable("branchNo")int branchNo,
+                                  @PathVariable("secId")int secNo,
+                                  @PathVariable("branchId")int branchNo,
                                   @RequestParam("resourceId")Long resourceId){
         return sectionService.issueResource(courseId, secNo, branchNo, resourceId);
     }
