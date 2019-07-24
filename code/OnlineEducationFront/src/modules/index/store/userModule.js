@@ -60,12 +60,12 @@ const getters = {
         return state.userInfo.teachCourses;
     },
     isStudent: function () {
-        let transRoles = [];
-        for (let role of state.userInfo.roles) {
-            transRoles.push(role.role);
+        //let transRoles = [];
+        for (let i in state.userInfo.roles) {
+            // transRoles.push(role.role);
+            if (state.userInfo.roles[i].role === "ROLE_USER") return true;
         }
-        if (transRoles.indexOf("ROLE_USER") !== -1) return true;
-        else return false;
+        return false;
     },
     isTeacher: function () {
         let transRoles = [];

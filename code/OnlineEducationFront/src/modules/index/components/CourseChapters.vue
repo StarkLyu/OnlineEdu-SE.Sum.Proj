@@ -1,17 +1,23 @@
 <template>
     <div>
-        <AddNewChapter slot="title" :last-chapter="'0'"></AddNewChapter>
+        <AddNewChapter
+                slot="title"
+                :last-chapter="'0'"
+                v-if="isCourseTeacher"
+        ></AddNewChapter>
         <el-collapse>
             <el-collapse-item
                     v-for="(chapter, indexChapter) in chapters"
                     :key="indexChapter"
             >
                 <h2 slot="title">{{ chapter.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h2>
-                <AddNewChapter slot="title" :last-chapter="chapter.secNo"></AddNewChapter>
+                <AddNewChapter slot="title" :last-chapter="chapter.secNo" v-if="isCourseTeacher"></AddNewChapter>
                 <div class="section-content">
                     <el-collapse>
                         <AddNewSection :chapterId="chapter.sectionPrimaryKey.secId"
-                                       :last-section="'0'"></AddNewSection>
+                                       :last-section="'0'"
+                                       v-if="isCourseTeacher"
+                        ></AddNewSection>
                         <CourseSectionUnit
                                 v-for="(section, indexSection) in chapter.sectionBranchesList"
                                 :key="indexSection"
@@ -29,6 +35,8 @@
     import CourseSectionUnit from "./CourseSectionUnit";
     import AddNewChapter from "./AddNewChapter";
     import AddNewSection from "./AddNewSection";
+    import { mapGetters } from "vuex";
+
     export default {
         name: "CourseChapters",
         components: {AddNewChapter, CourseSectionUnit, AddNewSection},
@@ -159,6 +167,11 @@
                 }
             }
         },
+        computed: {
+            ...mapGetters([
+                'isCourseTeacher',
+            ]),
+        }
     }
 </script>
 

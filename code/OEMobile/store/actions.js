@@ -1,8 +1,21 @@
-export const SET_LOGIN_USER = 'SET_LOGIN_USER';
+export const SET_LOGIN = 'SET_LOGIN';
+export const SET_LOGOUT = 'SET_LOGOUT';
 
-export function setLoginUser(username) {
+export const SET_USERINFO = 'SET_USERINFO';
+
+export function setLogin(username, accessToken) {
     return {
-        type: SET_LOGIN_USER,
-        username
+        type: SET_LOGIN,
+        login: {
+            username: username,
+            accessToken: accessToken,
+            loginStatus: true
+        }
+    }
+}
+
+export function setLogout() {
+    return {
+        type: SET_LOGOUT
     }
 }

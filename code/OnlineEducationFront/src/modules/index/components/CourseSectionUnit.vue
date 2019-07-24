@@ -2,12 +2,21 @@
     <div>
         <el-collapse-item>
             <h3 slot="title">{{ sectionInfo.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h3>
-            <AddNewSection slot="title" :last-section="sectionInfo.branchNo" :chapterId="chapterId"></AddNewSection>
+            <AddNewSection
+                    v-if="isCourseTeacher"
+                    slot="title"
+                    :last-section="sectionInfo.branchNo"
+                    :chapterId="chapterId"
+            ></AddNewSection>
             <el-divider>章节介绍</el-divider>
             <pre>{{ sectionInfo.description }}</pre>
             <el-divider>章节资源</el-divider>
             <div>
-                <el-button style="float: right" @click="showResourceDialog">添加资源</el-button>
+                <el-button
+                        v-if="isCourseTeacher"
+                        style="float: right"
+                        @click="showResourceDialog"
+                >添加资源</el-button>
                 <ResourceUnit
                         v-for="(resource, index) in sectionInfo.resources"
                         :key="index"
@@ -52,6 +61,8 @@
     import ResourceUnit from "./ResourceUnit";
     import PaperUnit from "./PaperUnit";
     import AddNewSection from "./AddNewSection";
+    import { mapGetters } from "vuex"
+
     export default {
         name: "CourseSectionUnit",
         components: {AddNewSection, PaperUnit, ResourceUnit},
@@ -104,6 +115,12 @@
                         alert("请求失败");
                     });
             }
+        },
+
+        computed: {
+            ...mapGetters([
+                'isCourseTeacher'
+            ]),
         }
     }
 </script>

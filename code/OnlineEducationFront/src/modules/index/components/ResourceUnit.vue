@@ -1,9 +1,9 @@
 <template>
     <div class="resource-unit float-left">
-        <el-link @click="getResource">
+        <a :href="getFullUrl(resourceInfo.url)" :download="resourceInfo.url" @click="getResource">
             <i :class="symbolIcon"></i>
             {{ resourceInfo.title }}
-        </el-link>
+        </a>
     </div>
 </template>
 
@@ -22,6 +22,9 @@
                 if (this.resourceInfo.resourceType === "VIDEO") {
                     this.$emit("play-video", this.resourceInfo.url);
                 }
+            },
+            getFullUrl: function (resourceUrl) {
+                return "http://202.120.40.8:30382/online-edu/static/" + resourceUrl;
             }
         },
         computed: {

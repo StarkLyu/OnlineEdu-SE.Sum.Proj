@@ -96,10 +96,18 @@
         },
         computed: {
             ...mapGetters([
-                'userRole',
-                'isTeacher',
-                'isStudent'
+                'userRole'
+                // 'isTeacher',
+                // 'isStudent'
             ]),
+            isTeacher: function() {
+                if (this.userRole.indexOf("ROLE_TEACHING_ADMIN") !== -1) return true;
+                else return false;
+            },
+            isStudent: function() {
+                if (this.userRole.indexOf("ROLE_USER") !== -1) return true;
+                else return false;
+            }
         },
         mounted() {
             if (this.isTeacher) {

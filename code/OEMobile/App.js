@@ -1,28 +1,50 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { createStackNavigator, createAppContainer } from "react-navigation";
-import LoginScreen from "./screens/LoginScreen"
+import store from "./store/store.js";
+import TopNav from "./navigations/TopNav.js";
+import { Provider } from "react-redux";
+import axios from "axios";
 
-class HomeScreen extends React.Component {
-  render() {
-    return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <Text>Home Screen</Text>
-        </View>
-    );
-  }
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://202.120.40.8:30382/online-edu";
+React.Component.prototype.$axios = axios;
+
+class App extends React.Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <TopNav/>
+            </Provider>
+        )
+    }
 }
 
-const AppNavigator = createStackNavigator({
-    Login: {
-        screen: LoginScreen
-    },
-    Home: {
-        screen: HomeScreen
-    }
-});
+export default App;
 
-export default createAppContainer(AppNavigator);
+// import React from "react";
+// import { View, Text } from "react-native";
+// import { createStackNavigator, createAppContainer } from "react-navigation";
+// import LoginScreen from "./screens/LoginScreen"
+//
+// class HomeScreen extends React.Component {
+//   render() {
+//     return (
+//         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+//           <Text>Home Screen</Text>
+//         </View>
+//     );
+//   }
+// }
+//
+// const AppNavigator = createStackNavigator({
+//     Login: {
+//         screen: LoginScreen
+//     },
+//     Home: {
+//         screen: HomeScreen
+//     }
+// });
+//
+// export default createAppContainer(AppNavigator);
 
 // /**
 //  * Sample React Native App
