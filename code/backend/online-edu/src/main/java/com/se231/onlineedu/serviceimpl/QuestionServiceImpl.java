@@ -4,11 +4,9 @@ import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
-import com.se231.onlineedu.repository.CoursePrototypeRepository;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.QuestionService;
-import com.se231.onlineedu.util.ImageWithInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

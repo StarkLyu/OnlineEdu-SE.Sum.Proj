@@ -1,14 +1,18 @@
 package com.se231.onlineedu.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import org.springframework.data.annotation.Id;
-
 import javax.validation.constraints.NotBlank;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author liu
+ */
 @Document
 public class Forum {
 
@@ -17,30 +21,13 @@ public class Forum {
 
     private String title;
 
+    @NotBlank
     private String content;
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
+    @NotBlank
     private Long userId;
 
     private Date createdAt = new Date();
-
-    public Forum(String title, String content, Long userId, @NotBlank Long courseId, @NotBlank int secNo) {
-        this.title = title;
-        this.content = content;
-        this.userId = userId;
-        this.courseId = courseId;
-        this.secNo = secNo;
-    }
-
-    public Forum() {
-    }
 
     @NotBlank
     private Long courseId;
@@ -50,9 +37,49 @@ public class Forum {
 
     private int likes = 0;
 
-    private List<Reply> replies = new ArrayList<>();
+    private String path;
 
     private List<String> imageUrls = new ArrayList<>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public Long getCourseId() {
         return courseId;
@@ -70,21 +97,22 @@ public class Forum {
         this.secNo = secNo;
     }
 
-    public String getId() {
-        return id;
+    public int getLikes() {
+        return likes;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
-
-    public String getTitle() {
-        return title;
+    public String getPath() {
+        DateFormat dateFormat =new SimpleDateFormat("yyyy.MM.dd.hh.mm.ss");
+        String strPostedAt = dateFormat.format(createdAt);
+        return (path == null? "" : path) + "/" + strPostedAt + ":" + id;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public List<String> getImageUrls() {
@@ -95,35 +123,19 @@ public class Forum {
         this.imageUrls = imageUrls;
     }
 
-    public void setTitle(String title) {
+    public Forum(String id, String title, String content, @NotBlank Long userId, Date createdAt, @NotBlank Long courseId, @NotBlank int secNo, int likes, String path, List<String> imageUrls) {
+        this.id = id;
         this.title = title;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
+        this.content = content;
         this.userId = userId;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public List<Reply> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<Reply> replies) {
-        this.replies = replies;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
+        this.createdAt = createdAt;
+        this.courseId = courseId;
+        this.secNo = secNo;
         this.likes = likes;
+        this.path = path;
+        this.imageUrls = imageUrls;
+    }
+
+    public Forum() {
     }
 }
