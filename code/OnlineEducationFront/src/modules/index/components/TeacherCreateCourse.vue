@@ -243,6 +243,8 @@
                     .then(function (response) {
                         console.log(response.data);
 
+                        alert("正在申请");
+
                         that.showAllProtos();
                         that.dialogFormVisible=false;
                     })
@@ -268,7 +270,6 @@
             },
 
             // 创建课程
-            // 前端报错后端正确？
             createCourse(){
                 var that=this;
 

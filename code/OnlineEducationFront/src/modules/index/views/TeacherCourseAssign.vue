@@ -55,7 +55,8 @@
         <el-dialog :title="'作业'"
                    :visible.sync="AssignVisible"
                    :lock-scroll="false"
-                   top="5%">
+                   top="5%"
+                   width="80%">
             <el-form :model="AssignEditForm" label-width="80px" ref="AssignEditForm">
                 <el-form-item label="作业名">
                     <el-input type="text" v-model="AssignEditForm.title"></el-input>
@@ -86,6 +87,11 @@
                 <el-table-column type="selection" min-width="10%"></el-table-column>
                 <el-table-column property="questionType" label="题型" sortable min-width="20%"></el-table-column>
                 <el-table-column property="question" label="题目" min-width="40%" show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="score" label="分值" min-width="15%">
+                    <template scope="scope">
+                        <el-input placeholder="请输入分值" v-model="scope.row.score" type="number"></el-input>
+                    </template>
+                </el-table-column>
             </el-table>
             <span slot="footer" class="el-dialog__footer">
                 <el-button @click.native="AssignVisible=false">取消</el-button>
@@ -104,27 +110,23 @@
             return{
                 search:"",
 
-                AssignData:[
-                    {
-                        description:"",
-                        title:"",
-                        start:"",
-                        end:"",
-                        questionFormList:[],
-                    },
-                ],
+                AssignData:this.$store.getters.getCourseInfo.papers,
 
                 AssignVisible:false,
 
-                AssignEditForm:[
-                    {
-                        description:"",
-                        title:"",
-                        start:"",
-                        end:"",
-                        questionFormList:[],
-                    }
-                ],
+                AssignEditForm: {
+                    description:"",
+                    title:"",
+                    start:"",
+                    end:"",
+                    questionFormList:[
+                        {
+                            questionId:"",
+                            questionNumber:1,
+                            score:0,
+                        }
+                    ],
+                },
 
                 textMap: {
                     update: "Edit",
@@ -133,7 +135,7 @@
 
                 AssignStatus:"",
 
-                questions:this.$store.getters.getCourseInfo.coursePrototype.questions,
+                questions:[],
 
                 multipleSelection:[],
             }
@@ -142,8 +144,7 @@
         methods:{
             // 显示增加作业弹窗
             handleAdd(){
-                this.AssignEditForm.questionFormList=this.multipleSelection;
-
+                this.AssignEditForm=[];
                 this.AssignStatus="create";
                 this.AssignVisible=true;
             },
@@ -162,13 +163,32 @@
 
             // 新增一份作业
             createAssign(){
+                // 修改问题格式
+                var finalQuestion=[];
+                for (let x=0; x<this.multipleSelection.length; x++){
+                    var tempquestion={
+                        questionId:"",
+                        questionNumber:1,
+                        score:0,
+                    };
+                    tempquestion.questionId=this.multipleSelection[x].id;
+                    tempquestion.score=this.multipleSelection[x].score;
+                    finalQuestion.push(tempquestion);
+                }
+                this.AssignEditForm.questionFormList=finalQuestion;
+                console.log(this.AssignEditForm);
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/papers',
                     method: "post",
                     headers: this.$store.getters.authRequestHead,
-                    data:{
-                        form:this.AssignEditForm,
-                    }
+                    data:
+                        {
+                            title:this.AssignEditForm.title,
+                            description:this.AssignEditForm.description,
+                            start:this.AssignEditForm.start,
+                            end:this.AssignEditForm.end,
+                            questionFormList:finalQuestion,
+                        }
                 })
                     .then(function (response) {
                         console.log(response.data);
@@ -190,6 +210,25 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             }
+        },
+
+        mounted() {
+            // 初始化questions
+            var questionAll=this.$store.getters.getCourseInfo.coursePrototype.questions;
+            for (let x=0; x<questionAll.length; x++){
+                var tempquestion={
+                    id:"",
+                    question:"",
+                    questionType:"",
+                    score:"",
+                };
+                tempquestion.id=questionAll[x].id;
+                tempquestion.questionType=questionAll[x].questionType;
+                tempquestion.question=questionAll[x].question;
+                tempquestion.score=0;
+                this.questions.push(tempquestion);
+            }
+            // console.log(this.questions);
         }
     }
 </script>
