@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Time;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class TimeSlotRepositoryTest {
     @Autowired
     private TimeSlotRepository timeSlotRepository;
@@ -33,6 +35,6 @@ public class TimeSlotRepositoryTest {
         timeSlot.setStart(time);
         TimeSlot found = timeSlotRepository.save(timeSlot);
         TimeSlot found1 = timeSlotRepository.findByDayAndStartAndEnd(WeekDay.FRIDAY, time, time).orElseThrow(()->new Exception("hah"));
-        assertThat(found.getDay()).isEqualTo(WeekDay.FRIDAY);
+        assertThat(found1.getDay()).isEqualTo(WeekDay.FRIDAY);
     }
 }

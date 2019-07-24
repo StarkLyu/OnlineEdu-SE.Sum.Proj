@@ -7,6 +7,7 @@ import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.Learn;
+import com.se231.onlineedu.model.Notice;
 import com.se231.onlineedu.model.User;
 import org.springframework.http.ResponseEntity;
 
@@ -110,6 +111,7 @@ public interface CourseService {
     Course setState(Long courseId,String state);
 
     /**
+     * get course info
      * @param courseId
      * @param userId
      * @return
@@ -117,9 +119,18 @@ public interface CourseService {
     CourseWithIdentity getCourseInfoWithIdentity(Long courseId, Long userId);
 
     /**
+     * select teacher assistant
      * @param id
      * @param userId
      * @return
      */
     Course selectTeacherAssistant(Long id, Long userId);
+
+    /**
+     * save notice
+     * @param id
+     * @param notice
+     * @return
+     */
+    Course saveNotice(Long id, Notice notice);
 }

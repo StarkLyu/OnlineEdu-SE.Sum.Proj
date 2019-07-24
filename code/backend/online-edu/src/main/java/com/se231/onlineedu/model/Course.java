@@ -94,6 +94,12 @@ public class Course {
     @OneToMany(mappedBy = "sectionPrimaryKey.course")
     private List<Section> sectionList;
 
+    @ApiModelProperty("该课程的公告集合")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "noticePrimaryKey.course")
+    private List<Notice> notices = new ArrayList<>();
+
+
     public Course() {
     }
 
@@ -171,14 +177,6 @@ public class Course {
         this.coursePrototype = coursePrototype;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
-    }
-
     public String getCourseTitle() {
         return courseTitle;
     }
@@ -241,6 +239,14 @@ public class Course {
 
     public void setSectionList(List<Section> sectionList) {
         this.sectionList = sectionList;
+    }
+
+    public List<Notice> getNotices() {
+        return notices;
+    }
+
+    public void setNotices(List<Notice> notices) {
+        this.notices = notices;
     }
 
     @Override

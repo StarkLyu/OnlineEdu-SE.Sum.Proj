@@ -30,4 +30,11 @@ public interface ForumRepository extends CrudRepository<Forum, String> {
      * @return list of forum
      */
     List<Forum> findByCourseId(Long courseId);
+
+    /**
+     * get list of forums by user id
+     * @param userId, courseId
+     * @return
+     */
+    List<Forum> findByUserIdAndCourseId(Long userId, Long courseId);
 }

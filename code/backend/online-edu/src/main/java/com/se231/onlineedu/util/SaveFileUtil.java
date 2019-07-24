@@ -1,5 +1,6 @@
 package com.se231.onlineedu.util;
 
+import com.se231.onlineedu.exception.BulkImportDataException;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -54,23 +57,29 @@ public class SaveFileUtil {
     }
 
 
-    public static ImageWithInfo saveImages(MultipartFile[] multipartFiles, int limit) throws IOException {
+    public static List<String> saveImages(MultipartFile[] multipartFiles, int limit) throws IOException {
         int num = 1;
-        ImageWithInfo imageWithInfo = new ImageWithInfo();
+        List<String> strings = new ArrayList<>();
         StringBuilder errorString = new StringBuilder();
+        boolean hasError = false;
         for (MultipartFile multipartFile : multipartFiles) {
             if (FileCheckUtil.checkImageSizeExceed(multipartFile, limit)) {
-                imageWithInfo.setHasError(true);
+                hasError = true;
                 errorString.append("image " + num + " size Exceed");
             }
             String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
             if (FileCheckUtil.checkImageTypeWrong(suffix)) {
-                imageWithInfo.setHasError(true);
+                hasError = true;
                 errorString.append("image " + num + " format error");
             }
-            imageWithInfo.getImagesUrls().add(SaveFileUtil.saveFile(multipartFile, suffix));
+            strings.add(SaveFileUtil.saveFile(multipartFile, suffix));
         }
-        return imageWithInfo;
+        if(!hasError) {
+            return strings;
+        }
+        else {
+            throw new BulkImportDataException(errorString.toString());
+        }
     }
 
     public static boolean deleteImage(String fileName) throws IOException {

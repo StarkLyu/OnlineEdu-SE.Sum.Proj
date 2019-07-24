@@ -14,11 +14,7 @@ public class Learn {
 
     private int signInTimes = 0;
 
-    public Learn(LearnPrimaryKey learnPrimaryKey, int grade, int signInTimes) {
-        this.learnPrimaryKey = learnPrimaryKey;
-        this.grade = grade;
-        this.signInTimes = signInTimes;
-    }
+    private String wordCloudUrl;
 
     public Learn() {
     }
@@ -48,6 +44,21 @@ public class Learn {
     }
 
     public void setSignInTimes(int signInTimes) {
+        this.signInTimes = signInTimes;
+    }
+
+    public String getWordCloudUrl() {
+        return wordCloudUrl;
+    }
+
+
+    public void setWordCloudUrl(String wordCloudUrl) {
+        this.wordCloudUrl = wordCloudUrl;
+    }
+
+    public Learn(LearnPrimaryKey learnPrimaryKey, int grade, int signInTimes) {
+        this.learnPrimaryKey = learnPrimaryKey;
+        this.grade = grade;
         this.signInTimes = signInTimes;
     }
 
