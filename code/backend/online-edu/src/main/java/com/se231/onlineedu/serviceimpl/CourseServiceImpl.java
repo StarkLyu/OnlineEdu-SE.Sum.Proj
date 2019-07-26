@@ -10,10 +10,7 @@ import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
-import com.se231.onlineedu.message.response.CourseWithIdentity;
-import com.se231.onlineedu.message.response.GradeTable;
-import com.se231.onlineedu.message.response.Identity;
-import com.se231.onlineedu.message.response.StudentAndGrade;
+import com.se231.onlineedu.message.response.*;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.scheduler.SchedulerHandler;
@@ -55,6 +52,11 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private SignInRepository signInRepository;
 
+    @Autowired
+    private PaperAnswerRepository paperAnswerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {

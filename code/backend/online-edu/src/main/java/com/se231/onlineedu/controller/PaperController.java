@@ -1,15 +1,19 @@
 package com.se231.onlineedu.controller;
 
 import javax.validation.Valid;
+import java.util.List;
 import com.se231.onlineedu.message.request.PaperForm;
+import com.se231.onlineedu.message.response.PaperFinish;
 import com.se231.onlineedu.model.Paper;
 import com.se231.onlineedu.model.Section;
+import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.PaperService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -37,6 +41,11 @@ public class PaperController {
         return ResponseEntity.ok(paperService.addNewPaper(form,courseId));
     }
 
-
+    @ApiOperation("查询用户对课程的状态")
+    @GetMapping("/state")
+    public List<PaperFinish> getPaperState(@PathVariable("id")Long courseId,
+                                           @AuthenticationPrincipal UserPrinciple userPrinciple){
+        return paperService.getPaperFinish(userPrinciple.getId(),courseId);
+    }
 
 }

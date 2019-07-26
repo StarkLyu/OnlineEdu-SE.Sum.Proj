@@ -17,7 +17,11 @@ public class PaperFinish {
 
     private Paper paper;
 
-    public PaperFinish(Paper paper,PaperAnswerState state){
+    public PaperFinish() {
+
+    }
+
+    public PaperFinish(Paper paper, PaperAnswerState state){
         this.paper=paper;
         this.state=state;
     }

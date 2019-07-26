@@ -149,4 +149,5 @@ public class CourseController {
     public GradeTable getGrade(@PathVariable("id")Long courseId){
         return courseService.getGrade(courseId);
     }
+
 }
