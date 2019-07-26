@@ -133,6 +133,11 @@
         },
 
         methods:{
+            showAllStudents(){
+                // 该课程所有学生
+                // this.UserData=this.$store.getters.getCourseInfo;
+            },
+
             // 导入成绩
             handleAdd(){
                 alert("导入成绩");
@@ -161,6 +166,10 @@
             handlePreview(file) {
                 console.log(file);
             },
+        },
+
+        mounted() {
+            this.showAllStudents();
         }
     }
 </script>
