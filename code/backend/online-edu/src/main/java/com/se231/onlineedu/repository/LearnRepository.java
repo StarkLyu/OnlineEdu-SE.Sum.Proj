@@ -1,5 +1,6 @@
 package com.se231.onlineedu.repository;
 
+import java.util.List;
 import com.se231.onlineedu.model.Learn;
 import com.se231.onlineedu.model.LearnPrimaryKey;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import java.util.Date;
@@ -13,6 +13,7 @@ import java.util.Date;
 @Entity
 public class Notice {
     @EmbeddedId
+    @JsonIgnore
     private NoticePrimaryKey noticePrimaryKey;
 
     public NoticePrimaryKey getNoticePrimaryKey() {
@@ -26,6 +27,8 @@ public class Notice {
     private Date issueDate = new Date();
 
     private String content;
+
+    private String title;
 
     public Date getIssueDate() {
         return issueDate;
@@ -41,5 +44,16 @@ public class Notice {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Notice() {
     }
 }

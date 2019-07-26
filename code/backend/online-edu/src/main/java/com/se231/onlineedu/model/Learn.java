@@ -10,7 +10,7 @@ public class Learn {
     @EmbeddedId
     private LearnPrimaryKey learnPrimaryKey;
 
-    private int grade;
+    private double grade;
 
     private int signInTimes = 0;
 
@@ -31,11 +31,11 @@ public class Learn {
         this.learnPrimaryKey = learnPrimaryKey;
     }
 
-    public int getGrade() {
+    public double getGrade() {
         return grade;
     }
 
-    public void setGrade(int grade) {
+    public void setGrade(double grade) {
         this.grade = grade;
     }
 
