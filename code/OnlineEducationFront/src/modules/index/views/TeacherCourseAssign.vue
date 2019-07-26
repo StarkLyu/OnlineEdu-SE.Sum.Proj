@@ -34,12 +34,12 @@
                         <el-button size="small"
                                    type="success"
                                    icon="el-icon-document-checked"
-                                   @click="handleAnnounce(scope.$index, scope.row)">
-                            发布
+                                   @click="handleCorrection(scope.$index, scope.row)">
+                            批改
                         </el-button>
                         <el-button size="small"
                                    icon="el-icon-edit"
-                                   @click="handleDetail(scope.$index, scope.row)">
+                                   @click="handleEdit(scope.$index, scope.row)">
                             编辑
                         </el-button>
                         <el-button size="small"
@@ -149,16 +149,21 @@
                 this.AssignVisible=true;
             },
 
-            handleAnnounce:function(index, row){
-                alert("发布"+row.name);
+            // 批改作业
+            handleCorrection:function(index, row){
+                alert("发布"+row.title);
             },
 
-            handleDetail:function(index, row){
-                alert("编辑作业详情");
+            // 显示编辑作业弹窗
+            handleEdit:function(index, row){
+                this.AssignEditForm = Object.assign({}, row);
+                this.AssignStatus="update";
+                this.AssignVisible=true;
             },
 
+            // 删除作业
             handleDelete:function (index, row) {
-                alert(row.name+"已删除");
+                alert(row.title+"已删除");
             },
 
             // 新增一份作业
