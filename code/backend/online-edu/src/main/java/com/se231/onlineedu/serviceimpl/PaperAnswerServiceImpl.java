@@ -1,12 +1,10 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.ValidationException;
+import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
@@ -117,5 +115,26 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     @Override
     public List<PaperAnswer> getPersonalPaperAnswer(Long paperId, Long userId) {
         return paperAnswerRepository.getPersonalPaperAnswer(paperId,userId);
+    }
+
+    @Override
+    public PaperAnswer markStudentPaper(Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
+        User student = userService.getUserInfo(studentId);
+        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("No corresponding paper"));
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(student,paper,times);
+        PaperAnswer answer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
+                .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
+        Map<Long,String> commentMap = new HashMap<>(markForms.size());
+        Map<Long,Double> scoreMap = new HashMap<>(markForms.size());
+        markForms.forEach(mark->{
+            commentMap.put(mark.getQuestionId(),mark.getComment());
+            scoreMap.put(mark.getQuestionId(),mark.getScore());
+        });
+        answer.getAnswers().forEach(answer1 -> {
+            answer1.setGrade(scoreMap.get(answer1.getAnswerPrimaryKey().getQuestion().getId()));
+            answer1.setComment(commentMap.get(answer1.getAnswerPrimaryKey().getQuestion().getId()));
+        });
+        return paperAnswerRepository.save(answer);
+
     }
 }

@@ -12,7 +12,7 @@
                 <el-collapse>
                     <el-collapse-item
                             v-for="announce in announcements"
-                            :key="announce.time">
+                            :key="announce.issueDate">
                         <template slot="title">
                             <h2>{{ announce.title }}</h2>
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -66,18 +66,7 @@
 
         data(){
             return{
-                announcements: [
-                    {
-                        title: "测试公告1",
-                        time: Date(),
-                        content: "浏览论坛的贴子（数据库的数据通过vue遍历在html页面上）\n" + "\n" + "点击帖子的标题、图片，可以查看详细的帖子（点击事件获取id）"
-                    },
-                    {
-                        title: "测试公告2",
-                        time: Date(),
-                        content: "你不能直接改变 store 中的状态。改变 store 中的状态的唯一途径就是显式地提交 (commit) mutation。这样使得我们可以方便地跟踪每一个状态的变化，从而让我们能够实现一些工具帮助我们更好地了解我们的应用。"
-                    }
-                ],
+                announcements:this.$store.getters.getCourseInfo.notices,
 
                 dialogFormVisible:false,
 
@@ -91,7 +80,6 @@
                 //发布公告数据
                 editForm: {
                     title:"",
-                    time:Date,
                     content:"",
                 },
             }
@@ -116,15 +104,34 @@
                 this.editForm = Object.assign({}, announce);
             },
 
-            // 添加课程
+            // 添加公告
             createData(){
-                alert("课程添加成功");
+                // var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/notices/',
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead,
+                    data:{
+                        content:this.editForm.content,
+                        title:this.editForm.title,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
+
                 this.dialogFormVisible=false;
             },
 
             // 修改课程
             updateData(){
-                alert("课程修改成功");
+                alert("公告修改成功");
                 this.dialogFormVisible=false;
             },
         }

@@ -1,6 +1,8 @@
 package com.se231.onlineedu.controller;
 
 import java.util.List;
+import java.util.Set;
+import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.PaperAnswer;
 import com.se231.onlineedu.security.services.UserPrinciple;
@@ -46,4 +48,12 @@ public class PaperAnswerController {
         return paperAnswerService.getPersonalPaperAnswer(paperId,userPrinciple.getId());
     }
 
+    @ApiOperation("教师批改学生回答")
+    @PutMapping("/mark/{studentId}/{times}")
+    public PaperAnswer markStudentPaper(@RequestBody Set<MarkForm> marks,
+                                        @PathVariable("paperId")Long paperId,
+                                        @PathVariable("studentId")Long studentId,
+                                        @PathVariable("times")Integer times){
+        return paperAnswerService.markStudentPaper(studentId,paperId,times,marks);
+    }
 }

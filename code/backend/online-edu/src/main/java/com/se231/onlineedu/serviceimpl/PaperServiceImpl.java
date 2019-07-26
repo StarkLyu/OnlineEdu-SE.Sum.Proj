@@ -5,13 +5,9 @@ import java.util.List;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.message.request.PaperQuestionForm;
-import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.Paper;
-import com.se231.onlineedu.model.PaperWithQuestions;
-import com.se231.onlineedu.model.Question;
-import com.se231.onlineedu.repository.PaperRepository;
-import com.se231.onlineedu.repository.PaperWithQuestionsRepository;
-import com.se231.onlineedu.repository.QuestionRepository;
+import com.se231.onlineedu.message.response.PaperFinish;
+import com.se231.onlineedu.model.*;
+import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperService;
@@ -43,6 +39,12 @@ public class PaperServiceImpl implements PaperService {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PaperAnswerRepository paperAnswerRepository;
+
 
     @Override
     public Paper addNewPaper(PaperForm form, Long courseId) {
@@ -70,5 +72,28 @@ public class PaperServiceImpl implements PaperService {
             e.printStackTrace();
         }
         return paper;
+    }
+
+    @Override
+    public List<PaperFinish> getPaperFinish(Long userId, Long courseId) {
+        List<PaperFinish> paperFinishList = new ArrayList<>();
+        User user = userRepository.getOne(userId);
+        Course course = courseService.getCourseInfo(courseId);
+        course.getPapers().forEach(paper -> {
+            PaperFinish paperFinish = new PaperFinish();
+            paperFinish.setPaper(paper);
+            int maxTimes = paperAnswerRepository.getMaxTimes(userId,courseId).orElse(0);
+            if(maxTimes==0){
+                paperFinish.setState(PaperAnswerState.NOT_START);
+            }
+            else{
+                PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,maxTimes);
+                PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
+                        .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
+                paperFinish.setState(paperAnswer.getState());
+            }
+            paperFinishList.add(paperFinish);
+        });
+        return paperFinishList;
     }
 }

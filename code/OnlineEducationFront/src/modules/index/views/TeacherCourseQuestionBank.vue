@@ -33,48 +33,6 @@
                         <p>Answer: {{question.answer}}</p>
                     </div>
                 </div>
-<!--                单选题-->
-<!--                <div v-for="single in oneAssignment.quesitons" :key="single.key">-->
-<!--                    <div v-if="single.type==='SINGLE_ANSWER'">-->
-<!--                        <div style="float: right">-->
-<!--                            <el-button size="small" @click="showSingleEditDialog(single)">编辑</el-button>-->
-<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
-<!--                        </div>-->
-<!--                        <AssignmentSingle :single="single"></AssignmentSingle>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                多选题-->
-<!--                <div v-for="multi in oneAssignment.quesitons" :key="multi.key">-->
-<!--                    <div v-if="multi.type==='MULTIPLE_ANSWER'">-->
-<!--                        <div style="float: right">-->
-<!--                            <el-button size="small" @click="showMultiEditDialog(multi)">编辑</el-button>-->
-<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
-<!--                        </div>-->
-<!--                        <AssignmentMulti :multi="multi"></AssignmentMulti>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                判断题-->
-<!--                <div v-for="judge in oneAssignment.quesitons" :key="judge.key">-->
-<!--                    <div v-if="judge.type==='T_OR_F'">-->
-<!--                        <div style="float: right">-->
-<!--                            <el-button size="small" @click="showJudgeEditDialog(judge)">编辑</el-button>-->
-<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
-<!--                        </div>-->
-<!--                        <AssignmentJudge :judge="judge"></AssignmentJudge>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                主观题-->
-<!--                <div v-for="sub in oneAssignment.quesitons" :key="sub.key">-->
-<!--                    <div v-if="sub.type==='SUBJECTIVE'">-->
-<!--                        <div style="float: right">-->
-<!--                            <el-button size="small" @click="showSubEditDialog(sub)">编辑</el-button>-->
-<!--                            <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
-<!--                        </div>-->
-<!--                        <h4>-->
-<!--                            {{sub.title}}-->
-<!--                        </h4>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
 <!--            添加单选题弹窗部分-->
             <el-dialog :title="'单选题'"
@@ -98,10 +56,26 @@
                     <el-form-item label="答案">
                         <el-input v-model="singleEditForm.correctAnswer" placeholder="请输入大写字母ABCD……"></el-input>
                     </el-form-item>
+                    <el-upload
+                            ref="upload"
+                            action='#'
+                            list-type="picture-card"
+                            accept="image/jpeg,image/jpg,image/png"
+                            multiple
+                            :on-preview="handlePictureCardPreview"
+                            :on-remove="handleRemove"
+                            :http-request="uploadImg"
+                            :auto-upload="false">
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+<!--                    <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>-->
+<!--                    <el-dialog :visible.sync="dialogVisible">-->
+<!--                        <img width="100%" :src="dialogImageUrl" alt="">-->
+<!--                    </el-dialog>-->
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="singleVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createSingleData">添加</el-button>
+                    <el-button type="primary" @click="createSingleData()">添加</el-button>
                 </span>
                 <span slot="footer" class="el-dialog__footer">
             </span>
@@ -205,6 +179,7 @@
                         }
                     ],
                     correctAnswer:'',
+                    images:[],
                 },
 
                 multiEditForm:{
@@ -359,7 +334,6 @@
             },
 
 
-
             // 显示各种题型的新建dialog
             showSingleDialog(){
                 this.singleVisible=true;
@@ -437,18 +411,34 @@
 
             // 新建各种题型
             createSingleData(){
+                // this.$refs.upload.submit();
+
                 var that=this;
+
+                // console.log("正在上传文件");
+                //
+                // let questionParam = new FormData();
+                // questionParam=this.uploadImg();
 
                 var singleChoices=[];
                 for (let x=0; x<that.singleEditForm.choices.length; x++){
                     singleChoices.push(that.singleEditForm.choices[x].content);
                 }
 
+                // questionParam.append('type',"single_answer");
+                // questionParam.append('content',this.singleEditForm.title);
+                // questionParam.append('options',singleChoices);
+                // questionParam.append('answer',this.singleEditForm.correctAnswer);
+
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
-                    headers:this.$store.getters.authRequestHead,
+                    headers:{
+                        'Authorization': "Bearer " + this.$store.state.user.accessToken,
+                        'Content-Type': 'multipart/form-data'
+                    },
                     data:{
+                        // questionParam
                         type:"single_answer",
                         content:this.singleEditForm.title,
                         options:singleChoices,
@@ -573,6 +563,31 @@
                     tag:'',
                 });
             },
+
+            // 移除照片
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+
+            // 预览照片
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+
+            submitUpload() {
+                this.$refs.upload.submit();
+            },
+
+            // 上传图片
+            uploadImg(file){
+                console.log("正在上传文件");
+
+                let param = new FormData();
+                param.append('images',file.file);
+
+                return param;
+            }
 
         }
     }

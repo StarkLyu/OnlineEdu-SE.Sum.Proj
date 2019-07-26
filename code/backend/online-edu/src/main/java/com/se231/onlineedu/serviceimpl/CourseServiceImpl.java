@@ -1,15 +1,16 @@
 package com.se231.onlineedu.serviceimpl;
 
-import com.se231.onlineedu.exception.CoursePrototypeUnavailableException;
+import java.sql.Time;
+import java.util.*;
 import com.alibaba.fastjson.JSON;
+import com.se231.onlineedu.exception.CoursePrototypeUnavailableException;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
-import com.se231.onlineedu.message.response.CourseWithIdentity;
-import com.se231.onlineedu.message.response.Identity;
+import com.se231.onlineedu.message.response.*;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.scheduler.SchedulerHandler;
@@ -19,12 +20,6 @@ import com.se231.onlineedu.service.UserService;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * the implementation class of course service
@@ -56,7 +51,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private SignInRepository signInRepository;
-
 
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {
@@ -113,8 +107,10 @@ public class CourseServiceImpl implements CourseService {
     public Learn pickCourse(Long userId, Long courseId) {
         User user = userService.getUserInfo(userId);
         Course course = getCourseInfo(courseId);
-        return learnRepository.save(new Learn(user, course));
-        //return user.getLearnCourses();
+        Learn learn = new Learn();
+        LearnPrimaryKey learnPrimaryKey = new LearnPrimaryKey(user,course);
+        learn.setLearnPrimaryKey(learnPrimaryKey);
+        return learnRepository.save(learn);
     }
 
     @Override
@@ -255,5 +251,18 @@ public class CourseServiceImpl implements CourseService {
         Notice found = noticeRepository.save(notice);
         course.getNotices().add(found);
         return courseRepository.save(course);
+    }
+
+    @Override
+    public GradeTable getGrade(Long courseId) {
+        Course course = getCourseInfo(courseId);
+        GradeTable gradeTable = new GradeTable();
+        gradeTable.setCourse(course);
+        List<StudentAndGrade> scoreMap = new ArrayList<>();
+        course.getLearns().forEach(learn -> {
+            scoreMap.add(new StudentAndGrade(learn.getLearnPrimaryKey().getStudent(),learn.getGrade()));
+        });
+        gradeTable.setScoreMap(scoreMap);
+        return gradeTable;
     }
 }
