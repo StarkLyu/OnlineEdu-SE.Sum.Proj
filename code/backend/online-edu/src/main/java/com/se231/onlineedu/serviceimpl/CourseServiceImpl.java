@@ -52,12 +52,6 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private SignInRepository signInRepository;
 
-    @Autowired
-    private PaperAnswerRepository paperAnswerRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {
         CoursePrototype coursePrototype = coursePrototypeService.getCoursePrototypeInfo(prototypeId);

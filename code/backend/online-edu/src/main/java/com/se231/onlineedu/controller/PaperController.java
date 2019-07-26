@@ -41,7 +41,7 @@ public class PaperController {
         return ResponseEntity.ok(paperService.addNewPaper(form,courseId));
     }
 
-    @ApiOperation("查询用户对课程的状态")
+    @ApiOperation("查询用户对课程的试卷状态")
     @GetMapping("/state")
     public List<PaperFinish> getPaperState(@PathVariable("id")Long courseId,
                                            @AuthenticationPrincipal UserPrinciple userPrinciple){
