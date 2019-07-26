@@ -56,7 +56,7 @@ public class WordCloudServiceImpl implements WordCloudService {
         wordCloud.setFontScalar(new LinearFontScalar(10, 40));
         wordCloud.build(wordFrequencies);
         UUID uuid = UUID.randomUUID();
-        wordCloud.writeToFile("/home/liu/nginx/online-edu/"+uuid+".png");
+        wordCloud.writeToFile("/home/ubuntu/nginx/online-edu/"+uuid+".png");
         return uuid+".png";
     }
 }

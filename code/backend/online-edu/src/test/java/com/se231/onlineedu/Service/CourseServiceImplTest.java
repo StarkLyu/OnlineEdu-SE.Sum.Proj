@@ -8,10 +8,7 @@ import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.Identity;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.CourseRepository;
-import com.se231.onlineedu.repository.LearnRepository;
-import com.se231.onlineedu.repository.SignInRepository;
-import com.se231.onlineedu.repository.TimeSlotRepository;
+import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
@@ -43,6 +40,8 @@ public class CourseServiceImplTest {
             return new CourseServiceImpl();
         }
     }
+    @MockBean
+    private NoticeRepository noticeRepository;
 
     @Autowired
     private CourseService courseService;

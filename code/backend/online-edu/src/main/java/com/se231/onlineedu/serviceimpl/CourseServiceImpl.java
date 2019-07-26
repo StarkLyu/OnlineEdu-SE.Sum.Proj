@@ -40,6 +40,9 @@ public class CourseServiceImpl implements CourseService {
     private CoursePrototypeService coursePrototypeService;
 
     @Autowired
+    private NoticeRepository noticeRepository;
+
+    @Autowired
     private CourseRepository courseRepository;
 
     @Autowired
@@ -244,7 +247,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course saveNotice(Long id, Notice notice){
         Course course = getCourseInfo(id);
-        course.getNotices().add(notice);
+        notice.setIssueDate(new Date());
+        NoticePrimaryKey noticePrimaryKey = new NoticePrimaryKey();
+        noticePrimaryKey.setCourse(course);
+        noticePrimaryKey.setNoticeNo(noticeRepository.currentNoticeNo(id).orElse(0) + 1);
+        notice.setNoticePrimaryKey(noticePrimaryKey);
+        Notice found = noticeRepository.save(notice);
+        course.getNotices().add(found);
         return courseRepository.save(course);
     }
 }

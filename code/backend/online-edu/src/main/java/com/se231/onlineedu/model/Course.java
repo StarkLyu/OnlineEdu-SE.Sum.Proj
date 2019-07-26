@@ -1,15 +1,16 @@
 package com.se231.onlineedu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Course Class
@@ -70,7 +71,7 @@ public class Course {
     @ManyToMany(mappedBy = "assistCourses")
     private List<User> teacherAssistants = new ArrayList<>();
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "learn")
     @OneToMany(mappedBy = "learnPrimaryKey.course")
     private List<Learn> learns = new ArrayList<>();
 
@@ -95,7 +96,6 @@ public class Course {
     private List<Section> sectionList;
 
     @ApiModelProperty("该课程的公告集合")
-    @JsonManagedReference
     @OneToMany(mappedBy = "noticePrimaryKey.course")
     private List<Notice> notices = new ArrayList<>();
 
@@ -113,6 +113,7 @@ public class Course {
     }
 
     @Transient
+    @JsonManagedReference
     public List<User> getStudents() {
         List<User> students = new ArrayList<>();
         for (Learn learn : getLearns()) {
@@ -248,6 +249,7 @@ public class Course {
     public void setNotices(List<Notice> notices) {
         this.notices = notices;
     }
+
 
     @Override
     public boolean equals(Object o) {
