@@ -5,6 +5,7 @@ import java.util.List;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
+import com.se231.onlineedu.message.response.GradeTable;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.Learn;
 import com.se231.onlineedu.model.Notice;
@@ -133,4 +134,11 @@ public interface CourseService {
      * @return
      */
     Course saveNotice(Long id, Notice notice);
+
+    /**
+     * this service allow teacher to get all students' grade
+     * @param courseId id of course
+     * @return  grade list contains course info and a map between student and score
+     */
+    GradeTable getGrade(Long courseId);
 }

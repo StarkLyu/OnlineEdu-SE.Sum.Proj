@@ -1,9 +1,10 @@
 package com.se231.onlineedu.service;
 
 import java.util.List;
+import java.util.Set;
+import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.PaperAnswer;
-import org.springframework.data.jpa.repository.Query;
 
 /**
  * Paper Answer Service Interface
@@ -39,4 +40,6 @@ public interface PaperAnswerService {
      * @return  user's answer list
      */
     List<PaperAnswer> getPersonalPaperAnswer(Long paperId,Long userId);
+
+    PaperAnswer markStudentPaper(Long studentId, Long paperId, Integer times, Set<MarkForm> markForms);
 }

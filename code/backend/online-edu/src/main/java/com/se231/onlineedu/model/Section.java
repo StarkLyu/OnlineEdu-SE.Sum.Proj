@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
@@ -21,12 +22,14 @@ public class Section {
 
     private String title;
 
+    @JsonIgnore
     @OneToMany
     private List<Paper> papers;
 
     private int secNo;
 
     @OneToMany
+    @JsonIgnore
     private List<Resource> resources;
 
     @JsonManagedReference

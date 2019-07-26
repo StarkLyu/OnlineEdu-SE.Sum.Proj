@@ -48,9 +48,6 @@ public class Course {
     @JsonManagedReference
     private CoursePrototype coursePrototype;
 
-    @OneToMany(mappedBy = "sectionPrimaryKey.course")
-    private List<Section> sections;
-
     @ApiModelProperty("课程名称")
     private String courseTitle;
 
@@ -101,8 +98,15 @@ public class Course {
 
 
     public Course() {
+        sectionList = new ArrayList<>();
+        timeSlots = new ArrayList<>();
+        learns = new ArrayList<>();
+        teacherAssistants = new ArrayList<>();
+        notices = new ArrayList<>();
+        signIns = new ArrayList<>();
+        papers = new ArrayList<>();
+        notices = new ArrayList<>();
     }
-
 
     public List<SignIn> getSignIns() {
         return signIns;

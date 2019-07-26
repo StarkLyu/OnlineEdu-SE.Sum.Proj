@@ -27,6 +27,9 @@ public class Answer {
     @ApiModelProperty("该题的得分")
     private double grade;
 
+    @ApiModelProperty("该题的评语")
+    private String comment;
+
     public Answer() {
     }
 
@@ -58,5 +61,13 @@ public class Answer {
 
     public void setGrade(double grade) {
         this.grade = grade;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

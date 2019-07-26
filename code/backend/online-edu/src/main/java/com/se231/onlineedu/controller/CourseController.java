@@ -4,6 +4,7 @@ import com.se231.onlineedu.exception.FileFormatNotSupportException;
 import com.se231.onlineedu.exception.FileSizeExceededException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
+import com.se231.onlineedu.message.response.GradeTable;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.Learn;
 import com.se231.onlineedu.model.Notice;
@@ -131,7 +132,7 @@ public class CourseController {
 
     @ApiOperation("管理员或教师修改课程信息")
     @PutMapping("/{id}/modify")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHING_ADMIN')")
     public Course modifyCourseInfo(@Valid @RequestBody CourseApplicationForm form,
                                                    @PathVariable("id")Long id) {
         return courseService.modifyCourseInfo(id,form);
@@ -141,5 +142,11 @@ public class CourseController {
     @PostMapping("/{id}/teacherAssistant")
     public Course selectTeacherAssistant(@PathVariable Long id, @RequestParam("teacherAssistantId") Long teacherAssistantId) {
         return courseService.selectTeacherAssistant(id, teacherAssistantId);
+    }
+
+    @ApiOperation("获取课程的学生成绩单")
+    @GetMapping("/{id}/scoreList")
+    public GradeTable getGrade(@PathVariable("id")Long courseId){
+        return courseService.getGrade(courseId);
     }
 }

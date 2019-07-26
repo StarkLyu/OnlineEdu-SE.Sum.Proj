@@ -37,4 +37,6 @@ public class PaperController {
         return ResponseEntity.ok(paperService.addNewPaper(form,courseId));
     }
 
+
+
 }
