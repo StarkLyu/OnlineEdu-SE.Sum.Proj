@@ -48,7 +48,7 @@
         methods: {
             enterCourse: function () {
                 this.$store.commit("setCourseId", this.courseInfo.id);
-                this.$router.push("/course/student")
+                this.$router.push("/course")
             }
         }
     }

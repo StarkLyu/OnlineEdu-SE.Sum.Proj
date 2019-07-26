@@ -5,7 +5,6 @@ import com.se231.onlineedu.exception.BulkImportDataException;
 import com.se231.onlineedu.model.Question;
 import com.se231.onlineedu.model.QuestionType;
 import com.se231.onlineedu.service.QuestionService;
-import com.se231.onlineedu.util.ImageWithInfo;
 import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,7 +46,7 @@ public class QuestionController {
     @PostMapping("/submit")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public Question submitQuestion(@RequestBody JSONObject questionJSON,
-                                                   @PathVariable("id") Long coursePrototypeId) throws Exception {
+                                                   @PathVariable("id") Long coursePrototypeId){
         String type = ((String) questionJSON.get("type")).toUpperCase();
         StringBuilder questionBuilder = new StringBuilder();
         questionBuilder.append((String) questionJSON.get("content"));
@@ -67,11 +66,7 @@ public class QuestionController {
     @PostMapping("/{questionId}")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public Question submitQuestionImage(@PathVariable("questionId") Long questionId, @RequestParam("file") MultipartFile[] multipartFiles) throws IOException {
-        ImageWithInfo imageWithInfo = SaveFileUtil.saveImages(multipartFiles, limit);
-        if (imageWithInfo.isHasError()) {
-            throw new BulkImportDataException(imageWithInfo.getErrorMessage());
-        }
-        return questionService.saveImages(questionId, imageWithInfo.getImagesUrls());
+        return questionService.saveImages(questionId, SaveFileUtil.saveImages(multipartFiles, limit));
     }
 
 

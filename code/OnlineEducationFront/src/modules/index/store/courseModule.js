@@ -24,6 +24,10 @@ const getters = {
     },
     getCourseImg: state => {
         return state.courseInfo.imgUrl;
+    },
+    isCourseTeacher: state => {
+        if (state.identity === "STUDENT") return false;
+        else return true;
     }
 }
 

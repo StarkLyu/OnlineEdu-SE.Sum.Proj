@@ -1,5 +1,7 @@
 package com.se231.onlineedu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,5 +34,8 @@ public class NoticePrimaryKey implements Serializable {
 
     public void setNoticeNo(int noticeNo) {
         this.noticeNo = noticeNo;
+    }
+
+    public NoticePrimaryKey() {
     }
 }

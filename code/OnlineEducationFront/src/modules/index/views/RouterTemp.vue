@@ -16,14 +16,17 @@
                 this.$store.commit("setCourseInfo", response.data.course);
                 this.$store.commit("setIdentity", identity);
                 console.log(this.$store.getters.getCourseInfo);
-                if (identity === "VISITOR") {
-                    this.$router.push('/course/info');
-                }
-                else if (identity === "STUDENT") {
-                    this.$router.push('/course/student');
-                }
-                else {
-                    this.$router.push('/course/manager');
+                alert(this.$route.path);
+                if (this.$route.path === "/course") {
+                    if (identity === "VISITOR") {
+                        this.$router.push('/course/info');
+                    }
+                    else if (identity === "STUDENT") {
+                        this.$router.push('/course/student');
+                    }
+                    else {
+                        this.$router.push('/course/manager');
+                    }
                 }
             }).catch((error) => {
                 alert(error);

@@ -2,12 +2,21 @@
     <div>
         <el-collapse-item>
             <h3 slot="title">{{ sectionInfo.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h3>
-            <AddNewSection slot="title" :last-section="sectionInfo.branchNo" :chapterId="chapterId"></AddNewSection>
+            <AddNewSection
+                    v-if="isCourseTeacher"
+                    slot="title"
+                    :last-section="sectionInfo.branchNo"
+                    :chapterId="chapterId"
+            ></AddNewSection>
             <el-divider>章节介绍</el-divider>
             <pre>{{ sectionInfo.description }}</pre>
             <el-divider>章节资源</el-divider>
             <div>
-                <el-button style="float: right" @click="showResourceDialog">添加资源</el-button>
+                <el-button
+                        v-if="isCourseTeacher"
+                        style="float: right"
+                        @click="showResourceDialog"
+                >添加资源</el-button>
                 <ResourceUnit
                         v-for="(resource, index) in sectionInfo.resources"
                         :key="index"
@@ -17,6 +26,7 @@
             </div>
             <el-divider>章节作业</el-divider>
             <div>
+                <el-button style="float: right" @click="showAssignDialog">添加作业</el-button>
                 <PaperUnit
                         v-for="(paper, index) in sectionInfo.papers"
                         :key="index"
@@ -45,6 +55,25 @@
                 <el-button type="primary" @click="chooseResource">选择</el-button>
             </span>
         </el-dialog>
+        <!--        选择作业弹窗-->
+        <el-dialog :title="'选择作业'"
+                   :visible.sync="assignDialogVisible"
+                   :lock-scroll="false"
+                   top="5%">
+            <el-table :data="assignTable"  height="300px">
+                <el-table-column type="index" width="80%">
+                    <template slot-scope="scope">
+                        <el-radio v-model="assignChoose" :label="scope.row.id">&nbsp;</el-radio>
+                    </template>
+                </el-table-column>
+                <el-table-column property="title" label="作业名称" sortable></el-table-column>
+<!--                <el-table-column property="resourceType" label="资源类型"></el-table-column>-->
+            </el-table>
+            <span slot="footer">
+                <el-button @click.native="assignDialogVisible=false">取消</el-button>
+                <el-button type="primary" @click="chooseAssign">选择</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -52,6 +81,8 @@
     import ResourceUnit from "./ResourceUnit";
     import PaperUnit from "./PaperUnit";
     import AddNewSection from "./AddNewSection";
+    import { mapGetters } from "vuex"
+
     export default {
         name: "CourseSectionUnit",
         components: {AddNewSection, PaperUnit, ResourceUnit},
@@ -73,16 +104,29 @@
             return{
                 resDialogVisible:false,
 
+                assignDialogVisible:false,
+
                 resTable:this.$store.getters.getCourseInfo.coursePrototype.resources,
 
+                assignTable:this.$store.getters.getCourseInfo.papers,
+
                 resChoose:"",
+
+                assignChoose:"",
             }
         },
 
         methods:{
+            // 显示资源对话框
             showResourceDialog(){
                 this.resTable=this.$store.getters.getCourseInfo.coursePrototype.resources;
                 this.resDialogVisible=true;
+            },
+
+            // 显示作业对话框
+            showAssignDialog(){
+                this.assignTable=this.$store.getters.getCourseInfo.papers;
+                this.assignDialogVisible=true;
             },
 
             // 加入资源
@@ -103,7 +147,35 @@
                         console.log(error);
                         alert("请求失败");
                     });
+                this.resDialogVisible=false;
+            },
+
+            // 加入作业
+            chooseAssign(){
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/'+this.sectionInfo.sectionBranchesPrimaryKey.branchId+'/papers/issue',
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead,
+                    params:{
+                        paperId:this.assignChoose,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        alert("请求失败");
+                    });
+                this.assignDialogVisible=false;
             }
+        },
+
+        computed: {
+            ...mapGetters([
+                'isCourseTeacher'
+            ]),
         }
     }
 </script>
