@@ -56,6 +56,9 @@ public class QuestionController {
                 questionBuilder.append("\0\r" + option);
             }
         }
+        else {
+            questionBuilder.append("\0\r");
+        }
         String question = questionBuilder.toString();
 
         String answer = (String) questionJSON.get("answer");
