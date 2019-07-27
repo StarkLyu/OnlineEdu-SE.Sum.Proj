@@ -66,6 +66,12 @@ export default new Router({
                             component: () => import('./components/UserCoursePaperList.vue')
                         },
                         {
+                            path: 'paper/:paperId',
+                            name: 'courseStudentPaper',
+                            props: true,
+                            component: () => import('./components/UserCoursePaper')
+                        },
+                        {
                             path: 'resources',
                             name: 'courseStudentResources',
                         },
