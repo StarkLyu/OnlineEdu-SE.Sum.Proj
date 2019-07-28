@@ -148,7 +148,7 @@ public class UserController {
         if (FileCheckUtil.checkImageTypeWrong(suffix)) {
             throw new FileFormatNotSupportException("文件格式不支持");
         }
-        return userService.updateUserAvatar(SaveFileUtil.saveAvatar(id, multipartFile, suffix, "user"), id);
+        return userService.updateUserAvatar(SaveFileUtil.saveFile(multipartFile, suffix), id);
     }
 
 

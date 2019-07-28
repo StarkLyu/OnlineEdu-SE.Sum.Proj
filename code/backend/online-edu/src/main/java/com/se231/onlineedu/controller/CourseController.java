@@ -120,7 +120,7 @@ public class CourseController {
         if (FileCheckUtil.checkImageTypeWrong(suffix)) {
             throw new FileFormatNotSupportException("file format not supported");
         }
-        return courseService.updateCourseAvatar(SaveFileUtil.saveAvatar(id, multipartFile,suffix, "course"), id);
+        return courseService.updateCourseAvatar(SaveFileUtil.saveFile(multipartFile,suffix), id);
     }
 
     @ApiOperation("查询用户是否选了某门课")
