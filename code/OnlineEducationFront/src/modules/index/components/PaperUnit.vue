@@ -1,7 +1,7 @@
 <template>
     <div class="paper-unit float-left">
         <el-badge :type="badgeType" :value="badgeText">
-            <el-link>
+            <el-link @click="loadPaperPage">
                 <i class="iconfont el-icon-my-homework"></i>
                 {{ paperInfo.title }}
             </el-link>
@@ -14,8 +14,19 @@
         name: "PaperUnit",
         props: {
             paperInfo: {
+                id: 0,
                 state: "",
                 title: ""
+            }
+        },
+        methods: {
+            loadPaperPage: function () {
+                this.$router.push({
+                    name: "courseStudentPaper",
+                    params: {
+                        paperId: this.paperInfo.id
+                    }
+                });
             }
         },
         computed: {

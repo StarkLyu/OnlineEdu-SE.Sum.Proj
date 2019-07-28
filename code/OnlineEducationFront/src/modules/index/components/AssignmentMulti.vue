@@ -2,37 +2,19 @@
 <!--    多选题组件-->
     <div id="AssignmentMulti">
         <h4>
-            {{multi.title}}
+            {{multi.content}}
         </h4>
-        <el-checkbox-group style="width: 80%" v-model="multi.answer">
-            <el-checkbox style="columns:4"
-                         v-for="choice in multi.choices"
-                         :key="choice.tag"
-                         :label="choice.tag">
-                {{choice.tag+'. '+choice.content}}
+        <el-checkbox-group style="width: 80%"  v-model="answerList" @change="changeAnswer">
+            <el-checkbox
+                    v-for="(value, key) in multi.options"
+                    :key="key"
+                    :label="key">
+                {{key + '. ' + value}}
             </el-checkbox>
         </el-checkbox-group>
-        <p style="color:red">
+        <p style="color:red" v-if="showAnswer">
             正确答案为：( {{multi.correctAnswer}} )
         </p>
-<!--        <div v-for="multi in MultiQuestion" :key="multi.key">-->
-<!--            <div v-if="multi.type==='multi'">-->
-<!--                <h4>-->
-<!--                    {{multi.title}}-->
-<!--                </h4>-->
-<!--                <el-checkbox-group style="width: 80%" v-model="multi.answer">-->
-<!--                    <el-checkbox style="columns:4"-->
-<!--                                 v-for="choice in MultiQuestion[multi.key-1].choices"-->
-<!--                                 :key="choice.tag"-->
-<!--                                 :label="choice.tag">-->
-<!--                        {{choice.tag+'. '+choice.content}}-->
-<!--                    </el-checkbox>-->
-<!--                </el-checkbox-group>-->
-<!--                <p>-->
-<!--                    正确答案为：( {{multi.correctAnswer}} )-->
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
     </div>
 </template>
 
@@ -41,8 +23,24 @@
         name: "AssignmentMulti",
 
         props: {
-            multi: Array,
+            multi: Object,
+            showAnswer: false
         },
+        data() {
+            return {
+                answerList: []
+            }
+        },
+        methods: {
+            changeAnswer: function () {
+                let answerLine = "";
+                this.answerList.sort();
+                for (let i of this.answerList) {
+                    answerLine += i;
+                }
+                this.multi.myAnswer = answerLine;
+            }
+        }
     }
 </script>
 

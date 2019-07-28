@@ -2,7 +2,7 @@
 <!--    主观题组件-->
     <div id="AssignmentSub">
         <h4>
-            {{sub.title}}
+            {{sub.content}}
         </h4>
         <el-input type="textarea" v-model="sub.answer" style="width: 80%;"></el-input>
 <!--        上传图片-->
@@ -50,7 +50,7 @@
         name: "AssignmentSub",
 
         props:{
-            sub:Array,
+            sub: Object,
         },
 
         data() {

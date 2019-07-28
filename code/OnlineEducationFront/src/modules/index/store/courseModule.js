@@ -28,6 +28,13 @@ const getters = {
     isCourseTeacher: state => {
         if (state.identity === "STUDENT") return false;
         else return true;
+    },
+    getPaperById: (state) => (paperId) => {
+        for (let paper of state.courseInfo.papers) {
+            if (paper.id === paperId) {
+                return paper;
+            }
+        }
     }
 }
 
