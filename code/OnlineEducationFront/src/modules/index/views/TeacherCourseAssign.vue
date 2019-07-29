@@ -103,7 +103,6 @@
 </template>
 
 <script>
-    import Bus from '../bus.js'
     export default {
         name: "TeacherCourseAssign",
 
@@ -152,7 +151,7 @@
 
             // 批改作业
             handleCorrection:function(index, row){
-                Bus.$emit('assignId', row.id);
+                this.$store.commit("setPaperId", row.id);
                 this.$router.push("/course/manager/correction");
             },
 
