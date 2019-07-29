@@ -3,6 +3,7 @@ package com.se231.onlineedu.serviceimpl;
 import java.util.ArrayList;
 import java.util.List;
 import com.se231.onlineedu.exception.NotFoundException;
+import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.message.request.PaperQuestionForm;
 import com.se231.onlineedu.message.response.PaperFinish;
@@ -80,20 +81,44 @@ public class PaperServiceImpl implements PaperService {
         User user = userRepository.getOne(userId);
         Course course = courseService.getCourseInfo(courseId);
         course.getPapers().forEach(paper -> {
-            PaperFinish paperFinish = new PaperFinish();
-            paperFinish.setPaper(paper);
-            int maxTimes = paperAnswerRepository.getMaxTimes(userId,courseId).orElse(0);
-            if(maxTimes==0){
-                paperFinish.setState(PaperAnswerState.NOT_START);
-            }
-            else{
-                PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,maxTimes);
-                PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
-                        .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
-                paperFinish.setState(paperAnswer.getState());
-            }
-            paperFinishList.add(paperFinish);
+            paperFinishList.add(setPaperFinish(userId,paper.getId()));
         });
         return paperFinishList;
+    }
+
+    @Override
+    public List<PaperFinish> getStudentFinish(Long courseId, Long paperId) {
+        List<PaperFinish> paperFinishList = new ArrayList<>();
+        Course course = courseService.getCourseInfo(courseId);
+        Paper paper = paperRepository.findById(paperId)
+                .orElseThrow(()->new NotFoundException("No corresponding paper"));
+        if(!course.getPapers().contains(paper)){
+            throw new NotMatchException("This course don't have match paper.");
+        }
+
+        course.getStudents().forEach(student->{
+            paperFinishList.add(setPaperFinish(student.getId(),paperId));
+        });
+        return paperFinishList;
+    }
+
+    private PaperFinish setPaperFinish(Long userId,Long paperId){
+        Paper paper = paperRepository.findById(paperId).orElseThrow(()-> new NotFoundException("No corresponding paper"));
+        User user = userRepository.getOne(userId);
+        PaperFinish paperFinish = new PaperFinish();
+        paperFinish.setPaper(paper);
+        paperFinish.setStudent(user);
+        int maxTimes = paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
+        paperFinish.setTimes(maxTimes);
+        if(maxTimes==0){
+            paperFinish.setState(PaperAnswerState.NOT_START);
+        }
+        else{
+            PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,maxTimes);
+            PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
+                    .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
+            paperFinish.setState(paperAnswer.getState());
+        }
+        return paperFinish;
     }
 }

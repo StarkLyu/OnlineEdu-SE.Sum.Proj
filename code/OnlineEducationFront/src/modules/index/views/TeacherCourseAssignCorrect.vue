@@ -1,29 +1,10 @@
 <template>
     <div>
         <el-header>
-            <h1 class="titlesytle">课程成绩管理</h1>
+            <h1 class="titlesytle">作业批改</h1>
         </el-header>
         <el-main>
-            <div class="float-left">
-                <el-input class="padding"
-                          v-model="search"
-                          placeholder="请输入用户名"
-                          prefix-icon="el-icon-search"/>
-                <!--            导入成绩，上传的组件-->
-                <el-upload
-                        class="upload-demo"
-                        ref="upload"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :file-list="fileList"
-                        :auto-upload="false">
-                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                    <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
-                    <div slot="tip" class="el-upload__tip">上传格式只能为xls或xlsx</div>
-                </el-upload>
-            </div>
-<!--            成绩显示-->
+<!--            展示所有学生的答题情况-->
             <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
                       stripe>
@@ -43,14 +24,8 @@
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userCollege"
-                            label="学院"
-                            min-width="25%"
-                            sortable>
-                    </el-table-column>
-                    <el-table-column
                             prop="score"
-                            label="成绩"
+                            label="作业情况"
                             min-width="25%"
                     ></el-table-column>
                     <el-table-column
@@ -59,16 +34,16 @@
                             min-width="40%">
                         <template slot-scope="scope">
                             <el-button type="button" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">
-                                修改
+                                批改
                             </el-button>
                         </template>
                     </el-table-column>
                 </el-table-column>
             </el-table>
         </el-main>
-        <!--成绩编辑弹窗-->
+<!--        批改作业-->
         <el-dialog
-                :title="'成绩修改'"
+                :title="'作业批改'"
                 :visible.sync="dialogFormVisible"
                 :lock-scroll="false"
                 top="5%">
@@ -92,12 +67,13 @@
 </template>
 
 <script>
+    import Bus from '../bus.js'
     export default {
-        name: "TeacherScoreManage",
+        name: "TeacherAssignCorrect",
 
         data(){
             return{
-                fileList: [],
+                assignId:"",
 
                 search: '',
 
@@ -133,28 +109,9 @@
         },
 
         methods:{
-            showAllStudents(){
-                // 该课程所有学生
-                // this.$http.request({
-                //     url: '/api/courses/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/scoreList',
-                //     method: "get",
-                //     headers:this.$store.getters.authRequestHead,
-                // })
-                //     .then(function (response) {
-                //         console.log(response.data);
-                //         this.UserData=response.data.scoreMap;
-                //         console.log(this.UserData);
-                //         // alert("请求成功");
-                //     })
-                //     .catch(function (error) {
-                //         console.log(error.response);
-                //         // alert("请求失败");
-                //     });
-            },
+            // 展示所有学生的答题情况
+            showStuAssigns(){
 
-            // 导入成绩
-            handleAdd(){
-                alert("导入成绩");
             },
 
             //显示编辑界面
@@ -163,45 +120,35 @@
                 this.editForm = Object.assign({}, row);
             },
 
-            // 提交修改后的成绩
+            // 提交批改结果
             updateData(){
-                alert("用户修改成功");
+                alert("作业批改完成");
                 this.dialogFormVisible=false;
-            },
-
-            submitUpload() {
-                this.$refs.upload.submit();
-            },
-
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-
-            handlePreview(file) {
-                console.log(file);
             },
         },
 
         mounted() {
-            this.showAllStudents();
+            var vm = this;
+            // 用$on事件来接收参数
+            Bus.$on('assignId', (data) => {
+                console.log(data);
+                vm.assignId = data;
+            });
+
+            vm.showStuAssigns();
         }
     }
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
+    .titlesytle {
+        text-align: center;
+        padding-top: 20px
+    }
+
     .usertable {
         width: 100%;
         font-size: 15px;
         padding-bottom:20px;
-    }
-
-    .padding {
-        padding: 8px;
-    }
-
-    .titlesytle {
-        text-align: center;
-        padding-top: 20px
     }
 </style>
