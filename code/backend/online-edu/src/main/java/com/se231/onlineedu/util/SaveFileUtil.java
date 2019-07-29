@@ -21,37 +21,16 @@ import java.util.UUID;
  * @date 2019/07/12
  */
 public class SaveFileUtil {
-    private static String nginxPath = "/home/ubuntu/nginx/online-edu/";
-
-    public static String saveAvatar(Long id, MultipartFile multipartFile, String suffix, String type) throws IOException {
-        String fileName = nginxPath + id + type +"-avatar/" + id + "-avatar" + suffix;
-        File file = new File(fileName);
-
-        if (file.getParentFile().exists()) {
-            FileUtils.cleanDirectory(file.getParentFile());
-        } else {
-            file.getParentFile().mkdir();
-        }
-        System.out.println(file.getAbsolutePath());
-
-        file.createNewFile();
-        multipartFile.transferTo(file);
-        Files.setPosixFilePermissions(file.getParentFile().toPath(), PosixFilePermissions.fromString("rwxrwxrwx"));
-        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxr--r--"));
-
-        return id + type+ "-avatar/" + id + "-avatar" + suffix;
-    }
-
     public static String saveFile(MultipartFile multipartFile, String suffix) throws IOException {
         String uuid = UUID.randomUUID().toString();
         String fileName = uuid + suffix;
-        String filePath = nginxPath + fileName;
-        File file = new File(filePath);
-        file.createNewFile();
 
-        System.out.println(file.getAbsolutePath());
-        multipartFile.transferTo(file);
-        Files.setPosixFilePermissions(file.toPath(), PosixFilePermissions.fromString("rwxr--r--"));
+
+        FtpClientUtil ftpClientUtil = new FtpClientUtil();
+        ftpClientUtil.open();
+
+        ftpClientUtil.putFileToPath(multipartFile.getInputStream(), fileName);
+        ftpClientUtil.close();
 
         return fileName;
     }
@@ -83,8 +62,10 @@ public class SaveFileUtil {
     }
 
     public static boolean deleteImage(String fileName) throws IOException {
-        String filePath = nginxPath + fileName;
-        Path path = Paths.get(filePath);
-        return Files.deleteIfExists(path);
+        FtpClientUtil ftpClientUtil = new FtpClientUtil();
+        ftpClientUtil.open();
+        ftpClientUtil.deleteByPath(fileName);
+        ftpClientUtil.close();
+        return true;
     }
 }

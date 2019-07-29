@@ -2,39 +2,20 @@
 <!--    单选题组件-->
     <div id="AssignmentSingle">
         <h4>
-            {{single.title}}
+            {{single.content}}
         </h4>
-        <el-radio-group style="width: 80%" v-model="single.answer">
-            <el-radio style="columns:4"
-                      v-for="choice in single.choices"
-                      :key="choice.tag"
-                      :label="choice.tag">
-                {{choice.tag+'. '+choice.content}}
+        <img v-for="(img, index) in single.images" :key="index" :src="img">
+        <el-radio-group style="width: 80%" v-model="single.myAnswer">
+            <el-radio
+                    v-for="(value, key) in single.options"
+                    :key="key"
+                    :label="key">
+                {{key + '. ' + value}}
             </el-radio>
         </el-radio-group>
-        <p style="color:red">
+        <p style="color:red" v-if="showAnswer">
             正确答案为：( {{single.correctAnswer}} )
         </p>
-<!--        <div v-for="single in SingleQuestion" :key="single.key">-->
-<!--            <div v-if="single.type==='single'">-->
-<!--                <h4>-->
-<!--                    {{single.title}}-->
-<!--                </h4>-->
-<!--                <el-radio-group style="width: 80%" v-model="single.answer">-->
-<!--                    <el-radio style="columns:4"-->
-<!--                              v-for="choice in SingleQuestion[single.key-1].choices"-->
-<!--                              :key="choice.tag"-->
-<!--                              :label="choice.tag">-->
-<!--                        {{choice.tag+'. '+choice.content}}-->
-<!--                    </el-radio>-->
-<!--                </el-radio-group>-->
-<!--                <el-button size="small">编辑</el-button>-->
-<!--                <el-button size="small" type="danger">删除</el-button>-->
-<!--                <p>-->
-<!--                    正确答案为：( {{single.correctAnswer}} )-->
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
     </div>
 </template>
 
@@ -43,7 +24,10 @@
         name: "AssignmentSingle",
 
         props: {
-            single: Array,
+            single: Object,
+            showAnswer: {
+                default: false,
+            },
         },
     }
 </script>

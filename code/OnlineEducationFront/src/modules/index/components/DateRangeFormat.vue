@@ -6,8 +6,12 @@
     export default {
         name: "DateRangeFormat",
         props: {
-            start: String,
-            end: String
+            start: {
+                default: "",
+            },
+            end: {
+                default: "",
+            }
         },
         computed: {
             dateRange: function () {
