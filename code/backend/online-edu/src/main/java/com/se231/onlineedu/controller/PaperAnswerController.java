@@ -1,5 +1,6 @@
 package com.se231.onlineedu.controller;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 import com.se231.onlineedu.message.request.MarkForm;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Zhe Li
@@ -36,7 +38,7 @@ public class PaperAnswerController {
     public PaperAnswer submitAnswer(@PathVariable("courseId")Long courseId,
                                                     @PathVariable("paperId")Long paperId,
                                                     @AuthenticationPrincipal UserPrinciple userPrinciple,
-                                                    @RequestBody SubmitAnswerForm form)throws Exception{
+                                                    @Valid @RequestBody SubmitAnswerForm form)throws Exception{
 
         return paperAnswerService.submitAnswer(userPrinciple.getId(),courseId,paperId,form);
     }
@@ -55,5 +57,17 @@ public class PaperAnswerController {
                                         @PathVariable("studentId")Long studentId,
                                         @PathVariable("times")Integer times){
         return paperAnswerService.markStudentPaper(studentId,paperId,times,marks);
+    }
+
+    @ApiOperation("提交主观题")
+    @PostMapping("/subjective")
+    public PaperAnswer submitSubjective(@PathVariable("courseId")Long courseId,
+                                        @PathVariable("paperId")Long paperId,
+                                        @AuthenticationPrincipal UserPrinciple userPrinciple,
+                                        @RequestParam("images")MultipartFile[] images,
+                                        @RequestParam("questionId")Long questionId,
+                                        @RequestParam("answerText")String answerText){
+        return paperAnswerService.submitSubjectiveQuestion(courseId,userPrinciple.getId(),
+                paperId,questionId,answerText,images);
     }
 }
