@@ -1,5 +1,6 @@
 package com.se231.onlineedu.message.request;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ import java.util.List;
 public class SubmitAnswerForm {
     private List<QuestionAnswer> answerList;
 
+    @NotNull
     private String state;
 
     public SubmitAnswerForm(List<QuestionAnswer> answerList, String state) {
