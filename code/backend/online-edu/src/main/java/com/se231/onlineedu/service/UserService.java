@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -131,4 +132,6 @@ public interface UserService {
      * @return true if email is the same as old
      */
     boolean checkIfSameAsOldEmail(Long id, String email);
+
+    UserAvatar getUserAvatar(Long userId);
 }

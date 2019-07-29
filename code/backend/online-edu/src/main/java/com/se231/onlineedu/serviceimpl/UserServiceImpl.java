@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.SignInRepository;
@@ -208,5 +209,11 @@ public class UserServiceImpl implements UserService {
     public boolean checkIfSameAsOldEmail(Long id, String Email){
         User user = getUserInfo(id);
         return Email.equals(user.getEmail());
+    }
+
+    @Override
+    public UserAvatar getUserAvatar(Long userId) {
+        User user = getUserInfo(userId);
+        return new UserAvatar(user.getUsername(),user.getAvatarUrl());
     }
 }

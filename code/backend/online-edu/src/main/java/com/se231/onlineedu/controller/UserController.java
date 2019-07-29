@@ -5,6 +5,7 @@ import com.se231.onlineedu.exception.FileFormatNotSupportException;
 import com.se231.onlineedu.exception.FileSizeExceededException;
 import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.User;
 import com.se231.onlineedu.model.VerificationToken;
@@ -215,6 +216,13 @@ public class UserController {
         httpSession.setAttribute("token", verificationToken);
         emailSenderService.sendVerificationEmail(userService.getUserInfo(id).getEmail(), verificationToken);
         return "已发送验证码";
+    }
+
+    @ApiOperation("获取用户头像")
+    @GetMapping("/{userId}/avatar")
+    public UserAvatar getUserAvatar(@PathVariable("userId")Long userId){
+        return userService.getUserAvatar(userId);
+
     }
 
 }

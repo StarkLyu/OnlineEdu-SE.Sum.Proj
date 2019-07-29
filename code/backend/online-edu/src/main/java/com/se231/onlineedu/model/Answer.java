@@ -1,7 +1,7 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.List;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -29,6 +29,14 @@ public class Answer {
 
     @ApiModelProperty("该题的评语")
     private String comment;
+
+    @ApiModelProperty("答案的图片")
+    @ElementCollection
+    @CollectionTable(name="Answer_Image",
+            joinColumns = {@JoinColumn(name="answer_paper_answer_user_id"),
+            @JoinColumn(name = "answer_paper_answer_paper_id"),@JoinColumn(name = "answer_question_id"),
+            @JoinColumn(name = "answer_paper_answer_times")})
+    private List<String> imageUrls;
 
     public Answer() {
     }
@@ -69,5 +77,13 @@ public class Answer {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 }

@@ -13,6 +13,11 @@ public enum PaperAnswerState {
      * student hasn't answer the paper yet.
      */
     NOT_START,
+
+    /**
+     * save subjective questions' answers temporarily
+     */
+    TEMP_SAVE,
     /**
      * student start to answer but not finish(just save temporarily).
      */

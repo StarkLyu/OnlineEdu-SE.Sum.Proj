@@ -34,4 +34,13 @@ public interface PaperService {
      */
     List<PaperFinish> getPaperFinish(Long userId, Long courseId);
 
+    /**
+     * this service allow teacher to get all students' finish state of a specific paper
+     * @param courseId  id of course
+     * @param paperId   id of paper
+     * @return  finish state list
+     */
+    List<PaperFinish> getStudentFinish(Long courseId,Long paperId);
+
+
 }
