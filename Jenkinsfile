@@ -13,7 +13,7 @@ pipeline {
         }
 	stage('Deploy') {
 	    steps {
-	    	sh "cd code/backend/online-edu && mvn -DskipTests tomcat7:redeploy"
+	    	sh "cd code/backend/online-edu/target && curl -v -u uilil:fwznhyn -T online-edu-0.0.1-SNAPSHOT.war 'http://10.0.0.67:8080/manager/text/deploy?path=/online-edu&update=true' && curl -v -u uilil:fwznhyn -T online-edu-0.0.1-SNAPSHOT.war 'http://10.0.0.95:8080/manager/text/deploy?path=/online-edu&update=true'"
 	        }
 	    }
     }
