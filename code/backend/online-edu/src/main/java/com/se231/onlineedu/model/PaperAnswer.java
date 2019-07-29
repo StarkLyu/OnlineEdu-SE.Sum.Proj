@@ -1,6 +1,7 @@
 package com.se231.onlineedu.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -52,6 +53,7 @@ public class PaperAnswer {
     }
 
     public PaperAnswer() {
+        answers = new ArrayList<>();
     }
 
     public List<Answer> getAnswers() {
