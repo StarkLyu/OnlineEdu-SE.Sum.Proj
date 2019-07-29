@@ -111,7 +111,6 @@ public class CourseController {
     @ApiOperation(value = "用户可以上传课程的头像", httpMethod = "POST")
     @ApiImplicitParam(name = "id", value = "上传的课程id", type = "path")
     @PostMapping("/{id}/avatar")
-    @PreAuthorize("#id == authentication.principal.id")
     public Course patchAvatar(@PathVariable Long id, @RequestParam(value = "avatar") MultipartFile multipartFile) throws IOException {
         if (FileCheckUtil.checkImageSizeExceed(multipartFile,limit)) {
             throw new FileSizeExceededException("exceeded max size");

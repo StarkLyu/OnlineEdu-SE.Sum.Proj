@@ -66,6 +66,8 @@ public class QuestionController {
                 QuestionType.valueOf(type), question, answer);
     }
 
+
+    @ApiOperation("上传题目图片")
     @PostMapping("/{questionId}")
     @PreAuthorize("hasAnyRole('TEACHING_ADMIN','ADMIN','SUPER_ADMIN')")
     public Question submitQuestionImage(@PathVariable("questionId") Long questionId, @RequestParam("file") MultipartFile[] multipartFiles) throws IOException {
