@@ -1,4 +1,5 @@
 module.exports = {
+    outputDir: 'oefront',
     pages: {
         index:{
             entry: 'src/modules/index/index.js',

@@ -36,8 +36,15 @@ const getters = {
             }
         }
     },
-    getSectionTitle: (state) => (secNo) => {
-        return state.courseInfo.sectionList
+    getSectionList: (state) => {
+        let sectionList = [];
+        for (let sec of state.courseInfo.sectionList) {
+            sectionList.push({
+                secNo: sec.secNo,
+                title: sec.title
+            })
+        }
+        return sectionList;
     }
 }
 
