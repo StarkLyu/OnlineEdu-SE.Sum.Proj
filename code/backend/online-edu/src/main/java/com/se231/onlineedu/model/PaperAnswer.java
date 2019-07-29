@@ -42,6 +42,7 @@ public class PaperAnswer {
 
     public PaperAnswer(PaperAnswerPrimaryKey paperAnswerPrimaryKey) {
         this.paperAnswerPrimaryKey = paperAnswerPrimaryKey;
+        answers = new ArrayList<>();
     }
 
     public PaperAnswerPrimaryKey getPaperAnswerPrimaryKey() {
