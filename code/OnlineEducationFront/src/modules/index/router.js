@@ -125,6 +125,11 @@ export default new Router({
                             component: () => import('./views/TeacherCourseAssign'),
                         },
                         {
+                            path: 'correction',
+                            name: 'TeacherCourseAssignCorrect',
+                            component: () => import('./views/TeacherCourseAssignCorrect'),
+                        },
+                        {
                             path:'questionBank',
                             name:'TeacherCourseQuestionBank',
                             component:() => import('./views/TeacherCourseQuestionBank')
