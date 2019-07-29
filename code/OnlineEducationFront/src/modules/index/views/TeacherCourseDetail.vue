@@ -5,7 +5,18 @@
         </el-header>
         <el-main>
             <div class="courseimg">
-                <img src="../../../assets/logo.png" height="200" width="200"/>
+                <el-upload
+                        class="avatar-uploader avatar"
+                        :action="uploadUrl"
+                        :headers="uploadHeader"
+                        :show-file-list="false"
+                        :before-upload="beforeAvatarUpload"
+                        :on-success="uploadSucceed"
+                        :on-error="uploadFail"
+                        :http-request="uploadProcess">
+                    <img v-if="imageURL" :src="imageURL" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
             </div>
             <div class="coursedes">
                 <p>
@@ -140,10 +151,53 @@
                         },
                     ]
                 },
+
+                imageURL:this.$store.getters.getCourseInfo.avatarUrl,
             }
         },
 
         methods:{
+            beforeAvatarUpload: function(file) {
+                console.log(file);
+                const isLt2M = file.size / 1024 < 5000;
+
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 5000KB!');
+                }
+                return isLt2M;
+            },
+
+            uploadProcess: function(param) {
+                let formData = new FormData();
+                formData.append("avatar",param.file);
+                this.$http.request({
+                    url: "/api/courses/" + this.$store.getters.getCourseId+ "/avatar",
+                    method: "post",
+                    data: formData,
+                    headers: {
+                        'Authorization': "Bearer " + this.$store.state.user.accessToken,
+                        'Content-Type': 'multipart/form-data'
+                    },
+                }).then((response) => {
+                    console.log(response);
+                    alert("修改成功");
+                    // this.$store.commit("infoSet", response.data);
+                }).catch((error) => {
+                    alert("修改失败");
+                    console.log(error.response);
+                })
+            },
+
+            uploadSucceed: function(response,file,filelist) {
+                alert("上传成功");
+                console.log(response);
+            },
+
+            uploadFail: function(error,file,filelist) {
+                alert("上传失败");
+                console.log(error);
+            },
+
             // 显示编辑弹窗
             showEditDialog(){
                 this.editForm = Object.assign({}, this.CourseForm);
@@ -227,5 +281,32 @@
 
     .detail {
         font-size: small;
+    }
+
+    .avatar-uploader {
+        border: 1px dashed #d9d9d9;
+        border-radius: 100%;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .avatar-uploader:hover {
+        border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
     }
 </style>

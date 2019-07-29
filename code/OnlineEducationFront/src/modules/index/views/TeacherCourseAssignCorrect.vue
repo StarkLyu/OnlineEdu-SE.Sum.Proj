@@ -67,13 +67,12 @@
 </template>
 
 <script>
-    import Bus from '../bus.js'
     export default {
         name: "TeacherAssignCorrect",
 
         data(){
             return{
-                assignId:"",
+                assignId:0,
 
                 search: '',
 
@@ -111,6 +110,22 @@
         methods:{
             // 展示所有学生的答题情况
             showStuAssigns(){
+                // var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/papers/'+this.$store.getters.getPaperId+'/state/all',
+                    method: "get",
+                    headers:this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        this.UserData=response.data;
+                        console.log(this.UserData);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
 
             },
 
@@ -128,14 +143,7 @@
         },
 
         mounted() {
-            var vm = this;
-            // 用$on事件来接收参数
-            Bus.$on('assignId', (data) => {
-                console.log(data);
-                vm.assignId = data;
-            });
-
-            vm.showStuAssigns();
+            this.showStuAssigns();
         }
     }
 </script>

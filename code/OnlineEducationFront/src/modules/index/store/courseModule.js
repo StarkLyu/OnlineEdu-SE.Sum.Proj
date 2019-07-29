@@ -6,7 +6,8 @@ const state = {
     id: 0,
     courseInfo: {},
     identity: "",
-}
+    paperId:0,
+};
 
 // getters
 const getters = {
@@ -35,13 +36,16 @@ const getters = {
                 return paper;
             }
         }
+    },
+    getPaperId:state => {
+        return state.paperId;
     }
-}
+};
 
 // actions
 const actions = {
 
-}
+};
 
 // mutations
 const mutations = {
@@ -53,8 +57,11 @@ const mutations = {
     },
     setIdentity: (state, identity) => {
         state.identity = identity;
+    },
+    setPaperId(state, paperId) {
+        state.paperId=paperId;
     }
-}
+};
 
 export default {
     state,
