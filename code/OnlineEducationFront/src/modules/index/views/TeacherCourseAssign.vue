@@ -103,6 +103,7 @@
 </template>
 
 <script>
+    import Bus from '../bus.js'
     export default {
         name: "TeacherCourseAssign",
 
@@ -151,7 +152,8 @@
 
             // 批改作业
             handleCorrection:function(index, row){
-                alert("发布"+row.title);
+                Bus.$emit('assignId', row.id);
+                this.$router.push("/course/manager/correction");
             },
 
             // 显示编辑作业弹窗
