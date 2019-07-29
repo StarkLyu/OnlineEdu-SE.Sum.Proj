@@ -48,4 +48,11 @@ public class PaperController {
         return paperService.getPaperFinish(userPrinciple.getId(),courseId);
     }
 
+    @ApiOperation("查询所有学生的作业完成情况")
+    @GetMapping("/{paperId}/state/all")
+    public List<PaperFinish> getStudentPaperState(@PathVariable("id")Long courseId,
+                                                  @PathVariable("paperId")Long paperId){
+        return paperService.getStudentFinish(courseId,paperId);
+    }
+
 }

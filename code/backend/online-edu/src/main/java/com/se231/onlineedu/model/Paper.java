@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -112,5 +113,18 @@ public class Paper {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Paper paper = (Paper) o;
+        return id.equals(paper.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
