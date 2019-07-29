@@ -85,7 +85,8 @@ export default new Router({
                         },
                         {
                             path: 'forum',
-                            name: 'courseStudentForum'
+                            name: 'courseStudentForum',
+                            component: () => import('./components/UserCourseForum')
                         }
                     ]
                 },

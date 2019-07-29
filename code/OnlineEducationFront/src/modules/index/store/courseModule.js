@@ -35,6 +35,9 @@ const getters = {
                 return paper;
             }
         }
+    },
+    getSectionTitle: (state) => (secNo) => {
+        return state.courseInfo.sectionList
     }
 }
 
