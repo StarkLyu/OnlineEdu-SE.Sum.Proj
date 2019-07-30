@@ -69,7 +69,7 @@ public class Course {
     private List<User> teacherAssistants = new ArrayList<>();
 
     @JsonManagedReference(value = "learn")
-    @OneToMany(mappedBy = "learnPrimaryKey.course")
+    @OneToMany(mappedBy = "learnPrimaryKey.course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Learn> learns = new ArrayList<>();
 
     @JsonManagedReference

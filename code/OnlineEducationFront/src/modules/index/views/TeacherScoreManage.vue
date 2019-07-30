@@ -24,37 +24,37 @@
                 </el-upload>
             </div>
 <!--            成绩显示-->
-            <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
+            <el-table :data="UserData.filter(data=>!search || data.student.username.includes(search))"
                       class="usertable"
                       stripe>
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="sno"
+                            prop="student.sno"
                             label="学号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="username"
+                            prop="student.username"
                             label="学生名"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="userCollege"
+                            prop="student.university"
                             label="学院"
                             min-width="25%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="score"
+                            prop="grade"
                             label="成绩"
                             min-width="25%"
                     ></el-table-column>
                     <el-table-column
-                            prop="sno"
+                            prop="student.sno"
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
@@ -80,7 +80,7 @@
                     </span>
                 </el-form-item>
                 <el-form-item label="成绩">
-                    <el-input type="number" v-model="editForm.score"></el-input>
+                    <el-input type="number" v-model="editForm.grade"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="el-dialog__footer">
@@ -101,55 +101,37 @@
 
                 search: '',
 
-                UserData: [
-                    {
-                        sno:"45112323",
-                        username:"张三",
-                        userCollege:"化学化工",
-                        score:98,
-                    },
-                    {
-                        sno:"2144641",
-                        username:"李四",
-                        userCollege:"电子信息",
-                        score:48,
-                    },
-                    {
-                        sno:"78089870",
-                        username:"王二",
-                        userCollege:"机动",
-                        score:80,
-                    }
-                ],
+                UserData: [],
 
                 dialogFormVisible:false,
 
                 //编辑界面数据
                 editForm: {
                     username:"",
-                    score:"",
+                    grade:"",
                 },
             }
         },
 
         methods:{
             showAllStudents(){
+                var that=this;
                 // 该课程所有学生
-                // this.$http.request({
-                //     url: '/api/courses/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/scoreList',
-                //     method: "get",
-                //     headers:this.$store.getters.authRequestHead,
-                // })
-                //     .then(function (response) {
-                //         console.log(response.data);
-                //         this.UserData=response.data.scoreMap;
-                //         console.log(this.UserData);
-                //         // alert("请求成功");
-                //     })
-                //     .catch(function (error) {
-                //         console.log(error.response);
-                //         // alert("请求失败");
-                //     });
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/scoreList',
+                    method: "get",
+                    headers:this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.UserData=response.data.scoreMap;
+                        console.log(that.UserData);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        // alert("请求失败");
+                    });
             },
 
             // 导入成绩

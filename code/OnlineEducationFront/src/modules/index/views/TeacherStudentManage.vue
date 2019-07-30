@@ -4,7 +4,41 @@
             <h1 class="titlesytle">学生信息查看</h1>
         </el-header>
         <el-main>
-            <div class="float-left">
+            <h3>助教信息</h3>
+<!--            显示助教表格-->
+            <el-table :data="assistantData"
+                      class="usertable"
+                      stripe>
+                <el-table-column >
+                    <el-table-column type="index">
+                    </el-table-column>
+                    <el-table-column
+                            prop="sno"
+                            label="学号"
+                            min-width="35%"
+                            sortable="true">
+                    </el-table-column>
+                    <el-table-column
+                            prop="username"
+                            label="助教名"
+                            min-width="35%"
+                            sortable="true">
+                    </el-table-column>
+                    <el-table-column
+                            prop="university"
+                            label="学院"
+                            min-width="25%"
+                            sortable="true">
+                    </el-table-column>
+                    <el-table-column
+                            prop="email"
+                            label="邮箱"
+                            min-width="50%"
+                    ></el-table-column>
+                </el-table-column>
+            </el-table>
+            <h3 style="float: left">学生信息</h3>
+            <div style="float: right">
                 <el-input class="padding"
                           v-model="search"
                           placeholder="请输入用户名"
@@ -21,25 +55,35 @@
                             prop="sno"
                             label="学号"
                             min-width="35%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
                             prop="username"
                             label="学生名"
                             min-width="35%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
-                            prop="userCollege"
+                            prop="university"
                             label="学院"
                             min-width="25%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
                             prop="email"
                             label="邮箱"
                             min-width="50%"
                     ></el-table-column>
+                    <el-table-column
+                            prop="sno"
+                            label="操作"
+                            min-width="40%">
+                        <template slot-scope="scope">
+                            <el-button type="button" icon="el-icon-star-off" @click="chooseAssistant(scope.$index, scope.row)">
+                                任命助教
+                            </el-button>
+                        </template>
+                    </el-table-column>
                 </el-table-column>
             </el-table>
         </el-main>
@@ -54,26 +98,9 @@
             return{
                 search: '',
 
-                StudentData: [
-                    // {
-                    //     sno:"45112323",
-                    //     username:"kamen",
-                    //     userCollege:"化学化工",
-                    //     email:"1099@fg.co"
-                    // },
-                    // {
-                    //     sno:"2144641",
-                    //     username:"student",
-                    //     userCollege:"电子信息",
-                    //     email:"1daswew9@fger.coq"
-                    // },
-                    // {
-                    //     sno:"78089870",
-                    //     username:"zhujiao",
-                    //     userCollege:"机动",
-                    //     email:"df633339@qq.com"
-                    // }
-                ],
+                StudentData: [],
+
+                assistantData:this.$store.getters.getCourseInfo.teacherAssistants,
             }
         },
 
@@ -95,7 +122,26 @@
                         console.log(error.response);
                         alert("请求失败");
                     });
+            },
 
+            // 任命助教
+            chooseAssistant(index, row){
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/teacherAssistant',
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead,
+                    params:{
+                        teacherAssistantId:row.id,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("任命助教成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
             }
         },
 
