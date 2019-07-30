@@ -6,6 +6,7 @@ import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.Answer;
 import com.se231.onlineedu.model.PaperAnswer;
+import com.se231.onlineedu.model.PaperAnswerState;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -61,8 +62,9 @@ public interface PaperAnswerService {
      * @param questionId id of question
      * @param images    images of answer
      * @param answerText text of answer
+     * @param state state of answer
      * @return  the answered paper
      */
-    PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId,
-                                         Long questionId, String answerText, MultipartFile[] images);
+    PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId, Long questionId,
+                                         String answerText, MultipartFile[] images, PaperAnswerState state);
 }
