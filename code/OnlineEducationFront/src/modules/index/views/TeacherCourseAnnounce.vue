@@ -118,7 +118,7 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        alert("添加公告成功");
 
                     })
                     .catch(function (error) {

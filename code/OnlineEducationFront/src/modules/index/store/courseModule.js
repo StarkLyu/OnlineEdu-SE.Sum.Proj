@@ -24,7 +24,10 @@ const getters = {
         return state.courseInfo.courseTitle;
     },
     getCourseImg: state => {
-        return state.courseInfo.imgUrl;
+        if (state.courseInfo.avatarUrl !== "") {
+            return "http://202.120.40.8:30382/online-edu/static/" + state.courseInfo.avatarUrl + "?a=" + Math.random();
+        }
+        else return "";
     },
     isCourseTeacher: state => {
         if (state.identity === "STUDENT") return false;
@@ -36,6 +39,16 @@ const getters = {
                 return paper;
             }
         }
+    },
+    getSectionList: (state) => {
+        let sectionList = [];
+        for (let sec of state.courseInfo.sectionList) {
+            sectionList.push({
+                secNo: sec.secNo,
+                title: sec.title
+            })
+        }
+        return sectionList;
     },
     getPaperId:state => {
         return state.paperId;

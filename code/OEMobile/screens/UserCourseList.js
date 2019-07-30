@@ -1,5 +1,5 @@
 import React from "react";
-import {FlatList, Image, Text, View, StyleSheet} from 'react-native';
+import {FlatList, Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container, Header, Fab} from 'native-base';
 import UserUnit from "../components/UserUnit";
 import Icon from "react-native-vector-icons/FontAwesome"
@@ -31,31 +31,49 @@ class UserCourseList extends React.Component {
         })
     }
 
+    enterCourse(courseId) {
+        this.$axios.request({
+            url: "/api/courses/" + courseId + "/info",
+            method: "get",
+            headers: {
+                "Authorization": "Bearer " + this.props.accessToken
+            }
+        }).then((response) => {
+            this.props.setCourseInfo(response.data.course);
+            this.props.navigation.navigate("Course", {courseId: courseId});
+        }).catch((error) => {
+            alert(error);
+            console.log(error.response);
+        })
+    }
+
     _createCourseCard(course) {
         //console.log(course.teacher);
         return (
-            <View style={styles.mainCard}>
-                <View style={styles.imgView}>
-                    <Image style={styles.courseImg} source={{uri: "http://202.120.40.8:30382/online-edu/static/2user-avatar/2-avatar.png"}}/>
-                </View>
-                <View style={styles.textView}>
-                    <Text style={styles.titleText}>{course.courseTitle}</Text>
-                    <View style={styles.secondLine}>
-                        <View style={{flex: 1}}>
-                            <UserUnit user={course.teacher}/>
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.locationText}>
-                                地点：{course.location}
-                            </Text>
-                        </View>
+            <TouchableOpacity onPress={() => {this.enterCourse(course.id)}}>
+                <View style={styles.mainCard}>
+                    <View style={styles.imgView}>
+                        <Image style={styles.courseImg} source={{uri: "http://202.120.40.8:30382/online-edu/static/2user-avatar/2-avatar.png"}}/>
                     </View>
-                    <Text style={styles.thirdLine}>
-                        <Icon name={"calendar"} />
-                        2019-07-12 ~ 2019-08-29
-                    </Text>
+                    <View style={styles.textView}>
+                        <Text style={styles.titleText}>{course.courseTitle}</Text>
+                        <View style={styles.secondLine}>
+                            <View style={{flex: 1}}>
+                                <UserUnit user={course.teacher}/>
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text style={styles.locationText}>
+                                    地点：{course.location}
+                                </Text>
+                            </View>
+                        </View>
+                        <Text style={styles.thirdLine}>
+                            <Icon name={"calendar"} />
+                            2019-07-12 ~ 2019-08-29
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -76,9 +94,19 @@ class UserCourseList extends React.Component {
 function mapStateToProps(state) {
     return {
         accessToken: state.login.accessToken,
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
+        authHeader: state.authHeader
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setCourseInfo: (courseInfo) => dispatch({
+            type: "SET_COURSE_INFO",
+            courseInfo
+        })
+    }
+};
 
 const styles = StyleSheet.create({
     mainCard: {
@@ -119,4 +147,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect(mapStateToProps)(UserCourseList);
+export default connect(mapStateToProps, mapDispatchToProps)(UserCourseList);

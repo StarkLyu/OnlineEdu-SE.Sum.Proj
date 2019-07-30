@@ -16,7 +16,6 @@
                 this.$store.commit("setCourseInfo", response.data.course);
                 this.$store.commit("setIdentity", identity);
                 console.log(this.$store.getters.getCourseInfo);
-                alert(this.$route.path);
                 if (this.$route.path === "/course") {
                     if (identity === "VISITOR") {
                         this.$router.push('/course/info');

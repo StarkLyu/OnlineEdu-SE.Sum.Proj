@@ -152,7 +152,7 @@
                     ]
                 },
 
-                imageURL:this.$store.getters.getCourseInfo.avatarUrl,
+                imageURL: this.$store.getters.getCourseImg,
             }
         },
 
@@ -181,7 +181,6 @@
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
-                    // this.$store.commit("infoSet", response.data);
                 }).catch((error) => {
                     alert("修改失败");
                     console.log(error.response);
@@ -214,7 +213,6 @@
             // 修改课程
             updateData(){
                 var that=this;
-
                 //编辑课程信息
                 this.$http.request({
                     url: '/api/courses/'+this.editForm.id+'/modify',
