@@ -182,7 +182,6 @@ public class CourseServiceImpl implements CourseService {
     public Course modifyCourseInfo(Long courseId, CourseApplicationForm form) {
         Course course = getCourseInfo(courseId);
         if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
-            System.out.println(JSON.toJSONString(form));
             course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
         }
         course.setLocation(form.getLocation());
@@ -222,6 +221,7 @@ public class CourseServiceImpl implements CourseService {
         Learn learn = new Learn();
         learn.setLearnPrimaryKey(learnPrimaryKey);
         course.getLearns().remove(learn);
+        user.getAssistCourses().add(course);
         course.getTeacherAssistants().add(user);
         return courseRepository.save(course);
     }
