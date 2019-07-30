@@ -3,6 +3,10 @@ import {
     SET_LOGOUT,
     SET_USERINFO
 } from './actions';
+import {
+    SET_COURSE_ID,
+    SET_COURSE_INFO
+} from "./courseActions";
 import {combineReducers} from 'redux';
 
 const user = {
@@ -10,6 +14,9 @@ const user = {
         username: "",
         accessToken: "",
         loginStatus: false,
+        authHeader: {
+            Authorization: ""
+        }
     },
     userInfo: {
         assistCourses: [],
@@ -63,12 +70,35 @@ const userInfoInit = {
             role: "",
         }
     ]
-}
+};
+
+const courseInfoInit = {
+    avatarUrl: "",
+    courseTitle: "",
+    endDate:"2019-08-09T16:00:00.000+0000",
+    id: 8,
+    learns: [],
+    location: "",
+    notices: [],
+    papers: [],
+    sectionList: [],
+    signIns: [],
+    startDate: [],
+    state: "",
+    students: [],
+    teacher: {},
+    teacherAssistants: [],
+    timeSlots: [],
+};
 
 function loginAction(state = loginInit, action) {
     switch (action.type) {
         case SET_LOGIN:
-            return action.login;
+            let newLogin = action.login;
+            newLogin.authHeader = {
+                Authorization: "Bearer " + newLogin.accessToken
+            };
+            return newLogin;
         case SET_LOGOUT:
             return state;
         default:
@@ -84,9 +114,19 @@ function userInfoAction(state = userInfoInit, action) {
     return state;
 }
 
+function courseInfoAction(state = courseInfoInit, action) {
+    switch (action.type) {
+        case SET_COURSE_INFO:
+            return action.courseInfo;
+        default:
+            return state;
+    }
+}
+
 const OEMobileApp = combineReducers({
     login: loginAction,
-    userInfo: userInfoAction
+    userInfo: userInfoAction,
+    courseInfo: courseInfoAction
 })
 
 export default OEMobileApp;

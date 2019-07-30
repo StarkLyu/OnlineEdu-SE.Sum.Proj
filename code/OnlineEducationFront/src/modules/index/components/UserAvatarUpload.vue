@@ -43,7 +43,6 @@
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
-                    this.$store.commit("infoSet", response.data);
                 }).catch((error) => {
                     alert("修改失败");
                     console.log(error.response);
