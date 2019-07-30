@@ -179,6 +179,7 @@
                     };
                     tempquestion.questionId=this.multipleSelection[x].id;
                     tempquestion.score=this.multipleSelection[x].score;
+                    tempquestion.questionNumber=x+1;
                     finalQuestion.push(tempquestion);
                 }
                 this.AssignEditForm.questionFormList=finalQuestion;
