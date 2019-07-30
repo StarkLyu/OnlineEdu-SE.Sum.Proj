@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { Container, Text, H1 } from "native-base";
 import UserUnit from './UserUnit';
@@ -11,8 +12,36 @@ class CourseInfo extends Component {
     render() {
         return (
             <Container>
-                <H1>{this.props.courseInfo.courseTitle}</H1>
-                <Text>老师：<UserUnit user={this.props.courseInfo.teacher}/></Text>
+                <View style={{flex: 1}}>
+                    <H1>{this.props.courseInfo.courseTitle}</H1>
+                </View>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View>
+                        <Text>老师：</Text>
+                    </View>
+                    <View>
+                        <UserUnit user={this.props.courseInfo.teacher}/>
+                    </View>
+                </View>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View>
+                        <Text>上课地点：</Text>
+                    </View>
+                    <View>
+                        <Text>{this.props.courseInfo.location}</Text>
+                    </View>
+                </View>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View>
+                        <Text>时间：</Text>
+                    </View>
+                    <View>
+                        <Text>{this.props.courseInfo.startDate.substr(0,10) + " ~ " + this.props.courseInfo.endDate.substr(0,10)}</Text>
+                    </View>
+                </View>
+                <View style={{flex: 4}}>
+                    <Text>{this.props.courseInfo.coursePrototype.description}</Text>
+                </View>
             </Container>
         );
     }

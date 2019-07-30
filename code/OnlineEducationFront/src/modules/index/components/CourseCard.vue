@@ -2,7 +2,7 @@
     <el-card shadow="hover">
         <div class="card-content">
             <div class="course-img float-left">
-                <img src="../../../assets/logo.png" class="course-img">
+                <img :src="imgUrl" class="course-img">
             </div>
             <div>
                 <div class="float-left course-title">
@@ -49,6 +49,11 @@
             enterCourse: function () {
                 this.$store.commit("setCourseId", this.courseInfo.id);
                 this.$router.push("/course")
+            }
+        },
+        computed: {
+            imgUrl: function () {
+                return "http://202.120.40.8:30382/online-edu/static/" + this.courseInfo.avatarUrl
             }
         }
     }

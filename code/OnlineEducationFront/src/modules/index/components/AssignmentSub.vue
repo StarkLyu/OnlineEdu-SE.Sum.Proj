@@ -1,20 +1,22 @@
 <template>
 <!--    主观题组件-->
     <div id="AssignmentSub">
-        <h4>
-            {{sub.content}}
-        </h4>
-        <el-input type="textarea" v-model="sub.answer" style="width: 80%;"></el-input>
-<!--        上传图片-->
-        <p>上传图片</p>
-        <el-upload
-                action="#"
-                list-type="picture-card"
-                :auto-upload="false">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-                <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-                <span class="el-upload-list__item-actions">
+        <el-card>
+            <h4>
+                {{sub.content}}
+            </h4>
+            <el-input type="textarea" v-model="sub.answer" style="width: 80%;"></el-input>
+            <!--        上传图片-->
+            <p>上传图片</p>
+            <el-upload
+                    action="#"
+                    list-type="picture-card"
+                    :http-request="addImg"
+                    :auto-upload="false">
+                <i slot="default" class="el-icon-plus"></i>
+                <div slot="file" slot-scope="{file}">
+                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                    <span class="el-upload-list__item-actions">
                     <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
                         <i class="el-icon-zoom-in"></i>
                     </span>
@@ -25,23 +27,24 @@
                         <i class="el-icon-delete"></i>
                     </span>
                 </span>
-            </div>
-        </el-upload>
-<!--        上传附件-->
-        <p>上传附件</p>
-        <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
+                </div>
+            </el-upload>
+            <!--        上传附件-->
+            <p>上传附件</p>
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :before-remove="beforeRemove"
+                    multiple
+                    :limit="3"
+                    :on-exceed="handleExceed"
+                    :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+        </el-card>
     </div>
 </template>
 
@@ -59,6 +62,7 @@
                 dialogVisible: false,
                 disabled: false,
                 fileList:[],
+                imgList:[],
             };
         },
 
@@ -86,6 +90,10 @@
 
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+
+            addImg(file) {
+                this.imgList.push(file.file);
             }
         }
     }

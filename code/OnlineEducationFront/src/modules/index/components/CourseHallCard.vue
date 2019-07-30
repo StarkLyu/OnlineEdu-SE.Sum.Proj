@@ -2,7 +2,7 @@
     <div class="card-size">
         <el-card :body-style="bodyStyle">
             <div @click="enterCourse" class="card-body">
-                <img :src="courseInfo.imgUrl" class="course-img">
+                <img :src="imgUrl" class="course-img">
                 <div class="card-content">
                     <strong class="title-font">{{ courseInfo.courseTitle }}</strong>
                     <div class="line-layout">
@@ -59,6 +59,11 @@
             },
             dateFilter: function (date) {
                 return date.substr(0,10);
+            },
+        },
+        computed: {
+            imgUrl: function () {
+                return "http://202.120.40.8:30382/online-edu/static/" + this.courseInfo.avatarUrl
             }
         }
     }

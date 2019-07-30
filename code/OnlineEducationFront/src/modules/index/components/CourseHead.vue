@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="image-div">
-            <img src="../../../assets/logo.png" class="image-div">
+            <img :src="imgUrl" class="image-div">
         </div>
         <div class="title-div">
             <h2>{{ courseTitle }}</h2>
@@ -15,6 +15,9 @@
         computed: {
             courseTitle: function () {
                 return this.$store.state.course.courseInfo.courseTitle;
+            },
+            imgUrl: function () {
+                return this.$store.getters.getCourseImg;
             }
         }
     }
