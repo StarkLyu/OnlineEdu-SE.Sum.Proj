@@ -46,6 +46,8 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     private static final int MAX_TIMES=3;
 
+    private static int limit=5120000;
+
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
@@ -132,7 +134,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
         Answer answer = new Answer(answerPrimaryKey,answerText,0);
         try {
-            answer.setImageUrls(SaveFileUtil.saveImages(images, images.length));
+            answer.setImageUrls(SaveFileUtil.saveImages(images, limit));
         } catch (IOException e){
             e.printStackTrace();
         }
