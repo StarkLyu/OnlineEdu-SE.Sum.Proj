@@ -53,7 +53,7 @@ class UserCourseList extends React.Component {
             <TouchableOpacity onPress={() => {this.enterCourse(course.id)}}>
                 <View style={styles.mainCard}>
                     <View style={styles.imgView}>
-                        <Image style={styles.courseImg} source={{uri: "http://202.120.40.8:30382/online-edu/static/2user-avatar/2-avatar.png"}}/>
+                        <Image style={styles.courseImg} source={{uri: "http://202.120.40.8:30382/online-edu/static/" + course.avatarUrl}}/>
                     </View>
                     <View style={styles.textView}>
                         <Text style={styles.titleText}>{course.courseTitle}</Text>
