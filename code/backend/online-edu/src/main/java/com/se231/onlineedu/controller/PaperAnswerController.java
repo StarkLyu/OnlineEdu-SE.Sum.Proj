@@ -66,12 +66,21 @@ public class PaperAnswerController {
     public PaperAnswer submitSubjective(@PathVariable("courseId")Long courseId,
                                         @PathVariable("paperId")Long paperId,
                                         @AuthenticationPrincipal UserPrinciple userPrinciple,
-                                        @RequestParam("file")MultipartFile file,
+                                        @RequestParam("file")MultipartFile[] file,
                                         @RequestParam("images")MultipartFile[] images,
                                         @RequestParam("questionId")Long questionId,
                                         @RequestParam("answerText")String answerText,
                                         @RequestParam("state")String state){
         return paperAnswerService.submitSubjectiveQuestion(courseId,userPrinciple.getId(),
                 paperId,questionId,answerText,images,file, PaperAnswerState.valueOf(state));
+    }
+
+    @ApiOperation("改变提交的作业的状态")
+    @PutMapping("/state/change")
+    public PaperAnswer changeState(@PathVariable("courseId")Long courseId,
+                                   @PathVariable("paperId")Long paperId,
+                                   @AuthenticationPrincipal UserPrinciple userPrinciple,
+                                   @RequestParam("state")String state){
+        return paperAnswerService.changePaperAnswerState(courseId,userPrinciple.getId(),paperId,PaperAnswerState.valueOf(state));
     }
 }

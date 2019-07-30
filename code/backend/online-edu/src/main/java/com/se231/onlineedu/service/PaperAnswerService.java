@@ -63,8 +63,19 @@ public interface PaperAnswerService {
      * @param images    images of answer
      * @param answerText text of answer
      * @param state state of answer
+     * @param file file of answer
      * @return  the answered paper
      */
     PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId, Long questionId,
-                                         String answerText, MultipartFile[] images,MultipartFile file, PaperAnswerState state);
+                                         String answerText, MultipartFile[] images,MultipartFile[] file, PaperAnswerState state);
+
+    /**
+     * this service allow users to change the state of his last paper answer
+     * @param courseId  id of course
+     * @param userId    id of user
+     * @param paperId   id of paper
+     * @param state the updated state
+     * @return  the new paper answer
+     */
+    PaperAnswer changePaperAnswerState(Long courseId, Long userId, Long paperId,PaperAnswerState state);
 }
