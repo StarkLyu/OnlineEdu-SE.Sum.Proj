@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 /**
  * @author Zhe Li
  * @date 2019/07/10
@@ -65,11 +66,12 @@ public class PaperAnswerController {
     public PaperAnswer submitSubjective(@PathVariable("courseId")Long courseId,
                                         @PathVariable("paperId")Long paperId,
                                         @AuthenticationPrincipal UserPrinciple userPrinciple,
+                                        @RequestParam("file")MultipartFile file,
                                         @RequestParam("images")MultipartFile[] images,
                                         @RequestParam("questionId")Long questionId,
                                         @RequestParam("answerText")String answerText,
                                         @RequestParam("state")String state){
         return paperAnswerService.submitSubjectiveQuestion(courseId,userPrinciple.getId(),
-                paperId,questionId,answerText,images, PaperAnswerState.valueOf(state));
+                paperId,questionId,answerText,images,file, PaperAnswerState.valueOf(state));
     }
 }

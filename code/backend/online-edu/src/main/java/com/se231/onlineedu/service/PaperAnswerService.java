@@ -66,5 +66,5 @@ public interface PaperAnswerService {
      * @return  the answered paper
      */
     PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId, Long questionId,
-                                         String answerText, MultipartFile[] images, PaperAnswerState state);
+                                         String answerText, MultipartFile[] images,MultipartFile file, PaperAnswerState state);
 }
