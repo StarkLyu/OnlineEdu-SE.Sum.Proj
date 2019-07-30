@@ -222,6 +222,7 @@ public class UserController {
     @GetMapping("/{userId}/avatar")
     public UserAvatar getUserAvatar(@PathVariable("userId")Long userId){
         return userService.getUserAvatar(userId);
+
     }
 
 }

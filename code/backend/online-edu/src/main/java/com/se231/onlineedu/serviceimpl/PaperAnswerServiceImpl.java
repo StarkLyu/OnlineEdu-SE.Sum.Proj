@@ -1,5 +1,6 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.io.IOException;
 import java.util.*;
 
 import com.se231.onlineedu.exception.NotFoundException;
@@ -12,8 +13,11 @@ import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
 import com.se231.onlineedu.service.UserService;
+import com.se231.onlineedu.util.FileCheckUtil;
+import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Zhe Li
@@ -42,32 +46,11 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     private static final int MAX_TIMES=3;
 
+    private static int limit=5120000;
+
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
-        //initialize( found corresponding user and paper)
-        User user = userService.getUserInfo(userId);
-        Course course = courseService.getCourseInfo(courseId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("Paper Not Found"));
-        if(!paper.getCourse().equals(course)){
-            throw new ValidationException("This Course Doesn't Have This Paper.");
-        }
-
-        //get times the user has answered
-        int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
-        if(times>0) {
-            PaperAnswerPrimaryKey lastAnswerPrimaryKey = new PaperAnswerPrimaryKey(user, paper, times);
-            PaperAnswer lastAnswer = paperAnswerRepository.findById(lastAnswerPrimaryKey)
-                    .orElseThrow(() -> new NotFoundException("No corresponding answer"));
-            if (lastAnswer.getState().equals(PaperAnswerState.NOT_FINISH)){
-                paperAnswerRepository.delete(lastAnswer);
-                times--;
-            }
-        }if(times==MAX_TIMES){
-            throw new RuntimeException("You Have Answered Three Times");
-        }
-        PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
-        PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
-        paperAnswer = paperAnswerRepository.save(paperAnswer);
+        PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         List<Answer> answerList= new ArrayList<>();
         for (QuestionAnswer questionAnswer :form.getAnswerList()){
             Question question = questionRepository.findById(questionAnswer.getQuestionId())
@@ -135,6 +118,58 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             answer1.setComment(commentMap.get(answer1.getAnswerPrimaryKey().getQuestion().getId()));
         });
         return paperAnswerRepository.save(answer);
+    }
 
+    @Override
+    public PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId,
+                                                Long questionId, String answerText, MultipartFile[] images) {
+        //File check
+        /**
+        empty space to fill
+         */
+        PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
+        paperAnswer.setState(PaperAnswerState.TEMP_SAVE);
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(()->new NotFoundException("No corresponding question"));
+        AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
+        Answer answer = new Answer(answerPrimaryKey,answerText,0);
+        try {
+            answer.setImageUrls(SaveFileUtil.saveImages(images, limit));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        paperAnswer.getAnswers().add(answer);
+        return paperAnswerRepository.save(paperAnswer);
+    }
+
+    private PaperAnswer getPaperAnswer(Long userId,Long courseId,Long paperId){
+        //initialize( found corresponding user and paper)
+        User user = userService.getUserInfo(userId);
+        Course course = courseService.getCourseInfo(courseId);
+        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("Paper Not Found"));
+        if(!paper.getCourse().equals(course)){
+            throw new ValidationException("This Course Doesn't Have This Paper.");
+        }
+
+        //get times the user has answered
+        int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
+        if(times>0) {
+            PaperAnswerPrimaryKey lastAnswerPrimaryKey = new PaperAnswerPrimaryKey(user, paper, times);
+            PaperAnswer lastAnswer = paperAnswerRepository.findById(lastAnswerPrimaryKey)
+                    .orElseThrow(() -> new NotFoundException("No corresponding answer"));
+            if (lastAnswer.getState().equals(PaperAnswerState.NOT_FINISH)){
+                paperAnswerRepository.delete(lastAnswer);
+                times--;
+            }
+            if(lastAnswer.getState().equals(PaperAnswerState.TEMP_SAVE)){
+                lastAnswer.setState(PaperAnswerState.FINISHED);
+                return lastAnswer;
+            }
+        }if(times==MAX_TIMES){
+            throw new RuntimeException("You Have Answered Three Times");
+        }
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
+        PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
+        return paperAnswerRepository.save(paperAnswer);
     }
 }

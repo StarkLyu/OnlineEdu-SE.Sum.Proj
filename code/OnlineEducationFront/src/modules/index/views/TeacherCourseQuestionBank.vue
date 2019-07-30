@@ -20,14 +20,20 @@
                         <h4>
                             Question: {{question.content}}
                         </h4>
-                        <div v-for="choice in question.options" :key="choice">
-                            {{choice}}
+                        <div v-for="(choice,count) in question.options" :key="choice">
+                            【{{count}}】 {{choice}}
                         </div>
                     </div>
                     <div v-else>
                         <h4>
                             Question: {{question.question}}
                         </h4>
+                    </div>
+<!--                    展示图片-->
+                    <div v-for="image in question.images" :key="image">
+                        <img v-if="image"
+                             :src="'http://202.120.40.8:30382/online-edu/static/' + image + '?a=' + Math.random()"
+                             class="avatar">
                     </div>
                     <div style="color:red" v-if="question.questionType!=='SUBJECTIVE'">
                         <p>Answer: {{question.answer}}</p>
@@ -56,29 +62,23 @@
                     <el-form-item label="答案">
                         <el-input v-model="singleEditForm.correctAnswer" placeholder="请输入大写字母ABCD……"></el-input>
                     </el-form-item>
-                    <el-upload
-                            ref="upload"
-                            action='#'
-                            list-type="picture-card"
-                            accept="image/jpeg,image/jpg,image/png"
-                            multiple
-                            :on-preview="handlePictureCardPreview"
-                            :on-remove="handleRemove"
-                            :http-request="uploadImg"
-                            :auto-upload="false">
-                        <i class="el-icon-plus"></i>
-                    </el-upload>
-<!--                    <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>-->
-<!--                    <el-dialog :visible.sync="dialogVisible">-->
-<!--                        <img width="100%" :src="dialogImageUrl" alt="">-->
-<!--                    </el-dialog>-->
+<!--                    增加图片-->
+                    <el-form-item prop="file" ref="uploadElement">
+                        <el-upload ref="upload"
+                                   action="#"
+                                   :multiple="true"
+                                   list-type="picture-card"
+                                   :auto-upload="false"
+                                   :http-request="UploadImg"
+                                   accept="image/png,image/gif,image/jpg,image/jpeg">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                    </el-form-item>
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="singleVisible=false">取消</el-button>
-                    <el-button type="primary" @click="createSingleData()">添加</el-button>
+                    <el-button type="primary" @click="createSingleData">添加</el-button>
                 </span>
-                <span slot="footer" class="el-dialog__footer">
-            </span>
             </el-dialog>
 <!--            添加多选题弹窗部分-->
             <el-dialog :title="'多选题'"
@@ -102,6 +102,18 @@
                     <el-form-item label="答案">
                         <el-input v-model="multiEditForm.correctAnswer" placeholder="请输入大写字母ABCD……"></el-input>
                     </el-form-item>
+                    <!--                    增加图片-->
+                    <el-form-item prop="file" ref="uploadElement">
+                        <el-upload ref="upload"
+                                   action="#"
+                                   :multiple="true"
+                                   list-type="picture-card"
+                                   :auto-upload="false"
+                                   :http-request="UploadImg"
+                                   accept="image/png,image/gif,image/jpg,image/jpeg">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                    </el-form-item>
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="multiVisible=false">取消</el-button>
@@ -119,6 +131,18 @@
                     <el-form-item label="答案">
                         <el-input v-model="judgeEditForm.correctAnswer" placeholder="请输入正确或错误"></el-input>
                     </el-form-item>
+                    <!--                    增加图片-->
+                    <el-form-item prop="file" ref="uploadElement">
+                        <el-upload ref="upload"
+                                   action="#"
+                                   :multiple="true"
+                                   list-type="picture-card"
+                                   :auto-upload="false"
+                                   :http-request="UploadImg"
+                                   accept="image/png,image/gif,image/jpg,image/jpeg">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                    </el-form-item>
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
                     <el-button @click.native="judgeVisible=false">取消</el-button>
@@ -132,6 +156,18 @@
                 <el-form :model="subEditForm" label-width="80px" ref="subEditForm">
                     <el-form-item label="题目">
                         <el-input type="textarea" v-model="subEditForm.title"></el-input>
+                    </el-form-item>
+                    <!--                    增加图片-->
+                    <el-form-item prop="file" ref="uploadElement">
+                        <el-upload ref="upload"
+                                   action="#"
+                                   :multiple="true"
+                                   list-type="picture-card"
+                                   :auto-upload="false"
+                                   :http-request="UploadImg"
+                                   accept="image/png,image/gif,image/jpg,image/jpeg">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
                     </el-form-item>
                 </el-form>
                 <span slot="footer" class="el-dialog__footer">
@@ -148,7 +184,6 @@
     // import AssignmentMulti from "../components/AssignmentMulti"
     // import AssignmentJudge from "../components/AssignmentJudge"
     // import AssignmentSub from "../components/AssignmentSub"
-
     export default {
         name: "TeacherCourseOneAssignment",
 
@@ -179,7 +214,7 @@
                         }
                     ],
                     correctAnswer:'',
-                    images:[],
+                    images:"",
                 },
 
                 multiEditForm:{
@@ -302,6 +337,10 @@
 
                 questions:this.$store.getters.getCourseInfo.coursePrototype.questions,
 
+                imageURL:"",
+
+                formData: new FormData(),
+
             }
         },
 
@@ -313,26 +352,12 @@
                     headers: this.$store.getters.authRequestHead
                 }).then((response) => {
                     console.log(response.data);
-                    let identity = response.data.identity;
-                    this.$store.commit("setCourseInfo", response.data.course);
-                    this.$store.commit("setIdentity", identity);
-                    console.log(this.$store.getters.getCourseInfo);
-                    // if (identity === "VISITOR") {
-                    //     this.$router.push('/course/info');
-                    // }
-                    // else if (identity === "STUDENT") {
-                    //     this.$router.push('/course/student');
-                    // }
-                    // else {
-                    //     this.$router.push('/course/manager');
-                    // }
-                    this.$router.push('/course/manager/questionBank');
+
                 }).catch((error) => {
                     alert(error);
                     console.log(error.response);
                 });
             },
-
 
             // 显示各种题型的新建dialog
             showSingleDialog(){
@@ -346,7 +371,8 @@
                             content:"",
                         }
                     ],
-                        correctAnswer:'',
+                    correctAnswer:'',
+                    images: '',
                 }
             },
 
@@ -411,34 +437,24 @@
 
             // 新建各种题型
             createSingleData(){
-                // this.$refs.upload.submit();
-
                 var that=this;
-
-                // console.log("正在上传文件");
-                //
-                // let questionParam = new FormData();
-                // questionParam=this.uploadImg();
+                that.formData = new FormData();
+                that.$refs.upload.submit();
+                var newQuestionId=0;
 
                 var singleChoices=[];
                 for (let x=0; x<that.singleEditForm.choices.length; x++){
                     singleChoices.push(that.singleEditForm.choices[x].content);
                 }
 
-                // questionParam.append('type',"single_answer");
-                // questionParam.append('content',this.singleEditForm.title);
-                // questionParam.append('options',singleChoices);
-                // questionParam.append('answer',this.singleEditForm.correctAnswer);
-
+                // 先上传题目
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
                     headers:{
                         'Authorization': "Bearer " + this.$store.state.user.accessToken,
-                        'Content-Type': 'multipart/form-data'
                     },
                     data:{
-                        // questionParam
                         type:"single_answer",
                         content:this.singleEditForm.title,
                         options:singleChoices,
@@ -447,17 +463,43 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        newQuestionId=response.data.id;
+                        if(newQuestionId!==0)
+                        {
+                            console.log("上传图片中");
+                            // 再上传图片
+                            that.$http.request({
+                                url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
+                                method: "post",
+                                headers:{
+                                    'Authorization': "Bearer " + that.$store.state.user.accessToken,
+                                    'Content-Type': 'multipart/form-data'
+                                },
+                                data:that.formData,
+                            })
+                                .then(function (res) {
+                                    console.log(res.data);
+                                    alert("上传题目图片成功");
+                                })
+                                .catch(function (error2) {
+                                    console.log(error2.response);
+                                    alert("请求失败");
+                                });
+                        }
+                        alert("上传题目成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        alert("请求失败");
                     });
                 this.singleVisible=false;
             },
 
             createMultiData(){
                 var that=this;
+                that.formData = new FormData();
+                that.$refs.upload.submit();
+                var newQuestionId=0;
 
                 var multiChoices=[];
                 for (let x=0; x<that.multiEditForm.choices.length; x++){
@@ -477,7 +519,30 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        newQuestionId=response.data.id;
+                        if(newQuestionId!==0)
+                        {
+                            console.log("上传图片中");
+                            // 再上传图片
+                            that.$http.request({
+                                url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
+                                method: "post",
+                                headers:{
+                                    'Authorization': "Bearer " + that.$store.state.user.accessToken,
+                                    'Content-Type': 'multipart/form-data'
+                                },
+                                data:that.formData,
+                            })
+                                .then(function (res) {
+                                    console.log(res.data);
+                                    alert("上传题目图片成功");
+                                })
+                                .catch(function (error2) {
+                                    console.log(error2.response);
+                                    alert("请求失败");
+                                });
+                        }
+                        alert("添加多选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -487,6 +552,10 @@
             },
 
             createJudgeData(){
+                var that=this;
+                that.formData = new FormData();
+                that.$refs.upload.submit();
+                var newQuestionId=0;
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
@@ -499,7 +568,30 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        newQuestionId=response.data.id;
+                        if(newQuestionId!==0)
+                        {
+                            console.log("上传图片中");
+                            // 再上传图片
+                            that.$http.request({
+                                url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
+                                method: "post",
+                                headers:{
+                                    'Authorization': "Bearer " + that.$store.state.user.accessToken,
+                                    'Content-Type': 'multipart/form-data'
+                                },
+                                data:that.formData,
+                            })
+                                .then(function (res) {
+                                    console.log(res.data);
+                                    alert("上传题目图片成功");
+                                })
+                                .catch(function (error2) {
+                                    console.log(error2.response);
+                                    alert("请求失败");
+                                });
+                        }
+                        alert("添加判断题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -509,6 +601,10 @@
             },
 
             createSubData(){
+                var that=this;
+                that.formData = new FormData();
+                that.$refs.upload.submit();
+                var newQuestionId=0;
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
@@ -520,7 +616,30 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        newQuestionId=response.data.id;
+                        if(newQuestionId!==0)
+                        {
+                            console.log("上传图片中");
+                            // 再上传图片
+                            that.$http.request({
+                                url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
+                                method: "post",
+                                headers:{
+                                    'Authorization': "Bearer " + that.$store.state.user.accessToken,
+                                    'Content-Type': 'multipart/form-data'
+                                },
+                                data:that.formData,
+                            })
+                                .then(function (res) {
+                                    console.log(res.data);
+                                    alert("上传题目图片成功");
+                                })
+                                .catch(function (error2) {
+                                    console.log(error2.response);
+                                    alert("请求失败");
+                                });
+                        }
+                        alert("添加主观题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -564,30 +683,20 @@
                 });
             },
 
+            UploadImg (file) {
+                this.formData.append('file', file.file);
+            },
+
             // 移除照片
             handleRemove(file, fileList) {
                 console.log(file, fileList);
             },
 
             // 预览照片
-            handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
-            },
-
-            submitUpload() {
-                this.$refs.upload.submit();
-            },
-
-            // 上传图片
-            uploadImg(file){
-                console.log("正在上传文件");
-
-                let param = new FormData();
-                param.append('images',file.file);
-
-                return param;
-            }
+            // handlePictureCardPreview(file) {
+            //     this.dialogImageUrl = file.url;
+            //     this.dialogVisible = true;
+            // },
 
         }
     }
@@ -599,5 +708,11 @@
     .titlesytle {
         text-align: center;
         padding-top: 20px
+    }
+
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
     }
 </style>
