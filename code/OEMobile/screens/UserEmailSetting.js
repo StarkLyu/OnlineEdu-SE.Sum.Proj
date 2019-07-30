@@ -20,9 +20,7 @@ class UserEmailSetting extends Component {
             data: {
                 email: this.state.newEmail
             },
-            headers: {
-                "Authorization": "Bearer " + this.props.accessToken
-            }
+            headers: this.props.authHeader
         }).then(() => {
             alert("有验证码啦！");
             this.setState({showConfirm: true})
@@ -39,9 +37,7 @@ class UserEmailSetting extends Component {
             params: {
                 verificationToken: confirmCode
             },
-            headers: {
-                "Authorization": "Bearer " + this.props.accessToken
-            },
+            headers: this.props.authHeader,
             withCredentials: true
         }).then(() => {
             alert("修改成功！");
@@ -80,7 +76,8 @@ function mapStateToProps(state) {
     return {
         accessToken: state.login.accessToken,
         userEmail: state.userInfo.email,
-        userUrl: "/api/users/" + state.userInfo.id + "/"
+        userUrl: "/api/users/" + state.userInfo.id + "/",
+        authHeader: state.authHeader
     }
 }
 

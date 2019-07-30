@@ -27,11 +27,11 @@ public class StudentAndGrade {
         this.student = student;
     }
 
-    public Double getGrade() {
+    public Double getScore() {
         return grade;
     }
 
-    public void setGrade(Double grade) {
+    public void setScore(Double grade) {
         this.grade = grade;
     }
 }
