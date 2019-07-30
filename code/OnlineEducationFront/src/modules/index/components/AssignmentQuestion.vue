@@ -1,5 +1,8 @@
 <template>
-    <el-card>
+    <el-card :body-style="{ paddingTop: '1px' }">
+        <div slot="header">
+            <strong>{{ questionType }}</strong>
+        </div>
         <AssignmentJudge v-if="question.questionType === 'T_OR_F'" :judge="question" ></AssignmentJudge>
         <AssignmentSingle v-else-if="question.questionType === 'SINGLE_ANSWER'" :single="question"></AssignmentSingle>
         <AssignmentMulti v-else-if="question.questionType === 'MULTIPLE_ANSWER'" :multi="question"></AssignmentMulti>
@@ -20,6 +23,16 @@
         },
         methods: {
 
+        },
+        computed: {
+            questionType: function () {
+                switch (this.question.questionType) {
+                    case "T_OR_F": return "判断题";
+                    case "SINGLE_ANSWER": return "单选题";
+                    case "MULTIPLE_ANSWER": return "多选题";
+                    default: return "什么鬼"
+                }
+            }
         }
     }
 </script>

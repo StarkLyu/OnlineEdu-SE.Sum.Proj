@@ -5,7 +5,11 @@
                 <strong class="title-font">{{ paperInfo.title }}</strong>
             </div>
             <div class="float-right">
-                <DateRangeFormat class="float-right" :start="paperInfo.start" :end="paperInfo.end"></DateRangeFormat>
+                <DateRangeFormat
+                        class="float-right"
+                        :start="paperInfo.start"
+                        :end="paperInfo.end"
+                ></DateRangeFormat>
             </div>
             <div class="float-clear"></div>
             <div class="des-div">
@@ -21,14 +25,10 @@
                         :question="question"
                         v-modal="answer"
                 ></AssignmentQuestion>
-                <el-row>
-                    <el-col>
-                        <el-button @click="uploadAnswer('NOT_FINISH')">提交</el-button>
-                    </el-col>
-                    <el-col>
-                        <el-button @click="getSavedAnswer">暂存</el-button>
-                    </el-col>
-                </el-row>
+                <div class="submit-div">
+                    <el-button @click="uploadAnswer('NOT_FINISH')" class="float-left">提交</el-button>
+                    <el-button @click="getSavedAnswer" class="float-right">暂存</el-button>
+                </div>
             </el-tab-pane>
             <el-tab-pane>
                 <span slot="label">主观题</span>
@@ -138,6 +138,13 @@
     }
 
     .des-div {
+        margin-top: 20px;
+    }
+
+    .submit-div {
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
         margin-top: 20px;
     }
 </style>

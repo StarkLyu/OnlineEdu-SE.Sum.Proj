@@ -6,6 +6,7 @@ import java.util.Set;
 import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.PaperAnswer;
+import com.se231.onlineedu.model.PaperAnswerState;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.PaperAnswerService;
 import io.swagger.annotations.Api;
@@ -66,8 +67,9 @@ public class PaperAnswerController {
                                         @AuthenticationPrincipal UserPrinciple userPrinciple,
                                         @RequestParam("images")MultipartFile[] images,
                                         @RequestParam("questionId")Long questionId,
-                                        @RequestParam("answerText")String answerText){
+                                        @RequestParam("answerText")String answerText,
+                                        @RequestParam("state")String state){
         return paperAnswerService.submitSubjectiveQuestion(courseId,userPrinciple.getId(),
-                paperId,questionId,answerText,images);
+                paperId,questionId,answerText,images, PaperAnswerState.valueOf(state));
     }
 }

@@ -44,20 +44,20 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     @Autowired
     PaperAnswerRepository paperAnswerRepository;
 
-    private static final int MAX_TIMES=3;
+    private static final int MAX_TIMES = 3;
+
+    private static final int LIMIT = 5120000;
 
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
-        List<Answer> answerList= new ArrayList<>();
         for (QuestionAnswer questionAnswer :form.getAnswerList()){
             Question question = questionRepository.findById(questionAnswer.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Question Not Found"));
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
             Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
-            answerList.add(answerRepository.save(answer));
+            paperAnswer.getAnswers().add(answerRepository.save(answer));
         }
-        paperAnswer.setAnswers(answerList);
         paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
         return paperAnswerRepository.save(paperAnswer);
     }
@@ -119,20 +119,20 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     }
 
     @Override
-    public PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId,
-                                                Long questionId, String answerText, MultipartFile[] images) {
+    public PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId, Long questionId,
+                                                String answerText, MultipartFile[] images, PaperAnswerState state) {
         //File check
         /**
         empty space to fill
          */
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
-        paperAnswer.setState(PaperAnswerState.TEMP_SAVE);
+        paperAnswer.setState(state);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(()->new NotFoundException("No corresponding question"));
         AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
         Answer answer = new Answer(answerPrimaryKey,answerText,0);
         try {
-            answer.setImageUrls(SaveFileUtil.saveImages(images, images.length));
+            answer.setImageUrls(SaveFileUtil.saveImages(images, LIMIT));
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -160,7 +160,6 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
                 times--;
             }
             if(lastAnswer.getState().equals(PaperAnswerState.TEMP_SAVE)){
-                lastAnswer.setState(PaperAnswerState.FINISHED);
                 return lastAnswer;
             }
         }if(times==MAX_TIMES){
