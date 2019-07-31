@@ -3,6 +3,8 @@
         <div slot="header">
             <div class="float-left">
                 <strong class="title-font">{{ paperInfo.title }}</strong>
+                <PaperTag :status="state" class="state-tag"></PaperTag>
+                <span class="score-span" v-if="state === 'MARKED'">总分：{{ totalGrade }}</span>
             </div>
             <div class="float-right">
                 <DateRangeFormat
@@ -14,6 +16,7 @@
             <div class="float-clear"></div>
             <div class="des-div">
                 <pre>{{ paperInfo.description }}</pre>
+                <p>剩余提交次数：{{ this.haveTime }}</p>
             </div>
         </div>
         <el-tabs>
@@ -24,6 +27,7 @@
                         :key="question.id"
                         :question="question"
                         v-modal="answer"
+                        :showgrade="showQuesScore"
                 ></AssignmentQuestion>
             </el-tab-pane>
             <el-tab-pane>
@@ -36,8 +40,16 @@
                 ></AssignmentSub>
             </el-tab-pane>
             <div class="submit-div">
-                <el-button @click="submitAnswer('FINISHED')" class="float-left">提交</el-button>
-                <el-button @click="submitAnswer('NOT_FINISH')" class="float-right">暂存</el-button>
+                <el-button
+                        @click="submitAnswer('FINISHED')"
+                        class="float-left"
+                        :disabled="!allowSubmit"
+                >提交</el-button>
+                <el-button
+                        @click="submitAnswer('NOT_FINISH')"
+                        class="float-right"
+                        :disabled="!allowSubmit"
+                >暂存</el-button>
             </div>
         </el-tabs>
     </el-card>
@@ -48,10 +60,11 @@
     import { mapGetters } from "vuex";
     import AssignmentSub from "./AssignmentSub";
     import DateRangeFormat from "./DateRangeFormat";
+    import PaperTag from "./PaperTag";
 
     export default {
         name: "UserCoursePaper",
-        components: {DateRangeFormat, AssignmentSub, AssignmentQuestion},
+        components: {PaperTag, DateRangeFormat, AssignmentSub, AssignmentQuestion},
         props: {
             paperId: Number,
         },
@@ -62,7 +75,9 @@
                 },
                 objQuestions: [],
                 subjQuestions: [],
-                state: ""
+                state: "",
+                totalGrade: 0,
+                submitTime: 1,
             }
         },
         methods: {
@@ -114,15 +129,6 @@
             //     })
             // },
             submitAnswer: function (state) {
-                let answerList = [];
-                for (let question of this.objQuestions) {
-                    let answerUnit = {
-                        answer: question.myAnswer,
-                        questionId: question.id
-                    };
-                    answerList.push(answerUnit);
-                }
-                console.log(answerList);
                 let submitSubs = [];
                 for (let sub of this.subjQuestions) {
                     console.log(sub.id.toString());
@@ -142,13 +148,22 @@
                     console.log(submitSubs);
                 }
                 this.$http.all(submitSubs).then(() => {
+                    let answerList = [];
+                    for (let question of this.objQuestions) {
+                        let answerUnit = {
+                            answer: question.myAnswer,
+                            questionId: question.id
+                        };
+                        answerList.push(answerUnit);
+                    }
+                    console.log(answerList);
                     this.$http.request({
                         url: this.getPaperUrl,
                         method: "post",
                         headers: this.$store.getters.authRequestHead,
                         data: {
                             answerList,
-                            state: "NOT_FINISH"
+                            state: "TEMP_SAVE"
                         },
                         withCredentials: true
                     }).then((response) => {
@@ -166,31 +181,6 @@
                             this.initialPaper();
                         })
                     });
-                // this.$http.request({
-                //     url: this.getPaperUrl,
-                //     method: "post",
-                //     headers: this.$store.getters.authRequestHead,
-                //     data: {
-                //         answerList,
-                //         state: "NOT_FINISH"
-                //     },
-                //     withCredentials: true
-                // }).then((response) => {
-                //     console.log(response.data);
-                //     this.$http.all(submitSubs).then(() => {
-                //         this.$http.request({
-                //             url: this.getPaperUrl + "/state/change",
-                //             method: "put",
-                //             headers: this.$store.getters.authRequestHead,
-                //             params: {
-                //                 state: state
-                //             }
-                //         }).then(() => {
-                //             if (state === "NOT_FINISH") alert("暂存成功！");
-                //             else if (state === "FINISHED") alert("提交成功！");
-                //             this.initialPaper();
-                //         })
-                //     });
                 }).catch((error) => {
                     alert(error);
                     console.log(error.response);
@@ -198,16 +188,27 @@
             },
             initialPaper: function () {
                 this.paperInfo = this.$store.getters.getPaperById(this.paperId);
+                this.objQuestions = [];
+                this.subjQuestions = [];
                 this.$http.request({
                     url: this.getPaperUrl,
                     method: "get",
                     headers: this.$store.getters.authRequestHead
                 }).then((response) => {
                     let answerList = [];
+                    response.data.sort((a,b) => {
+                        if (a.paperAnswerPrimaryKey.times < b.paperAnswerPrimaryKey.times) return 1;
+                        else return -1;
+                    });
                     console.log(response.data);
                     if (response.data.length !== 0) {
                         answerList = response.data[0].answers;
                         this.state = response.data[0].state;
+                        this.totalGrade = response.data[0].grade;
+                        this.submitTime = response.data[0].paperAnswerPrimaryKey.times;
+                    }
+                    else {
+                        this.state = "NOT_START";
                     }
                     this.paperInfo.questions.sort((a, b) => {
                         if (a.questionNumber <= b.questionNumber) return -1;
@@ -216,6 +217,7 @@
                     for (let scanQues of this.paperInfo.questions) {
                         let fetchQues = Object.assign({}, scanQues.paperWithQuestionsPrimaryKey.question, {
                             score: scanQues.score,
+                            myScore: 0,
                             myAnswer: "",
                             myImg: []
                         });
@@ -246,6 +248,26 @@
             ]),
             getPaperUrl: function () {
                 return this.$store.getters.getCourseUrl + "papers/" + this.paperInfo.id + "/answer";
+            },
+            showQuesScore: function () {
+                switch (this.state) {
+                    case "NOT_MARK":
+                    case "MARKED":
+                        return true;
+                    default:
+                        return false;
+                }
+            },
+            haveTime: function () {
+                let haveTimes = 3 - this.submitTime;
+                if (this.state !== "FINISHED") {
+                    haveTimes++;
+                }
+                return haveTimes;
+            },
+            allowSubmit: function () {
+                if (this.haveTime === 0) return false;
+                else return true;
             }
         },
         mounted() {
@@ -268,5 +290,14 @@
         margin-left: auto;
         margin-right: auto;
         margin-top: 20px;
+    }
+
+    .score-span {
+        margin-left: 50px;
+        color: darkred;
+    }
+
+    .state-tag {
+        margin-left: 50px
     }
 </style>
