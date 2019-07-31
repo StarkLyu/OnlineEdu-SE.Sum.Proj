@@ -9,11 +9,13 @@
                     <AddForumTopic :sec-no="section.secNo"></AddForumTopic>
                 </div>
             </div>
-            <CourseForumStart
-                    v-for="topic in section.topics"
-                    :key="topic.createdAt"
-                    :forum-topic="topic"
-            ></CourseForumStart>
+            <div>
+                <CourseForumStart
+                        v-for="one in section.topics"
+                        :key="one.createdAt"
+                        :forum-topic="one"
+                ></CourseForumStart>
+            </div>
         </el-collapse-item>
     </el-collapse>
 </template>
@@ -67,7 +69,7 @@
                 ]
             }
         },
-        created() {
+        mounted() {
             this.sectionForum = this.$store.getters.getSectionList;
             for (let i in this.sectionForum) {
                 this.sectionForum[i].topics = []
@@ -89,7 +91,6 @@
                     }
                 });
                 console.log(forum);
-                alert("hh");
                 let scanSecNum = 0;
                 let secLength = this.sectionForum.length;
                 let forumStack = [{}];
@@ -99,6 +100,7 @@
                     let pathArr = i.path.split("/");
                     let pathLength = pathArr.length;
                     if (pathLength === 2) {
+                        pathLevel = 2;
                         forumStack.shift();
                         forumStack.unshift(i);
                         for (; scanSecNum < secLength; ++scanSecNum) {
@@ -118,10 +120,11 @@
                         }
                         forumStack[0].responses.push(i);
                         forumStack.unshift(i);
+                        pathLevel = pathLength;
                     }
                 }
-                alert("xixi");
                 console.log(this.sectionForum);
+                this.$forceUpdate();
             })
         }
     }

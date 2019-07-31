@@ -11,13 +11,14 @@
             <pre>{{ forumTopic.content }}</pre>
         </div>
         <div class="float-right">
-            <AddForumTopic></AddForumTopic>
+            <AddForumResponse :sec-no="forumTopic.secNo" :path="forumTopic.path"></AddForumResponse>
         </div>
         <div class="float-right">
             <el-switch v-model="showResponse" active-text="显示回复" active-color="#13ce66"></el-switch>
         </div>
         <div class="float-clear"></div>
         <div v-if="showResponse">
+            <el-divider>回复</el-divider>
             <CourseForumResponse
                     v-for="response in forumTopic.responses"
                     :key="response.createdAt"
@@ -29,11 +30,12 @@
 
 <script>
     import CourseForumResponse from "./CourseForumResponse";
+    import AddForumResponse from "./AddForumResponse"
     import UserUnit from "./UserUnit";
-    import AddForumTopic from "./AddForumTopic";
+
     export default {
         name: "CourseForumStart",
-        components: {AddForumTopic, UserUnit, CourseForumResponse},
+        components: {AddForumResponse, UserUnit, CourseForumResponse},
         props: {
             forumTopic: Object
         },
