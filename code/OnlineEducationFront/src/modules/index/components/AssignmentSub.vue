@@ -5,10 +5,11 @@
             <h4>
                 {{sub.content}}
             </h4>
-            <el-input type="textarea" v-model="sub.answer" style="width: 80%;"></el-input>
+            <el-input type="textarea" v-model="sub.myAnswer" style="width: 80%;"></el-input>
             <!--        上传图片-->
             <p>上传图片</p>
             <el-upload
+                    ref="imgUpload"
                     action="#"
                     list-type="picture-card"
                     :http-request="addImg"
@@ -33,13 +34,16 @@
             <p>上传附件</p>
             <el-upload
                     class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    ref="fileUpload"
+                    action="#"
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :before-remove="beforeRemove"
                     multiple
                     :limit="3"
                     :on-exceed="handleExceed"
+                    :auto-upload="false"
+                    :http-request="addFile"
                     :file-list="fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -94,7 +98,29 @@
 
             addImg(file) {
                 this.imgList.push(file.file);
+                console.log(this.imgList);
+            },
+
+            addFile(file) {
+                this.fileList.push(file.file);
+            },
+
+            saveSub() {
+                let uploadForm = new FormData();
+                this.$refs.imgUpload.submit();
+                this.$refs.fileUpload.submit();
+                uploadForm.append("images", this.imgList);
+                uploadForm.append("file", this.fileList);
+                uploadForm.append("answerText", this.sub.myAnswer);
+                uploadForm.append("questionId", this.sub.id);
+                uploadForm.append("state", "TEMP_SAVE");
+                console.log(uploadForm);
+                return uploadForm;
             }
+        },
+
+        mounted() {
+
         }
     }
 </script>

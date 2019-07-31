@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, FlatList } from "react-native";
+import { View, FlatList, TouchableOpacity } from "react-native";
 import { Container, Content, Separator, ListItem, Text, H3 } from "native-base";
 import { connect } from "react-redux";
 import CourseHeader from "../components/CourseHeader";
@@ -9,12 +9,18 @@ class CourseChapter extends Component {
         super(props);
     }
 
+    moveToSection(section) {
+        this.props.navigation.navigate("CourseSection", {
+            section: section
+        })
+    }
+
     _drawChapter(chapter) {
         return (
             <View>
-                <Separator>
-                    <H3>{chapter.title}</H3>
-                </Separator>
+                <ListItem itemDivider>
+                    <Text>{chapter.title}</Text>
+                </ListItem>
                 <FlatList renderItem={({item}) => this._drawSection(item)} data={chapter.sectionBranchesList} />
             </View>
         )
@@ -22,9 +28,11 @@ class CourseChapter extends Component {
 
     _drawSection(section) {
         return (
-            <ListItem>
-                <Text>{section.title}</Text>
-            </ListItem>
+            <TouchableOpacity onPress={() => {this.moveToSection(section)}}>
+                <ListItem>
+                    <Text>{section.title}</Text>
+                </ListItem>
+            </TouchableOpacity>
         )
     }
 

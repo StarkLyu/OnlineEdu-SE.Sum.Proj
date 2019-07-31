@@ -1,9 +1,9 @@
 <template>
 <!--    单选题组件-->
     <div id="AssignmentSingle">
-        <span>
+        <h4>
             {{single.content}}
-        </span>
+        </h4>
         <img v-for="(img, index) in single.images" :key="index" :src="img">
         <el-radio-group style="width: 80%" v-model="single.myAnswer">
             <el-radio
