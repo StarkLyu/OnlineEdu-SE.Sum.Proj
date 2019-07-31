@@ -355,17 +355,19 @@ public class PaperAnswerServiceImplTest {
        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.empty());
+
+       paperAnswerService.markStudentPaper(1L,1L,1,null);
     }
 
-//    @Test
-//    public void questionNotFound(){
-//        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-//        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
-//        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
-//        PaperAnswer paperAnswer = new PaperAnswer();
-//        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
-//
-//    }
+    @Test
+    public void questionNotFound(){
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
+        PaperAnswer paperAnswer = new PaperAnswer();
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
+
+    }
 
 
 }
