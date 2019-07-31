@@ -5,6 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Paper Answer Primary Key Class
@@ -64,5 +65,20 @@ public class PaperAnswerPrimaryKey implements Serializable {
 
     public void setTimes(int times) {
         this.times = times;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaperAnswerPrimaryKey that = (PaperAnswerPrimaryKey) o;
+        return times == that.times &&
+                user.equals(that.user) &&
+                paper.equals(that.paper);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, paper, times);
     }
 }

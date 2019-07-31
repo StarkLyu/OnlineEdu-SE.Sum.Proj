@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListResourceBundle;
 
 /**
  * @author liu
@@ -66,14 +67,26 @@ public class ForumController {
     }
 
 
-    @ApiOperation("获取课程下的的所有论坛")
+    @ApiOperation("获取课程section下的的所有论坛")
     @GetMapping("/courses/{courseId}/sections/{secNo}/forums")
     public List<Forum> getForums(@PathVariable Long courseId, @PathVariable int secNo){
         return forumService.getForumsBySection(courseId, secNo);
     }
 
 
-    @ApiOperation("获取section下所有课程")
+    @ApiOperation("封锁论坛")
+    @DeleteMapping("/forums/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'TEACHING_ADMIN','SUPER_ADMIN')")
+    public Forum deleteForum(@PathVariable String id){
+        Forum forum = forumService.getForum(id);
+        forum.setContent("该内容已被锁");
+        forum.setTitle("该内容已被锁");
+        forum.setImageUrls(new ArrayList<>());
+        return forumService.updateForum(forum);
+    }
+
+
+    @ApiOperation("获forum用id")
     @GetMapping("/forums/{id}")
     public Forum getForumById(@PathVariable String id) {
         return forumService.getForum(id);

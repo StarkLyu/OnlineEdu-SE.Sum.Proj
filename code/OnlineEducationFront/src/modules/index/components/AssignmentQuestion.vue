@@ -2,6 +2,10 @@
     <el-card :body-style="{ paddingTop: '1px' }">
         <div slot="header">
             <strong>{{ questionType }}</strong>
+            <span v-if="showgrade" class="my-grade">得分：{{question.myScore}}</span>
+            <div class="float-right">
+                {{ question.score }}分
+            </div>
         </div>
         <AssignmentJudge v-if="question.questionType === 'T_OR_F'" :judge="question" ></AssignmentJudge>
         <AssignmentSingle v-else-if="question.questionType === 'SINGLE_ANSWER'" :single="question"></AssignmentSingle>
@@ -20,6 +24,9 @@
         components: {AssignmentSub, AssignmentMulti, AssignmentSingle, AssignmentJudge},
         props: {
             question: Object,
+            showgrade: {
+                default: false
+            }
         },
         methods: {
 
@@ -38,5 +45,8 @@
 </script>
 
 <style scoped>
-
+    .my-grade {
+        color: red;
+        margin-left: 60px
+    }
 </style>

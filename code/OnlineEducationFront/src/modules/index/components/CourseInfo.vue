@@ -31,7 +31,7 @@
         <el-row>
             <el-col :span="24">
                 <h4>课程介绍</h4>
-                <pre>{{ courseInfo.courseDes }}</pre>
+                <pre>{{ courseInfo.coursePrototype.description }}</pre>
             </el-col>
         </el-row>
     </div>

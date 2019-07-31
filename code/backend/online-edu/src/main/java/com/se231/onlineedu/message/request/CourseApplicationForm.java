@@ -37,9 +37,11 @@ public class CourseApplicationForm {
     @ApiModelProperty("地点")
     private String location;
 
-    @OneToMany
     @ApiModelProperty("上课时间段")
     private List<TimeSlotForm> timeSlots = new ArrayList<>();
+
+    public CourseApplicationForm() {
+    }
 
     public Date getStartDate() {
         return startDate;
