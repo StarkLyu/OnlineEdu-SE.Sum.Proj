@@ -1,9 +1,11 @@
 package com.se231.onlineedu.service;
 
 import java.util.List;
+import java.util.Optional;
 import com.se231.onlineedu.message.request.PaperForm;
 import com.se231.onlineedu.message.response.PaperFinish;
 import com.se231.onlineedu.model.Paper;
+import com.se231.onlineedu.model.PaperAnswer;
 import com.se231.onlineedu.model.Section;
 
 /**
@@ -42,5 +44,11 @@ public interface PaperService {
      */
     List<PaperFinish> getStudentFinish(Long courseId,Long paperId);
 
-
+    /**
+     * get paper from paper id and course id
+     * @param paperId   id of paper
+     * @param courseId  id of course
+     * @return  the paper founded ,throw exception when paper not found or not match to the course.
+     */
+    Paper getPaperInfo(Long paperId,Long courseId);
 }

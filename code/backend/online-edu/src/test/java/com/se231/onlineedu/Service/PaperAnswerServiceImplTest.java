@@ -3,9 +3,11 @@ package com.se231.onlineedu.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
+import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
@@ -15,6 +17,7 @@ import com.se231.onlineedu.repository.PaperRepository;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
+import com.se231.onlineedu.service.PaperService;
 import com.se231.onlineedu.service.UserService;
 import com.se231.onlineedu.serviceimpl.PaperAnswerServiceImpl;
 import org.junit.Before;
@@ -49,6 +52,9 @@ public class PaperAnswerServiceImplTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    PaperService paperService;
 
     @MockBean
     CourseService courseService;
@@ -103,7 +109,7 @@ public class PaperAnswerServiceImplTest {
     @Test(expected = ValidationException.class)
     public void answerTimesTest()throws Exception{
         Mockito.when(paperAnswerRepository.getMaxTimes(user.getId(),paper.getId())).thenReturn(Optional.of(3));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,3);
@@ -117,7 +123,7 @@ public class PaperAnswerServiceImplTest {
     public void submitAnswer()throws Exception{
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.empty());
         Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -127,33 +133,10 @@ public class PaperAnswerServiceImplTest {
         assertThat(paperAnswer.getPaperAnswerPrimaryKey().getTimes()).isEqualTo(1);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void paperNotFoundTest()throws Exception{
-        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
-        Mockito.when(paperRepository.findById(2L)).thenReturn(Optional.empty());
-
-        paperAnswerService.submitAnswer(1L,1L,2L,submitAnswerForm);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void notMatchTest()throws Exception{
-        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
-        Paper paper2 = new Paper();
-        paper2.setId(2L);
-        Course course2 = new Course();
-        course2.setId(2L);
-        paper2.setCourse(course2);
-        Mockito.when(paperRepository.findById(2L)).thenReturn(Optional.of(paper2));
-
-        paperAnswerService.submitAnswer(1L,1L,2L,submitAnswerForm);
-    }
-
     @Test
     public void notFinishTest()throws Exception{
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -182,7 +165,7 @@ public class PaperAnswerServiceImplTest {
     public void tempSaveTest()throws Exception{
         // mockito in get paper answer
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -211,7 +194,7 @@ public class PaperAnswerServiceImplTest {
     public void questionNotMatchTest()throws Exception{
         // mockito in get paper answer
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         PaperAnswer paperAnswer1 = new PaperAnswer();
@@ -344,30 +327,44 @@ public class PaperAnswerServiceImplTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void paperNotFoundTest2(){
-        Mockito.when(paperRepository.findById(2L)).thenReturn(Optional.empty());
-        paperAnswerService.markStudentPaper(1L,2L,2,null);
-    }
-
-    @Test(expected = NotFoundException.class)
     public void answerNotFound(){
        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.empty());
 
-       paperAnswerService.markStudentPaper(1L,1L,1,null);
+       paperAnswerService.markStudentPaper(1L,1L,1L,1,null);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void questionNotFound(){
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
         PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
         PaperAnswer paperAnswer = new PaperAnswer();
         Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
+        Mockito.when(questionRepository.findById(3L)).thenReturn(Optional.empty());
+        MarkForm markForm = new MarkForm();
+        markForm.setQuestionId(3L);
 
+        paperAnswerService.markStudentPaper(1L,1L,1L,1 ,Set.of(markForm));
     }
+
+//    @Test(expected = NotFoundException.class)
+//    public void answerNotFoundInPaper(){
+//        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+//        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+//        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
+//        PaperAnswer paperAnswer = new PaperAnswer();
+//        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
+//        Mockito.when(questionRepository.findById(3L)).thenReturn(O)
+//        MarkForm markForm = new MarkForm();
+//        markForm.setQuestionId(3L);
+//
+//        paperAnswerService.markStudentPaper(1L,1L,1, Set.of(markForm));
+//    }
+
+
 
 
 }

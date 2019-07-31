@@ -2,6 +2,7 @@ package com.se231.onlineedu.serviceimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.message.request.PaperForm;
@@ -120,5 +121,16 @@ public class PaperServiceImpl implements PaperService {
             paperFinish.setState(paperAnswer.getState());
         }
         return paperFinish;
+    }
+
+    @Override
+    public Paper getPaperInfo(Long paperId, Long courseId) {
+        Paper paper = paperRepository.findById(paperId)
+                .orElseThrow(()->new NotFoundException("No corresponding paper"));
+        Course course = courseService.getCourseInfo(courseId);
+        if(!paper.getCourse().equals(course)){
+            throw new NotMatchException("This course doesn't have this paper");
+        }
+        return paper;
     }
 }

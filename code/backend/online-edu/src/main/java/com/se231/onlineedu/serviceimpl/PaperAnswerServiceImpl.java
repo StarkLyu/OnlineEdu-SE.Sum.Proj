@@ -18,6 +18,7 @@ import com.se231.onlineedu.repository.PaperRepository;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
+import com.se231.onlineedu.service.PaperService;
 import com.se231.onlineedu.service.UserService;
 import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Autowired
     PaperAnswerRepository paperAnswerRepository;
+
+    @Autowired
+    PaperService paperService;
 
     private static final int MAX_TIMES = 3;
 
@@ -108,9 +112,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     }
 
     @Override
-    public PaperAnswer markStudentPaper(Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
+    public PaperAnswer markStudentPaper(Long courseId, Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
         User student = userService.getUserInfo(studentId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("No corresponding paper"));
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(student,paper,times);
         PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
                 .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
@@ -167,7 +171,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         //initialize( found corresponding user and paper)
         User user = userService.getUserInfo(userId);
         Course course = courseService.getCourseInfo(courseId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("Paper Not Found"));
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
         if(!paper.getCourse().equals(course)){
             throw new ValidationException("This Course Doesn't Have This Paper.");
         }
@@ -197,5 +201,12 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         paperAnswer.setState(state);
         return paperAnswerRepository.save(paperAnswer);
+    }
+
+    @Override
+    public List<PaperAnswer> getStudentAnswer(Long courseId, Long paperId, Long studentId) {
+        User user = userService.getUserInfo(studentId);
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
+        return paperAnswerRepository.findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(paper,user);
     }
 }
