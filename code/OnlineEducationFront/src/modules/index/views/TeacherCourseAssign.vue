@@ -24,6 +24,9 @@
                         label="作业名"
                         sortable
                         min-width="40%">
+                    <template scope="scope">
+                        <el-link @click="loadPaperPage(scope.$index, scope.row)">{{scope.row.title}}</el-link>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         min-width="40%">
@@ -83,9 +86,9 @@
                 </el-form-item>
             </el-form>
 <!--            问题table-->
-            <el-table :data="questions" ref="multipleTable" height="300px" @selection-change="handleSelectionChange">
+            <el-table :data="questions" height="300px" v-model="AssignEditForm.questionFormList" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" min-width="10%"></el-table-column>
-                <el-table-column property="questionType" label="题型" sortable min-width="20%"></el-table-column>
+                <el-table-column property="questionType" label="题型" sortable="true" min-width="20%"></el-table-column>
                 <el-table-column property="question" label="题目" min-width="40%" show-overflow-tooltip="true"></el-table-column>
                 <el-table-column property="score" label="分值" min-width="15%">
                     <template scope="scope">
@@ -184,6 +187,7 @@
                 }
                 this.AssignEditForm.questionFormList=finalQuestion;
                 console.log(this.AssignEditForm);
+                console.log(this.AssignEditForm.start);
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/papers',
                     method: "post",
@@ -216,6 +220,16 @@
 
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+            },
+
+            // 加载作业页面
+            loadPaperPage: function (index, row) {
+                this.$router.push({
+                    name: "courseStudentPaper",
+                    params: {
+                        paperId: row.id
+                    }
+                });
             }
         },
 

@@ -180,19 +180,8 @@
 </template>
 
 <script>
-    // import AssignmentSingle from "../components/AssignmentSingle"
-    // import AssignmentMulti from "../components/AssignmentMulti"
-    // import AssignmentJudge from "../components/AssignmentJudge"
-    // import AssignmentSub from "../components/AssignmentSub"
     export default {
         name: "TeacherCourseOneAssignment",
-
-        components:{
-            // AssignmentSingle,
-            // AssignmentMulti,
-            // AssignmentJudge,
-            // AssignmentSub,
-        },
 
         data(){
             return{
@@ -238,101 +227,6 @@
                 subEditForm:{
                     key:"",
                     title:"",
-                },
-
-                oneAssignment:{
-                    assignTitle:"作业标题",
-                    quesitons:[
-                        {
-                            type:"SINGLE_ANSWER",
-                            key:1,
-                            title:"这是一道单选题，请选择下列选项。",
-                            choices:[
-                                {
-                                    tag:"A",
-                                    content:"这是第一个选项",
-                                },
-                                {
-                                    tag:"B",
-                                    content:"这是第二个选项",
-                                },
-                                {
-                                    tag:"C",
-                                    content:"这是第三个选项",
-                                },
-                                {
-                                    tag:"D",
-                                    content:"这是第四个选项",
-                                },
-                            ],
-                            answer:"",
-                            correctAnswer:"A",
-                        },
-                        {
-                            type:"MULTIPLE_ANSWER",
-                            key:2,
-                            title:"这是一道多选题，请选择下列选项。",
-                            choices:[
-                                {
-                                    tag:"A",
-                                    content:"这是第一个选项",
-                                },
-                                {
-                                    tag:"B",
-                                    content:"这是第二个选项",
-                                },
-                                {
-                                    tag:"C",
-                                    content:"这是第三个选项",
-                                },
-                                {
-                                    tag:"D",
-                                    content:"这是第四个选项",
-                                },
-                            ],
-                            answer:[],
-                            correctAnswer:"AB",
-                        },
-                        {
-                            type:"T_OR_F",
-                            key:3,
-                            title:"这是一道判断题，请选择下列选项。",
-                            answer:"",
-                            correctAnswer:"正确",
-                        },
-                        {
-                            type:"SINGLE_ANSWER",
-                            key:4,
-                            title:"这是一道单选题，请选择下列选项。",
-                            choices:[
-                                {
-                                    tag:"A",
-                                    content:"这是第一个选项",
-                                },
-                                {
-                                    tag:"B",
-                                    content:"这是第二个选项",
-                                },
-                                {
-                                    tag:"C",
-                                    content:"这是第三个选项",
-                                },
-                                {
-                                    tag:"D",
-                                    content:"这是第四个选项",
-                                },
-                            ],
-                            answer:"",
-                            correctAnswer:"B",
-                        },
-                        {
-                            type:"SUBJECTIVE",
-                            key:5,
-                            title:"这是一道主观题，请在文本框里填写或添加图片或添加附件。",
-                            answer:"",
-                        }
-                    ],
-
                 },
 
                 questions:this.$store.getters.getCourseInfo.coursePrototype.questions,

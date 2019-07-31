@@ -7,6 +7,8 @@ const state = {
     courseInfo: {},
     identity: "",
     paperId:0,
+    paperAnswers:0,
+    studentSelectId:0,
 };
 
 // getters
@@ -52,7 +54,10 @@ const getters = {
     },
     getPaperId:state => {
         return state.paperId;
-    }
+    },
+    getPaperAnswers:state => {
+        return state.paperAnswers;
+    },
 };
 
 // actions
@@ -73,7 +78,13 @@ const mutations = {
     },
     setPaperId(state, paperId) {
         state.paperId=paperId;
-    }
+    },
+    setPaperAnswers(state, paperAnswers) {
+        state.paperAnswers=paperAnswers;
+    },
+    setStudentSelectId(state, studentSelectId) {
+        state.studentSelectId=studentSelectId;
+    },
 };
 
 export default {
