@@ -15,7 +15,6 @@ import com.se231.onlineedu.util.FileCheckUtil;
 import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +33,7 @@ import java.util.List;
  */
 @Api(tags = "课程相关的控制类")
 @RestController
-@RequestMapping("api/courses")
+@RequestMapping("/api/courses")
 public class CourseController {
 
     private static int limit = 5120000;

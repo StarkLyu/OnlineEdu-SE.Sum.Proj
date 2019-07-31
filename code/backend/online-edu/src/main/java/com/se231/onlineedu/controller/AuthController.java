@@ -60,7 +60,7 @@ public class AuthController {
                     "mainly because of existing same username/email/tel,or invalid param"),
     })
     @PostMapping("/signup")
-    public User registerUser(HttpSession httpSession, @Valid @RequestBody SignUpForm signUpRequest) throws Exception {
+    public User registerUser(HttpSession httpSession, @Valid @RequestBody SignUpForm signUpRequest) {
         return authService.userSignUp(signUpRequest, httpSession);
     }
 
