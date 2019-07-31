@@ -25,10 +25,6 @@
                         :question="question"
                         v-modal="answer"
                 ></AssignmentQuestion>
-                <div class="submit-div">
-                    <el-button @click="uploadAnswer('NOT_FINISH')" class="float-left">提交</el-button>
-                    <el-button @click="getSavedAnswer" class="float-right">暂存</el-button>
-                </div>
             </el-tab-pane>
             <el-tab-pane>
                 <span slot="label">主观题</span>
@@ -36,8 +32,13 @@
                         v-for="question in subjQuestions"
                         :key="question.id"
                         :sub="question"
+                        :ref="question.id.toString()"
                 ></AssignmentSub>
             </el-tab-pane>
+            <div class="submit-div">
+                <el-button @click="submitAnswer('FINISHED')" class="float-left">提交</el-button>
+                <el-button @click="submitAnswer('NOT_FINISH')" class="float-right">暂存</el-button>
+            </div>
         </el-tabs>
     </el-card>
 </template>
@@ -61,11 +62,58 @@
                 },
                 objQuestions: [],
                 subjQuestions: [],
-                answer: "A",
+                state: ""
             }
         },
         methods: {
-            uploadAnswer: function (state) {
+            // uploadAnswer: function () {
+            //     let answerList = [];
+            //     for (let question of this.objQuestions) {
+            //         let answerUnit = {
+            //             answer: question.myAnswer,
+            //             questionId: question.id
+            //         };
+            //         answerList.push(answerUnit);
+            //     }
+            //     console.log(answerList);
+            //     let submitSubs = [];
+            //     for (let sub of this.subjQuestions) {
+            //         console.log(sub.id.toString());
+            //         let subAnswer = this.$refs[sub.id.toString()][0].saveSub();
+            //         let submitFunc = () => {
+            //             return this.$http.request({
+            //                 url: this.getPaperUrl + "/subjective",
+            //                 method: "post",
+            //                 data: subAnswer,
+            //                 headers: {
+            //                     ...this.$store.getters.authRequestHead,
+            //                     'Content-Type': 'multipart/form-data'
+            //                 }
+            //             });
+            //         };
+            //         submitSubs.push(submitFunc());
+            //         console.log(submitSubs);
+            //     }
+            //     this.$http.request({
+            //         url: this.getPaperUrl,
+            //         method: "post",
+            //         headers: this.$store.getters.authRequestHead,
+            //         data: {
+            //             answerList,
+            //             state: "NOT_FINISH"
+            //         },
+            //         withCredentials: true
+            //     }).then((response) => {
+            //         console.log(response.data);
+            //         this.$http.all(submitSubs).then(() => {
+            //             alert("暂存成功！");
+            //         });
+            //     }).catch((error) => {
+            //         alert(error);
+            //         console.log(error.response);
+            //     })
+            // },
+            submitAnswer: function (state) {
                 let answerList = [];
                 for (let question of this.objQuestions) {
                     let answerUnit = {
@@ -75,30 +123,117 @@
                     answerList.push(answerUnit);
                 }
                 console.log(answerList);
-                this.$http.request({
-                    url: this.getPaperUrl,
-                    method: "post",
-                    headers: this.$store.getters.authRequestHead,
-                    data: {
-                        answerList,
-                        state
-                    },
-                    withCredentials: true
-                }).then((response) => {
-                    alert("提交成功！");
-                    console.log(response.data);
+                let submitSubs = [];
+                for (let sub of this.subjQuestions) {
+                    console.log(sub.id.toString());
+                    let subAnswer = this.$refs[sub.id.toString()][0].saveSub();
+                    let submitFunc = () => {
+                        return this.$http.request({
+                            url: this.getPaperUrl + "/subjective",
+                            method: "post",
+                            data: subAnswer,
+                            headers: {
+                                ...this.$store.getters.authRequestHead,
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        });
+                    };
+                    submitSubs.push(submitFunc());
+                    console.log(submitSubs);
+                }
+                this.$http.all(submitSubs).then(() => {
+                    this.$http.request({
+                        url: this.getPaperUrl,
+                        method: "post",
+                        headers: this.$store.getters.authRequestHead,
+                        data: {
+                            answerList,
+                            state: "NOT_FINISH"
+                        },
+                        withCredentials: true
+                    }).then((response) => {
+                        console.log(response.data);
+                        this.$http.request({
+                            url: this.getPaperUrl + "/state/change",
+                            method: "put",
+                            headers: this.$store.getters.authRequestHead,
+                            params: {
+                                state: state
+                            }
+                        }).then(() => {
+                            if (state === "NOT_FINISH") alert("暂存成功！");
+                            else if (state === "FINISHED") alert("提交成功！");
+                            this.initialPaper();
+                        })
+                    });
+                // this.$http.request({
+                //     url: this.getPaperUrl,
+                //     method: "post",
+                //     headers: this.$store.getters.authRequestHead,
+                //     data: {
+                //         answerList,
+                //         state: "NOT_FINISH"
+                //     },
+                //     withCredentials: true
+                // }).then((response) => {
+                //     console.log(response.data);
+                //     this.$http.all(submitSubs).then(() => {
+                //         this.$http.request({
+                //             url: this.getPaperUrl + "/state/change",
+                //             method: "put",
+                //             headers: this.$store.getters.authRequestHead,
+                //             params: {
+                //                 state: state
+                //             }
+                //         }).then(() => {
+                //             if (state === "NOT_FINISH") alert("暂存成功！");
+                //             else if (state === "FINISHED") alert("提交成功！");
+                //             this.initialPaper();
+                //         })
+                //     });
                 }).catch((error) => {
                     alert(error);
                     console.log(error.response);
                 })
             },
-            getSavedAnswer: function () {
+            initialPaper: function () {
+                this.paperInfo = this.$store.getters.getPaperById(this.paperId);
                 this.$http.request({
                     url: this.getPaperUrl,
                     method: "get",
                     headers: this.$store.getters.authRequestHead
                 }).then((response) => {
+                    let answerList = [];
                     console.log(response.data);
+                    if (response.data.length !== 0) {
+                        answerList = response.data[0].answers;
+                        this.state = response.data[0].state;
+                    }
+                    this.paperInfo.questions.sort((a, b) => {
+                        if (a.questionNumber <= b.questionNumber) return -1;
+                        else return 1;
+                    });
+                    for (let scanQues of this.paperInfo.questions) {
+                        let fetchQues = Object.assign({}, scanQues.paperWithQuestionsPrimaryKey.question, {
+                            score: scanQues.score,
+                            myAnswer: "",
+                            myImg: []
+                        });
+                        for (let i in answerList) {
+                            if (answerList[i].answerPrimaryKey.question.id === fetchQues.id) {
+                                fetchQues.myAnswer = answerList[i].answer;
+                                answerList.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        if (fetchQues.questionType !== "SUBJECTIVE") {
+                            this.objQuestions.push(fetchQues);
+                        }
+                        else {
+                            this.subjQuestions.push(fetchQues);
+                        }
+                    }
+                    console.log(this.paperInfo);
                 }).catch((error) => {
                     alert(error);
                     console.log(error.response);
@@ -114,20 +249,7 @@
             }
         },
         mounted() {
-            this.paperInfo = this.$store.getters.getPaperById(this.paperId);
-            for (let scanQues of this.paperInfo.questions) {
-                let fetchQues = Object.assign({}, scanQues.paperWithQuestionsPrimaryKey.question, {
-                    score: scanQues.score,
-                    myAnswer: ""
-                });
-                if (fetchQues.questionType !== "SUBJECTIVE") {
-                    this.objQuestions.push(fetchQues);
-                }
-                else {
-                    this.subjQuestions.push(fetchQues);
-                }
-            }
-            console.log(this.paperInfo);
+            this.initialPaper();
         }
     }
 </script>

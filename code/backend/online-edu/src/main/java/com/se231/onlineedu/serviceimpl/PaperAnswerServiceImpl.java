@@ -120,7 +120,8 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Override
     public PaperAnswer submitSubjectiveQuestion(Long courseId, Long userId, Long paperId, Long questionId,
-                                                String answerText, MultipartFile[] images, PaperAnswerState state) {
+                                                String answerText, MultipartFile[] images,MultipartFile[] file,
+                                                PaperAnswerState state) {
         //File check
         /**
         empty space to fill
@@ -132,7 +133,12 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
         Answer answer = new Answer(answerPrimaryKey,answerText,0);
         try {
+            if(file.length==1) {
+                String suffix = file[0].getOriginalFilename().substring(file[0].getOriginalFilename().lastIndexOf("."));
+                answer.setResource(SaveFileUtil.saveFile(file[0], suffix));
+            }
             answer.setImageUrls(SaveFileUtil.saveImages(images, LIMIT));
+
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -153,8 +159,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
         if(times>0) {
             PaperAnswerPrimaryKey lastAnswerPrimaryKey = new PaperAnswerPrimaryKey(user, paper, times);
-            PaperAnswer lastAnswer = paperAnswerRepository.findById(lastAnswerPrimaryKey)
-                    .orElseThrow(() -> new NotFoundException("No corresponding answer"));
+            PaperAnswer lastAnswer = paperAnswerRepository.getOne(lastAnswerPrimaryKey);
             if (lastAnswer.getState().equals(PaperAnswerState.NOT_FINISH)){
                 paperAnswerRepository.delete(lastAnswer);
                 times--;
@@ -167,6 +172,13 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         }
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
         PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
+        return paperAnswerRepository.save(paperAnswer);
+    }
+
+    @Override
+    public PaperAnswer changePaperAnswerState(Long courseId, Long userId, Long paperId, PaperAnswerState state) {
+        PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
+        paperAnswer.setState(state);
         return paperAnswerRepository.save(paperAnswer);
     }
 }

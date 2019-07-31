@@ -40,6 +40,9 @@
                 }
                 this.multi.myAnswer = answerLine;
             }
+        },
+        mounted() {
+            this.answerList = this.multi.myAnswer.split("");
         }
     }
 </script>

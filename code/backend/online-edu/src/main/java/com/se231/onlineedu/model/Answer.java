@@ -38,6 +38,9 @@ public class Answer {
             @JoinColumn(name = "answer_paper_answer_times")})
     private List<String> imageUrls;
 
+
+    private String resource;
+
     public Answer() {
     }
 
@@ -85,5 +88,13 @@ public class Answer {
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
+    }
+
+    public String getResource() {
+        return resource;
+    }
+
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 }

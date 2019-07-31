@@ -12,24 +12,24 @@
                     <el-table-column type="index">
                     </el-table-column>
                     <el-table-column
-                            prop="sno"
+                            prop="student.sno"
                             label="学号"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="username"
+                            prop="student.username"
                             label="学生名"
                             min-width="35%"
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="score"
+                            prop="state"
                             label="作业情况"
                             min-width="25%"
                     ></el-table-column>
                     <el-table-column
-                            prop="sno"
+                            prop="student.sno"
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
@@ -110,21 +110,21 @@
         methods:{
             // 展示所有学生的答题情况
             showStuAssigns(){
-                // var that=this;
+                var that=this;
                 this.$http.request({
-                    url: '/api/courses/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/papers/'+this.$store.getters.getPaperId+'/state/all',
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/papers/'+this.$store.getters.getPaperId+'/state/all',
                     method: "get",
                     headers:this.$store.getters.authRequestHead,
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        this.UserData=response.data;
-                        console.log(this.UserData);
+                        that.UserData=response.data;
+                        // console.log("UserData"+that.UserData);
                         // alert("请求成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        alert("请求失败");
                     });
 
             },
