@@ -26,7 +26,7 @@ public class SignInController {
 
 
     @ApiOperation("教师发布签到")
-    @PostMapping("/courses/{courseId}/signIns/")
+    @PostMapping("/courses/{courseId}/signIns")
     public Course postSignIn(@PathVariable Long courseId, @RequestBody SignInCourseForm signInForm) {
         if(signInForm.getStartDate().after(signInForm.getEndDate())){
            throw new EndBeforeStartException("开始时间晚于结束时间");

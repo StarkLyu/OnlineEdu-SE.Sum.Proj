@@ -50,9 +50,10 @@ public interface PaperAnswerService {
      * @param paperId   id of paper
      * @param times times of the answer
      * @param markForms marking forms
+     * @param courseId id of course
      * @return  the marked paper answer
      */
-    PaperAnswer markStudentPaper(Long studentId, Long paperId, Integer times, Set<MarkForm> markForms);
+    PaperAnswer markStudentPaper(Long courseId, Long studentId, Long paperId, Integer times, Set<MarkForm> markForms);
 
     /**
      * this service allow students to submit subjective question
@@ -78,4 +79,6 @@ public interface PaperAnswerService {
      * @return  the new paper answer
      */
     PaperAnswer changePaperAnswerState(Long courseId, Long userId, Long paperId,PaperAnswerState state);
+
+    List<PaperAnswer> getStudentAnswer(Long courseId, Long paperId, Long studentId);
 }

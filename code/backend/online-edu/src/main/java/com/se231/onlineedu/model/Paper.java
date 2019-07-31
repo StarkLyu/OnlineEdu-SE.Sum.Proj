@@ -1,6 +1,7 @@
 package com.se231.onlineedu.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -113,6 +114,16 @@ public class Paper {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @JsonIgnore
+    @Transient
+    public List<Question> getQuestionList(){
+        List<Question> questionList = new ArrayList<>();
+        for(PaperWithQuestions paperWithQuestions:questions){
+            questionList.add(paperWithQuestions.getPaperWithQuestionsPrimaryKey().getQuestion());
+        }
+        return questionList;
     }
 
     @Override

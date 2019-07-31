@@ -1,19 +1,25 @@
 package com.se231.onlineedu.serviceimpl;
 
 import java.io.IOException;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import com.se231.onlineedu.exception.NotFoundException;
+import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.repository.AnswerRepository;
+import com.se231.onlineedu.repository.PaperAnswerRepository;
+import com.se231.onlineedu.repository.PaperRepository;
+import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
+import com.se231.onlineedu.service.PaperService;
 import com.se231.onlineedu.service.UserService;
-import com.se231.onlineedu.util.FileCheckUtil;
 import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +50,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     @Autowired
     PaperAnswerRepository paperAnswerRepository;
 
+    @Autowired
+    PaperService paperService;
+
     private static final int MAX_TIMES = 3;
 
     private static final int LIMIT = 5120000;
@@ -51,9 +60,13 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
+        Paper paper = paperRepository.getOne(paperId);
         for (QuestionAnswer questionAnswer :form.getAnswerList()){
             Question question = questionRepository.findById(questionAnswer.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("Question Not Found"));
+            if(!paper.getQuestionList().contains(question)){
+                throw new NotMatchException("This paper doesn't contain this question");
+            }
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
             Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
             paperAnswer.getAnswers().add(answerRepository.save(answer));
@@ -99,23 +112,26 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     }
 
     @Override
-    public PaperAnswer markStudentPaper(Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
+    public PaperAnswer markStudentPaper(Long courseId, Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
         User student = userService.getUserInfo(studentId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("No corresponding paper"));
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(student,paper,times);
-        PaperAnswer answer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
+        PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
                 .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
-        Map<Long,String> commentMap = new HashMap<>(markForms.size());
-        Map<Long,Double> scoreMap = new HashMap<>(markForms.size());
-        markForms.forEach(mark->{
-            commentMap.put(mark.getQuestionId(),mark.getComment());
-            scoreMap.put(mark.getQuestionId(),mark.getScore());
-        });
-        answer.getAnswers().forEach(answer1 -> {
-            answer1.setGrade(scoreMap.get(answer1.getAnswerPrimaryKey().getQuestion().getId()));
-            answer1.setComment(commentMap.get(answer1.getAnswerPrimaryKey().getQuestion().getId()));
-        });
-        return paperAnswerRepository.save(answer);
+        double grade = paperAnswer.getGrade();
+        for(MarkForm markForm : markForms){
+            Question question = questionRepository.findById(markForm.getQuestionId())
+                    .orElseThrow(()-> new NotFoundException("No corresponding question"));
+            AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
+            Answer answer = answerRepository.findById(answerPrimaryKey)
+                    .orElseThrow(()->new NotFoundException("No answer for this question"));
+            answer.setGrade(markForm.getScore());
+            answer.setComment(markForm.getComment());
+            grade+=answer.getGrade();
+        }
+        paperAnswer.setGrade(grade);
+        paperAnswer.setState(PaperAnswerState.MARKED);
+        return paperAnswerRepository.save(paperAnswer);
     }
 
     @Override
@@ -127,9 +143,14 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         empty space to fill
          */
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
+        Paper paper = paperRepository.getOne(paperId);
         paperAnswer.setState(state);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(()->new NotFoundException("No corresponding question"));
+        if(!paper.getQuestionList().contains(question)){
+            throw new NotMatchException("This paper doesn't have this question.");
+        }
+
         AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
         Answer answer = new Answer(answerPrimaryKey,answerText,0);
         try {
@@ -150,7 +171,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         //initialize( found corresponding user and paper)
         User user = userService.getUserInfo(userId);
         Course course = courseService.getCourseInfo(courseId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("Paper Not Found"));
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
         if(!paper.getCourse().equals(course)){
             throw new ValidationException("This Course Doesn't Have This Paper.");
         }
@@ -168,7 +189,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
                 return lastAnswer;
             }
         }if(times==MAX_TIMES){
-            throw new RuntimeException("You Have Answered Three Times");
+            throw new ValidationException("You Have Answered Three Times");
         }
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(user,paper,times+1);
         PaperAnswer paperAnswer = new PaperAnswer(paperAnswerPrimaryKey);
@@ -180,5 +201,12 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         paperAnswer.setState(state);
         return paperAnswerRepository.save(paperAnswer);
+    }
+
+    @Override
+    public List<PaperAnswer> getStudentAnswer(Long courseId, Long paperId, Long studentId) {
+        User user = userService.getUserInfo(studentId);
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
+        return paperAnswerRepository.findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(paper,user);
     }
 }

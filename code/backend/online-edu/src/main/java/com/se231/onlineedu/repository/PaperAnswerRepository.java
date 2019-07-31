@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.se231.onlineedu.model.Paper;
 import com.se231.onlineedu.model.PaperAnswer;
 import com.se231.onlineedu.model.PaperAnswerPrimaryKey;
+import com.se231.onlineedu.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -44,4 +45,5 @@ public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, PaperA
     @Query(value = "select * from paper_answer where paper_id = ?1 and user_id = ?2",nativeQuery = true)
     List<PaperAnswer> getPersonalPaperAnswer(Long paperId, Long userId);
 
+    List<PaperAnswer> findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(Paper paper, User user);
 }
