@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -62,5 +63,18 @@ public class PaperWithQuestions {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaperWithQuestions that = (PaperWithQuestions) o;
+        return Objects.equals(paperWithQuestionsPrimaryKey, that.paperWithQuestionsPrimaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(paperWithQuestionsPrimaryKey);
     }
 }
