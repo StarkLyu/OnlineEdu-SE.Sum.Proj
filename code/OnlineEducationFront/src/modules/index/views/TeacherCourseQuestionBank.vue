@@ -360,7 +360,6 @@
                         newQuestionId=response.data.id;
                         if(newQuestionId!==0)
                         {
-                            console.log("上传图片中");
                             // 再上传图片
                             that.$http.request({
                                 url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
@@ -380,7 +379,7 @@
                                     alert("请求失败");
                                 });
                         }
-                        alert("上传题目成功");
+                        // alert("上传题目成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -436,7 +435,7 @@
                                     alert("请求失败");
                                 });
                         }
-                        alert("添加多选题成功");
+                        // alert("添加多选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -485,7 +484,7 @@
                                     alert("请求失败");
                                 });
                         }
-                        alert("添加判断题成功");
+                        // alert("添加判断题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -533,7 +532,7 @@
                                     alert("请求失败");
                                 });
                         }
-                        alert("添加主观题成功");
+                        // alert("添加主观题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
@@ -597,9 +596,7 @@
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
-
-    .titlesytle {
+   .titlesytle {
         text-align: center;
         padding-top: 20px
     }

@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { View, FlatList, TouchableOpacity } from "react-native";
-import { Container, Content, Separator, ListItem, Text, H3 } from "native-base";
+import { View, FlatList, } from "react-native";
+import { Container, Content, ListItem, Text, H3 } from "native-base";
 import { connect } from "react-redux";
 import CourseHeader from "../components/CourseHeader";
+import { setCurrentSection } from "../store/sectionAction";
 
 class CourseChapter extends Component {
     constructor(props) {
@@ -10,9 +11,8 @@ class CourseChapter extends Component {
     }
 
     moveToSection(section) {
-        this.props.navigation.navigate("CourseSection", {
-            section: section
-        })
+        this.props.setCurrentSection(section);
+        this.props.navigation.navigate("CourseSection");
     }
 
     _drawChapter(chapter) {
@@ -28,11 +28,9 @@ class CourseChapter extends Component {
 
     _drawSection(section) {
         return (
-            <TouchableOpacity onPress={() => {this.moveToSection(section)}}>
-                <ListItem>
-                    <Text>{section.title}</Text>
-                </ListItem>
-            </TouchableOpacity>
+            <ListItem onPress={() => {this.moveToSection(section)}}>
+                <Text>{section.title}</Text>
+            </ListItem>
         )
     }
 
@@ -53,4 +51,10 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(CourseChapter);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setCurrentSection: (section) => dispatch(setCurrentSection(section))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CourseChapter);

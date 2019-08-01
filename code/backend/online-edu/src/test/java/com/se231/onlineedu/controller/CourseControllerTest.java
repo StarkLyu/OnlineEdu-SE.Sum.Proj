@@ -2,6 +2,7 @@ package com.se231.onlineedu.controller;
 
 import com.se231.onlineedu.jwtTest.UserDetailsDummy;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.GradeTable;
 import com.se231.onlineedu.message.response.Identity;
@@ -141,7 +142,7 @@ public class CourseControllerTest {
         course1.setAvatarUrl("avatarUrl");
         when(courseService.updateCourseAvatar(anyString(), anyLong())).thenReturn(course1);
         when(courseService.checkIfUserPick(anyLong(),anyLong())).thenReturn(true);
-        when(courseService.modifyCourseInfo(anyLong(),any(CourseApplicationForm.class))).thenReturn(course1);
+        when(courseService.modifyCourseInfo(anyLong(),any(CourseModifyForm.class))).thenReturn(course1);
         when(courseService.selectTeacherAssistant(anyLong(),anyLong())).thenReturn(course1);
 
         GradeTable gradeTable = new GradeTable();
@@ -176,12 +177,13 @@ public class CourseControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    public void applyToStartCourse() throws Exception {
-//        mvc.perform(post("/api/courses/start").param("prototypeId", "1").header("Authorization", token).contentType(MediaType.APPLICATION_JSON).content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30\",\"endDate\":\"2019-10-18\"}"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(1));
-//    }
+    @Test
+    public void applyToStartCourse() throws Exception {
+        mvc.perform(post("/api/courses/start").param("prototypeId", "1").header("Authorization", token).contentType(MediaType.APPLICATION_JSON)
+        .content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30 00:00:00\",\"endDate\":\"2019-10-18 00:00:00\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
 
     @Test
     public void examineStartCourse() throws Exception {
@@ -228,12 +230,13 @@ public class CourseControllerTest {
                 .andExpect(content().string("true"));
     }
 
-//    @Test
-//    public void modifyCourseInfo() throws Exception {
-//        mvc.perform(put("/api/courses/1/modify").header("Authorization", token).contentType(MediaType.APPLICATION_JSON).content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30\",\"endDate\":\"2019-10-18\"}"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(1));
-//    }
+    @Test
+    public void modifyCourseInfo() throws Exception {
+        mvc.perform(put("/api/courses/1/modify").header("Authorization", token).contentType(MediaType.APPLICATION_JSON)
+        .content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30 00:00:00\",\"endDate\":\"2019-10-18 00:00:00\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
 
     @Test
     public void selectTA() throws Exception {

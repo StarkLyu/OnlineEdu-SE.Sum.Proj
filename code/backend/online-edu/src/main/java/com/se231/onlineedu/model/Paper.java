@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,9 +27,11 @@ public class Paper {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @ApiModelProperty("开始时间")
     private Date start;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @ApiModelProperty("结束时间")
     private Date end;
 

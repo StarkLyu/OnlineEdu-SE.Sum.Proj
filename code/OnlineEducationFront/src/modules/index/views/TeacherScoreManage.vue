@@ -171,7 +171,6 @@
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
     .usertable {
         width: 100%;
         font-size: 15px;

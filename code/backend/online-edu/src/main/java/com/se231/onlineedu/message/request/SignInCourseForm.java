@@ -1,18 +1,24 @@
 package com.se231.onlineedu.message.request;
 
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * @author liu
  */
 public class SignInCourseForm {
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startDate;
 
-    private Date endDate;
 
     private Double longitude;
 
     private Double latitude;
+
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date endDate;
+
+    private int signInNo;
 
     public Date getStartDate() {
         return startDate;

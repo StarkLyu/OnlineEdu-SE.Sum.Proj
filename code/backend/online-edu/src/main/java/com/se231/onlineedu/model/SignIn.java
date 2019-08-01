@@ -6,14 +6,17 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class SignIn {
     @EmbeddedId
     private SignInPrimaryKey signInPrimaryKey;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startDate;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endDate;
 
 

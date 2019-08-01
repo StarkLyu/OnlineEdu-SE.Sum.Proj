@@ -8,6 +8,7 @@ import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
 import com.se231.onlineedu.message.response.*;
@@ -179,7 +180,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course modifyCourseInfo(Long courseId, CourseApplicationForm form) {
+    public Course modifyCourseInfo(Long courseId, CourseModifyForm form) {
         Course course = getCourseInfo(courseId);
         if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
             course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
@@ -264,5 +265,13 @@ public class CourseServiceImpl implements CourseService {
         });
         gradeTable.setScoreMap(scoreMap);
         return gradeTable;
+    }
+
+    @Override
+    public Learn setGrade(Long studentId, Long courseId,double grade) {
+        Learn learn = learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(studentId,courseId)
+                .orElseThrow(()->new NotFoundException("学生并没有选这门课"));
+        learn.setGrade(grade);
+        return learnRepository.save(learn);
     }
 }

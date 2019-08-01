@@ -4,6 +4,7 @@ import com.se231.onlineedu.exception.CoursePrototypeUnavailableException;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.Identity;
@@ -318,7 +319,7 @@ public class CourseServiceImplTest {
 
         Mockito.when(userService.getUserInfo(45L)).thenReturn(user);
         Mockito.when(courseRepository.findById(56L)).thenReturn(courseOptional);
-        CourseApplicationForm form = new CourseApplicationForm();
+        CourseModifyForm form = new CourseModifyForm();
         form.setLocation("RY1101");
         Course found = courseService.modifyCourseInfo(56L, form);
         assertThat(found.getLocation()).isEqualTo("RY1101");
