@@ -11,6 +11,7 @@ public class SignInCourseForm {
     private Date startDate;
 
 
+
     private Double longitude;
 
     private Double latitude;
@@ -19,6 +20,14 @@ public class SignInCourseForm {
     private Date endDate;
 
     private int signInNo;
+
+    public int getSignInNo() {
+        return signInNo;
+    }
+
+    public void setSignInNo(int signInNo) {
+        this.signInNo = signInNo;
+    }
 
     public Date getStartDate() {
         return startDate;

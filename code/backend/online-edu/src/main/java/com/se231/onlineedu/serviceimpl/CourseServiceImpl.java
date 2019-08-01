@@ -1,8 +1,5 @@
 package com.se231.onlineedu.serviceimpl;
 
-import java.sql.Time;
-import java.util.*;
-import com.alibaba.fastjson.JSON;
 import com.se231.onlineedu.exception.CoursePrototypeUnavailableException;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
@@ -11,7 +8,10 @@ import com.se231.onlineedu.message.request.CourseApplicationForm;
 import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
-import com.se231.onlineedu.message.response.*;
+import com.se231.onlineedu.message.response.CourseWithIdentity;
+import com.se231.onlineedu.message.response.GradeTable;
+import com.se231.onlineedu.message.response.Identity;
+import com.se231.onlineedu.message.response.StudentAndGrade;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.scheduler.SchedulerHandler;
@@ -21,6 +21,12 @@ import com.se231.onlineedu.service.UserService;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * the implementation class of course service
@@ -230,7 +236,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course saveSignIn(Long id, SignInCourseForm signInForm) {
         Course course = getCourseInfo(id);
-        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
+        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo() == 0?signInRepository.currentSignInNo(id).orElse(0) + 1 : signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
         return courseRepository.save(course);
     }
 
