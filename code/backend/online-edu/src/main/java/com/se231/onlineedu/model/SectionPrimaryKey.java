@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
@@ -47,5 +48,19 @@ public class SectionPrimaryKey implements Serializable {
 
     public void setSecId(int secId) {
         this.secId = secId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SectionPrimaryKey that = (SectionPrimaryKey) o;
+        return secId == that.secId &&
+                Objects.equals(course, that.course);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course, secId);
     }
 }

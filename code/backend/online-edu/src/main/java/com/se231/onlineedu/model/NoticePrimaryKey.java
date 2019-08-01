@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author yuxuanLiu
@@ -37,5 +38,19 @@ public class NoticePrimaryKey implements Serializable {
     }
 
     public NoticePrimaryKey() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NoticePrimaryKey that = (NoticePrimaryKey) o;
+        return noticeNo == that.noticeNo &&
+                Objects.equals(course, that.course);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course, noticeNo);
     }
 }

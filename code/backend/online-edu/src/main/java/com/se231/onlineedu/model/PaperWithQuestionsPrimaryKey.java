@@ -27,7 +27,7 @@ public class PaperWithQuestionsPrimaryKey implements Serializable {
     @JsonBackReference
     private Paper paper;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     private Question question;
 
