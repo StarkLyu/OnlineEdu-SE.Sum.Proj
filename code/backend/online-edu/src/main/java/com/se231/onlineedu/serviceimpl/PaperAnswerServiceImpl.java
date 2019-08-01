@@ -52,15 +52,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
-        Date currentTime = new Date();
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
-        if(currentTime.before(paper.getStart())){
-            throw new BeforeStartException("作业尚未开始");
-        }
-        if(currentTime.after(paper.getEnd())){
-            throw new AfterEndException("作业已经结束");
-        }
+        timeTest(paper);
         try{
             for (QuestionAnswer questionAnswer :form.getAnswerList()){
                 Question question = questionRepository.findById(questionAnswer.getQuestionId())
@@ -155,6 +149,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
          */
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
+        timeTest(paper);
         paperAnswer.setState(state);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(()->new NotFoundException("No corresponding question"));
@@ -214,5 +209,15 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         User user = userService.getUserInfo(studentId);
         Paper paper = paperService.getPaperInfo(paperId,courseId);
         return paperAnswerRepository.findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(paper,user);
+    }
+
+    private void timeTest(Paper paper){
+        Date currentTime = new Date();
+        if(currentTime.before(paper.getStart())){
+            throw new BeforeStartException("作业尚未开始");
+        }
+        if(currentTime.after(paper.getEnd())){
+            throw new AfterEndException("作业已经结束");
+        }
     }
 }

@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @date 2019/07/31
  */
 @RunWith(SpringRunner.class)
-public class PaperServiceTest {
+public class PaperServiceImplTest {
     @TestConfiguration
     static class PaperServiceImplTestContextConfig{
         @Bean
@@ -203,7 +203,24 @@ public class PaperServiceTest {
 
     @Test
     public void getStudentFinishTest(){
+        course.setPapers(List.of(paper));
+        Learn learn = new Learn(user,course);
+        course.setLearns(List.of(learn));
+        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
+        Mockito.when(userRepository.getOne(1L)).thenReturn(user);
+        Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
 
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,2);
+        PaperAnswer paperAnswer = new PaperAnswer();
+        paperAnswer.setPaperAnswerPrimaryKey(paperAnswerPrimaryKey);
+        paperAnswer.setState(PaperAnswerState.TEMP_SAVE);
+        Mockito.when(paperAnswerRepository.getOne(paperAnswerPrimaryKey)).thenReturn(paperAnswer);
+
+        List<PaperFinish> paperFinish = paperService.getStudentFinish(1L,1L);
+
+        assertThat(paperFinish.get(0).getState()).isEqualTo(PaperAnswerState.TEMP_SAVE);
+        assertThat(paperFinish.get(0).getTimes()).isEqualTo(2);
     }
 
 
