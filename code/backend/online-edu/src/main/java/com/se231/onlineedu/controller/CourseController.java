@@ -153,7 +153,7 @@ public class CourseController {
     public Learn setGrade(@PathVariable("id")Long courseId,
                           @PathVariable("studentId")Long studentId,
                           @RequestParam("grade")double grade){
-        courseService.setGrade(courseId,studentId,grade);
+        return courseService.setGrade(courseId,studentId,grade);
     }
 
 }
