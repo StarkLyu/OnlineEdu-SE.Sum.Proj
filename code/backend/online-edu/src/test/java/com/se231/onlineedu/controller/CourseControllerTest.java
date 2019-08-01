@@ -178,7 +178,8 @@ public class CourseControllerTest {
 
     @Test
     public void applyToStartCourse() throws Exception {
-        mvc.perform(post("/api/courses/start").param("prototypeId", "1").header("Authorization", token).contentType(MediaType.APPLICATION_JSON).content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30\",\"endDate\":\"2019-10-18\"}"))
+        mvc.perform(post("/api/courses/start").param("prototypeId", "1").header("Authorization", token).contentType(MediaType.APPLICATION_JSON)
+        .content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30 00:00:00\",\"endDate\":\"2019-10-18 00:00:00\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }
@@ -230,7 +231,8 @@ public class CourseControllerTest {
 
     @Test
     public void modifyCourseInfo() throws Exception {
-        mvc.perform(put("/api/courses/1/modify").header("Authorization", token).contentType(MediaType.APPLICATION_JSON).content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30\",\"endDate\":\"2019-10-18\"}"))
+        mvc.perform(put("/api/courses/1/modify").header("Authorization", token).contentType(MediaType.APPLICATION_JSON)
+        .content("{\"courseTitle\":\"hah\",\"startDate\":\"2019-09-30 00:00:00\",\"endDate\":\"2019-10-18 00:00:00\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }

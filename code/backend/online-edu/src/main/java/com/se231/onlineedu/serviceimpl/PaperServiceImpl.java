@@ -16,6 +16,7 @@ import com.se231.onlineedu.service.PaperService;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Paper Service Interface Implementation Class
@@ -48,6 +49,7 @@ public class PaperServiceImpl implements PaperService {
     private PaperAnswerRepository paperAnswerRepository;
 
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Paper addNewPaper(PaperForm form, Long courseId) {
         Paper paper=new Paper();
@@ -94,9 +96,7 @@ public class PaperServiceImpl implements PaperService {
             throw new NotMatchException("This course don't have match paper.");
         }
 
-        course.getStudents().forEach(student->{
-            paperFinishList.add(setPaperFinish(student.getId(),paperId));
-        });
+        course.getStudents().forEach(student-> paperFinishList.add(setPaperFinish(student.getId(),paperId)));
         return paperFinishList;
     }
 
