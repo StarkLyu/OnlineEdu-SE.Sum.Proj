@@ -7,8 +7,12 @@ import java.util.Date;
  */
 public class SignInCourseForm {
     private Date startDate;
+
     private Date endDate;
-    private int signInNo;
+
+    private Double longitude;
+
+    private Double latitude;
 
     public Date getStartDate() {
         return startDate;
@@ -26,11 +30,19 @@ public class SignInCourseForm {
         this.endDate = endDate;
     }
 
-    public int getSignInNo() {
-        return signInNo;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setSignInNo(int signInNo) {
-        this.signInNo = signInNo;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }
