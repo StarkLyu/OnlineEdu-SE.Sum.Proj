@@ -8,10 +8,13 @@
             <div v-for="question in allAnswers" :key="question.answerPrimaryKey.question.id">
                 <div>
                     <h4>
-                        Question: {{question.answerPrimaryKey.question.question}}
+                        问题: {{question.answerPrimaryKey.question.question}}
+                    </h4>
+                    <h4>
+                        分值: {{question.score}}
                     </h4>
                     <p>
-                        Answer: {{question.answer}}
+                        回答: {{question.answer}}
                     </p>
                 </div>
 <!--                展示图片-->
@@ -38,21 +41,41 @@
 
         data(){
             return{
-                questions:[],
+                // questions:[],
 
                 // 所有主观题
                 allAnswers:[],
+
+                // 获取题号的数组
+                getQuestionNum:[],
             }
         },
 
         methods:{
-            // 获取所有该学生的答案
+            // 获取所有该学生的答案，把题号和分值存入
             showAllAnswers(){
-                this.questions=this.$store.getters.getPaperAnswers.answers;
+                var questions=[];
+                questions=this.$store.getters.getPaperAnswers.answers;
 
-                for (var x=0; x<this.questions.length; x++) {
-                    if (this.questions[x].answerPrimaryKey.question.questionType==='SUBJECTIVE'){
-                        this.allAnswers.push(this.questions[x]);
+                var questionNums=[];
+                questionNums=this.$store.getters.getPaperAnswers.paperAnswerPrimaryKey.paper.questions;
+
+                for (var x=0; x<questions.length; x++) {
+                    if (questions[x].answerPrimaryKey.question.questionType==='SUBJECTIVE'){
+                        this.allAnswers.push(questions[x]);
+                    }
+                    if(questionNums[x].paperWithQuestionsPrimaryKey.question.questionType==='SUBJECTIVE'){
+                        this.getQuestionNum.push(questionNums[x]);
+                    }
+                }
+                // 把题号和分值存入
+                var len=this.allAnswers.length;
+                for (var k=0; k<len; k++){
+                    for (var y=0; y<len; y++){
+                        if (this.allAnswers[k].answerPrimaryKey.question.id===this.getQuestionNum[y].paperWithQuestionsPrimaryKey.question.id) {
+                            this.allAnswers[k].score=this.getQuestionNum[y].score;
+                            // this.allAnswers[k].questionNumber=this.getQuestionNum[y].questionNumber;
+                        }
                     }
                 }
                 console.log(this.allAnswers);
@@ -60,21 +83,26 @@
 
             // 提交评分结果
             submitComments(){
-                console.log(this.allAnswers);
+                // 存储最终传输的数据
+                var finalCorrect=[];
+                for(var x=0; x<this.allAnswers.length; x++){
+                    var temp={
+                        comment: this.allAnswers[x].comment,
+                        questionId:this.allAnswers[x].answerPrimaryKey.question.id,
+                        score: this.allAnswers[x].grade,
+                    };
+                    finalCorrect.push(temp);
+                }
 
-                var that=this;
                 this.$http.request({
-                    url: '/api/courses/'+this.$store.getters.getCourseId+'/papers/'+this.$store.getters.getPaperId+'/answer/mark/'+this.$store.state.studentSelectId+this.$store.getters.getPaperAnswers.paperAnswerPrimaryKey.times,
-                    method: "post",
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/papers/'+this.$store.getters.getPaperId+'/answer/mark/'+this.$store.state.course.studentSelectId+"/"+this.$store.getters.getPaperAnswers.paperAnswerPrimaryKey.times,
+                    method: "put",
                     headers:this.$store.getters.authRequestHead,
-                    data:{
-
-                    }
+                    data:finalCorrect,
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        that.oneStuAnswer=response.data;
-                        // alert("请求成功");
+                        alert("请求成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);

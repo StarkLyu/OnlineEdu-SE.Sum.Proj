@@ -145,6 +145,11 @@ export default new Router({
                             name: 'TeacherCourseBT',
                             component: () => import('./views/TeacherCourseBT')
                         },
+                        {
+                            path: 'forum',
+                            name: 'TeacherCourseForum',
+                            component: () => import('./views/TeacherCourseForum')
+                        },
                     ]
                 },
                 {

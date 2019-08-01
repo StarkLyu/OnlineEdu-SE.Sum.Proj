@@ -10,19 +10,19 @@
                 <el-table-column
                         prop="start"
                         label="开始时间"
-                        sortable
+                        sortable="true"
                         min-width="25%">
                 </el-table-column>
                 <el-table-column
                         prop="end"
                         label="结束时间"
-                        sortable
+                        sortable="true"
                         min-width="25%">
                 </el-table-column>
                 <el-table-column
                         prop="title"
                         label="作业名"
-                        sortable
+                        sortable="true"
                         min-width="40%">
                     <template scope="scope">
                         <el-link @click="loadPaperPage(scope.$index, scope.row)">{{scope.row.title}}</el-link>
@@ -69,6 +69,7 @@
                         <el-date-picker placeholder="选择开始时间"
                                         type="datetime"
                                         v-model="AssignEditForm.start"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
                                         style="width: 100%;">
                         </el-date-picker>
                     </el-col>
@@ -77,6 +78,7 @@
                         <el-date-picker placeholder="选择结束时间"
                                         type="datetime"
                                         v-model="AssignEditForm.end"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
                                         style="width: 100%;">
                         </el-date-picker>
                     </el-col>
@@ -155,6 +157,7 @@
             // 批改作业
             handleCorrection:function(index, row){
                 this.$store.commit("setPaperId", row.id);
+                this.$store.commit("setPaperTitle", row.title)
                 this.$router.push("/course/manager/correction");
             },
 
