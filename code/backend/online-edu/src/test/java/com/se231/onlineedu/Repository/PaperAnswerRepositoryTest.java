@@ -75,6 +75,14 @@ public class PaperAnswerRepositoryTest extends BaseTest {
         assertThat(paperAnswerList.get(1).getAnswers().get(0).getAnswer()).isEqualTo("B");
     }
 
+    @Test
+    public void getStudentAnswerTest(){
+        answer("A");
+        answer("B");
+        List<PaperAnswer> paperAnswerList = paperAnswerRepository
+                .findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(paper,user);
+        assertThat(paperAnswerList.get(1).getAnswers().get(0).getAnswer()).isEqualTo("B");
+    }
 
 
 

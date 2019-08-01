@@ -79,11 +79,8 @@ public class PaperServiceImpl implements PaperService {
     @Override
     public List<PaperFinish> getPaperFinish(Long userId, Long courseId) {
         List<PaperFinish> paperFinishList = new ArrayList<>();
-        User user = userRepository.getOne(userId);
         Course course = courseService.getCourseInfo(courseId);
-        course.getPapers().forEach(paper -> {
-            paperFinishList.add(setPaperFinish(userId,paper.getId()));
-        });
+        course.getPapers().forEach(paper -> paperFinishList.add(setPaperFinish(userId,paper.getId())));
         return paperFinishList;
     }
 

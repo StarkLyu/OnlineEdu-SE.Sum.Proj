@@ -5,6 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
@@ -50,5 +51,19 @@ public class AnswerPrimaryKey implements Serializable {
     }
 
     public AnswerPrimaryKey() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnswerPrimaryKey that = (AnswerPrimaryKey) o;
+        return Objects.equals(paperAnswer, that.paperAnswer) &&
+                Objects.equals(question, that.question);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(paperAnswer, question);
     }
 }

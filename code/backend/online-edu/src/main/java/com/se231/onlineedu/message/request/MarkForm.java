@@ -44,6 +44,12 @@ public class MarkForm {
     public MarkForm() {
     }
 
+    public MarkForm(String comment, Long questionId, Double score) {
+        this.comment = comment;
+        this.questionId = questionId;
+        this.score = score;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
