@@ -1,5 +1,6 @@
 package com.se231.onlineedu.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,6 +28,7 @@ public class Forum {
     @NotBlank
     private Long userId;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt = new Date();
 
     @NotBlank
