@@ -55,6 +55,7 @@
                 </el-table-column>
             </el-table>
         </el-main>
+<!--        添加作业-->
         <el-dialog :title="'作业'"
                    :visible.sync="AssignVisible"
                    :lock-scroll="false"
@@ -156,9 +157,21 @@
 
             // 批改作业
             handleCorrection:function(index, row){
-                this.$store.commit("setPaperId", row.id);
-                this.$store.commit("setPaperTitle", row.title);
-                this.$router.push("/course/manager/correction");
+                var typeCount=0;
+                for (var x=0; x<row.questions.length; x++){
+                    if (row.questions[x].paperWithQuestionsPrimaryKey.question.questionType==='SUBJECTIVE'){
+                        typeCount++;
+                    }
+                }
+
+                if (typeCount>0){
+                    this.$store.commit("setPaperId", row.id);
+                    this.$store.commit("setPaperTitle", row.title);
+                    this.$router.push("/course/manager/correction");
+                }
+                else {
+                    alert("这份作业没有主观题");
+                }
             },
 
             // 显示编辑作业弹窗

@@ -1,12 +1,14 @@
 <template>
     <div>
-        <el-button
-                circle
-                icon="el-icon-plus"
-                size="small"
-                v-if="managerMode"
-                @click="showAddChapter = true"
-        ></el-button>
+        <el-tooltip effect="dark" content="添加章" placement="top-start">
+            <el-button
+                    circle
+                    icon="el-icon-plus"
+                    size="small"
+                    v-if="managerMode"
+                    @click="showAddChapter = true"
+            ></el-button>
+        </el-tooltip>
         <el-dialog :visible.sync="showAddChapter">
             <h2 slot="title">添加章</h2>
             <el-input v-model="newTitle" placeholder="新章标题"></el-input>

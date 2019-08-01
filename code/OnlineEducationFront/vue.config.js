@@ -22,5 +22,5 @@ module.exports = {
                 changeOrigin: true,
             }
         }
-    }
-}
+    },
+};

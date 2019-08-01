@@ -145,7 +145,7 @@
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("请求失败");
+                        alert(error);
                     });
                 this.resDialogVisible=false;
             },
@@ -166,7 +166,7 @@
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("请求失败");
+                        alert(error);
                     });
                 this.assignDialogVisible=false;
             }

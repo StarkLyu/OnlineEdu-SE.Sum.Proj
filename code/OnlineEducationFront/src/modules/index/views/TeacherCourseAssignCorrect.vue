@@ -115,7 +115,7 @@
                 this.timeChoose=0;
                 this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
-                console.log(row.student.id);
+                // console.log(row.student.id);
                 // 存储选中学生id
                 this.$store.commit("setStudentSelectId", row.student.id);
 
