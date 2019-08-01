@@ -2,10 +2,7 @@
 //
 //import static org.assertj.core.api.Assertions.assertThat;
 //import static org.mockito.ArgumentMatchers.any;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.Set;
+//import java.util.*;
 //import com.se231.onlineedu.exception.AnswerException;
 //import com.se231.onlineedu.exception.BeforeStartException;
 //import com.se231.onlineedu.exception.NotFoundException;
@@ -95,7 +92,12 @@
 //        course = new Course();
 //        course.setId(1L);
 //
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.add(Calendar.DATE,-5);
 //        paper.setCourse(course);
+//        paper.setStart(calendar.getTime());
+//        calendar.add(Calendar.DATE,15);
+//        paper.setEnd(calendar.getTime());
 //
 //        QuestionAnswer questionAnswer = new QuestionAnswer(question.getId(),"A");
 //        List<QuestionAnswer> questionAnswers = new ArrayList<>();
@@ -452,6 +454,9 @@
 //        Mockito.when(answerRepository.findById(answerPrimaryKey2)).thenReturn(Optional.of(answer2));
 //        Mockito.when(answerRepository.findById(answerPrimaryKey3)).thenReturn(Optional.of(answer3));
 //        Mockito.when(answerRepository.findById(answerPrimaryKey4)).thenReturn(Optional.of(answer4));
+//
+//        Mockito.when(paperWithQuestionsRepository.getOne(new PaperWithQuestionsPrimaryKey(paper2,question2))).thenReturn(paperWithQuestion1);
+//        Mockito.when(paperWithQuestionsRepository.getOne(new PaperWithQuestionsPrimaryKey(paper2,question2))).thenReturn(paperWithQuestion2);
 //
 //        Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
 //
