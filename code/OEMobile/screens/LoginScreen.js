@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Item, Input, Icon, Button , Text} from 'native-base';
+import { Container, Content, Item, Icon, Input, Button , Text} from 'native-base';
 import { connect } from 'react-redux';
+//import Icon from "react-native-vector-icons/FontAwesome";
 
 class LoginScreen extends Component {
     constructor(props) {
@@ -54,15 +55,15 @@ class LoginScreen extends Component {
             <Container>
                 <Content>
                     <Item>
-                        <Icon type={'FontAwesome'} name='user' />
+                        <Icon type={"FontAwesome"} name='user' />
                         <Input placeholder='用户名' onChangeText={(text) => this.setState({username: text})}/>
                     </Item>
                     <Item>
+                        <Icon name='lock' />
                         <Input
                             placeholder='密码'
                             onChangeText={(text) => this.setState({password: text})}
                             secureTextEntry = {true}/>
-                        <Icon active name='swap' />
                     </Item>
                     <Button full onPress={this.onLogin}>
                         <Text>登录</Text>
@@ -98,6 +99,6 @@ const mapDispatchToProps = dispatch => {
             userInfo
         })
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

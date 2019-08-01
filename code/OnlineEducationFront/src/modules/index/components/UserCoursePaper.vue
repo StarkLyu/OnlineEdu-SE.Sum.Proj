@@ -11,6 +11,7 @@
                         class="float-right"
                         :start="paperInfo.start"
                         :end="paperInfo.end"
+                        :show-minute="true"
                 ></DateRangeFormat>
             </div>
             <div class="float-clear"></div>

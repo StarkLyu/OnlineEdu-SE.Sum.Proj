@@ -11,11 +11,21 @@
             },
             end: {
                 default: "",
+            },
+            showMinute: {
+                default: false
             }
         },
         computed: {
             dateRange: function () {
-                return this.start.substr(0,10) + " ~ " + this.end.substr(0,10)
+                if (this.showMinute) {
+                    return this.start.substr(0,10) + " " + this.start.substr(11,8)
+                        + " ~ "
+                        + this.end.substr(0,10) + " " + this.end.substr(11,8);
+                }
+                else {
+                    return this.start.substr(0,10) + " ~ " + this.end.substr(0,10)
+                }
             }
         }
     }
