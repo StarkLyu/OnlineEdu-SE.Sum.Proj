@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import com.se231.onlineedu.exception.AnswerException;
+import com.se231.onlineedu.exception.BeforeStartException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.MarkForm;
@@ -103,6 +104,11 @@ public class PaperAnswerServiceImplTest {
 
         PaperWithQuestions paperWithQuestions = new PaperWithQuestions(paper,question,1,1.0);
         paper.setQuestions(List.of(paperWithQuestions));
+    }
+
+    @Test(expected = BeforeStartException.class)
+    public void beforeStartTest(){
+
     }
 
     @Test(expected = ValidationException.class)

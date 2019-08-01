@@ -131,6 +131,10 @@ public class PaperServiceTest {
         paperService.addNewPaper(paperForm,1L);
     }
 
+    @Test
+    public void paperNotFound1(){
+        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
+    }
 
 
 

@@ -137,6 +137,15 @@ public interface CourseService {
     Course saveNotice(Long id, Notice notice);
 
     /**
+     * this service allow teacher to set the grade of course to student
+     * @param studentId id of student
+     * @param courseId  id of course
+     * @param grade grade of course
+     * @return  learn of the student and course
+     */
+    Learn setGrade(Long studentId,Long courseId,double grade);
+
+    /**
      * this service allow teacher to get all students' grade
      * @param courseId id of course
      * @return  grade list contains course info and a map between student and score

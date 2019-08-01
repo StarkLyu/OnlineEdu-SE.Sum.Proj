@@ -265,4 +265,12 @@ public class CourseServiceImpl implements CourseService {
         gradeTable.setScoreMap(scoreMap);
         return gradeTable;
     }
+
+    @Override
+    public Learn setGrade(Long studentId, Long courseId,double grade) {
+        Learn learn = learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(studentId,courseId)
+                .orElseThrow(()->new NotFoundException("学生并没有选这门课"));
+        learn.setGrade(grade);
+        return learnRepository.save(learn);
+    }
 }

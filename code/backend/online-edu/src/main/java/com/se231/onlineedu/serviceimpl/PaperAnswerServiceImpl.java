@@ -1,14 +1,8 @@
 package com.se231.onlineedu.serviceimpl;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import com.se231.onlineedu.exception.AnswerException;
-import com.se231.onlineedu.exception.NotFoundException;
-import com.se231.onlineedu.exception.NotMatchException;
-import com.se231.onlineedu.exception.ValidationException;
+import java.util.*;
+import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
@@ -58,8 +52,15 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
+        Date currentTime = new Date();
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
+        if(currentTime.before(paper.getStart())){
+            throw new BeforeStartException("作业尚未开始");
+        }
+        if(currentTime.after(paper.getEnd())){
+            throw new AfterEndException("作业已经结束");
+        }
         try{
             for (QuestionAnswer questionAnswer :form.getAnswerList()){
                 Question question = questionRepository.findById(questionAnswer.getQuestionId())

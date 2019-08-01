@@ -148,4 +148,12 @@ public class CourseController {
         return courseService.getGrade(courseId);
     }
 
+    @ApiOperation("修改学生成绩")
+    @PutMapping("/{id}/{studentId}/grade")
+    public Learn setGrade(@PathVariable("id")Long courseId,
+                          @PathVariable("studentId")Long studentId,
+                          @RequestParam("grade")double grade){
+        courseService.setGrade(courseId,studentId,grade);
+    }
+
 }
