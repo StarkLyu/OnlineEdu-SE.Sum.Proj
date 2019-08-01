@@ -15,6 +15,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GeodeticCurve;
+import org.gavaghan.geodesy.GlobalCoordinates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -189,8 +193,22 @@ public class UserServiceImpl implements UserService {
         if(date.after(signIn.getEndDate())){
             throw new AfterEndException("签到已经结束");
         }
+        GlobalCoordinates source = new GlobalCoordinates(signIn.getLatitude(),signIn.getLongitude());
+        GlobalCoordinates target = new GlobalCoordinates(signInUserForm.getLatitude(),signInUserForm.getLongitude());
+        if(getDistanceMeter(source, target, Ellipsoid.Sphere) > 50D){
+            throw new ValidationException("距离过远，请重新签到");
+        }
+
         user.getSignIns().add(signIn);
         return userRepository.save(user);
+    }
+
+    public static double getDistanceMeter(GlobalCoordinates gpsFrom, GlobalCoordinates gpsTo, Ellipsoid ellipsoid)
+    {
+        //创建GeodeticCalculator，调用计算方法，传入坐标系、经纬度用于计算距离
+        GeodeticCurve geoCurve = new GeodeticCalculator().calculateGeodeticCurve(ellipsoid, gpsFrom, gpsTo);
+
+        return geoCurve.getEllipsoidalDistance();
     }
 
     @Override

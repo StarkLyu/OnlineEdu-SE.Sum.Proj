@@ -2,21 +2,13 @@ package com.se231.onlineedu.Service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import com.se231.onlineedu.exception.AnswerException;
-import com.se231.onlineedu.exception.NotFoundException;
-import com.se231.onlineedu.exception.ValidationException;
+import java.util.*;
+import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.AnswerRepository;
-import com.se231.onlineedu.repository.PaperAnswerRepository;
-import com.se231.onlineedu.repository.PaperRepository;
-import com.se231.onlineedu.repository.QuestionRepository;
+import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
 import com.se231.onlineedu.service.PaperService;
@@ -70,6 +62,9 @@ public class PaperAnswerServiceImplTest {
     @MockBean
     PaperAnswerRepository paperAnswerRepository;
 
+    @MockBean
+    PaperWithQuestionsRepository paperWithQuestionsRepository;
+
     private static User user;
 
     private static Paper paper;
@@ -94,7 +89,12 @@ public class PaperAnswerServiceImplTest {
         course = new Course();
         course.setId(1L);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,-5);
         paper.setCourse(course);
+        paper.setStart(calendar.getTime());
+        calendar.add(Calendar.DATE,15);
+        paper.setEnd(calendar.getTime());
 
         QuestionAnswer questionAnswer = new QuestionAnswer(question.getId(),"A");
         List<QuestionAnswer> questionAnswers = new ArrayList<>();
@@ -103,6 +103,40 @@ public class PaperAnswerServiceImplTest {
 
         PaperWithQuestions paperWithQuestions = new PaperWithQuestions(paper,question,1,1.0);
         paper.setQuestions(List.of(paperWithQuestions));
+    }
+
+    @Test(expected = BeforeStartException.class)
+    public void beforeStartTest()throws Exception{
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,5);
+        paper.setStart(calendar.getTime());
+        Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.empty());
+        Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
+        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        Mockito.when(paperRepository.getOne(1L)).thenReturn(paper);
+
+        PaperAnswer paperAnswer = paperAnswerService.submitAnswer(1L,1L,1L,submitAnswerForm);
+        assertThat(paperAnswer.getPaperAnswerPrimaryKey().getTimes()).isEqualTo(1);
+    }
+
+    @Test(expected = AfterEndException.class)
+    public void afterEndTest()throws Exception{
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,-5);
+        paper.setEnd(calendar.getTime());
+        Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.empty());
+        Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
+        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        Mockito.when(paperRepository.getOne(1L)).thenReturn(paper);
+
+        PaperAnswer paperAnswer = paperAnswerService.submitAnswer(1L,1L,1L,submitAnswerForm);
+        assertThat(paperAnswer.getPaperAnswerPrimaryKey().getTimes()).isEqualTo(1);
     }
 
     @Test(expected = ValidationException.class)
@@ -446,6 +480,9 @@ public class PaperAnswerServiceImplTest {
         Mockito.when(answerRepository.findById(answerPrimaryKey2)).thenReturn(Optional.of(answer2));
         Mockito.when(answerRepository.findById(answerPrimaryKey3)).thenReturn(Optional.of(answer3));
         Mockito.when(answerRepository.findById(answerPrimaryKey4)).thenReturn(Optional.of(answer4));
+
+        Mockito.when(paperWithQuestionsRepository.getOne(new PaperWithQuestionsPrimaryKey(paper2,question2))).thenReturn(paperWithQuestion1);
+        Mockito.when(paperWithQuestionsRepository.getOne(new PaperWithQuestionsPrimaryKey(paper2,question3))).thenReturn(paperWithQuestion2);
 
         Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
 

@@ -6,15 +6,23 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class SignIn {
     @EmbeddedId
     private SignInPrimaryKey signInPrimaryKey;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startDate;
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endDate;
+
+
+    private Double longitude;
+
+    private Double latitude;
 
     @ManyToMany
     private List<User> users;
@@ -32,6 +40,30 @@ public class SignIn {
         this.signInPrimaryKey = signInPrimaryKey;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public SignInPrimaryKey getSignInPrimaryKey() {

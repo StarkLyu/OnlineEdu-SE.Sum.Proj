@@ -3,6 +3,7 @@ package com.se231.onlineedu.controller;
 import com.se231.onlineedu.exception.FileFormatNotSupportException;
 import com.se231.onlineedu.exception.FileSizeExceededException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.GradeTable;
 import com.se231.onlineedu.model.Course;
@@ -131,8 +132,8 @@ public class CourseController {
     @ApiOperation("管理员或教师修改课程信息")
     @PutMapping("/{id}/modify")
     @PreAuthorize("hasAnyRole('ADMIN','TEACHING_ADMIN')")
-    public Course modifyCourseInfo(@Valid @RequestBody CourseApplicationForm form,
-                                                   @PathVariable("id")Long id) {
+    public Course modifyCourseInfo(@RequestBody CourseModifyForm form,
+                                   @PathVariable("id")Long id) {
         return courseService.modifyCourseInfo(id,form);
     }
 
@@ -146,6 +147,14 @@ public class CourseController {
     @GetMapping("/{id}/scoreList")
     public GradeTable getGrade(@PathVariable("id")Long courseId){
         return courseService.getGrade(courseId);
+    }
+
+    @ApiOperation("修改学生成绩")
+    @PutMapping("/{id}/{studentId}/grade")
+    public Learn setGrade(@PathVariable("id")Long courseId,
+                          @PathVariable("studentId")Long studentId,
+                          @RequestParam("grade")double grade){
+        return courseService.setGrade(courseId,studentId,grade);
     }
 
 }
