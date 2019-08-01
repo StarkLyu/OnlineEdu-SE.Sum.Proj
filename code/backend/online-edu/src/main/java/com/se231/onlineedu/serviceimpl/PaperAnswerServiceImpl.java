@@ -7,10 +7,7 @@ import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.AnswerRepository;
-import com.se231.onlineedu.repository.PaperAnswerRepository;
-import com.se231.onlineedu.repository.PaperRepository;
-import com.se231.onlineedu.repository.QuestionRepository;
+import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
 import com.se231.onlineedu.service.PaperService;
@@ -44,6 +41,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     @Autowired
     PaperService paperService;
+
+    @Autowired
+    PaperWithQuestionsRepository paperWithQuestionsRepository;
 
     private static final int MAX_TIMES = 3;
 
@@ -132,6 +132,10 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
             Answer answer = answerRepository.findById(answerPrimaryKey)
                     .orElseThrow(()->new NotFoundException("No answer for this question"));
+            PaperWithQuestions paperWithQuestions = paperWithQuestionsRepository.getOne(new PaperWithQuestionsPrimaryKey(paper,question));
+            if(markForm.getScore()>paperWithQuestions.getScore()){
+                throw new AnswerException("该题满分为："+paperWithQuestions.getScore());
+            }
             answer.setGrade(markForm.getScore());
             answer.setComment(markForm.getComment());
             grade+=answer.getGrade();
