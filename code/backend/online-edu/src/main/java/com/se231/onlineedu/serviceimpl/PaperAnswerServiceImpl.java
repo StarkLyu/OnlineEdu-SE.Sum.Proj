@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.se231.onlineedu.exception.AnswerException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
@@ -54,6 +55,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
 
     private static final int LIMIT = 5120000;
 
+
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
@@ -61,19 +63,19 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         try{
             for (QuestionAnswer questionAnswer :form.getAnswerList()){
                 Question question = questionRepository.findById(questionAnswer.getQuestionId())
-                        .orElseThrow(() -> new NotFoundException("Question Not Found"));
+                        .orElseThrow(() -> new AnswerException("Question Not Found"));
                 if(!paper.getQuestionList().contains(question)){
-                    throw new NotMatchException("This paper doesn't contain this question");
+                    throw new AnswerException("This paper doesn't contain this question");
                 }
                 AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
                 Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
                 paperAnswer.getAnswers().add(answerRepository.save(answer));
             }
-        } catch (RuntimeException e){
+        } catch (AnswerException e){
             if(paperAnswer.getState() == null) {
                 paperAnswerRepository.delete(paperAnswer);
             }
-            e.printStackTrace();
+            throw e;
         }
         paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
         return paperAnswerRepository.save(paperAnswer);

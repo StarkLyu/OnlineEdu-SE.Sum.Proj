@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import com.se231.onlineedu.exception.AnswerException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
@@ -190,7 +191,7 @@ public class PaperAnswerServiceImplTest {
         assertThat(paperAnswer2.getAnswers().size()).isEqualTo(2);
     }
 
-    @Test(expected = NotMatchException.class)
+    @Test(expected = AnswerException.class)
     public void questionNotMatchTest()throws Exception{
         // mockito in get paper answer
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
