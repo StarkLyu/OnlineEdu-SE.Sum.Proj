@@ -7,6 +7,7 @@ const state = {
     courseInfo: {},
     identity: "",
     paperId:0,
+    paperTitle:0,
     paperAnswers:0,
     studentSelectId:0,
 };
@@ -78,6 +79,9 @@ const mutations = {
     },
     setPaperId(state, paperId) {
         state.paperId=paperId;
+    },
+    setPaperTitle(state, paperTitle){
+        state.paperTitle=paperTitle;
     },
     setPaperAnswers(state, paperAnswers) {
         state.paperAnswers=paperAnswers;
