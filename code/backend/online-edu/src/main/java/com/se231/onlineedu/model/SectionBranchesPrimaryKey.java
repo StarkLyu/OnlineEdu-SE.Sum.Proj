@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
@@ -45,5 +46,19 @@ public class SectionBranchesPrimaryKey implements Serializable {
 
     public void setBranchNo(int branchId) {
         this.branchId = branchId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SectionBranchesPrimaryKey that = (SectionBranchesPrimaryKey) o;
+        return branchId == that.branchId &&
+                Objects.equals(section, that.section);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(section, branchId);
     }
 }
