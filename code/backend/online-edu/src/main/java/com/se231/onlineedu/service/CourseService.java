@@ -3,6 +3,7 @@ package com.se231.onlineedu.service;
 import java.util.List;
 
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.GradeTable;
@@ -96,7 +97,7 @@ public interface CourseService {
      * @return  course info after modify
      *
      */
-    Course modifyCourseInfo(Long courseId,CourseApplicationForm form);
+    Course modifyCourseInfo(Long courseId, CourseModifyForm form);
 
     /**
      * @param id

@@ -8,6 +8,7 @@ import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.exception.IdentityException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.TimeSlotForm;
 import com.se231.onlineedu.message.response.*;
@@ -179,7 +180,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course modifyCourseInfo(Long courseId, CourseApplicationForm form) {
+    public Course modifyCourseInfo(Long courseId, CourseModifyForm form) {
         Course course = getCourseInfo(courseId);
         if(form.getTimeSlots()!=null&&!form.getTimeSlots().isEmpty()) {
             course.setTimeSlots(handleTimeSlots(form.getTimeSlots()));
