@@ -6,6 +6,7 @@
                 <UserUnit class="float-left" size="middle"></UserUnit>&nbsp;&nbsp;&nbsp;&nbsp;
                 {{ forumTopic.createdAt }}
             </div>
+            <el-button style="float:right;" @click="banForum(forumTopic.id)" v-if="isCourseTeacher">封贴</el-button>
         </div>
         <div>
             <pre>{{ forumTopic.content }}</pre>
@@ -32,6 +33,7 @@
     import CourseForumResponse from "./CourseForumResponse";
     import AddForumResponse from "./AddForumResponse"
     import UserUnit from "./UserUnit";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "CourseForumStart",
@@ -45,7 +47,27 @@
             }
         },
         methods: {
+            banForum(id){
+                this.$http.request({
+                    url: '/api/forums/'+id,
+                    method: "delete",
+                    headers:this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
+            }
+        },
 
+        computed: {
+            ...mapGetters([
+                'isCourseTeacher',
+            ]),
         }
     }
 </script>

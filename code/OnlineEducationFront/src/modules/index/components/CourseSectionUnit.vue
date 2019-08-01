@@ -26,7 +26,7 @@
             </div>
             <el-divider>章节作业</el-divider>
             <div>
-                <el-button style="float: right" @click="showAssignDialog">添加作业</el-button>
+                <el-button style="float: right" @click="showAssignDialog" v-if="isCourseTeacher">添加作业</el-button>
                 <PaperUnit
                         v-for="(paper, index) in sectionInfo.papers"
                         :key="index"
