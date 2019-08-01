@@ -52,9 +52,7 @@
         },
         methods: {
             enterCourse: function () {
-                alert(this.courseInfo.id);
                 this.$store.commit("setCourseId", this.courseInfo.id);
-                alert(this.$store.getters.getCourseId);
                 this.$router.push("/course")
             },
             dateFilter: function (date) {

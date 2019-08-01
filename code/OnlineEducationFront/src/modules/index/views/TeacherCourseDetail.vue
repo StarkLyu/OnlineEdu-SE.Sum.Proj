@@ -259,8 +259,6 @@
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
-
     .titlesytle {
         text-align: center;
         padding-top: 20px

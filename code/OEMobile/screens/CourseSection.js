@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import { FlatList } from "react-native";
-import { Container, Separator, ListItem, Text } from "native-base";
+import { Container, ListItem, Text } from "native-base";
+import { connect } from "react-redux";
+import ResourceLine from "../components/ResourceLine";
+import PaperLine from "../components/PaperLine";
 
 class CourseSection extends Component {
     constructor(props) {
@@ -10,24 +13,31 @@ class CourseSection extends Component {
     render() {
         return (
             <Container>
-                <Separator>
+                <ListItem itemDivider>
                     <Text>章节简介</Text>
-                </Separator>
+                </ListItem>
                 <ListItem>
                     <Text>
                         { this.props.section.description }
                     </Text>
                 </ListItem>
-                <Separator>
+                <ListItem itemDivider>
                     <Text>章节资源</Text>
-                </Separator>
-                <FlatList />
-                <Separator>
+                </ListItem>
+                <FlatList data={this.props.section.resources} renderItem={({ item }) => <ResourceLine resourceInfo={item} navigation={this.props.navigation}/>} />
+                <ListItem itemDivider>
                     <Text>章节作业</Text>
-                </Separator>
+                </ListItem>
+                <FlatList data={this.props.section.papers} renderItem={({ item }) => <PaperLine paper={item} navigation={this.props.navigation}/>} />
             </Container>
         );
     }
 }
 
-export default CourseSection;
+function mapStateToProps(state) {
+    return {
+        section: state.currentSection
+    }
+}
+
+export default connect(mapStateToProps)(CourseSection);

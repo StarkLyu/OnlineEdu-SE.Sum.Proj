@@ -91,7 +91,7 @@
             <el-table :data="questions" height="300px" v-model="AssignEditForm.questionFormList" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" min-width="10%"></el-table-column>
                 <el-table-column property="questionType" label="题型" sortable="true" min-width="20%"></el-table-column>
-                <el-table-column property="question" label="题目" min-width="40%" show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="content" label="题目" min-width="40%" show-overflow-tooltip="true"></el-table-column>
                 <el-table-column property="score" label="分值" min-width="15%">
                     <template scope="scope">
                         <el-input placeholder="请输入分值" v-model="scope.row.score" type="number"></el-input>
@@ -157,7 +157,7 @@
             // 批改作业
             handleCorrection:function(index, row){
                 this.$store.commit("setPaperId", row.id);
-                this.$store.commit("setPaperTitle", row.title)
+                this.$store.commit("setPaperTitle", row.title);
                 this.$router.push("/course/manager/correction");
             },
 
@@ -248,18 +248,16 @@
                 };
                 tempquestion.id=questionAll[x].id;
                 tempquestion.questionType=questionAll[x].questionType;
-                tempquestion.question=questionAll[x].question;
+                tempquestion.content=questionAll[x].content;
                 tempquestion.score=0;
                 this.questions.push(tempquestion);
             }
-            // console.log(this.questions);
+            console.log(this.questions);
         }
     }
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
-
     .titlesytle {
         text-align: center;
         padding-top: 20px
