@@ -1,12 +1,13 @@
 package com.se231.onlineedu.Service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import com.se231.onlineedu.exception.AnswerException;
 import com.se231.onlineedu.exception.NotFoundException;
-import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
@@ -30,9 +31,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Zhe Li
