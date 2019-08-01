@@ -16,7 +16,7 @@
                         <template slot="title">
                             <h2>{{ announce.title }}</h2>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <span class="float-right">{{ announce.time }}</span>
+                            <span class="float-right">{{ announce.issueDate }}</span>
                         </template>
                         <div>
                             <el-button type="button" @click="handleEdit(announce)" icon="el-icon-edit">
@@ -139,8 +139,6 @@
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
-
     .addbotton {
         margin-bottom: 30px;
     }
