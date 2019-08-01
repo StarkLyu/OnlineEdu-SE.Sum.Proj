@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.se231.onlineedu.exception.AnswerException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
@@ -18,6 +19,7 @@ import com.se231.onlineedu.repository.PaperRepository;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
+import com.se231.onlineedu.service.PaperService;
 import com.se231.onlineedu.service.UserService;
 import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +37,6 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     UserService userService;
 
     @Autowired
-    CourseService courseService;
-
-    @Autowired
     PaperRepository paperRepository;
 
     @Autowired
@@ -49,23 +48,34 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     @Autowired
     PaperAnswerRepository paperAnswerRepository;
 
+    @Autowired
+    PaperService paperService;
+
     private static final int MAX_TIMES = 3;
 
     private static final int LIMIT = 5120000;
+
 
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
-        for (QuestionAnswer questionAnswer :form.getAnswerList()){
-            Question question = questionRepository.findById(questionAnswer.getQuestionId())
-                    .orElseThrow(() -> new RuntimeException("Question Not Found"));
-            if(!paper.getQuestionList().contains(question)){
-                throw new NotMatchException("This paper doesn't contain this question");
+        try{
+            for (QuestionAnswer questionAnswer :form.getAnswerList()){
+                Question question = questionRepository.findById(questionAnswer.getQuestionId())
+                        .orElseThrow(() -> new AnswerException("Question Not Found"));
+                if(!paper.getQuestionList().contains(question)){
+                    throw new AnswerException("This paper doesn't contain this question");
+                }
+                AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
+                Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
+                paperAnswer.getAnswers().add(answerRepository.save(answer));
             }
-            AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
-            Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
-            paperAnswer.getAnswers().add(answerRepository.save(answer));
+        } catch (AnswerException e){
+            if(paperAnswer.getState() == null) {
+                paperAnswerRepository.delete(paperAnswer);
+            }
+            throw e;
         }
         paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
         return paperAnswerRepository.save(paperAnswer);
@@ -108,9 +118,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     }
 
     @Override
-    public PaperAnswer markStudentPaper(Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
+    public PaperAnswer markStudentPaper(Long courseId, Long studentId, Long paperId, Integer times, Set<MarkForm> markForms) {
         User student = userService.getUserInfo(studentId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("No corresponding paper"));
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
         PaperAnswerPrimaryKey paperAnswerPrimaryKey= new PaperAnswerPrimaryKey(student,paper,times);
         PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
                 .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
@@ -166,12 +176,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     private PaperAnswer getPaperAnswer(Long userId,Long courseId,Long paperId){
         //initialize( found corresponding user and paper)
         User user = userService.getUserInfo(userId);
-        Course course = courseService.getCourseInfo(courseId);
-        Paper paper = paperRepository.findById(paperId).orElseThrow(()->new NotFoundException("Paper Not Found"));
-        if(!paper.getCourse().equals(course)){
-            throw new ValidationException("This Course Doesn't Have This Paper.");
-        }
-
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
         //get times the user has answered
         int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
         if(times>0) {
@@ -197,5 +202,12 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         paperAnswer.setState(state);
         return paperAnswerRepository.save(paperAnswer);
+    }
+
+    @Override
+    public List<PaperAnswer> getStudentAnswer(Long courseId, Long paperId, Long studentId) {
+        User user = userService.getUserInfo(studentId);
+        Paper paper = paperService.getPaperInfo(paperId,courseId);
+        return paperAnswerRepository.findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(paper,user);
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-header>
-            <h1 class="titlesytle">作业批改</h1>
+            <h1 class="titlesytle">作业{{this.$store.state.course.paperTitle}}批改</h1>
         </el-header>
         <el-main>
 <!--            展示所有学生的答题情况-->
@@ -15,13 +15,13 @@
                             prop="student.sno"
                             label="学号"
                             min-width="35%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
                             prop="student.username"
                             label="学生名"
                             min-width="35%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
                             prop="state"
@@ -41,26 +41,23 @@
                 </el-table-column>
             </el-table>
         </el-main>
-<!--        批改作业-->
-        <el-dialog
-                :title="'作业批改'"
-                :visible.sync="dialogFormVisible"
-                :lock-scroll="false"
-                top="5%">
+<!--        选择批改作业的次数-->
+        <el-dialog :title="'选择作业'"
+                   :visible.sync="dialogFormVisible"
+                   :lock-scroll="false"
+                   top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
-                <el-form-item>
-                    <h3>学生姓名</h3>
-                    <span>
-                            {{editForm.username}}
-                    </span>
-                </el-form-item>
-                <el-form-item label="成绩">
-                    <el-input type="number" v-model="editForm.score"></el-input>
+                <el-form-item label="选择次数">
+                    <el-radio-group v-model="timeChoose">
+                        <el-radio :label="1" v-if="editForm.times>=1">第一次</el-radio>
+                        <el-radio :label="2" v-if="editForm.times>=2">第二次</el-radio>
+                        <el-radio :label="3" v-if="editForm.times>=3">第三次</el-radio>
+                    </el-radio-group>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="el-dialog__footer">
                 <el-button @click.native="dialogFormVisible=false">取消</el-button>
-                <el-button type="primary" @click="updateData">修改</el-button>
+                <el-button type="primary" @click="chooseData">选择</el-button>
             </span>
         </el-dialog>
     </div>
@@ -76,26 +73,9 @@
 
                 search: '',
 
-                UserData: [
-                    {
-                        sno:"45112323",
-                        username:"张三",
-                        userCollege:"化学化工",
-                        score:98,
-                    },
-                    {
-                        sno:"2144641",
-                        username:"李四",
-                        userCollege:"电子信息",
-                        score:48,
-                    },
-                    {
-                        sno:"78089870",
-                        username:"王二",
-                        userCollege:"机动",
-                        score:80,
-                    }
-                ],
+                UserData: [],
+
+                oneStuAnswer:[],
 
                 dialogFormVisible:false,
 
@@ -104,6 +84,8 @@
                     username:"",
                     score:"",
                 },
+
+                timeChoose:0,
             }
         },
 
@@ -126,19 +108,49 @@
                         console.log(error.response);
                         alert("请求失败");
                     });
-
             },
 
             //显示编辑界面
             handleEdit: function(index, row) {
+                this.timeChoose=0;
                 this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
+                console.log(row.student.id);
+                // 存储选中学生id
+                this.$store.commit("setStudentSelectId", row.student.id);
+
+                // 获取该学生答题数据
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/papers/'+this.$store.getters.getPaperId+'/answer/'+row.student.id+'/all',
+                    method: "get",
+                    headers:this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log("获取学生答题数据");
+                        console.log(response.data);
+                        that.oneStuAnswer=response.data;
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
             },
 
-            // 提交批改结果
-            updateData(){
-                alert("作业批改完成");
-                this.dialogFormVisible=false;
+            // 选择批改次数
+            chooseData(){
+                if (this.timeChoose===0) {
+                    alert("该学生尚未答题");
+                    this.dialogFormVisible=false;
+                }
+                else{
+                    this.dialogFormVisible=false;
+                    // 把选择的答题的答案存起来
+                    this.$store.commit("setPaperAnswers", this.oneStuAnswer[this.timeChoose-1]);
+                    // console.log(this.$store.getters.getPaperAnswers);
+                    this.$router.push("/course/manager/correctionSub");
+                }
             },
         },
 

@@ -3,9 +3,12 @@ package com.se231.onlineedu.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import com.se231.onlineedu.exception.AnswerException;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
+import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
@@ -15,6 +18,7 @@ import com.se231.onlineedu.repository.PaperRepository;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
+import com.se231.onlineedu.service.PaperService;
 import com.se231.onlineedu.service.UserService;
 import com.se231.onlineedu.serviceimpl.PaperAnswerServiceImpl;
 import org.junit.Before;
@@ -49,6 +53,9 @@ public class PaperAnswerServiceImplTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    PaperService paperService;
 
     @MockBean
     CourseService courseService;
@@ -103,7 +110,7 @@ public class PaperAnswerServiceImplTest {
     @Test(expected = ValidationException.class)
     public void answerTimesTest()throws Exception{
         Mockito.when(paperAnswerRepository.getMaxTimes(user.getId(),paper.getId())).thenReturn(Optional.of(3));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,3);
@@ -117,7 +124,7 @@ public class PaperAnswerServiceImplTest {
     public void submitAnswer()throws Exception{
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.empty());
         Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -127,33 +134,10 @@ public class PaperAnswerServiceImplTest {
         assertThat(paperAnswer.getPaperAnswerPrimaryKey().getTimes()).isEqualTo(1);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void paperNotFoundTest()throws Exception{
-        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
-        Mockito.when(paperRepository.findById(2L)).thenReturn(Optional.empty());
-
-        paperAnswerService.submitAnswer(1L,1L,2L,submitAnswerForm);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void notMatchTest()throws Exception{
-        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-        Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
-        Paper paper2 = new Paper();
-        paper2.setId(2L);
-        Course course2 = new Course();
-        course2.setId(2L);
-        paper2.setCourse(course2);
-        Mockito.when(paperRepository.findById(2L)).thenReturn(Optional.of(paper2));
-
-        paperAnswerService.submitAnswer(1L,1L,2L,submitAnswerForm);
-    }
-
     @Test
     public void notFinishTest()throws Exception{
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -182,7 +166,7 @@ public class PaperAnswerServiceImplTest {
     public void tempSaveTest()throws Exception{
         // mockito in get paper answer
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -207,11 +191,11 @@ public class PaperAnswerServiceImplTest {
         assertThat(paperAnswer2.getAnswers().size()).isEqualTo(2);
     }
 
-    @Test(expected = NotMatchException.class)
+    @Test(expected = AnswerException.class)
     public void questionNotMatchTest()throws Exception{
         // mockito in get paper answer
         Mockito.when(paperAnswerRepository.getMaxTimes(1L,1L)).thenReturn(Optional.of(2));
-        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        Mockito.when(paperService.getPaperInfo(1L,1L)).thenReturn(paper);
         Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
         Mockito.when(courseService.getCourseInfo(1L)).thenReturn(course);
         PaperAnswer paperAnswer1 = new PaperAnswer();
@@ -344,28 +328,140 @@ public class PaperAnswerServiceImplTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void paperNotFoundTest2(){
-        Mockito.when(paperRepository.findById(2L)).thenReturn(Optional.empty());
-        paperAnswerService.markStudentPaper(1L,2L,2,null);
-    }
-
-    @Test(expected = NotFoundException.class)
     public void answerNotFound(){
        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.empty());
+
+       paperAnswerService.markStudentPaper(1L,1L,1L,1,null);
     }
 
-//    @Test
-//    public void questionNotFound(){
-//        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-//        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
-//        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
-//        PaperAnswer paperAnswer = new PaperAnswer();
-//        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
-//
-//    }
+    @Test(expected = NotFoundException.class)
+    public void questionNotFound(){
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
+        PaperAnswer paperAnswer = new PaperAnswer();
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
+        Mockito.when(questionRepository.findById(3L)).thenReturn(Optional.empty());
+        MarkForm markForm = new MarkForm();
+        markForm.setQuestionId(3L);
 
+        paperAnswerService.markStudentPaper(1L,1L,1L,1 ,Set.of(markForm));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void answerNotFoundInPaper(){
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
+        PaperAnswer paperAnswer = new PaperAnswer();
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
+        Answer answer1 = new Answer();
+        Question question1 = new Question();
+        question1.setId(1L);
+        answer1.setAnswerPrimaryKey(new AnswerPrimaryKey(paperAnswer,question1));
+        paperAnswer.setAnswers(List.of(answer1));
+        Question question3 = new Question();
+        question3.setId(3L);
+        Mockito.when(questionRepository.findById(3L)).thenReturn(Optional.of(question3));
+        MarkForm markForm = new MarkForm();
+        markForm.setQuestionId(3L);
+
+
+        paperAnswerService.markStudentPaper(1L,1L,1L,1, Set.of(markForm));
+    }
+
+    @Test
+    public void markTest(){
+        //initialize question and paper
+        Question question2 = new Question();
+        question2.setId(2L);
+        question2.setQuestionType(QuestionType.SUBJECTIVE);
+
+        Question question3 = new Question();
+        question3.setId(3L);
+        question3.setQuestionType(QuestionType.SUBJECTIVE);
+
+        Paper paper2 = new Paper();
+        paper2.setId(2L);
+        paper.setCourse(course);
+
+        PaperWithQuestions paperWithQuestion1 = new PaperWithQuestions(paper2,question2,1,5.0D);
+        PaperWithQuestions paperWithQuestion2 = new PaperWithQuestions(paper2,question3,2,5.0D);
+
+        paper2.setQuestions(List.of(paperWithQuestion1,paperWithQuestion2));
+
+        //initialize paper answer
+        PaperAnswer paperAnswer1 = new PaperAnswer();
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey1 = new PaperAnswerPrimaryKey(user,paper2,1);
+        paperAnswer1.setPaperAnswerPrimaryKey(paperAnswerPrimaryKey1);
+        paperAnswer1.setState(PaperAnswerState.FINISHED);
+
+        PaperAnswer paperAnswer2 = new PaperAnswer();
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey2 = new PaperAnswerPrimaryKey(user,paper2,2);
+        paperAnswer2.setPaperAnswerPrimaryKey(paperAnswerPrimaryKey2);
+        paperAnswer2.setState(PaperAnswerState.FINISHED);
+
+        Answer answer1 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey1 = new AnswerPrimaryKey(paperAnswer1,question2);
+        answer1.setAnswerPrimaryKey(answerPrimaryKey1);
+        answer1.setAnswer("111");
+        Answer answer2 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey2 = new AnswerPrimaryKey(paperAnswer1,question3);
+        answer2.setAnswerPrimaryKey(answerPrimaryKey2);
+        answer2.setAnswer("222");
+
+        Answer answer3 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey3 = new AnswerPrimaryKey(paperAnswer2,question2);
+        answer3.setAnswerPrimaryKey(answerPrimaryKey3);
+        answer3.setAnswer("333");
+        Answer answer4 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey4 = new AnswerPrimaryKey(paperAnswer2,question3);
+        answer4.setAnswerPrimaryKey(answerPrimaryKey4);
+        answer4.setAnswer("444");
+
+        paperAnswer1.setAnswers(List.of(answer1,answer2));
+        paperAnswer2.setAnswers(List.of(answer3,answer4));
+
+        //initialize mark form
+
+        MarkForm markForm1 = new MarkForm("good",2L,5.0D);
+        MarkForm markForm2 = new MarkForm("bad",3L,0D);
+        MarkForm markForm3 = new MarkForm("need to improve",2L,2.5D);
+        MarkForm markForm4 = new MarkForm("little problem",3L,4.00D);
+
+        //Mockito get info
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(paperService.getPaperInfo(2L,1L)).thenReturn(paper2);
+
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey1))
+                .thenReturn(Optional.of(paperAnswer1));
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey2))
+                .thenReturn(Optional.of(paperAnswer2));
+
+        Mockito.when(questionRepository.findById(2L)).thenReturn(Optional.of(question2));
+        Mockito.when(questionRepository.findById(3L)).thenReturn(Optional.of(question3));
+
+        Mockito.when(answerRepository.findById(answerPrimaryKey1)).thenReturn(Optional.of(answer1));
+        Mockito.when(answerRepository.findById(answerPrimaryKey2)).thenReturn(Optional.of(answer2));
+        Mockito.when(answerRepository.findById(answerPrimaryKey3)).thenReturn(Optional.of(answer3));
+        Mockito.when(answerRepository.findById(answerPrimaryKey4)).thenReturn(Optional.of(answer4));
+
+        Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        paperAnswer1 = paperAnswerService.markStudentPaper(1L,1L,2L,1,Set.of(markForm1,markForm2));
+        paperAnswer2 = paperAnswerService.markStudentPaper(1L,1L,2L,2,Set.of(markForm3,markForm4));
+
+        //assert grade
+        assertThat(paperAnswer1.getGrade()).isEqualTo(5D);
+        assertThat(paperAnswer2.getGrade()).isEqualTo(6.5D);
+
+        //assert comment
+        assertThat(paperAnswer1.getAnswers().get(0).getComment()).isEqualTo("good");
+        assertThat(paperAnswer2.getAnswers().get(1).getComment()).isEqualTo("little problem");
+
+    }
 
 }

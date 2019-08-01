@@ -55,10 +55,11 @@ public class PaperAnswerController {
     @ApiOperation("教师批改学生回答")
     @PutMapping("/mark/{studentId}/{times}")
     public PaperAnswer markStudentPaper(@RequestBody Set<MarkForm> marks,
+                                        @PathVariable("courseId")Long courseId,
                                         @PathVariable("paperId")Long paperId,
                                         @PathVariable("studentId")Long studentId,
                                         @PathVariable("times")Integer times){
-        return paperAnswerService.markStudentPaper(studentId,paperId,times,marks);
+        return paperAnswerService.markStudentPaper(courseId,studentId,paperId,times,marks);
     }
 
     @ApiOperation("提交主观题")
@@ -82,5 +83,13 @@ public class PaperAnswerController {
                                    @AuthenticationPrincipal UserPrinciple userPrinciple,
                                    @RequestParam("state")String state){
         return paperAnswerService.changePaperAnswerState(courseId,userPrinciple.getId(),paperId,PaperAnswerState.valueOf(state));
+    }
+
+    @ApiOperation("教师获取某个学生的作业情况")
+    @GetMapping("/{studentId}/all")
+    public List<PaperAnswer> getStudentAnswer(@PathVariable("courseId")Long courseId,
+                                              @PathVariable("paperId")Long paperId,
+                                              @PathVariable("studentId")Long studentId){
+        return paperAnswerService.getStudentAnswer(courseId,paperId,studentId);
     }
 }
