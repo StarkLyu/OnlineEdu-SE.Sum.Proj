@@ -5,6 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -26,7 +27,7 @@ public class PaperWithQuestionsPrimaryKey implements Serializable {
     @JsonBackReference
     private Paper paper;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     private Question question;
 
@@ -52,5 +53,19 @@ public class PaperWithQuestionsPrimaryKey implements Serializable {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaperWithQuestionsPrimaryKey that = (PaperWithQuestionsPrimaryKey) o;
+        return paper.equals(that.paper) &&
+                question.equals(that.question);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(paper, question);
     }
 }

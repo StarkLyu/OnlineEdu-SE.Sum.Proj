@@ -25,7 +25,7 @@ public class PaperQuestionForm {
     private Long questionId;
 
     @ApiModelProperty("分值")
-    private int score;
+    private double score;
 
     public int getQuestionNumber() {
         return questionNumber;
@@ -43,11 +43,11 @@ public class PaperQuestionForm {
         this.questionId = questionId;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int socre) {
-        this.score = socre;
+    public void setScore(double score) {
+        this.score = score;
     }
 }

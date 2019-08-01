@@ -2,6 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Primary Key Class for Apply
@@ -44,5 +45,19 @@ public class ApplyPrimaryKey implements Serializable {
 
     public void setCoursePrototype(CoursePrototype coursePrototype) {
         this.coursePrototype = coursePrototype;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ApplyPrimaryKey that = (ApplyPrimaryKey) o;
+        return user.equals(that.user) &&
+                coursePrototype.equals(that.coursePrototype);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, coursePrototype);
     }
 }

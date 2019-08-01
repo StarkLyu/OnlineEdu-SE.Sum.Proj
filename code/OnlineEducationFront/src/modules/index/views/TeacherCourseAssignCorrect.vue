@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-header>
-            <h1 class="titlesytle">作业批改</h1>
+            <h1 class="titlesytle">作业{{this.$store.state.course.paperTitle}}批改</h1>
         </el-header>
         <el-main>
 <!--            展示所有学生的答题情况-->
@@ -15,13 +15,13 @@
                             prop="student.sno"
                             label="学号"
                             min-width="35%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
                             prop="student.username"
                             label="学生名"
                             min-width="35%"
-                            sortable>
+                            sortable="true">
                     </el-table-column>
                     <el-table-column
                             prop="state"
@@ -127,6 +127,7 @@
                     headers:this.$store.getters.authRequestHead,
                 })
                     .then(function (response) {
+                        console.log("获取学生答题数据");
                         console.log(response.data);
                         that.oneStuAnswer=response.data;
                         // alert("请求成功");
@@ -147,6 +148,7 @@
                     this.dialogFormVisible=false;
                     // 把选择的答题的答案存起来
                     this.$store.commit("setPaperAnswers", this.oneStuAnswer[this.timeChoose-1]);
+                    // console.log(this.$store.getters.getPaperAnswers);
                     this.$router.push("/course/manager/correctionSub");
                 }
             },

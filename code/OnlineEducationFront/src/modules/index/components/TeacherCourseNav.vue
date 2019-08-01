@@ -21,12 +21,6 @@
                                 课程章节
                             </span>
                         </el-menu-item>
-<!--                        <el-menu-item index="4" route="/course/manager/edit">-->
-<!--                            <i class="el-icon-edit-outline"></i>-->
-<!--                            <span slot="title">-->
-<!--                            课程编辑-->
-<!--                        </span>-->
-<!--                        </el-menu-item>-->
                         <el-menu-item index="4" route="/course/manager/announcement">
                             <i class="el-icon-message"></i>
                             <span slot="title">
@@ -37,6 +31,12 @@
                             <i class="el-icon-notebook-1"></i>
                             <span slot="title">
                                 课程作业
+                            </span>
+                        </el-menu-item>
+                        <el-menu-item index="9" route="/course/manager/forum">
+                            <i class="el-icon-chat-line-round"></i>
+                            <span slot="title">
+                                课程论坛
                             </span>
                         </el-menu-item>
                         <el-menu-item index="3" route="/course/manager/student">
