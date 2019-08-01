@@ -36,9 +36,6 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     UserService userService;
 
     @Autowired
-    CourseService courseService;
-
-    @Autowired
     PaperRepository paperRepository;
 
     @Autowired
@@ -61,15 +58,22 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
-        for (QuestionAnswer questionAnswer :form.getAnswerList()){
-            Question question = questionRepository.findById(questionAnswer.getQuestionId())
-                    .orElseThrow(() -> new RuntimeException("Question Not Found"));
-            if(!paper.getQuestionList().contains(question)){
-                throw new NotMatchException("This paper doesn't contain this question");
+        try{
+            for (QuestionAnswer questionAnswer :form.getAnswerList()){
+                Question question = questionRepository.findById(questionAnswer.getQuestionId())
+                        .orElseThrow(() -> new NotFoundException("Question Not Found"));
+                if(!paper.getQuestionList().contains(question)){
+                    throw new NotMatchException("This paper doesn't contain this question");
+                }
+                AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
+                Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
+                paperAnswer.getAnswers().add(answerRepository.save(answer));
             }
-            AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
-            Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
-            paperAnswer.getAnswers().add(answerRepository.save(answer));
+        } catch (RuntimeException e){
+            if(paperAnswer.getState() == null) {
+                paperAnswerRepository.delete(paperAnswer);
+            }
+            e.printStackTrace();
         }
         paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
         return paperAnswerRepository.save(paperAnswer);
@@ -170,12 +174,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     private PaperAnswer getPaperAnswer(Long userId,Long courseId,Long paperId){
         //initialize( found corresponding user and paper)
         User user = userService.getUserInfo(userId);
-        Course course = courseService.getCourseInfo(courseId);
         Paper paper = paperService.getPaperInfo(paperId,courseId);
-        if(!paper.getCourse().equals(course)){
-            throw new ValidationException("This Course Doesn't Have This Paper.");
-        }
-
         //get times the user has answered
         int times=paperAnswerRepository.getMaxTimes(userId,paperId).orElse(0);
         if(times>0) {

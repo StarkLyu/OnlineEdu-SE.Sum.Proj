@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.se231.onlineedu.model.TimeSlot;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,10 +23,12 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel("申请创建课程的表单")
 public class CourseApplicationForm {
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @NotNull
     @FutureOrPresent
     private Date startDate;
-
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @NotNull
     @Future
     private Date endDate;

@@ -350,21 +350,117 @@ public class PaperAnswerServiceImplTest {
         paperAnswerService.markStudentPaper(1L,1L,1L,1 ,Set.of(markForm));
     }
 
-//    @Test(expected = NotFoundException.class)
-//    public void answerNotFoundInPaper(){
-//        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-//        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
-//        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
-//        PaperAnswer paperAnswer = new PaperAnswer();
-//        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
-//        Mockito.when(questionRepository.findById(3L)).thenReturn(O)
-//        MarkForm markForm = new MarkForm();
-//        markForm.setQuestionId(3L);
-//
-//        paperAnswerService.markStudentPaper(1L,1L,1, Set.of(markForm));
-//    }
+    @Test(expected = NotFoundException.class)
+    public void answerNotFoundInPaper(){
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(paperRepository.findById(1L)).thenReturn(Optional.of(paper));
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,1);
+        PaperAnswer paperAnswer = new PaperAnswer();
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey)).thenReturn(Optional.of(paperAnswer));
+        Answer answer1 = new Answer();
+        Question question1 = new Question();
+        question1.setId(1L);
+        answer1.setAnswerPrimaryKey(new AnswerPrimaryKey(paperAnswer,question1));
+        paperAnswer.setAnswers(List.of(answer1));
+        Question question3 = new Question();
+        question3.setId(3L);
+        Mockito.when(questionRepository.findById(3L)).thenReturn(Optional.of(question3));
+        MarkForm markForm = new MarkForm();
+        markForm.setQuestionId(3L);
 
 
+        paperAnswerService.markStudentPaper(1L,1L,1L,1, Set.of(markForm));
+    }
 
+    @Test
+    public void markTest(){
+        //initialize question and paper
+        Question question2 = new Question();
+        question2.setId(2L);
+        question2.setQuestionType(QuestionType.SUBJECTIVE);
+
+        Question question3 = new Question();
+        question3.setId(3L);
+        question3.setQuestionType(QuestionType.SUBJECTIVE);
+
+        Paper paper2 = new Paper();
+        paper2.setId(2L);
+        paper.setCourse(course);
+
+        PaperWithQuestions paperWithQuestion1 = new PaperWithQuestions(paper2,question2,1,5.0D);
+        PaperWithQuestions paperWithQuestion2 = new PaperWithQuestions(paper2,question3,2,5.0D);
+
+        paper2.setQuestions(List.of(paperWithQuestion1,paperWithQuestion2));
+
+        //initialize paper answer
+        PaperAnswer paperAnswer1 = new PaperAnswer();
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey1 = new PaperAnswerPrimaryKey(user,paper2,1);
+        paperAnswer1.setPaperAnswerPrimaryKey(paperAnswerPrimaryKey1);
+        paperAnswer1.setState(PaperAnswerState.FINISHED);
+
+        PaperAnswer paperAnswer2 = new PaperAnswer();
+        PaperAnswerPrimaryKey paperAnswerPrimaryKey2 = new PaperAnswerPrimaryKey(user,paper2,2);
+        paperAnswer2.setPaperAnswerPrimaryKey(paperAnswerPrimaryKey2);
+        paperAnswer2.setState(PaperAnswerState.FINISHED);
+
+        Answer answer1 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey1 = new AnswerPrimaryKey(paperAnswer1,question2);
+        answer1.setAnswerPrimaryKey(answerPrimaryKey1);
+        answer1.setAnswer("111");
+        Answer answer2 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey2 = new AnswerPrimaryKey(paperAnswer1,question3);
+        answer2.setAnswerPrimaryKey(answerPrimaryKey2);
+        answer2.setAnswer("222");
+
+        Answer answer3 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey3 = new AnswerPrimaryKey(paperAnswer2,question2);
+        answer3.setAnswerPrimaryKey(answerPrimaryKey3);
+        answer3.setAnswer("333");
+        Answer answer4 = new Answer();
+        AnswerPrimaryKey answerPrimaryKey4 = new AnswerPrimaryKey(paperAnswer2,question3);
+        answer4.setAnswerPrimaryKey(answerPrimaryKey4);
+        answer4.setAnswer("444");
+
+        paperAnswer1.setAnswers(List.of(answer1,answer2));
+        paperAnswer2.setAnswers(List.of(answer3,answer4));
+
+        //initialize mark form
+
+        MarkForm markForm1 = new MarkForm("good",2L,5.0D);
+        MarkForm markForm2 = new MarkForm("bad",3L,0D);
+        MarkForm markForm3 = new MarkForm("need to improve",2L,2.5D);
+        MarkForm markForm4 = new MarkForm("little problem",3L,4.00D);
+
+        //Mockito get info
+        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+        Mockito.when(paperService.getPaperInfo(2L,1L)).thenReturn(paper2);
+
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey1))
+                .thenReturn(Optional.of(paperAnswer1));
+        Mockito.when(paperAnswerRepository.findById(paperAnswerPrimaryKey2))
+                .thenReturn(Optional.of(paperAnswer2));
+
+        Mockito.when(questionRepository.findById(2L)).thenReturn(Optional.of(question2));
+        Mockito.when(questionRepository.findById(3L)).thenReturn(Optional.of(question3));
+
+        Mockito.when(answerRepository.findById(answerPrimaryKey1)).thenReturn(Optional.of(answer1));
+        Mockito.when(answerRepository.findById(answerPrimaryKey2)).thenReturn(Optional.of(answer2));
+        Mockito.when(answerRepository.findById(answerPrimaryKey3)).thenReturn(Optional.of(answer3));
+        Mockito.when(answerRepository.findById(answerPrimaryKey4)).thenReturn(Optional.of(answer4));
+
+        Mockito.when(paperAnswerRepository.save(any(PaperAnswer.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        paperAnswer1 = paperAnswerService.markStudentPaper(1L,1L,2L,1,Set.of(markForm1,markForm2));
+        paperAnswer2 = paperAnswerService.markStudentPaper(1L,1L,2L,2,Set.of(markForm3,markForm4));
+
+        //assert grade
+        assertThat(paperAnswer1.getGrade()).isEqualTo(5D);
+        assertThat(paperAnswer2.getGrade()).isEqualTo(6.5D);
+
+        //assert comment
+        assertThat(paperAnswer1.getAnswers().get(0).getComment()).isEqualTo("good");
+        assertThat(paperAnswer2.getAnswers().get(1).getComment()).isEqualTo("little problem");
+
+    }
 
 }

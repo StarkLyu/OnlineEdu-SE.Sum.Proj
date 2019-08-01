@@ -3,6 +3,7 @@ package com.se231.onlineedu.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -79,5 +80,18 @@ public class PaperAnswer {
 
     public void setState(PaperAnswerState state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaperAnswer that = (PaperAnswer) o;
+        return paperAnswerPrimaryKey.equals(that.paperAnswerPrimaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(paperAnswerPrimaryKey);
     }
 }
