@@ -1,6 +1,9 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,12 +26,12 @@ public class Section {
     private String title;
 
     @JsonIgnore
-    @OneToMany
+    @ManyToMany
     private List<Paper> papers;
 
     private int secNo;
 
-    @OneToMany
+    @ManyToMany
     @JsonIgnore
     private List<Resource> resources;
 

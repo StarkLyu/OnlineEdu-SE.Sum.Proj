@@ -195,8 +195,8 @@ public class CourseServiceImpl implements CourseService {
         }
         course.setLocation(form.getLocation());
         course.setCourseTitle(form.getCourseTitle());
-        course.setStartDate(course.getStartDate());
-        course.setEndDate(course.getEndDate());
+        course.setStartDate(form.getStartDate());
+        course.setEndDate(form.getEndDate());
         return courseRepository.save(course);
     }
 
