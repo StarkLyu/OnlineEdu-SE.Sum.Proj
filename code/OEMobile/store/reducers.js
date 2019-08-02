@@ -125,12 +125,14 @@
 import {combineReducers} from 'redux';
 import courseReducer from "./courseReducer.js";
 import userReducer from "./userReducer.js";
-import sectionReducer from "./sectionReducer"
+import sectionReducer from "./sectionReducer";
+import paperReducer from "./paperReducer"
 
 const OEMobileApp = combineReducers({
     ...userReducer,
     ...courseReducer,
-    ...sectionReducer
+    ...sectionReducer,
+    ...paperReducer
 })
 
 export default OEMobileApp;

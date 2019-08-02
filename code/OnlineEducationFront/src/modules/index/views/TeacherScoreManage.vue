@@ -49,7 +49,7 @@
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="grade"
+                            prop="score"
                             label="成绩"
                             min-width="25%"
                     ></el-table-column>

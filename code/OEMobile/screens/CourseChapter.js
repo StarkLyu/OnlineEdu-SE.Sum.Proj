@@ -4,6 +4,7 @@ import { Container, Content, ListItem, Text, H3 } from "native-base";
 import { connect } from "react-redux";
 import CourseHeader from "../components/CourseHeader";
 import { setCurrentSection } from "../store/sectionAction";
+import UserFab from "../components/UserFab";
 
 class CourseChapter extends Component {
     constructor(props) {
@@ -41,6 +42,7 @@ class CourseChapter extends Component {
                 <Content>
                     <FlatList renderItem={({item}) => this._drawChapter(item)} data={this.props.chapters} />
                 </Content>
+                <UserFab navigation={this.props.navigation}/>
             </Container>
         );
     }

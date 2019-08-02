@@ -48,6 +48,8 @@
         },
         methods: {
             banForum(id){
+                alert("确定要封贴吗？");
+
                 this.$http.request({
                     url: '/api/forums/'+id,
                     method: "delete",
