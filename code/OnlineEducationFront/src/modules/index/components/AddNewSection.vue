@@ -1,12 +1,14 @@
 <template>
     <div>
-        <el-button
-                circle
-                icon="el-icon-plus"
-                size="small"
-                v-if="managerMode"
-                @click="showAddSection = true"
-        ></el-button>
+        <el-tooltip effect="dark" content="添加小节" placement="top-start">
+            <el-button
+                    circle
+                    icon="el-icon-plus"
+                    size="small"
+                    v-if="managerMode"
+                    @click="showAddSection = true"
+            ></el-button>
+        </el-tooltip>
         <el-dialog :visible.sync="showAddSection">
             <h2 slot="title">添加节</h2>
             <el-input v-model="newTitle" placeholder="新节标题"></el-input>
@@ -29,7 +31,8 @@
             return {
                 showAddSection: false,
                 newTitle: "",
-                newDescription: ""
+                newDescription: "",
+                content:"添加第"+this.lastSection+"小节"
             }
         },
         methods: {

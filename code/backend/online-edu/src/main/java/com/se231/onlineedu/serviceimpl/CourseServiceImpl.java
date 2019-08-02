@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 /**
  * the implementation class of course service
  * <p>
@@ -237,7 +238,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course saveSignIn(Long id, SignInCourseForm signInForm) {
         Course course = getCourseInfo(id);
-        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
+        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo() == 0?signInRepository.currentSignInNo(id).orElse(0) + 1 : signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate(),  signInForm.getLongitude(),signInForm.getLatitude())));
         return courseRepository.save(course);
     }
 

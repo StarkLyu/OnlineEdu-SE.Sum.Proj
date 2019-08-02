@@ -6,7 +6,12 @@
                 <UserUnit class="float-left" size="middle"></UserUnit>&nbsp;&nbsp;&nbsp;&nbsp;
                 {{ forumTopic.createdAt }}
             </div>
-            <el-button style="float:right;" @click="banForum(forumTopic.id)" v-if="isCourseTeacher">封贴</el-button>
+            <el-button style="float:right; margin-right: 20px;"
+                       @click="banForum(forumTopic.id)"
+                       v-if="isCourseTeacher && !forumTopic.locked"
+                       type="danger">
+                封贴
+            </el-button>
         </div>
         <div>
             <pre>{{ forumTopic.content }}</pre>
@@ -48,6 +53,8 @@
         },
         methods: {
             banForum(id){
+                alert("确定要封贴吗？");
+
                 this.$http.request({
                     url: '/api/forums/'+id,
                     method: "delete",

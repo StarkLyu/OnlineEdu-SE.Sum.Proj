@@ -62,7 +62,7 @@
 
 <script>
     export default {
-        name: "TeacherCourseAnouce",
+        name: "TeacherCourseAnnounce",
 
         data(){
             return{
@@ -149,11 +149,16 @@
     }
 
     .announce-font {
-        font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+        font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
         white-space: pre-wrap;
         white-space: -moz-pre-wrap;
         /*white-space: -pre-wrap;*/
         white-space: -o-pre-wrap;
         word-wrap: break-word
+    }
+
+    .map {
+        width: 100%;
+        height: 400px;
     }
 </style>

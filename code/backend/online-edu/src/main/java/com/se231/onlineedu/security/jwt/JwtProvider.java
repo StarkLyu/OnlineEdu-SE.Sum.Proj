@@ -25,11 +25,9 @@ public class JwtProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
-    @Value("${app.jwtSecret}")
-    private String jwtSecret;
+    private String jwtSecret = "jwtSecret";
 
-    @Value("${app.jwtExpiration}")
-    private int jwtExpiration;
+    private int jwtExpiration = 68400000;
 
     public String generateJwtToken(UserDetails userPrincipal) {
         Date createdDate = clock.now();

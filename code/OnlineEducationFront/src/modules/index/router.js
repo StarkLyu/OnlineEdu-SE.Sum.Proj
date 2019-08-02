@@ -150,6 +150,11 @@ export default new Router({
                             name: 'TeacherCourseForum',
                             component: () => import('./views/TeacherCourseForum')
                         },
+                        {
+                            path: 'signIn',
+                            name: 'TeacherCourseSign',
+                            component: () => import('./views/TeacherCourseSign')
+                        },
                     ]
                 },
                 {

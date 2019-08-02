@@ -60,18 +60,24 @@
                 var questionNums=[];
                 questionNums=this.$store.getters.getPaperAnswers.paperAnswerPrimaryKey.paper.questions;
 
+                // 获取答题答案
                 for (var x=0; x<questions.length; x++) {
                     if (questions[x].answerPrimaryKey.question.questionType==='SUBJECTIVE'){
                         this.allAnswers.push(questions[x]);
                     }
-                    if(questionNums[x].paperWithQuestionsPrimaryKey.question.questionType==='SUBJECTIVE'){
-                        this.getQuestionNum.push(questionNums[x]);
+
+                }
+                // 获取题目信息
+                for (var t=0; t<questionNums.length; t++){
+                    if(questionNums[t].paperWithQuestionsPrimaryKey.question.questionType==='SUBJECTIVE'){
+                        this.getQuestionNum.push(questionNums[t]);
                     }
                 }
                 // 把题号和分值存入
-                var len=this.allAnswers.length;
-                for (var k=0; k<len; k++){
-                    for (var y=0; y<len; y++){
+                var len1=this.allAnswers.length;
+                var len2=this.getQuestionNum.length;
+                for (var k=0; k<len1; k++){
+                    for (var y=0; y<len2; y++){
                         if (this.allAnswers[k].answerPrimaryKey.question.id===this.getQuestionNum[y].paperWithQuestionsPrimaryKey.question.id) {
                             this.allAnswers[k].score=this.getQuestionNum[y].score;
                             // this.allAnswers[k].questionNumber=this.getQuestionNum[y].questionNumber;

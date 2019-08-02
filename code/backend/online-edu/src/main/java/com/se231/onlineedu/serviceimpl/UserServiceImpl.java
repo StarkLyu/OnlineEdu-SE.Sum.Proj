@@ -5,6 +5,7 @@ import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.request.UserExcel;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.message.response.SignInWithState;
 import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
@@ -17,6 +18,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GeodeticCurve;
+import org.gavaghan.geodesy.GlobalCoordinates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -174,8 +179,23 @@ public class UserServiceImpl implements UserService {
         if(date.after(signIn.getEndDate())){
             throw new AfterEndException("签到已经结束");
         }
+        GlobalCoordinates source = new GlobalCoordinates(signIn.getLatitude(),signIn.getLongitude());
+        GlobalCoordinates target = new GlobalCoordinates(signInUserForm.getLatitude(),signInUserForm.getLongitude());
+        if(getDistanceMeter(source, target, Ellipsoid.Sphere) > 50D){
+            throw new ValidationException("距离过远，请重新签到");
+        }
+        signIn.getUsers().add(user);
+        signInRepository.save(signIn);
         user.getSignIns().add(signIn);
         return userRepository.save(user);
+    }
+
+    public static double getDistanceMeter(GlobalCoordinates gpsFrom, GlobalCoordinates gpsTo, Ellipsoid ellipsoid)
+    {
+        //创建GeodeticCalculator，调用计算方法，传入坐标系、经纬度用于计算距离
+        GeodeticCurve geoCurve = new GeodeticCalculator().calculateGeodeticCurve(ellipsoid, gpsFrom, gpsTo);
+
+        return geoCurve.getEllipsoidalDistance();
     }
 
     @Override
@@ -200,5 +220,21 @@ public class UserServiceImpl implements UserService {
     public UserAvatar getUserAvatar(Long userId) {
         User user = getUserInfo(userId);
         return new UserAvatar(user.getUsername(),user.getAvatarUrl());
+    }
+
+    @Override
+    public List<SignInWithState> getUserSignIns(Long courseId, Long userId){
+        List<SignIn> signInsCourse = signInRepository.findBySignInPrimaryKey_Course_Id(courseId);
+        List<SignIn> signInsUser = getUserInfo(userId).getSignIns();
+        List<SignInWithState> signInWithStates = new ArrayList();
+        for(SignIn signIn: signInsCourse){
+            if(signInsUser.contains(signIn)){
+                signInWithStates.add(new SignInWithState(signIn, true));
+            } else {
+                signInWithStates.add(new SignInWithState(signIn, false));
+            }
+        }
+        return signInWithStates;
+
     }
 }

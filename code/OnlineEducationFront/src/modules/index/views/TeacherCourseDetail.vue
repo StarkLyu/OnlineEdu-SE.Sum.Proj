@@ -5,18 +5,20 @@
         </el-header>
         <el-main>
             <div class="courseimg">
-                <el-upload
-                        class="avatar-uploader avatar"
-                        :action="uploadUrl"
-                        :headers="uploadHeader"
-                        :show-file-list="false"
-                        :before-upload="beforeAvatarUpload"
-                        :on-success="uploadSucceed"
-                        :on-error="uploadFail"
-                        :http-request="uploadProcess">
-                    <img v-if="imageURL" :src="imageURL" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+                <el-tooltip effect="dark" content="点击头像上传头像图片" placement="top-start">
+                    <el-upload
+                            class="avatar-uploader avatar"
+                            :action="uploadUrl"
+                            :headers="uploadHeader"
+                            :show-file-list="false"
+                            :before-upload="beforeAvatarUpload"
+                            :on-success="uploadSucceed"
+                            :on-error="uploadFail"
+                            :http-request="uploadProcess">
+                        <img v-if="imageURL" :src="imageURL" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-tooltip>
             </div>
             <div class="coursedes">
                 <p>
@@ -47,7 +49,7 @@
                     <p>
                         上课时间：
                         <span class="detail">
-                            {{timeslot.day}}——{{timeslot.start}}至{{timeslot.end}}
+                            {{timeslot.day}}  {{timeslot.start}}至{{timeslot.end}}
                         </span>
                     </p>
                 </div>
@@ -72,6 +74,7 @@
                             <el-date-picker placeholder="选择开始时间"
                                             type="date"
                                             v-model="editForm.startDate"
+                                            value-format="yyyy-MM-dd HH:mm:ss"
                                             style="width: 100%;">
                             </el-date-picker>
                         </el-col>
@@ -80,6 +83,7 @@
                             <el-date-picker placeholder="选择结束时间"
                                             type="date"
                                             v-model="editForm.endDate"
+                                            value-format="yyyy-MM-dd HH:mm:ss"
                                             style="width: 100%;">
                             </el-date-picker>
                         </el-col>
@@ -91,7 +95,15 @@
                                 :label="'时间段'+(index+1)"
                                 :key="timeslot.day"
                                 :rules="{required: true, message: '内容不能为空', trigger: 'blur'}">
-                            <el-input v-model="timeslot.day" placeholder="输入0-6，0代表周日"></el-input>
+<!--                            <el-input v-model="timeslot.day" placeholder="输入0-6，0代表周日"></el-input>-->
+                            <el-select v-model="timeslot.day" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
                             <el-time-select
                                     v-model="timeslot.start"
                                     :picker-options="{start: '08:00',step: '00:30',end: '20:30'}"
@@ -153,6 +165,30 @@
                 },
 
                 imageURL: this.$store.getters.getCourseImg,
+
+                options: [{
+                    value: '0',
+                    label: '周日'
+                }, {
+                    value: '1',
+                    label: '周一'
+                }, {
+                    value: '2',
+                    label: '周二'
+                }, {
+                    value: '3',
+                    label: '周三'
+                }, {
+                    value: '4',
+                    label: '周四'
+                },{
+                    value: '5',
+                    label: '周五'
+                }, {
+                    value: '6',
+                    label: '周六'
+                },
+                ],
             }
         },
 
@@ -305,4 +341,5 @@
         height: 178px;
         display: block;
     }
+
 </style>

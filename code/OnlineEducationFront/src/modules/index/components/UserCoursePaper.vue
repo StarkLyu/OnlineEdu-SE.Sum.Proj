@@ -4,7 +4,7 @@
             <div class="float-left">
                 <strong class="title-font">{{ paperInfo.title }}</strong>
                 <PaperTag :status="state" class="state-tag"></PaperTag>
-                <span class="score-span" v-if="state === 'MARKED'">总分：{{ totalGrade }}</span>
+                <span class="score-span" v-if="state === 'MARKED' && !isCourseTeacher">总分：{{ totalGrade }}</span>
             </div>
             <div class="float-right">
                 <DateRangeFormat
@@ -15,7 +15,7 @@
                 ></DateRangeFormat>
             </div>
             <div class="float-clear"></div>
-            <div class="des-div">
+            <div class="des-div" v-if="!isCourseTeacher">
                 <pre>{{ paperInfo.description }}</pre>
                 <p>剩余提交次数：{{ this.haveTime }}</p>
             </div>
@@ -40,7 +40,7 @@
                         :ref="question.id.toString()"
                 ></AssignmentSub>
             </el-tab-pane>
-            <div class="submit-div">
+            <div class="submit-div" v-if="!isCourseTeacher">
                 <el-button
                         @click="submitAnswer('FINISHED')"
                         class="float-left"
@@ -224,6 +224,7 @@
                         });
                         for (let i in answerList) {
                             if (answerList[i].answerPrimaryKey.question.id === fetchQues.id) {
+                                fetchQues.myScore = answerList[i].grade;
                                 fetchQues.myAnswer = answerList[i].answer;
                                 answerList.splice(i, 1);
                                 i--;
@@ -245,7 +246,8 @@
         },
         computed: {
             ...mapGetters([
-                "getPaperById"
+                "getPaperById",
+                'isCourseTeacher'
             ]),
             getPaperUrl: function () {
                 return this.$store.getters.getCourseUrl + "papers/" + this.paperInfo.id + "/answer";
@@ -267,7 +269,7 @@
                 return haveTimes;
             },
             allowSubmit: function () {
-                if (this.haveTime === 0) return false;
+                if (this.haveTime === 0 || this.state === "NOT_MARK" || this.state === "MARKED") return false;
                 else return true;
             }
         },

@@ -10,10 +10,24 @@ public class SignInCourseForm {
     @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startDate;
 
+
+
+    private Double longitude;
+
+    private Double latitude;
+
     @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endDate;
 
     private int signInNo;
+
+    public int getSignInNo() {
+        return signInNo;
+    }
+
+    public void setSignInNo(int signInNo) {
+        this.signInNo = signInNo;
+    }
 
     public Date getStartDate() {
         return startDate;
@@ -31,11 +45,19 @@ public class SignInCourseForm {
         this.endDate = endDate;
     }
 
-    public int getSignInNo() {
-        return signInNo;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setSignInNo(int signInNo) {
-        this.signInNo = signInNo;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }

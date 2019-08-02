@@ -24,29 +24,66 @@
         data() {
             return {
                 papers: [
-                    {
-                        id: 0,
-                        title: "第一次作业",
-                        start: "2019-07-15",
-                        end: "2019-07-25",
-                        status: "NOT VIEWED"
-                    }
+                    // {
+                    //     id: 0,
+                    //     title: "第一次作业",
+                    //     start: "2019-07-15",
+                    //     end: "2019-07-25",
+                    //     status: "NOT VIEWED"
+                    // }
                 ]
             }
         },
         methods: {
             statusTagType: function (status) {
-                if (status === "NOT VIEWED") return "danger";
-                else if (status === "DOING") return "warning";
-                else if (status === "SCORING") return "primary";
-                else if (status === "SUCCESS") return "success";
+                if (status === "NOT_START") return "danger";
+                else if (status === "NOT_FINISH" || status==="TEMP_SAVE") return "warning";
+                else if (status === "FINISHED") return "primary";
+                else if (status === "MARKED") return "success";
+                else if (status === "NOT_MARKED") return "info";
             },
             statusTagText: function (status) {
-                if (status === "NOT VIEWED") return "未查看";
-                else if (status === "DOING") return "未完成";
-                else if (status === "SCORING") return "已完成";
-                else if (status === "SUCCESS") return "已批改";
+                if (status === "NOT_START") return "未查看";
+                else if (status === "NOT_FINISH") return "未完成";
+                else if (status === "TEMP_SAVE") return "暂存";
+                else if (status === "FINISHED") return "已完成";
+                else if (status === "NOT_MARKED") return "未批改";
+                else if (status === "MARKED") return "已批改";
+            },
+
+            showAllPapers(){
+                var that=this;
+                var allPaperData=[];
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/papers/state',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        allPaperData=response.data;
+
+                        for (var x=0; x<allPaperData.length; x++){
+                            var tempPaper={
+                                id: allPaperData[x].paper.id,
+                                title: allPaperData[x].paper.title,
+                                start: allPaperData[x].paper.start,
+                                end: allPaperData[x].paper.end,
+                                status: allPaperData[x].state,
+                            };
+                            that.papers.push(tempPaper);
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                        alert("请求失败");
+                    });
             }
+        },
+
+        mounted() {
+            this.showAllPapers();
         }
     }
 </script>

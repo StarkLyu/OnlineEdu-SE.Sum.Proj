@@ -2,6 +2,7 @@ import React from "react";
 import {FlatList, Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container, Header, Fab} from 'native-base';
 import UserUnit from "../components/UserUnit";
+import UserHeader from "../components/UserHeader";
 import Icon from "react-native-vector-icons/FontAwesome"
 import { connect } from 'react-redux';
 
