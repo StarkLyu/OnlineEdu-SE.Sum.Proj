@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService {
         }
         GlobalCoordinates source = new GlobalCoordinates(signIn.getLatitude(),signIn.getLongitude());
         GlobalCoordinates target = new GlobalCoordinates(signInUserForm.getLatitude(),signInUserForm.getLongitude());
-        if(getDistanceMeter(source, target, Ellipsoid.Sphere) > 50D){
+        if(getDistanceMeter(source, target, Ellipsoid.Sphere) > 5000D){
             throw new ValidationException("距离过远，请重新签到");
         }
         signIn.getUsers().add(user);

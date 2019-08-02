@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { FlatList } from "react-native";
+import { FlatList, PermissionsAndroid, ScrollView } from "react-native";
 import {Container, List, ListItem, Text, Button, Icon, View} from "native-base";
 import CourseHeader from "../components/CourseHeader";
 import UserFab from "../components/UserFab";
@@ -37,18 +37,62 @@ class CourseSignins extends Component {
         })
     }
 
-    startSignIn = (signInNo) => {
-        this.$axios.request({
-            url: "/api/courses/" + this.props.userId + "/signIns",
-            method: "post",
-            headers: {
-                Authorization: "Bearer " + this.props.accessToken
-            },
-            data: {
-                courseId: this.props.courseId,
-                signInNo: signInNo,
+    async requestLocationPermission() {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: '申请访问位置权限',
+                    message: '签到功能需要位置权限才可以使用',
+                    //buttonNeutral: 'Ask Me Later',
+                    buttonNegative: '取消',
+                    buttonPositive: '访问',
+                },
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('Location permission granted');
+            } else {
+                console.log('Camera permission denied');
             }
-        })
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+
+    componentWillMount(): void {
+        this.requestLocationPermission();
+    }
+
+    startSignIn = (signInNo) => {
+        Geolocation.getCurrentPosition(
+            (position => {
+                this.$axios.request({
+                    url: "/api/users/" + this.props.userId + "/signIns",
+                    method: "post",
+                    headers: {
+                        Authorization: "Bearer " + this.props.accessToken
+                    },
+                    data: {
+                        courseId: this.props.courseId,
+                        signInNo: signInNo,
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }
+                }).then(() => {
+                    alert("签到成功！")
+                }).catch((error) => {
+                    alert(error.response.data);
+                    console.log(error.response)
+                });
+                console.log(signInNo);
+                console.log(position);
+            }),
+            (error => {
+                console.log(error.code, error.message)
+            }),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        )
+
     };
 
     signInUrl = () => {
@@ -72,7 +116,7 @@ class CourseSignins extends Component {
                         <Text>签到：{signIn.signIn.startDate + " ~ " + signIn.signIn.endDate + "  " + this.statusText(signIn.ok)}</Text>
                     </View>
                     <View style={{flex: 1}}>
-                        <Button icon>
+                        <Button icon onPress={() => {this.startSignIn(signIn.signIn.signInPrimaryKey.signInNo)}}>
                             <Icon name={"sign-in"} type={"FontAwesome"}/>
                         </Button>
                     </View>
@@ -83,13 +127,13 @@ class CourseSignins extends Component {
 
     render() {
         return (
-            <Container>
+            <ScrollView>
                 <CourseHeader openDrawer={this.showDrawer} />
                 <List>
                     <FlatList data={this.state.signIns} renderItem={({item}) => this._signInLine(item)}/>
                 </List>
                 <UserFab navigation={this.props.navigation}/>
-            </Container>
+            </ScrollView>
         );
     }
 }
