@@ -224,6 +224,7 @@
                         });
                         for (let i in answerList) {
                             if (answerList[i].answerPrimaryKey.question.id === fetchQues.id) {
+                                fetchQues.myScore = answerList[i].grade;
                                 fetchQues.myAnswer = answerList[i].answer;
                                 answerList.splice(i, 1);
                                 i--;
@@ -267,7 +268,7 @@
                 return haveTimes;
             },
             allowSubmit: function () {
-                if (this.haveTime === 0) return false;
+                if (this.haveTime === 0 || this.state === "NOT_MARK" || this.state === "MARKED") return false;
                 else return true;
             }
         },

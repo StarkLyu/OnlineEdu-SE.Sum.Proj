@@ -13,7 +13,12 @@ class PaperLine extends Component {
 
     render() {
         return (
-            <ListItem>
+            <ListItem onPress={() => {
+                this.props.navigation.navigate("CoursePaper", {
+                    paperId: this.props.paper.paperId,
+                    paper: this.props.paper
+                })
+            }}>
                 <Left>
                     <Icon type={"FontAwesome"} name={"file-text-o"} />
                     <Text>   {this.props.paper.title}</Text>
