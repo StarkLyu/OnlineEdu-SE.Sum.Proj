@@ -48,7 +48,24 @@
         methods: {
             enterCourse: function () {
                 this.$store.commit("setCourseId", this.courseInfo.id);
-                this.$router.push("/course")
+
+                // var that=this;
+                // this.$http.request({
+                //     url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                //     method: "get",
+                //     headers: this.$store.getters.authRequestHead,
+                // })
+                //     .then(function (response) {
+                //         console.log(response.data);
+                //         that.$store.commit("setCourseInfo",response.data);
+                //         // alert("请求成功");
+                //     })
+                //     .catch(function (error) {
+                //         console.log(error);
+                //         // alert("请求失败");
+                //     });
+
+                this.$router.push("/course");
             }
         },
         computed: {
