@@ -198,7 +198,8 @@ public class UserServiceImpl implements UserService {
         if(getDistanceMeter(source, target, Ellipsoid.Sphere) > 50D){
             throw new ValidationException("距离过远，请重新签到");
         }
-
+        signIn.getUsers().add(user);
+        signInRepository.save(signIn);
         user.getSignIns().add(signIn);
         return userRepository.save(user);
     }
