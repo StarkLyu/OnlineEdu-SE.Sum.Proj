@@ -8,7 +8,7 @@ class AssignmentSingle extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            answer: "",
+            answer: this.props.initAnswer,
         }
     }
 
@@ -50,7 +50,7 @@ class AssignmentSingle extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setAnswer: (newAnswer) => dispatch(setAnswer(newAnswer))
+        //setAnswer: (newAnswer) => dispatch(setAnswer(newAnswer))
     }
 };
 

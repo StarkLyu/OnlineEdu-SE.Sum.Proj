@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { Container, Text, H1, List, ListItem, Button, Left, Right, Body } from "native-base";
 import AssignmentQuestion from "../components/AssignmentQuestion";
+import { initAnswer } from "../store/paperAction";
 
 class CoursePaper extends Component {
     constructor(props) {
@@ -23,8 +24,14 @@ class CoursePaper extends Component {
         });
         this.questions = [];
         for (let ques of this.paper.questions) {
-            this.questions.push(ques.paperWithQuestionsPrimaryKey.question);
+            let addQues = ques.paperWithQuestionsPrimaryKey.question;
+            Object.assign(addQues, {
+                grade: 0,
+                comment: ""
+            });
+            this.questions.push(addQues);
         }
+        this.answerInit();
     }
 
     paperStatus() {
@@ -37,6 +44,43 @@ class CoursePaper extends Component {
             default: return "什么鬼";
         }
     }
+
+    answerInit = () => {
+        this.$axios.request({
+            url: this.getPaperUrl(),
+            method: "get",
+            headers: {
+                "Authorization": "Bearer " + this.props.accessToken
+            }
+        }).then((response) => {
+            alert("AnswersLoadComplete");
+            let answerMap = new Map();
+            this.setState({
+                state: response.data.state,
+                grade: response.data.grade
+            });
+            let resAnswers = response.data.answers;
+            for (let temp in resAnswers) {
+                for (let ques of this.questions) {
+                    if (resAnswers[temp].answerPrimaryKey.question.id === ques.id) {
+                        let getAnswer = resAnswers[temp];
+                        answerMap.set(ques.id, getAnswer.answer);
+                        ques.grade = getAnswer.grade;
+                        ques.comment = getAnswer.comment;
+                        resAnswers.slice(temp, 1);
+                        temp--;
+                    }
+                }
+            }
+            console.log(answerMap.keys());
+            console.log(this.questions);
+            this.props.initAnswer(answerMap);
+        })
+    };
+
+    getPaperUrl = () => {
+        return "/api/courses/" + this.props.courseId + "/papers/" + this.paper.id + "/answer";
+    };
 
     startAnswer = () => {
         this.setState({
@@ -68,9 +112,35 @@ class CoursePaper extends Component {
         return this.state.currentQuestion === this.questions.length - 1;
     };
 
-    saveAnswer = () => {
-        console.log(this.props.paperAnswer)
-    }
+    saveAnswer = (state) => {
+        let answerList = [];
+        let answerMap = this.props.paperAnswer.answerMap;
+        for (let i of answerMap) {
+            console.log(i);
+            answerList.push({
+                answer: i[1],
+                questionId: i[0]
+            });
+        }
+        console.log(answerList);
+        this.$axios.request({
+            url: this.getPaperUrl(),
+            method: "post",
+            headers: {
+                "Authorization": "Bearer " + this.props.accessToken
+            },
+            data: {
+                answerList,
+                state: state
+            }
+        }).then(() => {
+            alert("保存成功！");
+            this.answerInit();
+        }).catch((error) => {
+            //alert(error);
+            console.log(error.response);
+        })
+    };
 
     render() {
         const startTime = this.paper.start.substr(0,10) + " " + this.paper.start.substr(11,8);
@@ -118,14 +188,14 @@ class CoursePaper extends Component {
                             </View>
                             <View style={{flex: 2, flexDirection: 'row'}}>
                                 <View style={{flex: 1}}>
-                                    <Button full onPress={() => {this.saveAnswer()}}>
+                                    <Button full onPress={() => {this.saveAnswer("NOT_FINISH")}}>
                                         <Text>
                                             暂存
                                         </Text>
                                     </Button>
                                 </View>
                                 <View style={{flex: 1}}>
-                                    <Button full onPress={() => {this.saveAnswer()}}>
+                                    <Button full onPress={() => {this.saveAnswer("FINISHED")}}>
                                         <Text>
                                             提交
                                         </Text>
@@ -147,8 +217,16 @@ class CoursePaper extends Component {
 
 function mapStateToProps(state) {
     return {
-        paperAnswer: state.paperAnswer
+        paperAnswer: state.paperAnswer,
+        courseId: state.courseInfo.id,
+        accessToken: state.login.accessToken,
     }
 }
 
-export default connect(mapStateToProps)(CoursePaper);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        initAnswer: (answerMap) => dispatch(initAnswer(answerMap))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursePaper);
