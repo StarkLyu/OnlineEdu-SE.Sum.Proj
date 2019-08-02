@@ -38,11 +38,10 @@ class CourseChapter extends Component {
     render() {
         return (
             <Container>
-                <CourseHeader openDrawer={this.props.navigation.openDrawer}/>
+                <CourseHeader openDrawer={this.props.navigation.openDrawer} navigation={this.props.navigation}/>
                 <Content>
                     <FlatList renderItem={({item}) => this._drawChapter(item)} data={this.props.chapters} />
                 </Content>
-                <UserFab navigation={this.props.navigation}/>
             </Container>
         );
     }

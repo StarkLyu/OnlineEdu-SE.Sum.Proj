@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="float-left left-div">
-            <img class="img-size" :src="courseInfo.imgUrl">
+            <img class="img-size" :src="srcUrl">
             <el-button class="entry-button" type="primary" @click="attendCourse">
                 <h2>加入课程</h2>
             </el-button>
@@ -57,6 +57,11 @@
         },
         mounted() {
             this.courseInfo = this.$store.getters.getCourseInfo;
+        },
+        computed: {
+            srcUrl: function () {
+                return "http://202.120.40.8:30382/online-edu/static/" + this.courseInfo.imgUrl
+            }
         }
     }
 </script>

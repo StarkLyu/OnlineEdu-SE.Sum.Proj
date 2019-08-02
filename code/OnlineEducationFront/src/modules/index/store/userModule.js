@@ -119,8 +119,11 @@ const mutations = {
                 }
             ]
         }
+    },
+    setNewAvatar (state, newUrl) {
+        state.userInfo.avatarUrl = newUrl
     }
-}
+};
 
 export default {
     state,

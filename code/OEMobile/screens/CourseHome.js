@@ -17,9 +17,8 @@ class CourseHome extends Component {
     render() {
         return (
             <Container>
-                <CourseHeader openDrawer={this.showDrawer} />
+                <CourseHeader openDrawer={this.showDrawer} navigation={this.props.navigation} />
                 <CourseInfo/>
-                <UserFab navigation={this.props.navigation}/>
             </Container>
         )
     }

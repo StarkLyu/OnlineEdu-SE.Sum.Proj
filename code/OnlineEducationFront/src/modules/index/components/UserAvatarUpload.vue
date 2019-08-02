@@ -19,7 +19,7 @@
         name: "UserAvatarUpload",
         data() {
             return {
-
+                newUrl: ""
             };
         },
         methods: {
@@ -43,26 +43,34 @@
                 }).then((response) => {
                     console.log(response);
                     alert("修改成功");
+                    this.newUrl = response.data;
+                    this.$store.commit("setNewAvatar", this.newUrl);
                 }).catch((error) => {
                     alert("修改失败");
                     console.log(error.response);
                 })
             },
-            uploadSucceed: function(response,file,filelist) {
-                alert("上传成功");
-                console.log(response);
-            },
-            uploadFail: function(error,file,filelist) {
-                alert("上传失败");
-                console.log(error);
-            }
+            // uploadSucceed: function(response,file,filelist) {
+            //     alert("上传成功");
+            //     this.newUrl = response.data;
+            //     alert(this.newUrl);
+            // },
+            // uploadFail: function(error,file,filelist) {
+            //     alert("上传失败");
+            //     console.log(error);
+            // }
         },
         computed: {
             uploadUrl: function () {
                 return "/api/users/" + this.$store.state.user.userInfo.id + "/avatar"
             },
             imageUrl: function () {
-                return this.$store.getters.userAvatarUrl;
+                if (this.newUrl === "") {
+                    return this.$store.getters.userAvatarUrl;
+                }
+                else {
+                    return "http://202.120.40.8:30382/online-edu/static/" + this.newUrl
+                }
             },
             uploadHeader: function () {
                 return {
