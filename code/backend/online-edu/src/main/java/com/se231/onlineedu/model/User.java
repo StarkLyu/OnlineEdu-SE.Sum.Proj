@@ -3,8 +3,8 @@ package com.se231.onlineedu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.se231.onlineedu.message.request.SignUpForm;
+import com.se231.onlineedu.message.request.UserExcel;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -143,7 +143,7 @@ public class User{
     }
 
     @Transient
-    @JsonBackReference
+    @JsonIgnore
     public List<Course> getLearnCourses(){
         List<Course> courses = new ArrayList<>();
         for(Learn learn: getLearns()){
@@ -152,7 +152,7 @@ public class User{
         return courses;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

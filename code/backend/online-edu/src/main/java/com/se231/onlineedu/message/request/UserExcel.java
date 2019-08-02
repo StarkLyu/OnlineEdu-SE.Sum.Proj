@@ -1,4 +1,4 @@
-package com.se231.onlineedu.model;
+package com.se231.onlineedu.message.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;

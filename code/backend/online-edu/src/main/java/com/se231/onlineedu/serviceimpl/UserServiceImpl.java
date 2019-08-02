@@ -3,6 +3,7 @@ package com.se231.onlineedu.serviceimpl;
 import com.alibaba.excel.EasyExcelFactory;
 import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.SignInUserForm;
+import com.se231.onlineedu.message.request.UserExcel;
 import com.se231.onlineedu.message.response.PersonalInfo;
 import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.*;
@@ -11,12 +12,12 @@ import com.se231.onlineedu.repository.SignInRepository;
 import com.se231.onlineedu.repository.UserRepository;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
+import com.se231.onlineedu.util.FileCheckUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,26 +91,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String bulkImportUser(MultipartFile excel) throws IOException {
-        Workbook workbook = null;
-        //获取文件名字
-        String fileName = excel.getOriginalFilename();
-        //判断后缀
-        if(fileName.endsWith("xls")){
-            workbook = new HSSFWorkbook(excel.getInputStream());
-        }else if(fileName.endsWith("xlsx")) {
-            workbook = new XSSFWorkbook(excel.getInputStream());
-        }else {
-            throw new FileFormatNotSupportException("Import File Fail -> File Format Wrong,Only Support Xlsx And Xls");
-        }
-        //获取工作sheet
-        Sheet sheet = workbook.getSheet("sheet1");
-        int rows = sheet.getLastRowNum();
-        if(rows==0){
-            throw new EmptyFileException("File Error -> File Is Empty.");
-        }
+        FileCheckUtil.checkExcelValid(excel);
 
         List<Role> roles=new ArrayList<>();
-        Role userRole = new Role(RoleType.ROLE_USER);
+        Role userRole = roleRepository.findByRole(RoleType.ROLE_USER).orElseThrow(()->new NotFoundException("该角色不存在"));
         roles.add(userRole);
 
         InputStream file = excel.getInputStream();

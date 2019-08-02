@@ -1,13 +1,16 @@
 package com.se231.onlineedu.serviceimpl;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.exception.NotMatchException;
 import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.*;
+import com.se231.onlineedu.repository.PaperRepository;
+import com.se231.onlineedu.repository.ResourceRepository;
+import com.se231.onlineedu.repository.SectionBranchRepository;
+import com.se231.onlineedu.repository.SectionRepository;
+import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +26,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SectionServiceImpl implements SectionService {
     @Autowired
-    CourseRepository courseRepository;
+    CourseService courseService;
 
     @Autowired
     SectionRepository sectionRepository;
@@ -42,7 +45,7 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public Section createSection(Long courseId, Integer secNo, String title) {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
+        Course course = courseService.getCourseInfo(courseId);
         if(secNo>sectionRepository.currentSecNo(courseId).orElse(0)||secNo<0){
             throw new ValidationException("Invalid section number.");
         }
@@ -58,7 +61,7 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public SectionBranches createBranch(Long courseId, int secId,int branchNo, TitleAndDes form) {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
+        Course course = courseService.getCourseInfo(courseId);
         SectionPrimaryKey sectionPrimaryKey = new SectionPrimaryKey(course,secId);
         Section section = sectionRepository.findById(sectionPrimaryKey).orElseThrow(()->new NotFoundException("章节不存在"));
         if(branchNo>sectionBranchRepository.currentBranchNo(courseId,secId).orElse(0)||branchNo<0){
@@ -77,7 +80,7 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public Section issuePaper(Long courseId, int secId, int branchId, Long paperId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
+        Course course = courseService.getCourseInfo(courseId);
         Section section = sectionRepository.findById(new SectionPrimaryKey(course,secId))
                 .orElseThrow(()->new NotFoundException("No corresponding question"));
         Paper paper = paperRepository.findById(paperId)
@@ -95,7 +98,7 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public Section issueResource(Long courseId, int secId, int branchId, Long resourceId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("课程不存在"));
+        Course course = courseService.getCourseInfo(courseId);
         Section section = sectionRepository.findById(new SectionPrimaryKey(course,secId))
                 .orElseThrow(()->new NotFoundException("No corresponding section"));
         Resource resource = resourceRepository.findById(resourceId)

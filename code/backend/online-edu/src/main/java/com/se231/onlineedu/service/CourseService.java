@@ -13,6 +13,7 @@ import com.se231.onlineedu.model.Learn;
 import com.se231.onlineedu.model.Notice;
 import com.se231.onlineedu.model.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Course Service Interface
@@ -152,5 +153,14 @@ public interface CourseService {
      * @return  grade list contains course info and a map between student and score
      */
     GradeTable getGrade(Long courseId);
+
+    /**
+     * this service allow teacher to bulk import students' grade.
+     * @param multipartFile excel contains students' grade
+     * @param courseId id of course
+     * @return the updated grade table
+     * @throws Exception mainly caused by excel not valid
+     */
+    String bulkImportGrade(MultipartFile multipartFile, Long courseId)throws Exception;
 
 }
