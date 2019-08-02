@@ -82,6 +82,7 @@ public class ForumController {
         forum.setContent("该内容已被锁");
         forum.setTitle("该内容已被锁");
         forum.setImageUrls(new ArrayList<>());
+        forum.setLocked(true);
         return forumService.updateForum(forum);
     }
 
