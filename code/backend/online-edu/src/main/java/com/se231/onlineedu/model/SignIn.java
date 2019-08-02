@@ -4,6 +4,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -27,7 +28,7 @@ public class SignIn {
 
     @ManyToMany
     @JsonManagedReference
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
 
     public SignIn(Course course, int signInNo, Date startDate, Date endDate, Double longitude, Double latitude) {
