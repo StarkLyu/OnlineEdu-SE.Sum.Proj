@@ -28,6 +28,19 @@
                 地点：{{ courseInfo.location }}
             </el-col>
         </el-row>
+        <el-row class="row-layout">
+            <el-col :span="3">
+                上课时间：
+            </el-col>
+            <el-col :span="21">
+                <!--<p v-for="timeunit in courseInfo.timeSlots" :key="timeunit.id">-->
+                    <!--{{ this.parseDay(timeunit.day) + " " + timeunit.start + " ~ " + timeunit.end }}-->
+                <!--</p>-->
+                <p v-for="timeunit in courseInfo.timeSlots" :key="timeunit.id">
+                    {{ timeunit.day + " " + timeunit.start + " ~ " + timeunit.end }}
+                </p>
+            </el-col>
+        </el-row>
         <el-row>
             <el-col :span="24">
                 <h4>课程介绍</h4>
@@ -57,6 +70,20 @@
                 courseDes: String,
             }
         },
+        // methods: {
+        //     parseDay: function (day) {
+        //         switch (day) {
+        //             case "MONDAY": return "星期一";
+        //             case "TUESDAY": return "星期二";
+        //             case "WEDNESDAY": return "星期三";
+        //             case "THURSDAY": return "星期四";
+        //             case "FRIDAY": return "星期五";
+        //             case "SATURDAY": return "星期六";
+        //             case "SUNDAY": return "星期日";
+        //             default: return "emm"
+        //         }
+        //     }
+        // }
     }
 </script>
 

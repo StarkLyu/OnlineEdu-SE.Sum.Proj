@@ -88,7 +88,7 @@
                     })
                         .then(function (res) {
                             console.log(res.data);
-                            alert("上传题目图片成功");
+                            alert("发布成功");
                             that.addResponse=false;
                         })
                         .catch(function (error2) {

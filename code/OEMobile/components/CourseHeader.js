@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Header, Left, Body, Button, Title, Icon } from "native-base";
+import { Header, Left, Body, Button, Title, Icon, Right } from "native-base";
 import { connect } from "react-redux";
 
 class CourseHeader extends Component {
@@ -24,6 +24,11 @@ class CourseHeader extends Component {
                         { this.props.courseTitle }
                     </Title>
                 </Body>
+                <Right>
+                    <Button icon transparent onPress={() => {this.props.navigation.navigate("Home")}}>
+                        <Icon name={"user"} type={"FontAwesome"}/>
+                    </Button>
+                </Right>
             </Header>
         );
     }

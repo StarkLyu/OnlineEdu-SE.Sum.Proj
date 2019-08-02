@@ -69,63 +69,68 @@
                 ]
             }
         },
-        mounted() {
-            this.sectionForum = this.$store.getters.getSectionList;
-            for (let i in this.sectionForum) {
-                this.sectionForum[i].topics = []
-            }
-            this.$http.request({
-                url: this.$store.getters.getCourseUrl + "forums",
-                method: "get",
-                headers: this.$store.getters.authRequestHead
-            }).then((response) => {
-                let forum = response.data;
-                forum.sort((a,b) => {
-                    if (a.secNo === b.secNo) {
-                        if (a.path < b.path) return -1;
-                        else return 1;
-                    }
-                    else {
-                        if (a.secNo < b.secNo) return -1;
-                        else return 1;
-                    }
-                });
-                console.log(forum);
-                let scanSecNum = 0;
-                let secLength = this.sectionForum.length;
-                let forumStack = [{}];
-                let pathLevel = 1;
-                for (let i of forum) {
-                    i.responses = [];
-                    let pathArr = i.path.split("/");
-                    let pathLength = pathArr.length;
-                    if (pathLength === 2) {
-                        pathLevel = 2;
-                        forumStack.shift();
-                        forumStack.unshift(i);
-                        for (; scanSecNum < secLength; ++scanSecNum) {
-                            if (this.sectionForum[scanSecNum].secNo === i.secNo) {
-                                this.sectionForum[scanSecNum].topics.push(i);
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        if (pathLength <= pathLevel) {
-                            let popNum = pathLevel - pathLength + 1;
-                            for (let j = 0; j < popNum; ++j) {
-                                forumStack.shift();
-                            }
-                            pathLevel = popNum;
-                        }
-                        forumStack[0].responses.push(i);
-                        forumStack.unshift(i);
-                        pathLevel = pathLength;
-                    }
+        methods: {
+            initForum() {
+                this.sectionForum = this.$store.getters.getSectionList;
+                for (let i in this.sectionForum) {
+                    this.sectionForum[i].topics = []
                 }
-                console.log(this.sectionForum);
-                this.$forceUpdate();
-            })
+                this.$http.request({
+                    url: this.$store.getters.getCourseUrl + "forums",
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    let forum = response.data;
+                    forum.sort((a,b) => {
+                        if (a.secNo === b.secNo) {
+                            if (a.path < b.path) return -1;
+                            else return 1;
+                        }
+                        else {
+                            if (a.secNo < b.secNo) return -1;
+                            else return 1;
+                        }
+                    });
+                    console.log(forum);
+                    let scanSecNum = 0;
+                    let secLength = this.sectionForum.length;
+                    let forumStack = [{}];
+                    let pathLevel = 1;
+                    for (let i of forum) {
+                        i.responses = [];
+                        let pathArr = i.path.split("/");
+                        let pathLength = pathArr.length;
+                        if (pathLength === 2) {
+                            pathLevel = 2;
+                            forumStack.shift();
+                            forumStack.unshift(i);
+                            for (; scanSecNum < secLength; ++scanSecNum) {
+                                if (this.sectionForum[scanSecNum].secNo === i.secNo) {
+                                    this.sectionForum[scanSecNum].topics.push(i);
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            if (pathLength <= pathLevel) {
+                                let popNum = pathLevel - pathLength + 1;
+                                for (let j = 0; j < popNum; ++j) {
+                                    forumStack.shift();
+                                }
+                                pathLevel = popNum;
+                            }
+                            forumStack[0].responses.push(i);
+                            forumStack.unshift(i);
+                            pathLevel = pathLength;
+                        }
+                    }
+                    console.log(this.sectionForum);
+                    this.$forceUpdate();
+                })
+            }
+        },
+        mounted() {
+            this.initForum();
         }
     }
 </script>

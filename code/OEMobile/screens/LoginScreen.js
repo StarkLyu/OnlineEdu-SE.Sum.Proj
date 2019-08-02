@@ -45,8 +45,17 @@ class LoginScreen extends Component {
                 }
             });
         }).catch((error) => {
-            alert(error);
-            console.log(error);
+            let errorCode = error.response.data.status;
+            switch (errorCode) {
+                case 401:
+                    alert("用户名或密码错误");
+                    break;
+                case 400:
+                    alert("用户名或密码格式错误，请检查是否输入用户名或密码")
+                    break;
+                default:
+                    alert("系统出错")
+            }
         })
     }
 

@@ -2,7 +2,7 @@ package com.se231.onlineedu.model;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +23,12 @@ public class SectionBranches {
 
     private String description;
 
-    @OneToMany
+    @ManyToMany
     private List<Paper> papers;
 
     private int branchNo;
 
-    @OneToMany
+    @ManyToMany
     private List<Resource> resources;
 
     public SectionBranches() {

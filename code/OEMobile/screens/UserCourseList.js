@@ -1,9 +1,8 @@
 import React from "react";
-import {FlatList, Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Container, Header, Fab} from 'native-base';
+import {FlatList, Image, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Container, Header, Body, Text, Title, Right, Button, Icon} from 'native-base';
 import UserUnit from "../components/UserUnit";
 import UserHeader from "../components/UserHeader";
-import Icon from "react-native-vector-icons/FontAwesome"
 import { connect } from 'react-redux';
 
 class UserCourseList extends React.Component {
@@ -82,9 +81,16 @@ class UserCourseList extends React.Component {
         return (
             <Container>
                 <Header>
-                    <Text>
+                    <Body>
+                    <Title>
                         我的课程
-                    </Text>
+                    </Title>
+                    </Body>
+                    <Right>
+                        <Button icon transparent onPress={() => {this.props.navigation.navigate("Login")}}>
+                            <Icon name={"sign-out"} type={"FontAwesome"}/>
+                        </Button>
+                    </Right>
                 </Header>
                 <FlatList data={this.state.courses} renderItem={({item}) => this._createCourseCard(item)}/>
             </Container>

@@ -13,6 +13,10 @@ class CourseSignins extends Component {
         this.state = {
             signIns: []
         };
+        this.initSignins();
+    }
+
+    initSignins = () => {
         this.signins = [{
             signIn: {
                 startDate: "ss",
@@ -79,7 +83,8 @@ class CourseSignins extends Component {
                         longitude: position.coords.longitude
                     }
                 }).then(() => {
-                    alert("签到成功！")
+                    alert("签到成功！");
+                    this.initSignins();
                 }).catch((error) => {
                     alert(error.response.data);
                     console.log(error.response)
@@ -128,11 +133,10 @@ class CourseSignins extends Component {
     render() {
         return (
             <ScrollView>
-                <CourseHeader openDrawer={this.showDrawer} />
+                <CourseHeader openDrawer={this.showDrawer} navigation={this.props.navigation}/>
                 <List>
                     <FlatList data={this.state.signIns} renderItem={({item}) => this._signInLine(item)}/>
                 </List>
-                <UserFab navigation={this.props.navigation}/>
             </ScrollView>
         );
     }

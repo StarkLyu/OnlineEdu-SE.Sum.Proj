@@ -71,11 +71,8 @@
                         path: this.path
                     }
                 }).then((response) => {
-                    alert("发布成功！");
                     console.log(response.data);
-
                     var tempId=response.data.id;
-
                     var that=this;
                     // 再上传图片
                     that.$http.request({
@@ -89,7 +86,7 @@
                     })
                         .then(function (res) {
                             console.log(res.data);
-                            alert("上传题目图片成功");
+                            alert("发布成功");
                             that.addResponse=false;
                         })
                         .catch(function (error2) {
