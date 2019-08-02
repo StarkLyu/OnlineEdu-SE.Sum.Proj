@@ -43,7 +43,7 @@
         data() {
             return {
                 chapters: this.$store.getters.getCourseInfo.sectionList,
-                   
+
                 showAddChapter: false,
                 addAfterChapter: {
                     id: 0,

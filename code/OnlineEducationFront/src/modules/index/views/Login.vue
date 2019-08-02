@@ -94,7 +94,8 @@
                                 //console.log(state);
                                 if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
                                     localStorage.setItem("managerToken", getToken);
-                                    window.location = "/manager";
+                                    // window.location = "/manager";
+                                    window.location.href = '/manage.html#/'
                                 }
                                 this.$router.push('/user');
                             }).catch((error) => {

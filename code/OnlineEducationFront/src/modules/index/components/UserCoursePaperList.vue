@@ -11,9 +11,9 @@
             </template>
         </el-table-column>
         <el-table-column label="链接">
-            <el-link>
-                进入作业
-            </el-link>
+            <template scope="scope">
+                <el-link @click="loadPaperPage(scope.$index, scope.row)">进入作业</el-link>
+            </template>
         </el-table-column>
     </el-table>
 </template>
@@ -79,6 +79,16 @@
                         console.log(error.response);
                         alert("请求失败");
                     });
+            },
+
+            // 加载作业页面
+            loadPaperPage: function (index, row) {
+                this.$router.push({
+                    name: "courseStudentPaper",
+                    params: {
+                        paperId: row.id
+                    }
+                });
             }
         },
 
