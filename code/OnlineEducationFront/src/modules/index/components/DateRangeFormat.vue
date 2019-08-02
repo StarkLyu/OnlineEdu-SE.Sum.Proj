@@ -14,6 +14,9 @@
             },
             showMinute: {
                 default: false
+            },
+            originText: {
+                default: true
             }
         },
         computed: {

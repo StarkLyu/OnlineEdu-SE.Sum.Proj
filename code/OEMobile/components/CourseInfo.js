@@ -67,7 +67,7 @@ class CourseInfo extends Component {
 
 function mapStateToProps(state) {
     return {
-        courseInfo: state.courseInfo
+        courseInfo: state.courseInfo,
     }
 }
 

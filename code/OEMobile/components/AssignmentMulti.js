@@ -7,12 +7,12 @@ class AssignmentMulti extends Component {
         super(props);
         this.state = {
             answer: "",
-            selectedList: []
+            selectedList: this.props.initAnswer.split("")
         }
     }
 
     selectOption = (optionKey) => {
-        let newSelectedList = this.state.selected;
+        let newSelectedList = this.state.selectedList;
         if (this.optionSelected(optionKey)) {
             newSelectedList.splice(newSelectedList.indexOf(optionKey), 1);
         }
@@ -23,7 +23,12 @@ class AssignmentMulti extends Component {
         this.setState({
             answer: this.answerString(newSelectedList),
             selectedList: newSelectedList
-        })
+        });
+        let newAnswer = {
+            questionId: this.props.question.id,
+            answer: this.state.answer
+        };
+        this.props.setAnswer(newAnswer);
     };
 
     optionSelected = (optionKey) => {
@@ -58,7 +63,7 @@ class AssignmentMulti extends Component {
                 <ListItem>
                     <Text>{this.props.question.content}</Text>
                 </ListItem>
-                <FlatList data={this.props.question.options.keys()} renderItem={({item}) => this._renderOption(item)} />
+                <FlatList data={Object.keys(this.props.question.options)} renderItem={({item}) => this._renderOption(item)} />
             </Container>
         );
     }

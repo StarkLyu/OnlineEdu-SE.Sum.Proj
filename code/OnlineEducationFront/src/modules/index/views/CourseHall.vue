@@ -4,6 +4,7 @@
                 v-for="course in courseList"
                 :key="course.courseId"
                 :course-info="course"
+                class="float-left course-layout"
         ></CourseHallCard>
     </div>
 </template>
@@ -44,5 +45,7 @@
 </script>
 
 <style scoped>
-
+    .course-layout {
+        margin: 20px 15px;
+    }
 </style>
