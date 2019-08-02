@@ -306,6 +306,7 @@ public class UserServiceImplTest {
         Optional<User> userOptional = Optional.of(user);
         SignInUserForm signInUserForm = new SignInUserForm();
         signInUserForm.setCourseId(1L);
+        signInUserForm.setSignInNo(1);
         signInUserForm.setLatitude(0D);
         signInUserForm.setLongitude(0D);
         SignIn signIn = new SignIn();

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CourseInfo from "../components/CourseInfo";
 import { Container } from "native-base";
 import CourseHeader from "../components/CourseHeader";
+import UserFab from "../components/UserFab";
 
 class CourseHome extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class CourseHome extends Component {
             <Container>
                 <CourseHeader openDrawer={this.showDrawer} />
                 <CourseInfo/>
+                <UserFab navigation={this.props.navigation}/>
             </Container>
         )
     }

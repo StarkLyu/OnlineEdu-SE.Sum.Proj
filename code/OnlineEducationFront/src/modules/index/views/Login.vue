@@ -115,7 +115,6 @@
                             else {
                                 alert(error);
                             }
-                            reject();
                         });
                         /*this.$store.dispatch('login', this.loginInfo).then(() => {
                             this.$router.push('/user')

@@ -22,6 +22,8 @@ public class Forum {
 
     private String title;
 
+    private boolean isLocked = false;
+
     @NotBlank
     private String content;
 
@@ -42,6 +44,14 @@ public class Forum {
     private String path;
 
     private List<String> imageUrls = new ArrayList<>();
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
 
     public String getId() {
         return id;
