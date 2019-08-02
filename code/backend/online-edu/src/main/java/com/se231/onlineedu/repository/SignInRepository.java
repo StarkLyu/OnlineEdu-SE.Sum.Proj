@@ -5,6 +5,7 @@ import com.se231.onlineedu.model.SignInPrimaryKey;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,4 +19,6 @@ public interface SignInRepository extends CrudRepository<SignIn, SignInPrimaryKe
      */
     @Query(value = "select max(sign_in_no) from sign_in where course_id = ?1",nativeQuery = true)
     Optional<Integer> currentSignInNo(Long courseId);
+
+    List<SignIn> findBySignInPrimaryKey_Course_Id(Long courseId);
 }

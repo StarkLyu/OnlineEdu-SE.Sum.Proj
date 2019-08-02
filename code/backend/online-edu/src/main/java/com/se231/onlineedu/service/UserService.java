@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.message.response.SignInWithState;
 import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.User;
 import org.springframework.http.ResponseEntity;
@@ -133,5 +134,16 @@ public interface UserService {
      */
     boolean checkIfSameAsOldEmail(Long id, String email);
 
+    /**
+     * @param userId
+     * @return
+     */
     UserAvatar getUserAvatar(Long userId);
+
+    /**
+     * @param courseId
+     * @param userId
+     * @return
+     */
+    List<SignInWithState> getUserSignIns(Long courseId, Long userId);
 }
