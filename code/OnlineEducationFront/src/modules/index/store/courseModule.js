@@ -63,7 +63,22 @@ const getters = {
 
 // actions
 const actions = {
-
+    // getThisCourseInfo(state){
+    //     this.$http.request({
+    //         url: '/api/courses/'+state.id+'/info',
+    //         method: "get",
+    //         headers: state.getters.authRequestHead,
+    //     })
+    //         .then(function (response) {
+    //             console.log(response.data);
+    //             state.commit("setCourseInfo",response.data);
+    //             // alert("请求成功");
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //             // alert("请求失败");
+    //         });
+    // },
 };
 
 // mutations

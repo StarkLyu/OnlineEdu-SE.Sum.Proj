@@ -45,6 +45,10 @@ public class CourseServiceImplTest {
     @MockBean
     private NoticeRepository noticeRepository;
 
+
+    @MockBean
+    private UserRepository userRepository;
+
     @Autowired
     private CourseService courseService;
 

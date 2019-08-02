@@ -148,6 +148,25 @@
         },
 
         methods:{
+            // getThisCourseInfo(){
+            //     var that=this;
+            //     this.$http.request({
+            //         url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+            //         method: "get",
+            //         headers: this.$store.getters.authRequestHead,
+            //     })
+            //         .then(function (response) {
+            //             console.log(response.data);
+            //             that.$store.commit("setCourseInfo",response.data);
+            //             // alert("请求成功");
+            //         })
+            //         .catch(function (error) {
+            //             console.log(error);
+            //             alert("请求失败");
+            //         });
+            //
+            // },
+
             // 显示增加作业弹窗
             handleAdd(){
                 this.AssignEditForm=[];
@@ -202,8 +221,9 @@
                     finalQuestion.push(tempquestion);
                 }
                 this.AssignEditForm.questionFormList=finalQuestion;
-                console.log(this.AssignEditForm);
-                console.log(this.AssignEditForm.start);
+                // console.log(this.AssignEditForm);
+                // console.log(this.AssignEditForm.start);
+                // var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/papers',
                     method: "post",
@@ -219,7 +239,8 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        // that.getThisCourseInfo();
+                        alert("添加作业成功");
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -266,6 +287,8 @@
                 this.questions.push(tempquestion);
             }
             console.log(this.questions);
+
+            // this.getThisCourseInfo();
         }
     }
 </script>

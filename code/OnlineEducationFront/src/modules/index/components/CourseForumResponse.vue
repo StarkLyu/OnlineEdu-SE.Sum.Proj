@@ -8,6 +8,12 @@
             <div class="float-clear"></div>
         </div>
         <pre>{{ response.content }}</pre>
+        <div v-for="image in response.imageUrls" :key="image">
+            <el-image v-if="image"
+                      :src="'http://202.120.40.8:30382/online-edu/static/' + image + '?a=' + Math.random()"
+                      class="avatar">
+            </el-image>
+        </div>
         <div class="float-right">
             <AddForumResponse :sec-no="response.secNo" :path="response.path"></AddForumResponse>
         </div>

@@ -25,7 +25,7 @@ class AssignmentQuestion extends Component {
                 return (
                     <AssignmentSingle
                         question={this.props.question}
-                        //setAnswer={this.props.setAnswer}
+                        setAnswer={this.props.setAnswer}
                         initAnswer={this.getAnswer()}
                     />);
             case "MULTIPLE_ANSWER":
