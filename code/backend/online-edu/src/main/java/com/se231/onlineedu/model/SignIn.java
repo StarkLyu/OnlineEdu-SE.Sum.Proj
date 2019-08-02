@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -94,5 +96,18 @@ public class SignIn {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SignIn signIn = (SignIn) o;
+        return Objects.equals(signInPrimaryKey, signIn.signInPrimaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(signInPrimaryKey);
     }
 }

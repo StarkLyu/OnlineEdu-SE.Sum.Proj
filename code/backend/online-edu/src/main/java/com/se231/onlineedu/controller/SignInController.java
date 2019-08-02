@@ -3,13 +3,16 @@ package com.se231.onlineedu.controller;
 import com.se231.onlineedu.exception.EndBeforeStartException;
 import com.se231.onlineedu.message.request.SignInCourseForm;
 import com.se231.onlineedu.message.request.SignInUserForm;
+import com.se231.onlineedu.message.response.SignInWithState;
 import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.SignIn;
 import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,9 +46,10 @@ public class SignInController {
         return userService.saveUserSignIn(userId, signInUserForm);
     }
 
-    @ApiOperation("签到列表")
+
+    @ApiOperation("某个用户的签到")
     @GetMapping("/courses/{courseId}/signIns")
-    public List<SignIn> getSignIns(@PathVariable Long courseId) {
-        return courseService.getCourseInfo(courseId).getSignIns();
+    public List<SignInWithState> signIns(@PathVariable Long courseId, @AuthenticationPrincipal UserPrinciple userPrinciple){
+        return userService.getUserSignIns(courseId, userPrinciple.getId());
     }
 }

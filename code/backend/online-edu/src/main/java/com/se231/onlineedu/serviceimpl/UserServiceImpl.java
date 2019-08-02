@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
+import com.se231.onlineedu.message.response.SignInWithState;
 import com.se231.onlineedu.message.response.UserAvatar;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
@@ -234,5 +235,21 @@ public class UserServiceImpl implements UserService {
     public UserAvatar getUserAvatar(Long userId) {
         User user = getUserInfo(userId);
         return new UserAvatar(user.getUsername(),user.getAvatarUrl());
+    }
+
+    @Override
+    public List<SignInWithState> getUserSignIns(Long courseId, Long userId){
+        List<SignIn> signInsCourse = signInRepository.findBySignInPrimaryKey_Course_Id(courseId);
+        List<SignIn> signInsUser = getUserInfo(userId).getSignIns();
+        List<SignInWithState> signInWithStates = new ArrayList();
+        for(SignIn signIn: signInsCourse){
+            if(signInsUser.contains(signIn)){
+                signInWithStates.add(new SignInWithState(signIn, true));
+            } else {
+                signInWithStates.add(new SignInWithState(signIn, false));
+            }
+        }
+        return signInWithStates;
+
     }
 }
