@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class SignIn {
@@ -25,12 +26,16 @@ public class SignIn {
     private Double latitude;
 
     @ManyToMany
+    @JsonManagedReference
     private List<User> users;
 
-    public SignIn(Course course, int signInNo, Date startDate, Date endDate) {
+
+    public SignIn(Course course, int signInNo, Date startDate, Date endDate, Double longitude, Double latitude) {
         signInPrimaryKey = new SignInPrimaryKey(course, signInNo);
         this.startDate = startDate;
         this.endDate = endDate;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public SignIn() {

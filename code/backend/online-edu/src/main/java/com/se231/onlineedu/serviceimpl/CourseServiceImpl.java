@@ -236,7 +236,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course saveSignIn(Long id, SignInCourseForm signInForm) {
         Course course = getCourseInfo(id);
-        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo() == 0?signInRepository.currentSignInNo(id).orElse(0) + 1 : signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
+        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo() == 0?signInRepository.currentSignInNo(id).orElse(0) + 1 : signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate(), signInForm.getLatitude(), signInForm.getLongitude())));
         return courseRepository.save(course);
     }
 
