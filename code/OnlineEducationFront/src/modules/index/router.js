@@ -107,7 +107,7 @@ export default new Router({
                         },
                         {
                             path: 'student',
-                            name: 'TeacherStudenetManage',
+                            name: 'TeacherStudentManage',
                             component: () => import('./views/TeacherStudentManage')
                         },
                         {
@@ -169,25 +169,5 @@ export default new Router({
             name: 'register',
             component: () => import('./views/Register.vue')
         },
-        // {
-        //     path: '/teachercoursedetail',
-        //     name: 'TeacherCourseDetail',
-        //     component: () => import('./views/TeacherCourseDetail')
-        // },
-        // {
-        //     path: '/teachercoursemanage',
-        //     name: 'TeacherCourseManage',
-        //     component: () => import('./views/TeacherCourseManage')
-        // },
-        // {
-        //     path: '/teacherstudentmanage',
-        //     name: 'TeacherStudenetManage',
-        //     component: () => import('./views/TeacherStudentManage')
-        // },
-        // {
-        //     path: '/teacherscoremanage',
-        //     name: 'TeacherScoreManage',
-        //     component: () => import('./views/TeacherScoreManage')
-        // }
     ]
 })

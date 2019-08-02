@@ -49,7 +49,7 @@
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="grade"
+                            prop="score"
                             label="成绩"
                             min-width="25%"
                     ></el-table-column>
@@ -171,7 +171,6 @@
 </script>
 
 <style scoped>
-    @import "/src/assets/div-layout.css";
     .usertable {
         width: 100%;
         font-size: 15px;

@@ -1,22 +1,13 @@
 package com.se231.onlineedu.serviceimpl;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import com.se231.onlineedu.exception.AnswerException;
-import com.se231.onlineedu.exception.NotFoundException;
-import com.se231.onlineedu.exception.NotMatchException;
-import com.se231.onlineedu.exception.ValidationException;
+import java.util.*;
+import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.MarkForm;
 import com.se231.onlineedu.message.request.QuestionAnswer;
 import com.se231.onlineedu.message.request.SubmitAnswerForm;
 import com.se231.onlineedu.model.*;
-import com.se231.onlineedu.repository.AnswerRepository;
-import com.se231.onlineedu.repository.PaperAnswerRepository;
-import com.se231.onlineedu.repository.PaperRepository;
-import com.se231.onlineedu.repository.QuestionRepository;
+import com.se231.onlineedu.repository.*;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.PaperAnswerService;
 import com.se231.onlineedu.service.PaperService;
@@ -51,6 +42,9 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     @Autowired
     PaperService paperService;
 
+    @Autowired
+    PaperWithQuestionsRepository paperWithQuestionsRepository;
+
     private static final int MAX_TIMES = 3;
 
     private static final int LIMIT = 5120000;
@@ -60,6 +54,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
+        timeTest(paper);
         try{
             for (QuestionAnswer questionAnswer :form.getAnswerList()){
                 Question question = questionRepository.findById(questionAnswer.getQuestionId())
@@ -131,6 +126,10 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
             Answer answer = answerRepository.findById(answerPrimaryKey)
                     .orElseThrow(()->new NotFoundException("No answer for this question"));
+            PaperWithQuestions paperWithQuestions = paperWithQuestionsRepository.getOne(new PaperWithQuestionsPrimaryKey(paper,question));
+            if(markForm.getScore()>paperWithQuestions.getScore()){
+                throw new AnswerException("该题满分为："+paperWithQuestions.getScore());
+            }
             answer.setGrade(markForm.getScore());
             answer.setComment(markForm.getComment());
             grade+=answer.getGrade();
@@ -150,6 +149,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
          */
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
+        timeTest(paper);
         paperAnswer.setState(state);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(()->new NotFoundException("No corresponding question"));
@@ -209,5 +209,15 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         User user = userService.getUserInfo(studentId);
         Paper paper = paperService.getPaperInfo(paperId,courseId);
         return paperAnswerRepository.findAllByPaperAnswerPrimaryKey_PaperAndAndPaperAnswerPrimaryKey_User(paper,user);
+    }
+
+    private void timeTest(Paper paper){
+        Date currentTime = new Date();
+        if(currentTime.before(paper.getStart())){
+            throw new BeforeStartException("作业尚未开始");
+        }
+        if(currentTime.after(paper.getEnd())){
+            throw new AfterEndException("作业已经结束");
+        }
     }
 }

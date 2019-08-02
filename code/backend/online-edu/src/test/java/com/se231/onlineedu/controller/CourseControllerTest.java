@@ -2,6 +2,7 @@ package com.se231.onlineedu.controller;
 
 import com.se231.onlineedu.jwtTest.UserDetailsDummy;
 import com.se231.onlineedu.message.request.CourseApplicationForm;
+import com.se231.onlineedu.message.request.CourseModifyForm;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.GradeTable;
 import com.se231.onlineedu.message.response.Identity;
@@ -141,7 +142,7 @@ public class CourseControllerTest {
         course1.setAvatarUrl("avatarUrl");
         when(courseService.updateCourseAvatar(anyString(), anyLong())).thenReturn(course1);
         when(courseService.checkIfUserPick(anyLong(),anyLong())).thenReturn(true);
-        when(courseService.modifyCourseInfo(anyLong(),any(CourseApplicationForm.class))).thenReturn(course1);
+        when(courseService.modifyCourseInfo(anyLong(),any(CourseModifyForm.class))).thenReturn(course1);
         when(courseService.selectTeacherAssistant(anyLong(),anyLong())).thenReturn(course1);
 
         GradeTable gradeTable = new GradeTable();

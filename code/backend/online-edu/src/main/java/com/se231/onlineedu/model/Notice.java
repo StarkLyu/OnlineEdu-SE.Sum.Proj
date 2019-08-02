@@ -1,5 +1,6 @@
 package com.se231.onlineedu.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.EmbeddedId;
@@ -24,6 +25,7 @@ public class Notice {
         this.noticePrimaryKey = noticePrimaryKey;
     }
 
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date issueDate = new Date();
 
     private String content;

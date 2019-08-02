@@ -90,12 +90,7 @@ public class PaperServiceImpl implements PaperService {
     public List<PaperFinish> getStudentFinish(Long courseId, Long paperId) {
         List<PaperFinish> paperFinishList = new ArrayList<>();
         Course course = courseService.getCourseInfo(courseId);
-        Paper paper = paperRepository.findById(paperId)
-                .orElseThrow(()->new NotFoundException("No corresponding paper"));
-        if(!course.getPapers().contains(paper)){
-            throw new NotMatchException("This course don't have match paper.");
-        }
-
+        getPaperInfo(paperId,courseId);
         course.getStudents().forEach(student-> paperFinishList.add(setPaperFinish(student.getId(),paperId)));
         return paperFinishList;
     }
@@ -113,8 +108,7 @@ public class PaperServiceImpl implements PaperService {
         }
         else{
             PaperAnswerPrimaryKey paperAnswerPrimaryKey = new PaperAnswerPrimaryKey(user,paper,maxTimes);
-            PaperAnswer paperAnswer = paperAnswerRepository.findById(paperAnswerPrimaryKey)
-                    .orElseThrow(()->new NotFoundException("No corresponding paper answer"));
+            PaperAnswer paperAnswer = paperAnswerRepository.getOne(paperAnswerPrimaryKey);
             paperFinish.setState(paperAnswer.getState());
         }
         return paperFinish;
@@ -129,5 +123,6 @@ public class PaperServiceImpl implements PaperService {
             throw new NotMatchException("This course doesn't have this paper");
         }
         return paper;
+
     }
 }

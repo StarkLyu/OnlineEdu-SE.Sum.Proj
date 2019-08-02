@@ -143,7 +143,7 @@ public class SignInControllerTest {
 
     @Test
     public void postSignIn() throws Exception {
-        mvc.perform(post("/api/courses/1/signIns").header("Authorization", token).contentType(MediaType.APPLICATION_JSON).content("{\"startDate\":\"2019-10-12\",\"endDate\":\"2019-11-21\"}"))
+        mvc.perform(post("/api/courses/1/signIns").header("Authorization", token).contentType(MediaType.APPLICATION_JSON).content("{\"startDate\":\"2019-10-12 00:00:00\",\"endDate\":\"2019-11-21 00:00:00\"}"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));

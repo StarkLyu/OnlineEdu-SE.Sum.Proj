@@ -305,9 +305,14 @@ public class UserServiceImplTest {
         User user = new User();
         Optional<User> userOptional = Optional.of(user);
         SignInUserForm signInUserForm = new SignInUserForm();
+        signInUserForm.setCourseId(1L);
+        signInUserForm.setLatitude(0D);
+        signInUserForm.setLongitude(0D);
         SignIn signIn = new SignIn();
         signIn.setStartDate(DateUtil.yesterday());
         signIn.setEndDate(DateUtil.tomorrow());
+        signIn.setLatitude(0D);
+        signIn.setLongitude(0D);
         signIn.setSignInPrimaryKey(new SignInPrimaryKey(new Course(),12));
         Mockito.when(userRepository.findById(1L)).thenReturn(userOptional);
         Mockito.when(signInRepository.findById(any(SignInPrimaryKey.class))).thenReturn(Optional.of(signIn));

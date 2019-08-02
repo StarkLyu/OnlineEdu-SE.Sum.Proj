@@ -81,5 +81,18 @@ public class AppExceptionHandler {
     public ResponseEntity<String> handlerException(EndBeforeStartException exception){
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
+
+    @ResponseBody
+    @ExceptionHandler(value = AnswerException.class)
+    public ResponseEntity<String> handlerException(AnswerException exception){
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = NotMatchException.class)
+    public ResponseEntity<String> handlerException(NotMatchException exception){
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
 }
 
