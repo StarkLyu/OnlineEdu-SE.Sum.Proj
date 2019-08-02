@@ -51,11 +51,11 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        alert("添加节成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        alert("添加节失败");
                     });
                 this.newTitle = "";
                 this.newDescription="";

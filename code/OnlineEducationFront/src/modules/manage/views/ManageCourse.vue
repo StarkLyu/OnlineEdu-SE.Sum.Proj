@@ -230,8 +230,8 @@
                 dialogStatus: "",
 
                 textMap: {
-                    update: "Edit",
-                    create: "Create"
+                    update: "编辑",
+                    create: "新增"
                 },
 
                 //编辑界面数据

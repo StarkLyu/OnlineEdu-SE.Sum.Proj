@@ -106,7 +106,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        alert("学生答题情况请求失败");
                     });
             },
 
@@ -127,14 +127,14 @@
                     headers:this.$store.getters.authRequestHead,
                 })
                     .then(function (response) {
-                        console.log("获取学生答题数据");
+                        // console.log("获取学生答题数据");
                         console.log(response.data);
                         that.oneStuAnswer=response.data;
                         // alert("请求成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        alert("获取学生答题数据请求失败");
                     });
             },
 

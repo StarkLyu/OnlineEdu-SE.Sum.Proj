@@ -12,6 +12,7 @@
                 <el-button @click="showSubDialog">添加主观题</el-button>
 <!--                所有题目展示-->
                 <div v-for="question in questions" :key="question.id">
+                    <el-divider></el-divider>
 <!--                    <div style="float: right">-->
 <!--                        <el-button size="small" @click="showQuestionEdit(question)">编辑</el-button>-->
 <!--                        <el-button size="small" type="danger" @click="deleteQuestion">删除</el-button>-->
@@ -372,7 +373,7 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传题目图片成功");
+                                    alert("上传单选题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
@@ -428,7 +429,7 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传题目图片成功");
+                                    alert("上传多选题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
@@ -477,7 +478,7 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传题目图片成功");
+                                    alert("上传判断题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
@@ -525,7 +526,7 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传题目图片成功");
+                                    alert("上传多选题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);

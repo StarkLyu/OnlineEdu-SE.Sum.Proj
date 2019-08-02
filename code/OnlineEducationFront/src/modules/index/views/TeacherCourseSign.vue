@@ -144,7 +144,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        alert("发布签到失败");
                     });
             },
 

@@ -120,7 +120,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        alert("获取学生失败");
                     });
             },
 
@@ -140,7 +140,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        alert("任命助教失败");
                     });
             }
         },

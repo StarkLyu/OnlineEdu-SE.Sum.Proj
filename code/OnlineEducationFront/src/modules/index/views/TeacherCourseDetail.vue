@@ -216,9 +216,9 @@
                     },
                 }).then((response) => {
                     console.log(response);
-                    alert("修改成功");
+                    alert("修改课程信息成功");
                 }).catch((error) => {
-                    alert("修改失败");
+                    alert("修改课程信息失败");
                     console.log(error.response);
                 })
             },
@@ -265,12 +265,12 @@
                     .then(function (response) {
                         console.log(response.data);
 
-                        that.dialogFormVisible=false;
+                        that.courseDialogVisible=false;
                         alert("修改课程信息成功");
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("请求失败");
+                        alert("修改课程信息失败");
                     });
             },
 

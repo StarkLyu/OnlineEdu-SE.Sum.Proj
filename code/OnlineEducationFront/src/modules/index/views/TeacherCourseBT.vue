@@ -148,11 +148,12 @@
                     .then(function (response) {
                         console.log(response.data);
 
-                        alert("上传成功");
+                        alert("上传资源成功");
 
                     })
                     .catch(function (error) {
                         console.log(error);
+                        alert("上传资源失败");
                     });
             },
 
