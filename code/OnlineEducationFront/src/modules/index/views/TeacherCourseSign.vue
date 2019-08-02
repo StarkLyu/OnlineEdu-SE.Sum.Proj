@@ -124,6 +124,7 @@
             createSign(){
                 console.log(this.center);
 
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/signIns',
                     method: "post",
@@ -138,7 +139,7 @@
                     .then(function (response) {
                         console.log(response.data);
                         alert("发布签到成功");
-                        this.signDialogVisible=false;
+                        that.signDialogVisible=false;
 
                     })
                     .catch(function (error) {

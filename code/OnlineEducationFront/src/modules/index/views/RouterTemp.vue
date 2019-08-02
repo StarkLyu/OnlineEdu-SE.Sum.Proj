@@ -5,7 +5,7 @@
 <script>
     export default {
         name: "RouterTemp",
-        mounted() {
+        created() {
             this.$http.request({
                 url: this.$store.getters.getCourseUrl + "info",
                 method: "get",
