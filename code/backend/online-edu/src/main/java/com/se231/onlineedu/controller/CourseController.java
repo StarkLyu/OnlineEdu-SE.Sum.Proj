@@ -157,4 +157,11 @@ public class CourseController {
         return courseService.setGrade(courseId,studentId,grade);
     }
 
+    @ApiOperation("批量导入学生成绩")
+    @PutMapping("/{id}/bulkImportGrade")
+    public String bulkImportGrade(@PathVariable("id")Long courseId,
+                                  @RequestParam("excel")MultipartFile multipartFile)throws Exception{
+        return courseService.bulkImportGrade(multipartFile,courseId);
+    }
+
 }

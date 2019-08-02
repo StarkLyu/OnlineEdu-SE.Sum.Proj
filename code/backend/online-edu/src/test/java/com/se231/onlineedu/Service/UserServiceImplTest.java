@@ -4,10 +4,7 @@ package com.se231.onlineedu.Service;
 import com.se231.onlineedu.exception.*;
 import com.se231.onlineedu.message.request.SignInUserForm;
 import com.se231.onlineedu.message.response.PersonalInfo;
-import com.se231.onlineedu.model.Course;
-import com.se231.onlineedu.model.SignIn;
-import com.se231.onlineedu.model.SignInPrimaryKey;
-import com.se231.onlineedu.model.User;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.RoleRepository;
 import com.se231.onlineedu.repository.SignInRepository;
 import com.se231.onlineedu.repository.UserRepository;
@@ -115,6 +112,9 @@ public class UserServiceImplTest {
     public void bulkImportUser() throws IOException {
         File emptyFile = new File("src/test/resources/UserData.xlsx");
         MockMultipartFile multipartFile = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(emptyFile.getPath()));
+        Role role = new Role(RoleType.ROLE_USER);
+        Optional<Role> roleOptional = Optional.of(role);
+        Mockito.when(roleRepository.findByRole(any(RoleType.class))).thenReturn(roleOptional);
 
         String response = userService.bulkImportUser(multipartFile);
         assertThat(response).isEqualTo("导入成功");
@@ -126,6 +126,9 @@ public class UserServiceImplTest {
         expectedException.expectMessage("Data Error -> Same Email In Row");
 
         Mockito.when(userRepository.existsByEmail(any(String.class))).thenReturn(true);
+        Role role = new Role(RoleType.ROLE_USER);
+        Optional<Role> roleOptional = Optional.of(role);
+        Mockito.when(roleRepository.findByRole(any(RoleType.class))).thenReturn(roleOptional);
 
         File emptyFile = new File("src/test/resources/UserDataSameEmail.xlsx");
         MockMultipartFile multipartFile = new MockMultipartFile("excel", "UserData.xlsx","plain/text", new FileInputStream(emptyFile.getPath()));
@@ -137,7 +140,9 @@ public class UserServiceImplTest {
     public void bulkImportUserSameTel() throws IOException {
         expectedException.expect(BulkImportDataException.class);
         expectedException.expectMessage("Data Error -> Same Telephone Number In Row");
-
+        Role role = new Role(RoleType.ROLE_USER);
+        Optional<Role> roleOptional = Optional.of(role);
+        Mockito.when(roleRepository.findByRole(any(RoleType.class))).thenReturn(roleOptional);
         Mockito.when(userRepository.existsByTel(any(Long.class))).thenReturn(true);
 
         File emptyFile = new File("src/test/resources/UserDataSameTel.xlsx");
@@ -151,6 +156,9 @@ public class UserServiceImplTest {
         expectedException.expect(BulkImportDataException.class);
         expectedException.expectMessage("Data Error -> Same Username In Row");
 
+        Role role = new Role(RoleType.ROLE_USER);
+        Optional<Role> roleOptional = Optional.of(role);
+        Mockito.when(roleRepository.findByRole(any(RoleType.class))).thenReturn(roleOptional);
         Mockito.when(userRepository.existsByUsername(any(String.class))).thenReturn(true);
 
         File emptyFile = new File("src/test/resources/UserDataSameUsername.xlsx");
@@ -306,6 +314,7 @@ public class UserServiceImplTest {
         Optional<User> userOptional = Optional.of(user);
         SignInUserForm signInUserForm = new SignInUserForm();
         signInUserForm.setCourseId(1L);
+        signInUserForm.setSignInNo(1);
         signInUserForm.setLatitude(0D);
         signInUserForm.setLongitude(0D);
         SignIn signIn = new SignIn();

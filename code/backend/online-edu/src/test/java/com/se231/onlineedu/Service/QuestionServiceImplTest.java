@@ -1,13 +1,16 @@
 package com.se231.onlineedu.Service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import java.util.Optional;
 import com.se231.onlineedu.exception.NotFoundException;
+import com.se231.onlineedu.model.CoursePrototype;
 import com.se231.onlineedu.model.Question;
+import com.se231.onlineedu.model.QuestionType;
 import com.se231.onlineedu.repository.QuestionRepository;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.QuestionService;
 import com.se231.onlineedu.serviceimpl.QuestionServiceImpl;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -54,6 +57,27 @@ public class QuestionServiceImplTest {
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
 
         Question question1 = questionService.getQuestionInfo(1L);
-        
+
+        assertThat(question1.getId()).isEqualTo(1L);
+        assertThat(question1.getQuestion()).isEqualTo("test");
+    }
+
+    @Test
+    public void submitQuestionTest(){
+        CoursePrototype coursePrototype = new CoursePrototype();
+        coursePrototype.setId(1L);
+
+        String questionText = "test question\0\rtestA\0\rtestB\0\r";
+        String answer = "answer";
+
+        Mockito.when(coursePrototypeService.getCoursePrototypeInfo(1L)).thenReturn(coursePrototype);
+        Mockito.when(questionRepository.save(any(Question.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
+        Question question = questionService.submitQuestion(1L, QuestionType.SINGLE_ANSWER,questionText,answer);
+
+        assertThat(question.getQuestion()).isEqualTo(questionText);
+        assertThat(question.getOptions().get('A')).isEqualTo("testA");
+        assertThat(question.getContent()).isEqualTo("test question");
+        assertThat(question.getAnswer()).isEqualTo(answer);
     }
 }

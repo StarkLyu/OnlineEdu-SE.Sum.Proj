@@ -27,6 +27,12 @@
                                 课程公告
                             </span>
                         </el-menu-item>
+                        <el-menu-item index="10" route="/course/manager/signIn">
+                            <i class="el-icon-place"></i>
+                            <span slot="title">
+                                课程签到
+                            </span>
+                        </el-menu-item>
                         <el-menu-item index="7" route="/course/manager/assignment">
                             <i class="el-icon-notebook-1"></i>
                             <span slot="title">
@@ -81,6 +87,30 @@
             return{
                 courseTitle:this.$store.getters.getCourseTitle,
             }
+        },
+
+        methods:{
+            getThisCourseInfo(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            },
+        },
+
+        mounted() {
+            this.getThisCourseInfo();
         }
     }
 </script>

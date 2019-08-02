@@ -31,9 +31,9 @@
                     </div>
 <!--                    展示图片-->
                     <div v-for="image in question.images" :key="image">
-                        <img v-if="image"
+                        <el-image v-if="image"
                              :src="'http://202.120.40.8:30382/online-edu/static/' + image + '?a=' + Math.random()"
-                             class="avatar">
+                                  class="avatar"></el-image>
                     </div>
                     <div style="color:red" v-if="question.questionType!=='SUBJECTIVE'">
                         <p>Answer: {{question.answer}}</p>

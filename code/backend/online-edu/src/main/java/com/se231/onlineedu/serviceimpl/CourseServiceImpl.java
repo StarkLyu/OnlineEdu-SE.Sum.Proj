@@ -1,13 +1,15 @@
 package com.se231.onlineedu.serviceimpl;
 
-import com.se231.onlineedu.exception.CoursePrototypeUnavailableException;
-import com.se231.onlineedu.exception.EndBeforeStartException;
-import com.se231.onlineedu.exception.IdentityException;
-import com.se231.onlineedu.exception.NotFoundException;
-import com.se231.onlineedu.message.request.CourseApplicationForm;
-import com.se231.onlineedu.message.request.CourseModifyForm;
-import com.se231.onlineedu.message.request.SignInCourseForm;
-import com.se231.onlineedu.message.request.TimeSlotForm;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import com.alibaba.excel.EasyExcelFactory;
+import com.se231.onlineedu.exception.*;
+import com.se231.onlineedu.message.request.*;
 import com.se231.onlineedu.message.response.CourseWithIdentity;
 import com.se231.onlineedu.message.response.GradeTable;
 import com.se231.onlineedu.message.response.Identity;
@@ -18,15 +20,12 @@ import com.se231.onlineedu.scheduler.SchedulerHandler;
 import com.se231.onlineedu.service.CoursePrototypeService;
 import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.UserService;
+import com.se231.onlineedu.util.FileCheckUtil;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * the implementation class of course service
@@ -58,6 +57,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private SignInRepository signInRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Course applyToStartCourse(CourseApplicationForm form, Long prototypeId, Long userId) {
@@ -236,7 +238,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course saveSignIn(Long id, SignInCourseForm signInForm) {
         Course course = getCourseInfo(id);
-        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo() == 0?signInRepository.currentSignInNo(id).orElse(0) + 1 : signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate())));
+        course.getSignIns().add(signInRepository.save(new SignIn(course, signInForm.getSignInNo() == 0?signInRepository.currentSignInNo(id).orElse(0) + 1 : signInForm.getSignInNo(), signInForm.getStartDate(), signInForm.getEndDate(),  signInForm.getLongitude(),signInForm.getLatitude())));
         return courseRepository.save(course);
     }
 
@@ -279,5 +281,45 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(()->new NotFoundException("学生并没有选这门课"));
         learn.setGrade(grade);
         return learnRepository.save(learn);
+    }
+
+    @Override
+    public String bulkImportGrade(MultipartFile multipartFile, Long courseId) throws IOException {
+        FileCheckUtil.checkExcelValid(multipartFile);
+
+        InputStream file = multipartFile.getInputStream();
+        List<Object> data = EasyExcelFactory
+                .read(file, new com.alibaba.excel.metadata.Sheet(1, 1, GradeExcel.class));
+        int rowNumber = 1;
+        boolean hasError = false;
+        StringBuilder errorMessage = new StringBuilder();
+        errorMessage.append("Some Data Has Error:\n");
+        //username,password,email,tel,university,major,sno,grade,real name,sex
+        for (Object dataItem : data) {
+            rowNumber++;
+            GradeExcel gradeExcel = (GradeExcel) dataItem;
+            if (gradeExcel.hasNull()) {
+                continue;
+            }
+            try {
+                User user = userRepository.findBySnoAndRealNameAndUniversityAndMajor
+                        (gradeExcel.getSno(), gradeExcel.getName(),gradeExcel.getUniversity() ,gradeExcel.getDepartment())
+                        .orElseThrow(()-> new NotFoundException("No corresponding user"));
+                Learn learn = learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(user.getId(),courseId)
+                        .orElseThrow(() -> new NotFoundException("This student doesn't choose this course"));
+                learn.setGrade(gradeExcel.getGrade());
+                learnRepository.save(learn);
+            } catch (NotFoundException e){
+                e.printStackTrace();
+                hasError=true;
+                errorMessage.append("Error in row "+rowNumber+": "+e.getMessage());
+            }
+        }
+
+        if (!hasError) {
+            return "导入成功";
+        } else {
+            throw new BulkImportDataException(errorMessage.toString());
+        }
     }
 }

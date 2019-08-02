@@ -5,18 +5,20 @@
         </el-header>
         <el-main>
             <div class="courseimg">
-                <el-upload
-                        class="avatar-uploader avatar"
-                        :action="uploadUrl"
-                        :headers="uploadHeader"
-                        :show-file-list="false"
-                        :before-upload="beforeAvatarUpload"
-                        :on-success="uploadSucceed"
-                        :on-error="uploadFail"
-                        :http-request="uploadProcess">
-                    <img v-if="imageURL" :src="imageURL" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+                <el-tooltip effect="dark" content="点击头像上传头像图片" placement="top-start">
+                    <el-upload
+                            class="avatar-uploader avatar"
+                            :action="uploadUrl"
+                            :headers="uploadHeader"
+                            :show-file-list="false"
+                            :before-upload="beforeAvatarUpload"
+                            :on-success="uploadSucceed"
+                            :on-error="uploadFail"
+                            :http-request="uploadProcess">
+                        <img v-if="imageURL" :src="imageURL" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-tooltip>
             </div>
             <div class="coursedes">
                 <p>
@@ -47,7 +49,7 @@
                     <p>
                         上课时间：
                         <span class="detail">
-                            {{timeslot.day}}——{{timeslot.start}}至{{timeslot.end}}
+                            {{timeslot.day}}  {{timeslot.start}}至{{timeslot.end}}
                         </span>
                     </p>
                 </div>

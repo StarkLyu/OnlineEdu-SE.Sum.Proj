@@ -48,4 +48,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return true if exists same telephone number
      */
     Boolean existsByTel(Long tel);
+
+    Optional<User> findBySnoAndRealNameAndUniversityAndMajor(String sno,String name,String university, String major);
 }

@@ -15,6 +15,7 @@ import com.se231.onlineedu.service.UserService;
 import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -50,6 +51,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
     private static final int LIMIT = 5120000;
 
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public PaperAnswer submitAnswer(Long userId, Long courseId, Long paperId, SubmitAnswerForm form) {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
