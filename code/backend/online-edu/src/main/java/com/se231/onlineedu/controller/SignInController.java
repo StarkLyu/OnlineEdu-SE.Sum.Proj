@@ -44,7 +44,7 @@ public class SignInController {
     }
 
     @ApiOperation("签到列表")
-    @PostMapping("/courses/{courseId}/signIns")
+    @GetMapping("/courses/{courseId}/signIns")
     public List<SignIn> getSignIns(@PathVariable Long courseId) {
         return courseService.getCourseInfo(courseId).getSignIns();
     }
