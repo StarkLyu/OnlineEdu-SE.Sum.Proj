@@ -27,6 +27,12 @@
                                 课程公告
                             </span>
                         </el-menu-item>
+                        <el-menu-item index="10" route="/course/manager/signIn">
+                            <i class="el-icon-place"></i>
+                            <span slot="title">
+                                课程签到
+                            </span>
+                        </el-menu-item>
                         <el-menu-item index="7" route="/course/manager/assignment">
                             <i class="el-icon-notebook-1"></i>
                             <span slot="title">
