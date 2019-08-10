@@ -28,7 +28,7 @@ const state = {
             }
         ]
     }
-}
+};
 
 // getters
 const getters = {
@@ -78,12 +78,85 @@ const getters = {
     getUserId: state => {
         return state.userInfo.id;
     }
-}
+};
 
 // actions
 const actions = {
-
-}
+    loginAction: ({ dispatch, commit }) => {
+        axios.request({
+            url: "/api/auth/signin",
+            method: "post",
+            data: {
+                username: this.loginInfo.username,
+                password: this.loginInfo.password
+            }
+        }).then((response) => {
+            console.log(response.data);
+            let getToken = response.data.accessToken;
+            commit("loginSet", {
+                username: this.loginInfo.username,
+                accessToken: getToken
+            });
+            alert("登录成功");
+            this.$http.request({
+                url: "/api/users/info",
+                method: 'get',
+                headers: {
+                    "Authorization": "Bearer " + getToken
+                }
+            }).then((infoResponse) => {
+                this.$store.commit("infoSet", infoResponse.data);
+                //console.log(state);
+                if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
+                    localStorage.setItem("managerToken", getToken);
+                    // window.location = "/manager";
+                    window.location.href = '/manage.html#/'
+                }
+                this.$router.push('/user');
+            }).catch((error) => {
+                console.log(error.response);
+                if (error.response.data.status === 401) {
+                    alert("获取用户信息出错");
+                }
+                else {
+                    alert(error);
+                }
+            });
+            //dispatch("loadUserInfo");
+        }).catch((error) => {
+            console.log(error.response);
+            if (error.response.data.status === 401) {
+                alert("用户名或密码错误");
+            }
+            else {
+                alert(error);
+            }
+        });
+    },
+    loadUserInfo: ({ getters, commit }) => {
+        axios.request({
+            url: "/api/users/info",
+            method: 'get',
+            headers: getters.authRequestHead
+        }).then((infoResponse) => {
+            commit("infoSet", infoResponse.data);
+            if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
+                localStorage.setItem("managerToken", getToken);
+                // window.location = "/manager";
+                window.location.href = '/manage.html#/'
+            }
+            this.$router.push('/user');
+        }).catch((error) => {
+            console.log(error.response);
+            if (error.response.data.status === 401) {
+                alert("获取用户信息出错");
+            }
+            else {
+                alert(error);
+            }
+        });
+    }
+};
 
 // mutations
 const mutations = {

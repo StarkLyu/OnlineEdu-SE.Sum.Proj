@@ -29,6 +29,7 @@
                         :question="question"
                         v-modal="answer"
                         :showgrade="showQuesScore"
+                        :show-answer="showQuesAnswer"
                 ></AssignmentQuestion>
             </el-tab-pane>
             <el-tab-pane>
@@ -188,7 +189,7 @@
                 })
             },
             initialPaper: function () {
-                this.paperInfo = this.$store.getters.getPaperById(this.paperId);
+                this.paperInfo = this.$store.getters.getPaperById(parseInt(this.paperId));
                 this.objQuestions = [];
                 this.subjQuestions = [];
                 this.$http.request({
@@ -261,6 +262,9 @@
                         return false;
                 }
             },
+            showQuesAnswer: function() {
+                return (this.state === "MARKED")
+            },
             haveTime: function () {
                 let haveTimes = 3 - this.submitTime;
                 if (this.state !== "FINISHED") {
@@ -269,11 +273,10 @@
                 return haveTimes;
             },
             allowSubmit: function () {
-                if (this.haveTime === 0 || this.state === "NOT_MARK" || this.state === "MARKED") return false;
-                else return true;
+                return !(this.haveTime === 0 || this.state === "NOT_MARK" || this.state === "MARKED");
             }
         },
-        mounted() {
+        created() {
             this.initialPaper();
         }
     }
