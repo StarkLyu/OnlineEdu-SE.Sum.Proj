@@ -244,7 +244,7 @@
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("请求失败");
+                        alert("添加作业失败");
                     });
 
                 this.AssignVisible=false;

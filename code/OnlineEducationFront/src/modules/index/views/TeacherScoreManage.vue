@@ -130,7 +130,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        alert("显示学生成绩失败");
                     });
             },
 

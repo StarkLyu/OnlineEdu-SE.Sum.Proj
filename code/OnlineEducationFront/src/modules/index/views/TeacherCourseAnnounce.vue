@@ -123,7 +123,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        alert("添加公告失败");
                     });
 
                 this.dialogFormVisible=false;
