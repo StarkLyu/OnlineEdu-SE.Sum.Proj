@@ -90,8 +90,6 @@ function mapStateToProps(state) {
     }
 }
 
-
-
 const mapDispatchToProps = dispatch => {
     return {
         setUserInfo: (userInfo) => dispatch({

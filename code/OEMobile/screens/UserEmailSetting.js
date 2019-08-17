@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Text } from "react-native";
-import { Container, Button, Form, Item, Input, Label } from 'native-base';
+import { Container, Button, Form, Item, Input, Label, Text } from 'native-base';
 import { connect } from "react-redux";
 import UserEmailConfirm from '../components/UserEmailConfirm';
 

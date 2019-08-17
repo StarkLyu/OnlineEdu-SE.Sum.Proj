@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
-import { View, FlatList, } from "react-native";
-import { Container, Content, ListItem, Text, H3 } from "native-base";
+import { FlatList, } from "react-native";
+import { Container, Content, ListItem, Text, View } from "native-base";
 import { connect } from "react-redux";
-import CourseHeader from "../components/CourseHeader";
 import { setCurrentSection } from "../store/sectionAction";
-import UserFab from "../components/UserFab";
 
 class CourseChapter extends Component {
     constructor(props) {
         super(props);
     }
 
-    moveToSection(section) {
+    moveToSection(section, chapterTitle) {
         this.props.setCurrentSection(section);
-        this.props.navigation.navigate("CourseSection");
+        this.props.navigation.navigate("CourseSection",{
+            sectionTitle: chapterTitle +  ": " + section.title
+        });
     }
 
     _drawChapter(chapter) {
@@ -22,14 +22,14 @@ class CourseChapter extends Component {
                 <ListItem itemDivider>
                     <Text>{chapter.title}</Text>
                 </ListItem>
-                <FlatList renderItem={({item}) => this._drawSection(item)} data={chapter.sectionBranchesList} />
+                <FlatList renderItem={({item}) => this._drawSection(item, chapter.title)} data={chapter.sectionBranchesList} />
             </View>
         )
     }
 
-    _drawSection(section) {
+    _drawSection(section, chapterTitle) {
         return (
-            <ListItem onPress={() => {this.moveToSection(section)}}>
+            <ListItem onPress={() => {this.moveToSection(section, chapterTitle)}}>
                 <Text>{section.title}</Text>
             </ListItem>
         )
@@ -38,7 +38,6 @@ class CourseChapter extends Component {
     render() {
         return (
             <Container>
-                <CourseHeader openDrawer={this.props.navigation.openDrawer} navigation={this.props.navigation}/>
                 <Content>
                     <FlatList renderItem={({item}) => this._drawChapter(item)} data={this.props.chapters} />
                 </Content>
@@ -46,6 +45,7 @@ class CourseChapter extends Component {
         );
     }
 }
+
 function mapStateToProps(state) {
     return {
         chapters: state.courseInfo.sectionList

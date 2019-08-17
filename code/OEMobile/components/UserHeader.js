@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { Header, Text, Icon, Right, Button } from 'native-base';
-import { View } from "react-native";
+import {Header, Text, Icon, Right, Button, Left, Thumbnail, Body, Title} from 'native-base';
+import { connect } from "react-redux";
 
 class UserHeader extends Component {
     constructor(props) {
@@ -10,24 +10,28 @@ class UserHeader extends Component {
     render() {
         return (
             <Header>
-                <View style={{flexDirection: "row"}}>
-                    <View style={{flex: 1}}>
-                        <Text> </Text>
-                    </View>
-                    <View style={{flex: 1}}>
-                        <Text style={{textAlign: "center"}}>
-                            {this.props.title}
-                        </Text>
-                    </View>
-                    <View style={{flex: 1}}>
-                        <Button icon transparent>
-                            <Icon type={"FontAwesome"} name={"exit"} />
-                        </Button>
-                    </View>
-                </View>
+                <Left>
+                    <Thumbnail small source={{uri: "http://202.120.40.8:30382/online-edu/static/" + this.props.avatarUrl}} style={{borderStyle: "solid"}}/>
+                </Left>
+                <Body>
+                <Title>
+                    {this.props.title}
+                </Title>
+                </Body>
+                <Right>
+                    <Button icon transparent onPress={() => {this.props.navigation.navigate("Login")}}>
+                        <Icon name={"sign-out"} type={"FontAwesome"}/>
+                    </Button>
+                </Right>
             </Header>
         );
     }
 }
 
-export default UserHeader;
+function mapStateToProps(state) {
+    return {
+        avatarUrl: state.userInfo.avatarUrl
+    }
+}
+
+export default connect(mapStateToProps, null)(UserHeader);

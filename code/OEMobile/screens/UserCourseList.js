@@ -1,6 +1,6 @@
 import React from "react";
-import {FlatList, Image, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Container, Header, Body, Text, Title, Right, Button, Icon} from 'native-base';
+import {FlatList, Image, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import {Container, Header, Left, Body, Text, Title, Right, Button, Icon, Thumbnail} from 'native-base';
 import UserUnit from "../components/UserUnit";
 import UserHeader from "../components/UserHeader";
 import { connect } from 'react-redux';
@@ -56,21 +56,28 @@ class UserCourseList extends React.Component {
                         <Image style={styles.courseImg} source={{uri: "http://202.120.40.8:30382/online-edu/static/" + course.avatarUrl}}/>
                     </View>
                     <View style={styles.textView}>
-                        <Text style={styles.titleText}>{course.courseTitle}</Text>
+                        <View style={styles.titleText}>
+                            <Text style={styles.titleFont}>{course.courseTitle}</Text>
+                        </View>
                         <View style={styles.secondLine}>
                             <View style={{flex: 1}}>
                                 <UserUnit user={course.teacher}/>
                             </View>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.locationText}>
-                                    地点：{course.location}
-                                </Text>
+                            <View style={{flex: 1, flexDirection: "row"}}>
+                                <View>
+                                    <Icon name={"compass"} type={"Ionicons"} style={{fontSize: 22, marginTop: 5}} />
+                                </View>
+                                <View>
+                                    <Text style={styles.locationText}>
+                                        { " " + course.location }
+                                    </Text>
+                                </View>
                             </View>
                         </View>
-                        <Text style={styles.thirdLine}>
-                            <Icon name={"calendar"} />
-                            2019-07-12 ~ 2019-08-29
-                        </Text>
+                        {/*<Text style={styles.thirdLine}>*/}
+                            {/*<Icon name={"calendar"} />*/}
+                            {/*2019-07-12 ~ 2019-08-29*/}
+                        {/*</Text>*/}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -80,18 +87,7 @@ class UserCourseList extends React.Component {
     render() {
         return (
             <Container>
-                <Header>
-                    <Body>
-                    <Title>
-                        我的课程
-                    </Title>
-                    </Body>
-                    <Right>
-                        <Button icon transparent onPress={() => {this.props.navigation.navigate("Login")}}>
-                            <Icon name={"sign-out"} type={"FontAwesome"}/>
-                        </Button>
-                    </Right>
-                </Header>
+                <UserHeader navigation={this.props.navigation} title={"我的课程"}/>
                 <FlatList data={this.state.courses} renderItem={({item}) => this._createCourseCard(item)}/>
             </Container>
         );
@@ -116,30 +112,43 @@ const mapDispatchToProps = dispatch => {
 };
 
 const styles = StyleSheet.create({
+    mainBack: {
+        backgroundColor: "#ddd"
+    },
     mainCard: {
         height: 100,
         borderStyle: "solid",
         borderWidth: 1,
+        borderColor: "#666",
         flexDirection: "row",
-        marginTop: 10
+        marginTop: 10,
+        backgroundColor: "#fafafa"
     },
     imgView: {
-        flex: 3,
+        //flex: 3,
         //backgroundColor: "yellow"
     },
     courseImg: {
-        height: 100,
+        height: 98,
         width: 162,
         //backgroundColor: "blue"
     },
     textView: {
-        flex: 4,
+        //flex: 4,
+        width: Dimensions.get("window").width - 162,
         flexDirection: "column"
     },
     titleText: {
         flex: 110,
         fontWeight: "bold",
-        fontSize: 25
+        fontSize: 20,
+        paddingTop: 5,
+        flexShrink: 1,
+        paddingLeft: 2
+    },
+    titleFont: {
+        fontWeight: "bold",
+        fontSize: 17,
     },
     secondLine: {
         flex: 126,
@@ -150,8 +159,8 @@ const styles = StyleSheet.create({
     },
     locationText: {
         marginTop: 10,
-        fontSize: 16
+        fontSize: 13
     }
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserCourseList);

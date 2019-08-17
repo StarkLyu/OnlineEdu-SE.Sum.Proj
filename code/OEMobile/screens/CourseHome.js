@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CourseInfo from "../components/CourseInfo";
-import { Container } from "native-base";
+import { Container, Content } from "native-base";
 import CourseHeader from "../components/CourseHeader";
 import UserFab from "../components/UserFab";
 
@@ -18,7 +18,9 @@ class CourseHome extends Component {
         return (
             <Container>
                 <CourseHeader openDrawer={this.showDrawer} navigation={this.props.navigation} />
-                <CourseInfo/>
+                <Content>
+                    <CourseInfo/>
+                </Content>
             </Container>
         )
     }

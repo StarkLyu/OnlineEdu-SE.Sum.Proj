@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { List, ListItem, Left, Right, H3 } from 'native-base';
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { View } from "react-native";
+import { List, ListItem, Left, Right, H3, Text } from 'native-base';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ImagePicker from 'react-native-image-picker';
 
 class UserSetting extends React.Component {
     constructor(props) {
@@ -12,14 +13,16 @@ class UserSetting extends React.Component {
     render() {
         const onSelectMenu = (target) => {
             this.props.navigation.navigate(target)
-        }
+        };
 
         return (
             <View>
                 <List>
-                    <ListItem button onPress={() => {onSelectMenu("UserAvatarSetting")}}>
+                    <ListItem button onPress={() => {ImagePicker.showImagePicker(null, () => {
+                        alert("emmm");
+                    })}}>
                         <Left>
-                            <H3>修改头像</H3>
+                            <Text>修改头像</Text>
                         </Left>
                         <Right>
                             <Icon name={"chevron-right"} />
@@ -27,7 +30,7 @@ class UserSetting extends React.Component {
                     </ListItem>
                     <ListItem button onPress={() => {onSelectMenu("UserPasswordSetting")}}>
                         <Left>
-                            <H3>修改密码</H3>
+                            <Text>修改密码</Text>
                         </Left>
                         <Right>
                             <Icon name={"chevron-right"} />
@@ -35,7 +38,7 @@ class UserSetting extends React.Component {
                     </ListItem>
                     <ListItem button onPress={() => {onSelectMenu("UserEmailSetting")}}>
                         <Left>
-                            <H3>修改邮箱</H3>
+                            <Text>修改邮箱</Text>
                         </Left>
                         <Right>
                             <Icon name={"chevron-right"} />
@@ -43,7 +46,7 @@ class UserSetting extends React.Component {
                     </ListItem>
                     <ListItem button onPress={() => {onSelectMenu("UserInfoSetting")}}>
                         <Left>
-                            <H3>修改基本信息</H3>
+                            <Text>修改基本信息</Text>
                         </Left>
                         <Right>
                             <Icon name={"chevron-right"} />
