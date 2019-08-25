@@ -1,6 +1,5 @@
 import React from "react";
-import { View } from "react-native";
-import { List, ListItem, Left, Right, H3, Text } from 'native-base';
+import { List, ListItem, Left, Right, View, Text } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-picker';
 
@@ -10,6 +9,18 @@ class UserSetting extends React.Component {
         //this.onSelectMenu = this.onSelectMenu.bind(this);
     }
 
+    imagePickerOptions = {
+        title: "选择新头像",
+        cancelButtonTitle: "取消",
+        takePhotoButtonTitle: "打开相机",
+        chooseFromLibraryButtonTitle: "从相册选取"
+    };
+
+    selectedNewAvatar = (response) => {
+        alert("emmm");
+        console.log(response);
+    };
+
     render() {
         const onSelectMenu = (target) => {
             this.props.navigation.navigate(target)
@@ -18,9 +29,7 @@ class UserSetting extends React.Component {
         return (
             <View>
                 <List>
-                    <ListItem button onPress={() => {ImagePicker.showImagePicker(null, () => {
-                        alert("emmm");
-                    })}}>
+                    <ListItem button onPress={() => {ImagePicker.showImagePicker(this.imagePickerOptions, this.selectedNewAvatar)}}>
                         <Left>
                             <Text>修改头像</Text>
                         </Left>

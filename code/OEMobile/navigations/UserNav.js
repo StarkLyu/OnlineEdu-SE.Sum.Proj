@@ -25,4 +25,8 @@ export default createBottomTabNavigator({
             )
         })
     }
+}, {
+    tabBarOptions: {
+        activeBackgroundColor: "#eeeeee",
+    }
 })

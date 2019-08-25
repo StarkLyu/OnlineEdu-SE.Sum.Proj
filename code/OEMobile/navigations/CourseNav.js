@@ -35,6 +35,8 @@ const CourseNav = createBottomTabNavigator({
     }
 },{
     tabBarOptions: {
+        activeBackgroundColor: "#eeeeee",
+        activeTintColor: "blue",
         showIcon: true,
         showLabel: true
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Item, Icon, Input, Button , Text} from 'native-base';
+import { Container, Content, Item, Icon, Input, Button , Text, View} from 'native-base';
 import { connect } from 'react-redux';
 //import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -63,20 +63,27 @@ class LoginScreen extends Component {
         return (
             <Container>
                 <Content>
-                    <Item>
-                        <Icon type={"FontAwesome"} name='user' />
-                        <Input placeholder='用户名' onChangeText={(text) => this.setState({username: text})}/>
-                    </Item>
-                    <Item>
-                        <Icon name='lock' />
-                        <Input
-                            placeholder='密码'
-                            onChangeText={(text) => this.setState({password: text})}
-                            secureTextEntry = {true}/>
-                    </Item>
-                    <Button full onPress={this.onLogin}>
-                        <Text>登录</Text>
-                    </Button>
+                    <View style={{flex: 4}}>
+                        <Text>
+                            OnlineEdu
+                        </Text>
+                    </View>
+                    <View style={{flex: 3}}>
+                        <Item>
+                            <Icon type={"FontAwesome"} name='user' />
+                            <Input placeholder='用户名' onChangeText={(text) => this.setState({username: text})}/>
+                        </Item>
+                        <Item>
+                            <Icon name='lock' />
+                            <Input
+                                placeholder='密码'
+                                onChangeText={(text) => this.setState({password: text})}
+                                secureTextEntry = {true}/>
+                        </Item>
+                        <Button full onPress={this.onLogin}>
+                            <Text>登录</Text>
+                        </Button>
+                    </View>
                 </Content>
             </Container>
         );

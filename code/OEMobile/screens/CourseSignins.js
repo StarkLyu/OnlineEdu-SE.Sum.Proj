@@ -39,7 +39,7 @@ class CourseSignins extends Component {
         }).catch((error) => {
             console.log(error.response);
         })
-    }
+    };
 
     async requestLocationPermission() {
         try {
