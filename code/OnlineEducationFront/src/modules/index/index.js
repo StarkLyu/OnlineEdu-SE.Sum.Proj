@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '../../assets/div-layout.css'
 import '../../assets/icon/iconfont.css'
 import BaiduMap from 'vue-baidu-map';
+import RecordBehavior from './recordBehavior';
 
 Vue.use(BaiduMap, {
     // ak 是在百度地图开发者平台申请的密钥
@@ -21,6 +22,7 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
 Vue.prototype.$http = axios;
+Vue.prototype.$record = new RecordBehavior();
 
 new Vue({
     router,

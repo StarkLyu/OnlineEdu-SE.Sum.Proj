@@ -1,9 +1,10 @@
 <template>
     <div class="resource-unit float-left">
-        <a :href="getFullUrl(resourceInfo.url)" :download="resourceInfo.url" @click="getResource">
+        <el-link @click="getResource">
             <i :class="symbolIcon"></i>
             {{ resourceInfo.title }}
-        </a>
+        </el-link>
+
     </div>
 </template>
 
@@ -17,10 +18,25 @@
                 title: String
             }
         },
+        data() {
+            return {
+                showVideo: false
+            }
+        },
         methods: {
             getResource: function () {
                 if (this.resourceInfo.resourceType === "VIDEO") {
-                    this.$emit("play-video", this.resourceInfo.url);
+                    alert("haha");
+                    this.$router.push({
+                        name: "courseStudentVideo",
+                        params: {
+                            videoUrl: this.resourceInfo.url,
+                            videoTitle: this.resourceInfo.title
+                        }
+                    })
+                }
+                else {
+                    window.location.href = this.getFullUrl(this.resourceInfo.url);
                 }
             },
             getFullUrl: function (resourceUrl) {
