@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 class UserCourseList extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             activeFab: 'true',
             showCourses: '教授课程',

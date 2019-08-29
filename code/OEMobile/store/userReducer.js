@@ -8,6 +8,7 @@ const loginInit = {
     username: "",
     accessToken: "",
     loginStatus: false,
+    authHeader: {}
 };
 
 const userInfoInit = {
