@@ -10,6 +10,7 @@ const state = {
     paperTitle:0,
     paperAnswers:0,
     studentSelectId:0,
+    forumUpdate: false,
 };
 
 // getters
@@ -33,8 +34,7 @@ const getters = {
         else return "";
     },
     isCourseTeacher: state => {
-        if (state.identity === "STUDENT") return false;
-        else return true;
+        return state.identity !== "STUDENT";
     },
     getPaperById: (state) => (paperId) => {
         for (let paper of state.courseInfo.papers) {
@@ -88,6 +88,7 @@ const mutations = {
     },
     setCourseInfo: (state, info) => {
         state.courseInfo = info;
+        state.forumUpdate = false;
     },
     setIdentity: (state, identity) => {
         state.identity = identity;
@@ -104,6 +105,9 @@ const mutations = {
     setStudentSelectId(state, studentSelectId) {
         state.studentSelectId=studentSelectId;
     },
+    setForumUpdate(state, newState) {
+        state.forumUpdate = newState;
+    }
 };
 
 export default {

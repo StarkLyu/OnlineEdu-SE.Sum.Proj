@@ -88,6 +88,7 @@
                             console.log(res.data);
                             alert("发布成功");
                             that.addResponse=false;
+                            that.$store.commit("setForumUpdate", true);
                         })
                         .catch(function (error2) {
                             console.log(error2.response);

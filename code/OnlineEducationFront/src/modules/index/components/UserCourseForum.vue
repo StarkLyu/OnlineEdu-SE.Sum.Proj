@@ -129,6 +129,17 @@
                 })
             }
         },
+        computed: {
+            forumUpdate: function () {
+                return this.$store.state.course.forumUpdate;
+            }
+        },
+        watch: {
+            forumUpdate: function (val) {
+                alert("haha");
+                if (val) this.initForum();
+            }
+        },
         mounted() {
             this.initForum();
         }
