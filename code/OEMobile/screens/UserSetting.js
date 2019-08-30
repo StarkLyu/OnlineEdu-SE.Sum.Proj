@@ -1,7 +1,9 @@
 import React from "react";
 import { List, ListItem, Left, Right, View, Text } from 'native-base';
+import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-picker';
+import { setNewAvatar } from "../store/actions";
 
 class UserSetting extends React.Component {
     constructor(props) {
@@ -17,8 +19,33 @@ class UserSetting extends React.Component {
     };
 
     selectedNewAvatar = (response) => {
-        alert("emmm");
         console.log(response);
+        if (!response.didCancel) {
+            if (response.error) {
+                alert(response.error);
+            }
+            else {
+                let avatarFile = new FormData();
+                avatarFile.append("avatar", response.data);
+                this.$axios.request({
+                    url: "/api/users/" + this.props.userId + "/avatar",
+                    method: "post",
+                    data: avatarFile,
+                    headers: {
+                        'Authorization': 'Bearer ' + this.props.authToken,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then((response) => {
+                    console.log(response);
+                    alert("修改成功");
+                    this.newUrl = response.data;
+                    this.props.setNewAvatar(this.newUrl);
+                }).catch((error) => {
+                    alert("修改失败");
+                    console.log(error.response);
+                })
+            }
+        }
     };
 
     render() {
@@ -67,4 +94,17 @@ class UserSetting extends React.Component {
     }
 }
 
-export default UserSetting;
+function mapStateToProps(state) {
+    return {
+        authToken: state.login.authToken,
+        userId: state.userInfo.id
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setNewAvatar: (newAvatar) => dispatch(setNewAvatar(newAvatar))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserSetting);

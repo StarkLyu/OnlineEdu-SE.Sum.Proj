@@ -22,6 +22,7 @@ class ResourceLine extends Component {
                 }).fetch('GET', resourceUrl,{
 
                 }).then((res) => {
+                    console.log(resourceUrl);
                     alert("资源保存在：" + res.path())
                 }).catch((error) => {
                     alert(error)
