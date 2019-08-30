@@ -1,19 +1,30 @@
 import React from "react";
-import { createSwitchNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator, createAppContainer } from "react-navigation";
 import LoginScreen from "../screens/LoginScreen";
 import UserNav from "./UserNav";
 import CourseNav from "./CourseNav"
+import CourseHeader from "../components/CourseHeader";
 
-
-const TopNav = createSwitchNavigator({
+const TopNav = createStackNavigator({
     Login: {
-        screen: LoginScreen
+        screen: LoginScreen,
+        navigationOptions: () => ({
+            header: null
+        })
     },
     Home: {
-        screen: UserNav
+        screen: UserNav,
+        navigationOptions: () => ({
+            header: null
+        })
     },
     Course: {
-        screen: CourseNav
+        screen: CourseNav,
+        navigationOptions: ({ navigation }) => ({
+            header: () => (
+                <CourseHeader navigation={navigation} />
+            )
+        })
     }
 });
 

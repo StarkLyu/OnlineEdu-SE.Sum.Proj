@@ -40,7 +40,7 @@ class CoursePaperList extends Component {
                     renderItem={({ item }) => <PaperLine paper={item} navigation={this.props.navigation}/>}
                     data={this.props.papers}
                     ListHeaderComponent={() => (
-                        <ListItem itemHeader>
+                        <ListItem itemDivider>
                             <Text>
                                 课程作业
                             </Text>

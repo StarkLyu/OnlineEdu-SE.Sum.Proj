@@ -6,6 +6,10 @@ import AssignmentQuestion from "../components/AssignmentQuestion";
 import { initAnswer } from "../store/paperAction";
 
 class CoursePaper extends Component {
+    static navigationOptions = ({ navigation }) => ({
+        title: navigation.getParam("paper", {}).title
+    });
+
     constructor(props) {
         super(props);
         this.paperId = this.props.navigation.getParam("paperId", 0);
@@ -53,7 +57,6 @@ class CoursePaper extends Component {
                 "Authorization": "Bearer " + this.props.accessToken
             }
         }).then((response) => {
-            alert("AnswersLoadComplete");
             let answerMap = new Map();
             this.setState({
                 state: response.data.state,

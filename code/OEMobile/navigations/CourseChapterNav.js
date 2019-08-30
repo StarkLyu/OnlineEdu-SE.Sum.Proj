@@ -9,10 +9,8 @@ import CourseHeader from "../components/CourseHeader";
 export default createStackNavigator({
     CourseChapter: {
         screen: CourseChapter,
-        navigationOptions: ({ navigation }) => ({
-            header: (
-                <CourseHeader navigation={navigation}/>
-            )
+        navigationOptions: () => ({
+            header: null
         })
     },
     CourseSection: {

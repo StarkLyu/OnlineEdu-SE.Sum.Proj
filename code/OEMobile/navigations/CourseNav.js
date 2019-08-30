@@ -3,13 +3,14 @@ import { createBottomTabNavigator } from "react-navigation";
 import { Icon } from "native-base";
 import CourseHome from '../screens/CourseHome';
 import CourseChapterNav from "./CourseChapterNav";
-import CoursePaperList from "./CoursePaperNav";
+import CoursePaperNav from "./CoursePaperNav";
 import CourseSignins from "../screens/CourseSignins";
+import CourseHeader from "../components/CourseHeader";
 
 const CourseNav = createBottomTabNavigator({
     CourseHome: {
         screen: CourseHome,
-        navigationOptions: ({ navigation }) => ({
+        navigationOptions: () => ({
             title: "首页",
             tabBarIcon: () => (
                 <Icon type={"FontAwesome"} name={"home"} />
@@ -26,8 +27,8 @@ const CourseNav = createBottomTabNavigator({
         })
     },
     CoursePaperList: {
-        screen: CoursePaperList,
-        navigationOptions: ({ navigation }) => ({
+        screen: CoursePaperNav,
+        navigationOptions: () => ({
             title: "作业",
             tabBarIcon: () => (
                 <Icon type={"FontAwesome"} name={"pencil"} />
@@ -49,7 +50,12 @@ const CourseNav = createBottomTabNavigator({
         activeTintColor: "blue",
         showIcon: true,
         showLabel: true
-    }
+    },
+    navigationOptions: () => ({
+        header: ({ navigation }) => (
+            <CourseHeader navigation={navigation} />
+        )
+    })
 });
 
 export default CourseNav;

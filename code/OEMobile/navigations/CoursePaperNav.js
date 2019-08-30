@@ -8,9 +8,7 @@ export default createStackNavigator({
     CoursePaperList: {
         screen: CoursePaperList,
         navigationOptions: ({ navigation }) => ({
-            header: (
-                <CourseHeader navigation={navigation}/>
-            )
+            header: null
         })
     },
     CoursePaper

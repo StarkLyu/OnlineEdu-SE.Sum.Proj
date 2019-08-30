@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ListItem, Text, Icon, Left } from "native-base";
+import { ListItem, Text, Icon, Left, Body} from "native-base";
 import RNFetchBlob from "rn-fetch-blob";
 
 class ResourceLine extends Component {
@@ -41,11 +41,13 @@ class ResourceLine extends Component {
 
     render() {
         return (
-            <ListItem onPress={() => this._getResource()}>
+            <ListItem avatar onPress={() => this._getResource()}>
                 <Left>
                     <Icon name={this._iconType()} type={"FontAwesome"} />
-                    <Text>    {this.props.resourceInfo.title}</Text>
                 </Left>
+                <Body>
+                    <Text>{this.props.resourceInfo.title}</Text>
+                </Body>
             </ListItem>
         );
     }

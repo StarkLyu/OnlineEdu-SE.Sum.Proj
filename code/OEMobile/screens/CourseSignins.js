@@ -133,7 +133,6 @@ class CourseSignins extends Component {
     render() {
         return (
             <ScrollView>
-                <CourseHeader openDrawer={this.showDrawer} navigation={this.props.navigation}/>
                 <List>
                     <FlatList data={this.state.signIns} renderItem={({item}) => this._signInLine(item)}/>
                 </List>

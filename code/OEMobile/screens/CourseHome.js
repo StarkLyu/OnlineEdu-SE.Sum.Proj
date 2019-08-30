@@ -7,17 +7,11 @@ import UserFab from "../components/UserFab";
 class CourseHome extends Component {
     constructor(props) {
         super(props);
-        this.showDrawer = this.showDrawer.bind(this);
-    }
-
-    showDrawer() {
-        this.props.navigation.openDrawer()
     }
 
     render() {
         return (
             <Container>
-                <CourseHeader openDrawer={this.showDrawer} navigation={this.props.navigation} />
                 <Content>
                     <CourseInfo/>
                 </Content>

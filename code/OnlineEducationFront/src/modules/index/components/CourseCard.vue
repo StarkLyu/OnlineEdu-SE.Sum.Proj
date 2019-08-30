@@ -10,6 +10,7 @@
                     <p>
                         <UserUnit :user="courseInfo.teacher"></UserUnit>
                     </p>
+                    <span class="location-font">地点：{{ courseInfo.location }}</span>
                 </div>
                 <div class="float-right">
                     <div class="float-clear course-time">
@@ -18,7 +19,7 @@
                             <DateRangeFormat :start="courseInfo.startDate" :end="courseInfo.endDate"></DateRangeFormat>
                         </span>
                         <p>
-                            <el-progress type="line" :percentage="80"></el-progress>
+                            <el-progress type="line" :percentage="datePercent"></el-progress>
                         </p>
                     </div>
                     <div class="enter-button">
@@ -71,6 +72,17 @@
         computed: {
             imgUrl: function () {
                 return "http://202.120.40.8:30382/online-edu/static/" + this.courseInfo.avatarUrl
+            },
+            datePercent: function() {
+                let startTime = new Date(this.courseInfo.startDate);
+                let endTime = new Date(this.courseInfo.endDate);
+                let nowTime = new Date();
+                if (nowTime >= endTime) return 100;
+                else if (nowTime <= startTime) return 0;
+                else {
+                    let startSec = startTime.getTime();
+                    return (endTime.getTime() - startSec) / (nowTime.getTime() - startSec) * 100;
+                }
             }
         }
     }
@@ -81,6 +93,7 @@
     .course-img {
         width: 250px;
         height: 155px;
+        margin-bottom: 20px;
     }
 
     .course-title {
@@ -97,5 +110,9 @@
     .enter-button {
         margin-left: 50px;
         margin-top: 30px
+    }
+
+    .location-font {
+        font-size: 15px;
     }
 </style>
