@@ -26,13 +26,17 @@ class UserSetting extends React.Component {
             }
             else {
                 let avatarFile = new FormData();
-                avatarFile.append("avatar", response.data);
+                avatarFile.append("avatar", {
+                    uri: response.uri,
+                    type: response.type,
+                    name: response.fileName
+                });
                 this.$axios.request({
                     url: "/api/users/" + this.props.userId + "/avatar",
                     method: "post",
                     data: avatarFile,
                     headers: {
-                        'Authorization': 'Bearer ' + this.props.authToken,
+                        ...this.props.authHeader,
                         'Content-Type': 'multipart/form-data'
                     }
                 }).then((response) => {
@@ -96,7 +100,7 @@ class UserSetting extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        authToken: state.login.authToken,
+        authHeader: state.login.authHeader,
         userId: state.userInfo.id
     }
 }
