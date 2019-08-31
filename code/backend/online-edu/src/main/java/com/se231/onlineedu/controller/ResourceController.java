@@ -1,15 +1,11 @@
 package com.se231.onlineedu.controller;
 
 
-import com.se231.onlineedu.exception.FileFormatNotSupportException;
 import com.se231.onlineedu.model.Resource;
 import com.se231.onlineedu.model.ResourceType;
 import com.se231.onlineedu.service.CoursePrototypeService;
-import com.se231.onlineedu.util.FileCheckUtil;
 import com.se231.onlineedu.util.SaveFileUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +21,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/coursePrototypes/{courseProtoTypeId}/{resourceType}")
 public class ResourceController {
+
     @Autowired
     public CoursePrototypeService coursePrototypeService;
 
@@ -38,4 +35,5 @@ public class ResourceController {
         coursePrototypeService.saveResource(courseProtoTypeId, resource);
         return url;
     }
+
 }
