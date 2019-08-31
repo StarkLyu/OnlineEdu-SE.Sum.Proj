@@ -54,9 +54,9 @@ public class UserController {
     VerificationTokenService verificationTokenService;
 
     @ApiOperation(value = "已登录用户查询个人信息的用户名", notes = "已登录用户查询个人信息的用户名", httpMethod = "GET")
-    @GetMapping("/username")
-    public String getPersonalUsername(@AuthenticationPrincipal UserPrinciple userPrinciple) {
-        return userService.getUserInfo(userPrinciple.getId()).getUsername();
+    @GetMapping("/{id}/username")
+    public String getPersonalUsername(@PathVariable Long id) {
+        return userService.getUserInfo(id).getUsername();
     }
 
 
