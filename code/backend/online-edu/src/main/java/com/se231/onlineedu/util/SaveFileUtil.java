@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +31,20 @@ public class SaveFileUtil {
         ftpClientUtil.open();
 
         ftpClientUtil.putFileToPath(multipartFile.getInputStream(), fileName);
+        ftpClientUtil.close();
+
+        return fileName;
+    }
+
+    public static String saveFile(InputStream inputStream, String suffix) throws IOException {
+        String uuid = UUID.randomUUID().toString();
+        String fileName = uuid + suffix;
+
+
+        FtpClientUtil ftpClientUtil = new FtpClientUtil();
+        ftpClientUtil.open();
+
+        ftpClientUtil.putFileToPath(inputStream, fileName);
         ftpClientUtil.close();
 
         return fileName;
