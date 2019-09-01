@@ -31,12 +31,10 @@ class LoginScreen extends Component {
                     "Authorization": "Bearer " + this.props.accessToken
                 }
             }).then((infoResponse) => {
-                global.cancelLoading();
                 this.props.setUserInfo(infoResponse.data);
                 console.log(this.props.userInfo);
                 this.props.navigation.navigate("Home");
             }).catch((error) => {
-                global.cancelLoading();
                 console.log(error.response);
                 if (error.response.data.status === 401) {
                     alert("获取用户信息出错");
@@ -46,7 +44,6 @@ class LoginScreen extends Component {
                 }
             });
         }).catch((error) => {
-            global.cancelLoading();
             let errorCode = error.response.data.status;
             switch (errorCode) {
                 case 401:

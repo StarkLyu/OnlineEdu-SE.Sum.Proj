@@ -25,6 +25,7 @@ class UserSetting extends React.Component {
                 alert(response.error);
             }
             else {
+                global.showLoading("上传新头像中");
                 let avatarFile = new FormData();
                 avatarFile.append("avatar", {
                     uri: response.uri,

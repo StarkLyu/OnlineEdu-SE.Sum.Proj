@@ -15,6 +15,7 @@ class UserPasswordSetting extends Component {
     }
 
     changeRequest = () => {
+        global.showLoading("获取验证码中");
         this.$axios.request({
             url: this.props.userUrl + "password",
             method: "patch",
@@ -25,7 +26,6 @@ class UserPasswordSetting extends Component {
                 "Authorization": "Bearer " + this.props.accessToken
             }
         }).then(() => {
-            alert("有验证码啦！");
             this.setState({showConfirm: true})
         }).catch((error) => {
             alert("出错啦！");

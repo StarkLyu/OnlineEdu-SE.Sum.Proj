@@ -48,6 +48,13 @@ class App extends React.Component {
                 loadingOptions: {}
             })
         }
+        this.$axios.interceptors.response.use((response) => {
+            global.cancelLoading();
+            return response;
+        }, (error) => {
+            global.cancelLoading();
+            return Promise.reject(error);
+        })
     }
 
     componentDidMount(): void {

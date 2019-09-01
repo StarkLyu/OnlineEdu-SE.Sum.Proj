@@ -50,6 +50,7 @@ class CoursePaper extends Component {
     }
 
     answerInit = () => {
+        global.loading("作业初始化中");
         this.$axios.request({
             url: this.getPaperUrl(),
             method: "get",
@@ -116,6 +117,7 @@ class CoursePaper extends Component {
     };
 
     saveAnswer = (state) => {
+        global.showLoading(state === "NOT_FINISH" ? "作业暂存中" : "作业提交中");
         let answerList = [];
         let answerMap = this.props.paperAnswer.answerMap;
         for (let i of answerMap) {

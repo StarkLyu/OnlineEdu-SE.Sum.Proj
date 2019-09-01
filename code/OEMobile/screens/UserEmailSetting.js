@@ -13,6 +13,7 @@ class UserEmailSetting extends Component {
     }
 
     changeRequest = () => {
+        global.showLoading("获取验证码中");
         this.$axios.request({
             url: this.props.userUrl + "email",
             method: "patch",

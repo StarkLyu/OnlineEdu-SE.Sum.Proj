@@ -17,6 +17,7 @@ class UserInfoSetting extends Component {
     }
 
     changeRequest = () => {
+        global.showLoading("提交修改中");
         this.$axios.request({
             url: "/api/users/info/modify",
             method: "post",
@@ -45,18 +46,21 @@ class UserInfoSetting extends Component {
                         <Label>手机号</Label>
                         <Input defaultValue={this.state.tel} onChangeText={(text) => this.setState({tel: text})}/>
                     </Item>
-                    <Label>性别</Label>
-                    <Picker
-                        note
-                        mode={"dropdown"}
-                        selectedValue={this.state.sex}
-                        onValueChange={(value) => {
-                            this.setState({sex: value});
-                        }}
-                    >
-                        <Picker.Item label={"男"} value={"男"} />
-                        <Picker.Item label={"女"} value={"女"} />
-                    </Picker>
+                    <Item>
+                        <Label>性别</Label>
+                        <Picker
+                            note
+                            mode={"dropdown"}
+                            selectedValue={this.state.sex}
+                            onValueChange={(value) => {
+                                this.setState({sex: value});
+                            }}
+                        >
+                            <Picker.Item label={"未知"} value={""} />
+                            <Picker.Item label={"男"} value={"男"} />
+                            <Picker.Item label={"女"} value={"女"} />
+                        </Picker>
+                    </Item>
                     <Item stackedLabel>
                         <Label>学校</Label>
                         <Input defaultValue={this.state.university} onChangeText={(text) => this.setState({university: text})}/>

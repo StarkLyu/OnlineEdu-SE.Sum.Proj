@@ -17,6 +17,7 @@ class UserCourseList extends React.Component {
     }
 
     initialCourseData() {
+        global.showLoading("加载课程列表");
         this.$axios.request({
             url: "/api/users/info/courses/learn",
             method: "get",
@@ -24,14 +25,17 @@ class UserCourseList extends React.Component {
                 "Authorization": "Bearer " + this.props.accessToken
             }
         }).then((response) => {
+            //global.cancelLoading();
             console.log(response.data);
             this.setState({courses: response.data});
         }).catch((error) => {
+            //global.cancelLoading();
             alert(error);
         })
     }
 
     enterCourse(courseId) {
+        global.showLoading("加载课程");
         this.$axios.request({
             url: "/api/courses/" + courseId + "/info",
             method: "get",
@@ -41,7 +45,9 @@ class UserCourseList extends React.Component {
         }).then((response) => {
             this.props.setCourseInfo(response.data.course);
             this.props.navigation.navigate("Course", {courseId: courseId});
+            //global.cancelLoading();
         }).catch((error) => {
+            //global.cancelLoading();
             alert(error);
             console.log(error.response);
         })

@@ -17,13 +17,8 @@ class CourseSignins extends Component {
     }
 
     initSignins = () => {
-        this.signins = [{
-            signIn: {
-                startDate: "ss",
-                endDate: "ss"
-            },
-            ok: false
-        }];
+        global.showLoading("获取签到中");
+        this.signins = [];
         this.$axios.request({
             url: this.signInUrl(),
             method: "get",
@@ -70,6 +65,7 @@ class CourseSignins extends Component {
     startSignIn = (signInNo) => {
         Geolocation.getCurrentPosition(
             (position => {
+                global.showLoading("签到中");
                 this.$axios.request({
                     url: "/api/users/" + this.props.userId + "/signIns",
                     method: "post",
