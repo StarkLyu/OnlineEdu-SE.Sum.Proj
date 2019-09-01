@@ -29,7 +29,7 @@ public class WordCloudServiceImpl implements WordCloudService {
 
     public List<String> getStopWords() throws IOException {
         List<String> stopWords = new ArrayList<>();
-        File inFile = new File("src/test/resources/stopwords.txt");
+        File inFile = new File("src/main/resources/stopwords.txt");
         BufferedReader bufferedReader = new BufferedReader(new FileReader(inFile));
         String word;
         while ((word = bufferedReader.readLine()) != null) {
