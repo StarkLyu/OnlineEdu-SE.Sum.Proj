@@ -56,6 +56,8 @@ public class WordCloudServiceImpl implements WordCloudService {
         wordCloud.setFontScalar(new LinearFontScalar(10, 40));
         wordCloud.build(wordFrequencies);
         UUID uuid = UUID.randomUUID();
+        File file = new File("/home/ubuntu/"+uuid+".png");
+        file.createNewFile();
         wordCloud.writeToFile("/home/ubuntu/"+uuid+".png");
         FileInputStream fileInputStream = new FileInputStream("/home/ubuntu/"+uuid+".png");
         return SaveFileUtil.saveFile(fileInputStream, ".png");
