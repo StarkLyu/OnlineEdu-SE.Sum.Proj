@@ -24,8 +24,8 @@
                         ></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" size="medium">
-                            <div class="login-text" @click="login" :loading="true">登录</div>
+                        <el-button type="primary" size="medium" :loading="loginLoading" class="login-text" @click="login">
+                            登录
                         </el-button>
                     </el-form-item>
                     <el-form-item>
@@ -60,13 +60,15 @@
                     password: [
                         {min: 6, max: 15, message: "密码长度为6到15个字符", trigger: "blur"}
                     ]
-                }
+                },
+                loginLoading: false
             }
         },
         methods: {
             login: function () {
                 this.$refs["loginInfo"].validate((valid) => {
                     if (valid) {
+                        this.loginLoading = true;
                         this.$http.request({
                             url: "/api/auth/signin",
                             method: "post",
@@ -90,6 +92,7 @@
                                     "Authorization": "Bearer " + getToken
                                 }
                             }).then((infoResponse) => {
+                                this.loginLoading = false;
                                 this.$store.commit("infoSet", infoResponse.data);
                                 //console.log(state);
                                 if (infoResponse.data.roles[0].role === "ROLE_ADMIN") {
@@ -99,6 +102,7 @@
                                 }
                                 this.$router.push('/user');
                             }).catch((error) => {
+                                this.loginLoading = false;
                                 console.log(error.response);
                                 if (error.response.data.status === 401) {
                                     alert("获取用户信息出错");
@@ -109,6 +113,7 @@
                             });
                             //dispatch("loadUserInfo");
                         }).catch((error) => {
+                            this.loginLoading = false;
                             console.log(error.response);
                             if (error.response.data.status === 401) {
                                 alert("用户名或密码错误");
@@ -142,6 +147,6 @@
     }
 
     .login-text {
-        width: 230px
+        width: 270px;
     }
 </style>

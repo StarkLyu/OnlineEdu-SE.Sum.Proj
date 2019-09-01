@@ -46,11 +46,13 @@
                         @click="submitAnswer('FINISHED')"
                         class="float-left"
                         :disabled="!allowSubmit"
+                        :loading="submitLoading"
                 >提交</el-button>
                 <el-button
                         @click="submitAnswer('NOT_FINISH')"
                         class="float-right"
                         :disabled="!allowSubmit"
+                        :loading="saveLoading"
                 >暂存</el-button>
             </div>
         </el-tabs>
@@ -80,57 +82,14 @@
                 state: "",
                 totalGrade: 0,
                 submitTime: 1,
+                submitLoading: false,
+                saveLoading: false
             }
         },
         methods: {
-            // uploadAnswer: function () {
-            //     let answerList = [];
-            //     for (let question of this.objQuestions) {
-            //         let answerUnit = {
-            //             answer: question.myAnswer,
-            //             questionId: question.id
-            //         };
-            //         answerList.push(answerUnit);
-            //     }
-            //     console.log(answerList);
-            //     let submitSubs = [];
-            //     for (let sub of this.subjQuestions) {
-            //         console.log(sub.id.toString());
-            //         let subAnswer = this.$refs[sub.id.toString()][0].saveSub();
-            //         let submitFunc = () => {
-            //             return this.$http.request({
-            //                 url: this.getPaperUrl + "/subjective",
-            //                 method: "post",
-            //                 data: subAnswer,
-            //                 headers: {
-            //                     ...this.$store.getters.authRequestHead,
-            //                     'Content-Type': 'multipart/form-data'
-            //                 }
-            //             });
-            //         };
-            //         submitSubs.push(submitFunc());
-            //         console.log(submitSubs);
-            //     }
-            //     this.$http.request({
-            //         url: this.getPaperUrl,
-            //         method: "post",
-            //         headers: this.$store.getters.authRequestHead,
-            //         data: {
-            //             answerList,
-            //             state: "NOT_FINISH"
-            //         },
-            //         withCredentials: true
-            //     }).then((response) => {
-            //         console.log(response.data);
-            //         this.$http.all(submitSubs).then(() => {
-            //             alert("暂存成功！");
-            //         });
-            //     }).catch((error) => {
-            //         alert(error);
-            //         console.log(error.response);
-            //     })
-            // },
             submitAnswer: function (state) {
+                if (state === "FINISHED") this.submitLoading = true;
+                else this.saveLoading = true;
                 let submitSubs = [];
                 for (let sub of this.subjQuestions) {
                     console.log(sub.id.toString());
@@ -178,14 +137,27 @@
                                 state: state
                             }
                         }).then(() => {
-                            if (state === "NOT_FINISH") alert("暂存成功！");
-                            else if (state === "FINISHED") alert("提交成功！");
+                            if (state === "NOT_FINISH") {
+                                alert("暂存成功！");
+                                this.saveLoading = false;
+                            }
+                            else if (state === "FINISHED") {
+                                alert("提交成功！");
+                                this.submitLoading = false;
+                            }
                             this.initialPaper();
+                        }).catch((error) => {
+                            alert(error);
+                            console.log(error.response);
+                            this.submitLoading = false;
+                            this.saveLoading = false;
                         })
                     });
                 }).catch((error) => {
                     alert(error);
                     console.log(error.response);
+                    this.submitLoading = false;
+                    this.saveLoading = false;
                 })
             },
             initialPaper: function () {

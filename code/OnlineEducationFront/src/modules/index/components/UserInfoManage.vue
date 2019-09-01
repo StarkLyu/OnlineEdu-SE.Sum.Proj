@@ -33,9 +33,9 @@
                 <el-input v-model="userInfo.major"></el-input>
             </el-form-item>
             <el-form-item>
-                <div class="bottom-buttons">
+                <div :class="loading ? 'bottom-buttons-loading' : 'bottom-buttons'">
                     <div class="float-left">
-                        <el-button @click="submitInfo">提交</el-button>
+                        <el-button @click="submitInfo" :loading="loading">提交</el-button>
                     </div>
                     <div v-if="type==='register'" class="float-left">
                         <el-button @click="backUp">返回</el-button>
@@ -56,6 +56,9 @@
             userdata: Object,
             type: {
                 default: "modify"
+            },
+            loading: {
+                default: false
             }
         },
         data() {
@@ -135,6 +138,12 @@
 
     .bottom-buttons {
         width: 210px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .bottom-buttons-loading {
+        width: 230px;
         margin-left: auto;
         margin-right: auto;
     }

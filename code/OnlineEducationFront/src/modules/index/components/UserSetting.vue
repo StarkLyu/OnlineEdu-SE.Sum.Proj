@@ -11,6 +11,7 @@
                         :userdata="userDetailInfo"
                         @submit-info="uploadDetailInfo"
                         ref="userInfoManage"
+                        :loading="loading"
                 ></UserInfoManage>
             </el-tab-pane>
         </el-tabs>
@@ -23,9 +24,14 @@
     export default {
         name: "UserSetting",
         components: {UserCoreInfoManage, UserInfoManage},
+        data() {
+            return {
+                loading: false
+            }
+        },
         methods:{
             uploadDetailInfo: function (userDetailInfo) {
-                alert("开始上传");
+                this.loading = true;
                 this.$http.request({
                     url: "/api/users/info/modify",
                     method: "post",
@@ -34,10 +40,12 @@
                 }).then(() => {
                     alert("修改成功！");
                     this.updateUserInfo();
+                    this.loading = false;
                     //this.$refs['userInfoManage'].uploadDetailInfo(this.userDetailInfo);
                 }).catch((error) => {
                     console.log(error.response);
                     alert("出错啦");
+                    this.loading = false;
                 })
             },
             updateUserInfo: function () {
