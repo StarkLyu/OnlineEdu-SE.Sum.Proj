@@ -7,8 +7,10 @@
             :before-upload="beforeAvatarUpload"
             :http-request="uploadProcess"
     >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <div ref="avatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </div>
     </el-upload>
 </template>
 
@@ -31,6 +33,9 @@
                 return isLt2M;
             },
             uploadProcess: function(param) {
+                let loading = this.$loading({
+                    target: this.$refs["avatarUpload"],
+                });
                 let formData = new FormData();
                 console.log(param.file);
                 formData.append("avatar",param.file);
@@ -45,9 +50,11 @@
                     alert("修改成功");
                     this.newUrl = response.data;
                     this.$store.commit("setNewAvatar", this.newUrl);
+                    loading.close();
                 }).catch((error) => {
                     alert("修改失败");
                     console.log(error.response);
+                    loading.close();
                 })
             },
             // uploadSucceed: function(response,file,filelist) {

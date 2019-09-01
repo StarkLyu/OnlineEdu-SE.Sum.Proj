@@ -58,7 +58,7 @@
                     </el-form-item>
                     <el-form-item>
                         <div class="center-layout next-button">
-                            <el-button type="primary" @click="submitStep1">下一步</el-button>
+                            <el-button type="primary" @click="submitStep1" :loading="step1Loading">下一步</el-button>
                         </div>
                     </el-form-item>
                 </el-form>
@@ -71,6 +71,7 @@
                         type="register"
                         @submit-info="submitStep3"
                         @on-back="lastStep"
+                        :loading="step2Loading"
                 ></UserInfoManage>
             </div>
         </div>
@@ -81,10 +82,11 @@
                         ref="emailConfirm"
                         @confirm-pass="finishRegister"
                         @resend-request="resendRequest"
+                        @confirm-fail="this.step3Loading = false"
                 ></EmailConfirm>
                 <div class="center-layout button-group-size">
                     <el-button type="primary" @click="lastStep">返回</el-button>
-                    <el-button type="primary" @click="submitStep2">提交</el-button>
+                    <el-button type="primary" @click="submitStep2" :loading="step3Loading">提交</el-button>
                 </div>
             </div>
         </div>
@@ -159,7 +161,10 @@
                     sno: "",
                     major: "",
                     grade: 1,
-                }
+                },
+                step1Loading: false,
+                step2Loading: false,
+                step3Loading: false
             }
         },
         methods: {
@@ -170,13 +175,16 @@
                 this.currentStep--;
             },
             submitStep1: function () {
+                this.step1Loading = true;
                 this.$refs["step1Form"].validate((valid) => {
                     if (valid) {
+                        this.step1Loading = false;
                         this.nextStep();
                     }
                 })
             },
             submitStep2: function () {
+                this.step3Loading = true;
                 this.$refs['emailConfirm'].sendConfirmCode();
                 //this.nextStep();
             },
@@ -195,15 +203,18 @@
                 };
                 this.totalRegisterInfo = totalRegisterInfo;
                 console.log(totalRegisterInfo);
+                this.step2Loading = true;
                 this.$http.request({
                     url: "/api/auth/signup",
                     method: "post",
                     data: totalRegisterInfo,
                     withCredentials: true
                 }).then((response) => {
+                    this.step2Loading = false;
                     console.log(response);
                     this.nextStep();
                 }).catch((error) => {
+                    this.step2Loading = false;
                     console.log(error.response);
                     if (error.response.data === "Fail -> Email Address is already taken!") {
                         alert("邮箱已被使用，请更换邮箱");
@@ -211,6 +222,7 @@
                 })
             },
             finishRegister: function () {
+                this.step3Loading = false;
                 alert("注册成功！");
                 this.nextStep();
             },

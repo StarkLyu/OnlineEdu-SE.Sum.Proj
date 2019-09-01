@@ -1,8 +1,13 @@
 <template>
-    <div>
+    <div ref="totalForum">
         <el-button @click="generateWordMap()">论坛词云图</el-button>
         <el-collapse>
-            <el-collapse-item v-for="section in sectionForum" :key="section.secNo" :title="section.title">
+            <el-collapse-item
+                    v-for="section in sectionForum"
+                    :key="section.secNo"
+                    :title="section.title"
+                    :ref="'collapse' + section.secNo"
+            >
                 <div slot="title">
                     <div class="float-left">
                         <h2>{{ section.title }}</h2>
@@ -31,58 +36,25 @@
         components: {AddForumTopic, CourseForumStart},
         data() {
             return {
-                sectionForum: [
-                    {
-                        secNo: 1,
-                        title: "第一章",
-                        topics: [
-                            {
-                                content: "string",
-                                courseId: 0,
-                                createdAt: "2019-07-27T14:51:13.216Z",
-                                id: "string",
-                                imageUrls: [
-                                    "string"
-                                ],
-                                likes: 0,
-                                path: "string",
-                                secNo: 1,
-                                title: "string",
-                                userId: 0,
-                                responses: [
-                                    {
-                                        content: "string",
-                                        courseId: 0,
-                                        createdAt: "2019-07-27T14:51:13.216Z",
-                                        id: "string",
-                                        imageUrls: [
-                                            "string"
-                                        ],
-                                        likes: 0,
-                                        path: "string",
-                                        secNo: 1,
-                                        title: "string",
-                                        userId: 0,
-                                        responses: []
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                sectionForum: []
             }
         },
         methods: {
             initForum() {
-                this.sectionForum = this.$store.getters.getSectionList;
-                for (let i in this.sectionForum) {
-                    this.sectionForum[i].topics = []
-                }
+                let loading = this.$loading({
+                    target: this.$refs["totalForum"],
+                    text: "加载论坛",
+                    fullscreen: false
+                });
                 this.$http.request({
                     url: this.$store.getters.getCourseUrl + "forums",
                     method: "get",
                     headers: this.$store.getters.authRequestHead
                 }).then((response) => {
+                    this.sectionForum = this.$store.getters.getSectionList;
+                    for (let i in this.sectionForum) {
+                        this.sectionForum[i].topics = []
+                    }
                     let forum = response.data;
                     forum.sort((a,b) => {
                         if (a.secNo === b.secNo) {
@@ -130,6 +102,11 @@
                     }
                     console.log(this.sectionForum);
                     this.$forceUpdate();
+                    loading.close();
+                }).catch((error) => {
+                    console.log(error.response);
+                    alert(error);
+                    loading.close();
                 })
             },
             generateWordMap: function() {
