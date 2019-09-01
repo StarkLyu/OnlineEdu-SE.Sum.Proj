@@ -9,13 +9,12 @@ import com.kennycason.kumo.nlp.FrequencyAnalyzer;
 import com.kennycason.kumo.nlp.tokenizers.ChineseWordTokenizer;
 import com.kennycason.kumo.palette.ColorPalette;
 import com.se231.onlineedu.service.WordCloudService;
+import com.se231.onlineedu.util.SaveFileUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class WordCloudServiceImpl implements WordCloudService {
 
     public List<String> getStopWords() throws IOException {
         List<String> stopWords = new ArrayList<>();
-        File inFile = new File("src/main/resources/stopwords.txt");
+        File inFile = ResourceUtils.getFile("classpath:stopwords.txt");
         BufferedReader bufferedReader = new BufferedReader(new FileReader(inFile));
         String word;
         while ((word = bufferedReader.readLine()) != null) {
@@ -51,12 +50,15 @@ public class WordCloudServiceImpl implements WordCloudService {
         final Dimension dimension = new Dimension(500, 312);
         final WordCloud wordCloud = new WordCloud(dimension, CollisionMode.PIXEL_PERFECT);
         wordCloud.setPadding(2);
-        wordCloud.setBackground(new PixelBoundryBackground("src/main/resources/whale_small.png"));
+        File inFile = ResourceUtils.getFile("classpath:whale_small.png");
+        wordCloud.setBackground(new PixelBoundryBackground(inFile));
         wordCloud.setColorPalette(new ColorPalette(new Color(0x4055F1), new Color(0x408DF1), new Color(0x40AAF1), new Color(0x40C5F1), new Color(0x40D3F1), new Color(0xFFFFFF)));
         wordCloud.setFontScalar(new LinearFontScalar(10, 40));
         wordCloud.build(wordFrequencies);
         UUID uuid = UUID.randomUUID();
-        wordCloud.writeToFile("/home/ubuntu/nginx/online-edu/"+uuid+".png");
+        wordCloud.writeToFile("/home/ubuntu/"+uuid+".png");
+        FileInputStream fileInputStream = new FileInputStream("/home/ubuntu/"+uuid+".png");
+        SaveFileUtil.saveFile(fileInputStream, ".png");
         return uuid+".png";
     }
 }
