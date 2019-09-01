@@ -34,6 +34,13 @@ new Vue({
                 message: errorText,
                 showClose: true
             })
+        },
+        success: function (successText) {
+            this.$message({
+                type: "success",
+                message: successText,
+                showClose: true
+            })
         }
     },
     render: h => h(Index)
