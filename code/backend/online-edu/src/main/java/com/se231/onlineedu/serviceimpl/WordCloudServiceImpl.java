@@ -58,7 +58,6 @@ public class WordCloudServiceImpl implements WordCloudService {
         UUID uuid = UUID.randomUUID();
         wordCloud.writeToFile("/home/ubuntu/"+uuid+".png");
         FileInputStream fileInputStream = new FileInputStream("/home/ubuntu/"+uuid+".png");
-        SaveFileUtil.saveFile(fileInputStream, ".png");
-        return uuid+".png";
+        return SaveFileUtil.saveFile(fileInputStream, ".png");
     }
 }
