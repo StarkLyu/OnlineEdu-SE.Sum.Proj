@@ -33,7 +33,10 @@
                     }
                 }
             }).catch((error) => {
-                alert(error);
+                if (error.response.status === 401) {
+                    this.$root.error("请先登录");
+                }
+                else this.$message.error(error);
                 console.log(error.response);
                 loading.close();
             })
