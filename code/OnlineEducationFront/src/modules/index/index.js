@@ -14,7 +14,7 @@ import RecordBehavior from './recordBehavior';
 Vue.use(BaiduMap, {
     // ak 是在百度地图开发者平台申请的密钥
     ak: 'tZ8u8pMf9nhjWFRACvTHN3gDOZCXcGxx'
-}),
+});
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "/online-edu";
@@ -42,6 +42,21 @@ new Vue({
                 showClose: true
             })
         }
+    },
+    created() {
+        this.$http.interceptors.response.use((response) => {
+            return response;
+        }, (error) => {
+            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+                this.error("请先登录");
+                this.$router.push("login");
+                return Promise.reject(error);
+            }
+            else {
+                return Promise.reject(error);
+            }
+
+        })
     },
     render: h => h(Index)
 }).$mount('#index');

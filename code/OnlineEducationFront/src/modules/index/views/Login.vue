@@ -45,6 +45,8 @@
 </template>
 
 <script>
+    import FormRules from "../rules.js"
+
     export default {
         name: "Login",
         data() {
@@ -54,12 +56,8 @@
                     password: ""
                 },
                 rules: {
-                    username: [
-                        {min: 3, max: 50, message: "用户名长度为3到50个字符", trigger: "blur"}
-                    ],
-                    password: [
-                        {min: 6, max: 15, message: "密码长度为6到15个字符", trigger: "blur"}
-                    ]
+                    username: [FormRules.usernameRule[0], FormRules.usernameRule[1]],
+                    password: FormRules.passwordRule
                 },
                 loginLoading: false
             }
@@ -83,7 +81,7 @@
                                 username: this.loginInfo.username,
                                 accessToken: getToken
                             });
-                            alert("登录成功");
+                            this.$root.success("登录成功");
                             //console.log(state);
                             this.$http.request({
                                 url: "/api/users/info",
@@ -105,10 +103,10 @@
                                 this.loginLoading = false;
                                 console.log(error.response);
                                 if (error.response.data.status === 401) {
-                                    alert("获取用户信息出错");
+                                    this.$root.error("用户登录出错，请重新登录");
                                 }
                                 else {
-                                    alert(error);
+                                    this.$root.error(error);
                                 }
                             });
                             //dispatch("loadUserInfo");
@@ -116,10 +114,10 @@
                             this.loginLoading = false;
                             console.log(error.response);
                             if (error.response.data.status === 401) {
-                                alert("用户名或密码错误");
+                                this.$root.error("用户名或密码错误");
                             }
                             else {
-                                alert(error);
+                                this.$root.error(error);
                             }
                         });
                         /*this.$store.dispatch('login', this.loginInfo).then(() => {
