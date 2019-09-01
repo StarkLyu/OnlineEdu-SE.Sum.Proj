@@ -5,8 +5,6 @@
             :headers="uploadHeader"
             :show-file-list="false"
             :before-upload="beforeAvatarUpload"
-            :on-success="uploadSucceed"
-            :on-error="uploadFail"
             :http-request="uploadProcess"
     >
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -34,7 +32,9 @@
             },
             uploadProcess: function(param) {
                 let formData = new FormData();
+                console.log(param.file);
                 formData.append("avatar",param.file);
+                console.log(formData);
                 this.$http.request({
                     url: this.uploadUrl,
                     method: "post",

@@ -9,9 +9,6 @@
                 <span slot="label">基本信息</span>
                 <CourseInfo :course-info="courseInfo" class="info-layout"></CourseInfo>
             </el-tab-pane>
-            <el-tab-pane>
-                <span slot="label">课程大纲</span>
-            </el-tab-pane>
         </el-tabs>
     </div>
 </template>

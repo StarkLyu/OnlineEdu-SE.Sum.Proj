@@ -1,23 +1,26 @@
 <template>
-    <el-collapse>
-        <el-collapse-item v-for="section in sectionForum" :key="section.secNo" :title="section.title">
-            <div slot="title">
-                <div class="float-left">
-                    <h2>{{ section.title }}</h2>
+    <div>
+        <el-button @click="generateWordMap()">论坛词云图</el-button>
+        <el-collapse>
+            <el-collapse-item v-for="section in sectionForum" :key="section.secNo" :title="section.title">
+                <div slot="title">
+                    <div class="float-left">
+                        <h2>{{ section.title }}</h2>
+                    </div>
+                    <div class="float-left add-topic">
+                        <AddForumTopic :sec-no="section.secNo"></AddForumTopic>
+                    </div>
                 </div>
-                <div class="float-left add-topic">
-                    <AddForumTopic :sec-no="section.secNo"></AddForumTopic>
+                <div>
+                    <CourseForumStart
+                            v-for="one in section.topics"
+                            :key="one.createdAt"
+                            :forum-topic="one"
+                    ></CourseForumStart>
                 </div>
-            </div>
-            <div>
-                <CourseForumStart
-                        v-for="one in section.topics"
-                        :key="one.createdAt"
-                        :forum-topic="one"
-                ></CourseForumStart>
-            </div>
-        </el-collapse-item>
-    </el-collapse>
+            </el-collapse-item>
+        </el-collapse>
+    </div>
 </template>
 
 <script>
@@ -119,6 +122,7 @@
                                 }
                                 pathLevel = popNum;
                             }
+                            i.responseTo = forumStack[0].userId;
                             forumStack[0].responses.push(i);
                             forumStack.unshift(i);
                             pathLevel = pathLength;
@@ -126,6 +130,18 @@
                     }
                     console.log(this.sectionForum);
                     this.$forceUpdate();
+                })
+            },
+            generateWordMap: function() {
+                this.$http.request({
+                    url: "/api/users/" + this.$store.state.user.userInfo.id + "/courses/" + this.$store.state.course.id + "/forums/",
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
                 })
             }
         },
