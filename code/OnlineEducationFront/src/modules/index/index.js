@@ -27,5 +27,14 @@ Vue.prototype.$record = new RecordBehavior();
 new Vue({
     router,
     store,
+    methods: {
+        error: function (errorText) {
+            this.$message({
+                type: "error",
+                message: errorText,
+                showClose: true
+            })
+        }
+    },
     render: h => h(Index)
 }).$mount('#index');
