@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { Container, Content, Item, Icon, Input, Button , Text, View} from 'native-base';
 import { connect } from 'react-redux';
-//import Icon from "react-native-vector-icons/FontAwesome";
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
             username: "",
-            password: ""
+            password: "",
         };
         this.onLogin = this.onLogin.bind(this);
     }
 
     onLogin() {
+        global.showLoading("登录中");
         this.$axios.request({
             url: "/api/auth/signin",
             method: "post",
@@ -22,7 +22,6 @@ class LoginScreen extends Component {
                 password: this.state.password
             }
         }).then((response) => {
-            alert("登录成功！");
             this.props.setLogin(this.state.username, response.data.accessToken);
             console.log(this.props.accessToken);
             this.$axios.request({
@@ -32,10 +31,12 @@ class LoginScreen extends Component {
                     "Authorization": "Bearer " + this.props.accessToken
                 }
             }).then((infoResponse) => {
+                global.cancelLoading();
                 this.props.setUserInfo(infoResponse.data);
                 console.log(this.props.userInfo);
                 this.props.navigation.navigate("Home");
             }).catch((error) => {
+                global.cancelLoading();
                 console.log(error.response);
                 if (error.response.data.status === 401) {
                     alert("获取用户信息出错");
@@ -45,6 +46,7 @@ class LoginScreen extends Component {
                 }
             });
         }).catch((error) => {
+            global.cancelLoading();
             let errorCode = error.response.data.status;
             switch (errorCode) {
                 case 401:

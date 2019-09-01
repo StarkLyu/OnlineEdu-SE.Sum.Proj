@@ -48,14 +48,13 @@ new Vue({
             return response;
         }, (error) => {
             if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
-                this.error("请先登录");
+                this.error("未登录或登录失效，请先登录");
                 this.$router.push("login");
                 return Promise.reject(error);
             }
             else {
                 return Promise.reject(error);
             }
-
         })
     },
     render: h => h(Index)
