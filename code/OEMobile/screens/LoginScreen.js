@@ -31,29 +31,30 @@ class LoginScreen extends Component {
                     "Authorization": "Bearer " + this.props.accessToken
                 }
             }).then((infoResponse) => {
+                this.$toast.successToast("登录成功！");
                 this.props.setUserInfo(infoResponse.data);
                 console.log(this.props.userInfo);
                 this.props.navigation.navigate("Home");
             }).catch((error) => {
                 console.log(error.response);
                 if (error.response.data.status === 401) {
-                    alert("获取用户信息出错");
+                    this.$toast.errorToast("获取用户信息出错");
                 }
                 else {
-                    alert(error);
+                    this.$toast.errorToast(error);
                 }
             });
         }).catch((error) => {
             let errorCode = error.response.data.status;
             switch (errorCode) {
                 case 401:
-                    alert("用户名或密码错误");
+                    this.$toast.errorToast("用户名或密码错误");
                     break;
                 case 400:
-                    alert("用户名或密码格式错误，请检查是否输入用户名或密码")
+                    this.$toast.errorToast("用户名或密码格式错误，请检查是否输入用户名或密码");
                     break;
                 default:
-                    alert("系统出错")
+                    this.$toast.errorToast("系统出错，请检查网络或联系管理员");
             }
         })
     }

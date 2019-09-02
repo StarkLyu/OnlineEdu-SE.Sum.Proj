@@ -32,6 +32,7 @@ class CourseSignins extends Component {
                 signIns: response.data
             })
         }).catch((error) => {
+            this.$toast.errorToast("获取签到出错");
             console.log(error.response);
         })
     };
@@ -79,17 +80,39 @@ class CourseSignins extends Component {
                         longitude: position.coords.longitude
                     }
                 }).then(() => {
-                    alert("签到成功！");
+                    this.$toast.successToast("签到成功！");
                     this.initSignins();
                 }).catch((error) => {
-                    alert(error.response.data);
+                    this.$toast.errorToast(error.response.data);
                     console.log(error.response)
                 });
                 console.log(signInNo);
                 console.log(position);
             }),
             (error => {
-                console.log(error.code, error.message)
+                console.log(error.code, error.message);
+                let errorText = "";
+                switch (error.code) {
+                    case 1:
+                        errorText = "未获得位置权限";
+                        break;
+                    case 2:
+                        errorText = "无法获取当前位置";
+                        break;
+                    case 3:
+                        errorText = "位置获取超时";
+                        break;
+                    case 4:
+                        errorText = "Google Play 服务出错";
+                        break;
+                    case 5:
+                        errorText = "未开启定位";
+                        break;
+                    default:
+                        errorText = "系统出错";
+                        break;
+                }
+                this.$toast.errorToast(errorText);
             }),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         )

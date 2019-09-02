@@ -22,10 +22,10 @@ class UserEmailSetting extends Component {
             },
             headers: this.props.authHeader
         }).then(() => {
-            alert("有验证码啦！");
+            this.$toast.successToast("已发送验证码");
             this.setState({showConfirm: true})
         }).catch((error) => {
-            alert("出错啦！");
+            this.$toast.errorToast("验证码获取失败");
             console.log(error.response);
         })
     };
@@ -40,11 +40,11 @@ class UserEmailSetting extends Component {
             headers: this.props.authHeader,
             withCredentials: true
         }).then(() => {
-            alert("修改成功！");
+            this.$toast.successToast("修改成功！");
             this.setState({showConfirm: false});
         }).catch((error) => {
             console.log(error.response);
-            alert(error);
+            this.$toast.errorToast("验证码出错");
         })
     };
 

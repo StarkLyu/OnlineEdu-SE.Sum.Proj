@@ -29,7 +29,7 @@ class UserCourseList extends React.Component {
             console.log(response.data);
             this.setState({courses: response.data});
         }).catch((error) => {
-            //global.cancelLoading();
+            this.$toast.errorToast("获取课程列表出错");
             alert(error);
         })
     }
@@ -48,7 +48,7 @@ class UserCourseList extends React.Component {
             //global.cancelLoading();
         }).catch((error) => {
             //global.cancelLoading();
-            alert(error);
+            this.$toast.errorToast("获取课程信息出错");
             console.log(error.response);
         })
     }

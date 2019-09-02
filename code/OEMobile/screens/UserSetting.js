@@ -42,11 +42,11 @@ class UserSetting extends React.Component {
                     }
                 }).then((response) => {
                     console.log(response);
-                    alert("修改成功");
+                    this.$toast.successToast("修改成功");
                     this.newUrl = response.data;
                     this.props.setNewAvatar(this.newUrl);
                 }).catch((error) => {
-                    alert("修改失败");
+                    this.$toast.errorToast("修改失败");
                     console.log(error.response);
                 })
             }

@@ -1,14 +1,17 @@
 import React from "react";
 import {StyleSheet} from "react-native";
+import {Root} from "native-base";
 import store from "./store/store.js";
 import TopNav from "./navigations/TopNav.js";
 import { Provider } from "react-redux";
 import axios from "axios";
 import Spinner from "react-native-loading-spinner-overlay";
+import MyToast from "./components/MyToast.js"
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://202.120.40.8:30382/online-edu";
 React.Component.prototype.$axios = axios;
+React.Component.prototype.$toast = MyToast;
 
 global.showLoading = false;
 global.cancelLoading = false;
@@ -47,12 +50,15 @@ class App extends React.Component {
             this.setState({
                 loadingOptions: {}
             })
-        }
+        };
         this.$axios.interceptors.response.use((response) => {
             global.cancelLoading();
             return response;
         }, (error) => {
             global.cancelLoading();
+            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+                this.$toast.errorToast("登录出错，请重新登录");
+            }
             return Promise.reject(error);
         })
     }
@@ -64,8 +70,10 @@ class App extends React.Component {
     render() {
         return (
             <Provider store={store}>
-                <Spinner {...this.state.loadingOptions}/>
-                <TopNav/>
+                <Root>
+                    <Spinner {...this.state.loadingOptions}/>
+                    <TopNav/>
+                </Root>
             </Provider>
         )
     }

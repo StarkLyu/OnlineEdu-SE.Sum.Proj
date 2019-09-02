@@ -50,7 +50,7 @@ class CoursePaper extends Component {
     }
 
     answerInit = () => {
-        global.loading("作业初始化中");
+        global.showLoading("作业初始化中");
         this.$axios.request({
             url: this.getPaperUrl(),
             method: "get",
@@ -139,10 +139,11 @@ class CoursePaper extends Component {
                 state: state
             }
         }).then(() => {
-            alert("保存成功！");
+            this.$toast.successToast(state === "NOT_FINISH" ? "暂存成功！" : "提交成功！");
             this.answerInit();
         }).catch((error) => {
             //alert(error);
+            this.$toast.errorToast(error);
             console.log(error.response);
         })
     };
