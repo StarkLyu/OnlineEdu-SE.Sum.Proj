@@ -1,6 +1,7 @@
 package com.se231.onlineedu.controller;
 
 
+import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.Forum;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.*;
@@ -51,7 +52,8 @@ public class ForumController {
     public Forum updateForum(@RequestBody Forum forum, @PathVariable Long courseId, @PathVariable int secNo, @AuthenticationPrincipal UserPrinciple userPrinciple) {
         if(!discernSensitiveWordsService.discern(forum.getContent())){
             for(String email: courseService.getTeacherAssistantAndTeacherEmail(courseId)){
-                emailSenderService.sendSensitiveWordsDetectedWords(email);
+                Course course = courseService.getCourseInfo(courseId);
+                emailSenderService.sendSensitiveWordsDetectedWords(email, course.getCourseTitle(), course.getSectionList().get(secNo).getTitle(), userPrinciple.getUsername());
             }
         }
         forum.setCourseId(courseId);

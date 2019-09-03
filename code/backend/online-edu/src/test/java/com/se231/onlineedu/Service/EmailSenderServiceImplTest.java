@@ -53,7 +53,7 @@ public class EmailSenderServiceImplTest {
 
     @Test
     public void sendNotification() throws MessagingException {
-        emailSenderService.sendSensitiveWordsDetectedWords("dfghj@dfgh.com");
+        emailSenderService.sendSensitiveWordsDetectedWords("dfghj@dfgh.com","1","1","1");
         MimeMessage[] receivedMessages = smtpServerRule.getMessages();
         assertEquals(1, receivedMessages.length);
         MimeMessage current = receivedMessages[0];
@@ -62,7 +62,7 @@ public class EmailSenderServiceImplTest {
 
     @Test
     public void sendNote() throws MessagingException {
-        emailSenderService.sendNotification("asv@adv.com");
+        emailSenderService.sendNotification("asv@adv.com","1");
         MimeMessage[] receivedMessages = smtpServerRule.getMessages();
         assertEquals(1, receivedMessages.length);
         MimeMessage current = receivedMessages[0];
