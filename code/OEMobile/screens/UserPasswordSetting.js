@@ -15,6 +15,7 @@ class UserPasswordSetting extends Component {
     }
 
     changeRequest = () => {
+        global.showLoading("获取验证码中");
         this.$axios.request({
             url: this.props.userUrl + "password",
             method: "patch",
@@ -25,10 +26,9 @@ class UserPasswordSetting extends Component {
                 "Authorization": "Bearer " + this.props.accessToken
             }
         }).then(() => {
-            alert("有验证码啦！");
             this.setState({showConfirm: true})
         }).catch((error) => {
-            alert("出错啦！");
+            this.$toast.errorToast("获取验证码出错");
             console.log(error.response);
         })
     };
@@ -45,11 +45,11 @@ class UserPasswordSetting extends Component {
             },
             withCredentials: true
         }).then(() => {
-            alert("修改成功！");
+            this.$toast.successToast("修改成功！");
             this.setState({showConfirm: false});
         }).catch((error) => {
             console.log(error.response);
-            alert(error);
+            this.$toast.errorToast("验证码出错");
         })
     };
 

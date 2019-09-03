@@ -11,6 +11,7 @@ class CoursePaperList extends Component {
     }
 
     componentWillMount(): void {
+        global.showLoading("获取作业列表中");
         this.$axios.request({
             url: '/api/courses/'+ this.props.courseId +'/papers/state',
             method: "get",
