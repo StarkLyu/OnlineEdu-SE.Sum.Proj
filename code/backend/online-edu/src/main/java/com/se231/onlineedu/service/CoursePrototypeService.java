@@ -54,6 +54,11 @@ public interface CoursePrototypeService {
      */
     Apply decideUseCourse(Long courseId, Long applicantId, String decision);
 
+    /**
+     * @param coursePrototypeId
+     * @param resource
+     * @return
+     */
     CoursePrototype saveResource(Long coursePrototypeId, Resource resource);
 
     /**
@@ -69,6 +74,16 @@ public interface CoursePrototypeService {
      */
     List<Apply> getApplyByCoursePrototype(Long prototypeId);
 
+    /**
+     * @param id
+     * @return
+     */
     CoursePrototype getCoursePrototypeInfo(Long id);
+
+    /**
+     * @param coursePrototypeId
+     * @param name
+     */
+    void deleteResources(Long coursePrototypeId, String name);
 
 }
