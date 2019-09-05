@@ -122,13 +122,19 @@ public class ForumController {
     public String wordCloud(@PathVariable Long userId, @PathVariable Long courseId) throws IOException {
         List<String> strings = new ArrayList<>();
         for(Forum forum: forumService.getForumByUserAndCourse(userId, courseId)){
+            if(forum.isLocked()){
+                continue;
+            }
             if(forum.getTitle() != null){
                 strings.add(forum.getTitle());
             }
             strings.add(forum.getContent());
         }
+        System.out.println(strings);
         String url = wordCloudService.generateWordCloud(strings);
         learnService.saveWordCloudUrl(userId,courseId,url);
         return url;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.se231.onlineedu.serviceimpl;
 
 import com.se231.onlineedu.exception.NotFoundException;
+import com.se231.onlineedu.exception.ValidationException;
 import com.se231.onlineedu.message.request.TitleAndDes;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.ApplyRepository;
@@ -121,5 +122,22 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
     @Override
     public List<Apply> getApplyByCoursePrototype(Long prototypeId) {
         return applyRepository.findAppliesByPrototypeId(prototypeId);
+    }
+
+    @Override
+    public void deleteResources(Long coursePrototypeId, String name) {
+        CoursePrototype coursePrototype = getCoursePrototypeInfo(coursePrototypeId);
+        int index = 0;
+        int size = coursePrototype.getResources().size();
+        for(Resource resource :coursePrototype.getResources()){
+            if(resource.getUrl().equals(name)){
+                coursePrototype.getResources().remove(index);
+            }
+            index++;
+        }
+        if(index == size){
+            throw new ValidationException("该文件不存在");
+        }
+        coursePrototypeRepository.save(coursePrototype);
     }
 }
