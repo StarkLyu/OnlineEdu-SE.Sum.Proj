@@ -164,4 +164,10 @@ public class CourseController {
         return courseService.bulkImportGrade(multipartFile,courseId);
     }
 
+    @ApiOperation("删除某课程")
+    @DeleteMapping("/{id}")
+    public String deleteCourse(@PathVariable("id")Long id){
+        return courseService.deleteCourse(id);
+    }
+
 }
