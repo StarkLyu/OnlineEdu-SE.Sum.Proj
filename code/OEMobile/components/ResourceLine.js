@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {PermissionsAndroid, Linking} from 'react-native';
+import {PermissionsAndroid} from 'react-native';
 import { ListItem, Text, Icon, Left, Body, Button, Right} from "native-base";
 import RNFetchBlob from "rn-fetch-blob";
 import * as Progress from "react-native-progress";
@@ -124,15 +124,20 @@ class ResourceLine extends Component {
     }
 
     _renderRight() {
-        switch (this.state.status) {
-            case "undownloaded":
-                return <Icon name={"download"} />;
-            case "downloading":
-                return <Progress.Circle progress={this.state.downloadProgress}/>;
-            case "downloaded":
-                return <Icon name={"folder"}/>;
-            default:
-                return <Icon name={"what"}/>;
+        if (this.props.resourceInfo.resourceType === "VIDEO") {
+            return <Icon name={"play"} />;
+        }
+        else {
+            switch (this.state.status) {
+                case "undownloaded":
+                    return <Icon name={"download"} />;
+                case "downloading":
+                    return <Progress.Circle progress={this.state.downloadProgress}/>;
+                case "downloaded":
+                    return <Icon name={"folder"}/>;
+                default:
+                    return <Icon name={"what"}/>;
+            }
         }
     }
 

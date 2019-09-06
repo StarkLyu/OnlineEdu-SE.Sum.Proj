@@ -47,7 +47,7 @@ new Vue({
         this.$http.interceptors.response.use((response) => {
             return response;
         }, (error) => {
-            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+            if (error.response.status === 401 && error.response.statusText === "Unauthorized" && error.response.data.path !== "/online-edu/api/auth/signin") {
                 this.error("未登录或登录失效，请先登录");
                 this.$router.push("login");
                 return Promise.reject(error);

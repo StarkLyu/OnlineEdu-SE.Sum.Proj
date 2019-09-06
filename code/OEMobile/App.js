@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet} from "react-native";
+import {StyleSheet, Dimensions} from "react-native";
 import {Root} from "native-base";
 import store from "./store/store.js";
 import TopNav from "./navigations/TopNav.js";
@@ -12,6 +12,7 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://202.120.40.8:30382/online-edu";
 React.Component.prototype.$axios = axios;
 React.Component.prototype.$toast = MyToast;
+React.Component.prototype.$window = Dimensions.get('window');
 
 global.showLoading = false;
 global.cancelLoading = false;
@@ -71,7 +72,7 @@ class App extends React.Component {
         return (
             <Provider store={store}>
                 <Root>
-                    <Spinner {...this.state.loadingOptions}/>
+                    <Spinner {...this.state.loadingOptions} style={{zIndex: 100000}}/>
                     <TopNav/>
                 </Root>
             </Provider>
