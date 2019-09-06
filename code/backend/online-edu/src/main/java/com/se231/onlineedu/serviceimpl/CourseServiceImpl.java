@@ -322,4 +322,11 @@ public class CourseServiceImpl implements CourseService {
             throw new BulkImportDataException(errorMessage.toString());
         }
     }
+
+    @Override
+    public String deleteCourse(Long courseId) {
+        Course course = getCourseInfo(courseId);
+        courseRepository.delete(course);
+        return "success";
+    }
 }

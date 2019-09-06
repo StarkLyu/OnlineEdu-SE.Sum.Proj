@@ -163,4 +163,11 @@ public interface CourseService {
      */
     String bulkImportGrade(MultipartFile multipartFile, Long courseId)throws Exception;
 
+    /**
+     * this service allow admin to delete a course;
+     * @param courseId id of course
+     * @return  success or failed
+     */
+    String deleteCourse(Long courseId);
+
 }
