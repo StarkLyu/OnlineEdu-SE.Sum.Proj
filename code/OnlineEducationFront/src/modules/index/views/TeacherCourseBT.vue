@@ -110,10 +110,14 @@
                 }
                 else if(type[1]==='mp4'){
                     this.BTtype='video';
+                    return file;
                 }
+                // else if(type[1]==='apk'){
+                //     this.BTtype='compression'
+                // }
                 else{
-                    this.$message.error('上传文件只能是pdf、ppt或视频！');
-                    return false;
+                    this.BTtype='compression';
+                    return file;
                 }
             },
 
