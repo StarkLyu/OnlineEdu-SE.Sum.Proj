@@ -7,6 +7,7 @@
 <!--            展示所有学生的答题情况-->
             <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
+                      v-loading="loading"
                       stripe>
                 <el-table-column >
                     <el-table-column type="index">
@@ -71,6 +72,8 @@
             return{
                 assignId:0,
 
+                loading:true,
+
                 search: '',
 
                 UserData: [],
@@ -101,6 +104,7 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.UserData=response.data;
+                        that.loading=false;
                         // console.log("UserData"+that.UserData);
                         // alert("请求成功");
                     })

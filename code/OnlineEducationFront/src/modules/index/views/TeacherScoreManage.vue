@@ -26,6 +26,7 @@
 <!--            成绩显示-->
             <el-table :data="UserData.filter(data=>!search || data.student.username.includes(search))"
                       class="usertable"
+                      v-loading="loading"
                       stripe>
                 <el-table-column >
                     <el-table-column type="index">
@@ -97,6 +98,8 @@
 
         data(){
             return{
+                loading:true,
+
                 fileList: [],
 
                 search: '',
@@ -125,6 +128,7 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.UserData=response.data.scoreMap;
+                        that.loading=false;
                         console.log(that.UserData);
                         // alert("请求成功");
                     })

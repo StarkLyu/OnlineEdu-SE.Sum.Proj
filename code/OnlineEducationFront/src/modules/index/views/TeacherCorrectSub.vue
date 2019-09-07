@@ -109,6 +109,7 @@
                     .then(function (response) {
                         console.log(response.data);
                         alert("提交评分成功");
+                        this.$store.push("/course/manager/correction")
                     })
                     .catch(function (error) {
                         console.log(error.response);

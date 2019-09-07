@@ -3,7 +3,7 @@
         <el-header>
             <h1 class="titlesytle">课程题库</h1>
         </el-header>
-        <el-main>
+        <el-main v-loading="loading">
 <!--            作业显示部分-->
             <div>
                 <el-button @click="showSingleDialog">添加单选题</el-button>
@@ -186,6 +186,8 @@
 
         data(){
             return{
+                loading:true,
+
                 singleVisible: false,
 
                 multiVisible: false,
@@ -230,7 +232,7 @@
                     title:"",
                 },
 
-                questions:this.$store.getters.getCourseInfo.coursePrototype.questions,
+                questions:[],
 
                 imageURL:"",
 
@@ -241,17 +243,19 @@
 
         methods:{
             showAllQuestions(){
-                this.$http.request({
-                    url: this.$store.getters.getCourseUrl + "info",
-                    method: "get",
-                    headers: this.$store.getters.authRequestHead
-                }).then((response) => {
-                    console.log(response.data);
-
-                }).catch((error) => {
-                    alert(error);
-                    console.log(error.response);
-                });
+                // this.$http.request({
+                //     url: this.$store.getters.getCourseUrl + "info",
+                //     method: "get",
+                //     headers: this.$store.getters.authRequestHead
+                // }).then((response) => {
+                //     console.log(response.data);
+                //
+                // }).catch((error) => {
+                //     alert(error);
+                //     console.log(error.response);
+                // });
+                this.questions=this.$store.getters.getCourseInfo.coursePrototype.questions;
+                this.loading=false;
             },
 
             // 显示各种题型的新建dialog
@@ -591,6 +595,11 @@
             //     this.dialogImageUrl = file.url;
             //     this.dialogVisible = true;
             // },
+
+        },
+
+        mounted() {
+            this.showAllQuestions();
 
         }
     }

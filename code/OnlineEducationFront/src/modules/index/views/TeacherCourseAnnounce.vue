@@ -3,7 +3,7 @@
         <el-header>
             <h1 class="titlesytle">课程公告</h1>
         </el-header>
-        <el-main>
+        <el-main v-loading="loading">
             <el-button class="addbotton" @click="addAnnounce" icon="el-icon-plus">
                 发布公告
             </el-button>
@@ -66,6 +66,8 @@
 
         data(){
             return{
+                loading:true,
+
                 announcements:this.$store.getters.getCourseInfo.notices,
 
                 dialogFormVisible:false,
@@ -86,6 +88,11 @@
         },
 
         methods:{
+            showAnnounce(){
+                this.announcements=this.$store.getters.getCourseInfo.notices;
+                this.loading=false;
+            },
+
             // 显示新增页面
             addAnnounce(){
                 this.dialogFormVisible = true;
@@ -134,6 +141,10 @@
                 alert("公告修改成功");
                 this.dialogFormVisible=false;
             },
+        },
+
+        mounted() {
+            this.showAnnounce();
         }
     }
 </script>
