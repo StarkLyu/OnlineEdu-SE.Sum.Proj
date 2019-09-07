@@ -100,6 +100,11 @@
                     finalCorrect.push(temp);
                 }
 
+                if (temp.score===""){
+                    this.$message.warning("分数不能为空")
+                }
+
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/papers/'+this.$store.getters.getPaperId+'/answer/mark/'+this.$store.state.course.studentSelectId+"/"+this.$store.getters.getPaperAnswers.paperAnswerPrimaryKey.times,
                     method: "put",
@@ -107,13 +112,18 @@
                     data:finalCorrect,
                 })
                     .then(function (response) {
+                        console.log("1");
                         console.log(response.data);
-                        alert("提交评分成功");
-                        this.$store.push("/course/manager/correction")
+                        console.log("1");
+
+                        that.$message.success("提交评分成功");
+                        that.$router.push("/course/manager/correction");
+
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("提交评分失败");
+                        that.$message.error("提交评分失败");
+
                     });
             }
 

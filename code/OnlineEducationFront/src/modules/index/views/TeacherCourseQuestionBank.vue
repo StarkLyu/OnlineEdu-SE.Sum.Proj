@@ -365,6 +365,7 @@
                         newQuestionId=response.data.id;
                         if(newQuestionId!==0)
                         {
+                            that.$message.info("上传图片中");
                             // 再上传图片
                             that.$http.request({
                                 url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
@@ -377,18 +378,18 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传单选题成功");
+                                    // alert("上传单选题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
-                                    alert("请求失败");
+                                    // alert("请求失败");
                                 });
                         }
-                        // alert("上传题目成功");
+                        that.$message.success("添加单选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        that.$message.error("添加单选题失败");
                     });
                 this.singleVisible=false;
             },
@@ -420,7 +421,7 @@
                         newQuestionId=response.data.id;
                         if(newQuestionId!==0)
                         {
-                            console.log("上传图片中");
+                            that.$message.info("上传图片中");
                             // 再上传图片
                             that.$http.request({
                                 url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
@@ -433,18 +434,18 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传多选题成功");
+                                    // alert("上传多选题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
-                                    alert("请求失败");
+                                    // alert("请求失败");
                                 });
                         }
-                        // alert("添加多选题成功");
+                        that.$message.success("添加多选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        that.$message.error("添加多选题失败");
                     });
                 this.multiVisible=false;
             },
@@ -469,7 +470,7 @@
                         newQuestionId=response.data.id;
                         if(newQuestionId!==0)
                         {
-                            console.log("上传图片中");
+                            that.$message.info("上传图片中");
                             // 再上传图片
                             that.$http.request({
                                 url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
@@ -482,18 +483,18 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传判断题成功");
+                                    // alert("上传判断题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
-                                    alert("请求失败");
+                                    // alert("请求失败");
                                 });
                         }
-                        // alert("添加判断题成功");
+                        that.$message.success("添加判断题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        that.$message.error("添加判断题失败");
                     });
                 this.judgeVisible=false;
             },
@@ -517,7 +518,7 @@
                         newQuestionId=response.data.id;
                         if(newQuestionId!==0)
                         {
-                            console.log("上传图片中");
+                            that.$message.info("上传图片中");
                             // 再上传图片
                             that.$http.request({
                                 url: '/api/coursePrototypes/'+that.$store.getters.getCourseInfo.coursePrototype.id+'/questions/'+newQuestionId,
@@ -530,25 +531,25 @@
                             })
                                 .then(function (res) {
                                     console.log(res.data);
-                                    alert("上传多选题成功");
+                                    // alert("上传多选题成功");
                                 })
                                 .catch(function (error2) {
                                     console.log(error2.response);
-                                    alert("请求失败");
+                                    // alert("请求失败");
                                 });
                         }
-                        // alert("添加主观题成功");
+                        that.$message.success("添加主观题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        // alert("请求失败");
+                        that.$message.error("添加主观题失败");
                     });
                 this.subVisible=false;
             },
 
             // 删除题目
             deleteQuestion(){
-                alert("删除成功");
+                this.$message.info("删除成功");
             },
 
             // 单选和多选移除选项

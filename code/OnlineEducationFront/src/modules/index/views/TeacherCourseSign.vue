@@ -138,13 +138,13 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("发布签到成功");
+                        that.$message.success("发布签到成功");
                         that.signDialogVisible=false;
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("发布签到失败");
+                        that.$message.error("发布签到失败");
                     });
             },
 

@@ -134,7 +134,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("显示学生成绩失败");
+                        // alert("显示学生成绩失败");
                     });
             },
 
@@ -151,7 +151,7 @@
 
             // 提交修改后的成绩
             updateData(){
-                alert("用户修改成功");
+                this.$message.success("用户修改成功");
                 this.dialogFormVisible=false;
             },
 

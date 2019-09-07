@@ -10,6 +10,7 @@ import '../../assets/div-layout.css'
 import '../../assets/icon/iconfont.css'
 import BaiduMap from 'vue-baidu-map';
 import RecordBehavior from './recordBehavior';
+import message from "element-ui/packages/message/src/main";
 
 Vue.use(BaiduMap, {
     // ak 是在百度地图开发者平台申请的密钥
@@ -27,6 +28,7 @@ Vue.prototype.$record = new RecordBehavior();
 new Vue({
     router,
     store,
+    message,
     methods: {
         error: function (errorText) {
             this.$message({

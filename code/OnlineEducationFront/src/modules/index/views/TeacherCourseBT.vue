@@ -132,7 +132,7 @@
                 //     return file
                 // }
 
-                console.log("正在上传文件");
+                this.$message.info("正在上传文件");
 
                 // 进度条
                 // this.excelFlag = true;
@@ -160,12 +160,12 @@
                     .then(function (response) {
                         console.log(response.data);
 
-                        alert("上传资源成功");
+                        that.$message.success("上传资源成功");
 
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("上传资源失败");
+                        that.$message.error("上传资源失败");
                     });
             },
 

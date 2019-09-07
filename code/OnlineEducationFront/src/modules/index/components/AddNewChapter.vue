@@ -33,7 +33,8 @@
         },
         methods: {
             addChapter: function () {
-                this.$http.request({
+                var that=this;
+                that.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/append',
                     method: "post",
                     headers:{Authorization: "Bearer " + this.$store.state.user.accessToken,'Content-Type':'text/plain'},
@@ -43,12 +44,12 @@
                     data:this.newTitle,
                 })
                     .then(function (response) {
+                        that.$message.success("添加章成功");
                         console.log(response.data);
-                        alert("添加章成功");
                     })
                     .catch(function (error) {
+                        that.$message.error("添加章失败");
                         console.log(error.response);
-                        alert("添加章失败");
                     });
                 this.newTitle = "";
                 this.showAddChapter = false;
