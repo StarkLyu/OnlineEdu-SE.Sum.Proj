@@ -39,7 +39,7 @@
                 countDown: 60,
                 countDownId: 0,
                 confirmCode: "",
-                resendFlag: false
+                resendFlag: false,
             }
         },
         methods: {
@@ -66,6 +66,7 @@
                 this.$http.request(this.requestConfig).then(() => {
                     this.$emit("confirm-pass");
                 }).catch((error) => {
+                    this.$emit("confirm-fail");
                     console.log(error.response);
                     if (error.response.status === 400) {
                         alert("验证码无效");

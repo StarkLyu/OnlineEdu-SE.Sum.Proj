@@ -87,6 +87,12 @@ export default new Router({
                             path: 'forum',
                             name: 'courseStudentForum',
                             component: () => import('./components/UserCourseForum')
+                        },
+                        {
+                            path: 'video/:videoUrl/:videoTitle',
+                            name: 'courseStudentVideo',
+                            props: true,
+                            component: () => import('./components/UserCourseVideo')
                         }
                     ]
                 },

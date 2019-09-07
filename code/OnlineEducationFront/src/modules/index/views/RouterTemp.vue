@@ -5,7 +5,11 @@
 <script>
     export default {
         name: "RouterTemp",
-        created() {
+        mounted() {
+            let loading = this.$loading({
+                fullscreen: true,
+                text: "加载课程"
+            });
             this.$http.request({
                 url: this.$store.getters.getCourseUrl + "info",
                 method: "get",
@@ -16,6 +20,7 @@
                 this.$store.commit("setCourseInfo", response.data.course);
                 this.$store.commit("setIdentity", identity);
                 console.log(this.$store.getters.getCourseInfo);
+                loading.close();
                 if (this.$route.path === "/course") {
                     if (identity === "VISITOR") {
                         this.$router.push('/course/info');
@@ -28,8 +33,12 @@
                     }
                 }
             }).catch((error) => {
-                alert(error);
+                if (error.response.status === 401) {
+                    this.$root.error("请先登录");
+                }
+                else this.$message.error(error);
                 console.log(error.response);
+                loading.close();
             })
         }
     }

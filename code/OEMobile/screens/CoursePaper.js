@@ -6,6 +6,10 @@ import AssignmentQuestion from "../components/AssignmentQuestion";
 import { initAnswer } from "../store/paperAction";
 
 class CoursePaper extends Component {
+    static navigationOptions = ({ navigation }) => ({
+        title: navigation.getParam("paper", {}).title
+    });
+
     constructor(props) {
         super(props);
         this.paperId = this.props.navigation.getParam("paperId", 0);
@@ -46,6 +50,7 @@ class CoursePaper extends Component {
     }
 
     answerInit = () => {
+        global.showLoading("作业初始化中");
         this.$axios.request({
             url: this.getPaperUrl(),
             method: "get",
@@ -53,7 +58,6 @@ class CoursePaper extends Component {
                 "Authorization": "Bearer " + this.props.accessToken
             }
         }).then((response) => {
-            alert("AnswersLoadComplete");
             let answerMap = new Map();
             this.setState({
                 state: response.data.state,
@@ -113,6 +117,7 @@ class CoursePaper extends Component {
     };
 
     saveAnswer = (state) => {
+        global.showLoading(state === "NOT_FINISH" ? "作业暂存中" : "作业提交中");
         let answerList = [];
         let answerMap = this.props.paperAnswer.answerMap;
         for (let i of answerMap) {
@@ -134,10 +139,11 @@ class CoursePaper extends Component {
                 state: state
             }
         }).then(() => {
-            alert("保存成功！");
+            this.$toast.successToast(state === "NOT_FINISH" ? "暂存成功！" : "提交成功！");
             this.answerInit();
         }).catch((error) => {
             //alert(error);
+            this.$toast.errorToast(error);
             console.log(error.response);
         })
     };

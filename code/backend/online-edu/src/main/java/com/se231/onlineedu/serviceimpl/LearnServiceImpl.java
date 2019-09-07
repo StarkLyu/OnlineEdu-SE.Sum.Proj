@@ -17,7 +17,7 @@ public class LearnServiceImpl implements LearnService {
     private LearnRepository learnRepository;
     @Override
     public Learn getLearnInfo(Long userId, Long courseId) {
-        return learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(userId, courseId).orElseThrow(()->new NotFoundException("该课程不存在。"));
+        return learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(userId, courseId).orElseThrow(()->new NotFoundException("该学生未学习课程不存在。"));
     }
 
     @Override

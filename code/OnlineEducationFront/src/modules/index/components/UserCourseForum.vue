@@ -1,23 +1,31 @@
 <template>
-    <el-collapse>
-        <el-collapse-item v-for="section in sectionForum" :key="section.secNo" :title="section.title">
-            <div slot="title">
-                <div class="float-left">
-                    <h2>{{ section.title }}</h2>
+    <div ref="totalForum">
+        <el-button @click="generateWordMap()">论坛词云图</el-button>
+        <el-collapse>
+            <el-collapse-item
+                    v-for="section in sectionForum"
+                    :key="section.secNo"
+                    :title="section.title"
+                    :ref="'collapse' + section.secNo"
+            >
+                <div slot="title">
+                    <div class="float-left">
+                        <h2>{{ section.title }}</h2>
+                    </div>
+                    <div class="float-left add-topic">
+                        <AddForumTopic :sec-no="section.secNo"></AddForumTopic>
+                    </div>
                 </div>
-                <div class="float-left add-topic">
-                    <AddForumTopic :sec-no="section.secNo"></AddForumTopic>
+                <div>
+                    <CourseForumStart
+                            v-for="one in section.topics"
+                            :key="one.createdAt"
+                            :forum-topic="one"
+                    ></CourseForumStart>
                 </div>
-            </div>
-            <div>
-                <CourseForumStart
-                        v-for="one in section.topics"
-                        :key="one.createdAt"
-                        :forum-topic="one"
-                ></CourseForumStart>
-            </div>
-        </el-collapse-item>
-    </el-collapse>
+            </el-collapse-item>
+        </el-collapse>
+    </div>
 </template>
 
 <script>
@@ -28,58 +36,25 @@
         components: {AddForumTopic, CourseForumStart},
         data() {
             return {
-                sectionForum: [
-                    {
-                        secNo: 1,
-                        title: "第一章",
-                        topics: [
-                            {
-                                content: "string",
-                                courseId: 0,
-                                createdAt: "2019-07-27T14:51:13.216Z",
-                                id: "string",
-                                imageUrls: [
-                                    "string"
-                                ],
-                                likes: 0,
-                                path: "string",
-                                secNo: 1,
-                                title: "string",
-                                userId: 0,
-                                responses: [
-                                    {
-                                        content: "string",
-                                        courseId: 0,
-                                        createdAt: "2019-07-27T14:51:13.216Z",
-                                        id: "string",
-                                        imageUrls: [
-                                            "string"
-                                        ],
-                                        likes: 0,
-                                        path: "string",
-                                        secNo: 1,
-                                        title: "string",
-                                        userId: 0,
-                                        responses: []
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                sectionForum: []
             }
         },
         methods: {
             initForum() {
-                this.sectionForum = this.$store.getters.getSectionList;
-                for (let i in this.sectionForum) {
-                    this.sectionForum[i].topics = []
-                }
+                let loading = this.$loading({
+                    target: this.$refs["totalForum"],
+                    text: "加载论坛",
+                    fullscreen: false
+                });
                 this.$http.request({
                     url: this.$store.getters.getCourseUrl + "forums",
                     method: "get",
                     headers: this.$store.getters.authRequestHead
                 }).then((response) => {
+                    this.sectionForum = this.$store.getters.getSectionList;
+                    for (let i in this.sectionForum) {
+                        this.sectionForum[i].topics = []
+                    }
                     let forum = response.data;
                     forum.sort((a,b) => {
                         if (a.secNo === b.secNo) {
@@ -119,6 +94,7 @@
                                 }
                                 pathLevel = popNum;
                             }
+                            i.responseTo = forumStack[0].userId;
                             forumStack[0].responses.push(i);
                             forumStack.unshift(i);
                             pathLevel = pathLength;
@@ -126,7 +102,35 @@
                     }
                     console.log(this.sectionForum);
                     this.$forceUpdate();
+                    loading.close();
+                }).catch((error) => {
+                    console.log(error.response);
+                    alert(error);
+                    loading.close();
                 })
+            },
+            generateWordMap: function() {
+                this.$http.request({
+                    url: "/api/users/" + this.$store.state.user.userInfo.id + "/courses/" + this.$store.state.course.id + "/forums/",
+                    method: "post",
+                    headers: this.$store.getters.authRequestHead
+                }).then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    alert(error);
+                    console.log(error.response);
+                })
+            }
+        },
+        computed: {
+            forumUpdate: function () {
+                return this.$store.state.course.forumUpdate;
+            }
+        },
+        watch: {
+            forumUpdate: function (val) {
+                alert("haha");
+                if (val) this.initForum();
             }
         },
         mounted() {

@@ -14,11 +14,11 @@ class CourseHeader extends Component {
     render() {
         return (
             <Header>
-                <Left>
-                    <Button transparent onPress={() => {this.showDrawer()}}>
-                        <Icon name='menu' />
-                    </Button>
-                </Left>
+                {/*<Left>*/}
+                    {/*<Button transparent onPress={() => {this.props.navigation.openDrawer()}}>*/}
+                        {/*<Icon name='menu' />*/}
+                    {/*</Button>*/}
+                {/*</Left>*/}
                 <Body>
                     <Title>
                         { this.props.courseTitle }

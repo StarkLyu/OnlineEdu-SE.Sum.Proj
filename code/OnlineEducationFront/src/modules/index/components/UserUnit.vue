@@ -29,7 +29,7 @@
                     default: return 18
                 }
             }
-        }
+        },
     }
 </script>
 

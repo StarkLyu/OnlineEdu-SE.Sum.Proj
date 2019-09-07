@@ -1,18 +1,80 @@
 import React from "react";
+import {StyleSheet, Dimensions} from "react-native";
+import {Root} from "native-base";
 import store from "./store/store.js";
 import TopNav from "./navigations/TopNav.js";
 import { Provider } from "react-redux";
 import axios from "axios";
+import Spinner from "react-native-loading-spinner-overlay";
+import MyToast from "./components/MyToast.js"
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://202.120.40.8:30382/online-edu";
 React.Component.prototype.$axios = axios;
+React.Component.prototype.$toast = MyToast;
+React.Component.prototype.$window = Dimensions.get('window');
+
+global.showLoading = false;
+global.cancelLoading = false;
+
+const styles = StyleSheet.create({
+    loadingText: {
+        color: "white"
+    }
+});
+
+const loadingDefaultOptions = {
+    textStyle: styles.loadingText,
+    animation: "fade"
+};
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loadingOptions: {
+
+            }
+        };
+        global.showLoading = (loadingText, customOption = loadingDefaultOptions) => {
+            //alert("MMM");
+            this.setState({
+                loadingOptions: {
+                    visible: true,
+                    textContent: loadingText,
+                    ...customOption
+                }
+            });
+            console.log(this.state);
+        };
+        global.cancelLoading = () => {
+            this.setState({
+                loadingOptions: {}
+            })
+        };
+        this.$axios.interceptors.response.use((response) => {
+            global.cancelLoading();
+            return response;
+        }, (error) => {
+            global.cancelLoading();
+            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+                this.$toast.errorToast("登录出错，请重新登录");
+            }
+            return Promise.reject(error);
+        })
+    }
+
+    componentDidMount(): void {
+
+    }
+
     render() {
         return (
             <Provider store={store}>
-                <TopNav/>
+                <Root>
+                    <Spinner {...this.state.loadingOptions} style={{zIndex: 100000}}/>
+                    <TopNav/>
+                </Root>
             </Provider>
         )
     }

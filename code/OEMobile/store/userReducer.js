@@ -1,13 +1,15 @@
 import {
     SET_LOGIN,
     SET_LOGOUT,
-    SET_USERINFO
+    SET_USERINFO,
+    SET_NEW_AVATAR
 } from './actions';
 
 const loginInit = {
     username: "",
     accessToken: "",
     loginStatus: false,
+    authHeader: {}
 };
 
 const userInfoInit = {
@@ -52,6 +54,10 @@ function userInfoAction(state = userInfoInit, action) {
     switch (action.type) {
         case SET_USERINFO:
             return action.userInfo;
+        case SET_NEW_AVATAR:
+            return Object.assign({}, state, {
+                avatarUrl: action.newAvatar
+            });
     }
     return state;
 }

@@ -21,14 +21,26 @@ class CourseSection extends Component {
                         { this.props.section.description }
                     </Text>
                 </ListItem>
-                <ListItem itemDivider>
-                    <Text>章节资源</Text>
-                </ListItem>
-                <FlatList data={this.props.section.resources} renderItem={({ item }) => <ResourceLine resourceInfo={item} navigation={this.props.navigation}/>} />
-                <ListItem itemDivider>
-                    <Text>章节作业</Text>
-                </ListItem>
-                <FlatList data={this.props.section.papers} renderItem={({ item }) => <PaperLine paper={item} navigation={this.props.navigation}/>} />
+                <FlatList
+                    data={this.props.section.resources}
+                    renderItem={({ item }) => <ResourceLine resourceInfo={item} navigation={this.props.navigation}/>}
+                    ListHeaderComponent={() => (
+                        <ListItem itemDivider>
+                            <Text>章节资源</Text>
+                        </ListItem>
+                    )}
+                    ListFooterComponent={() => (
+                        <FlatList
+                            data={this.props.section.papers}
+                            renderItem={({ item }) => <PaperLine paper={item} navigation={this.props.navigation}/>}
+                            ListHeaderComponent={() => (
+                                <ListItem itemDivider>
+                                    <Text>章节作业</Text>
+                                </ListItem>
+                            )}
+                        />
+                    )}
+                />
             </Container>
         );
     }

@@ -30,6 +30,8 @@ target 'OEMobile' do
 
   pod 'react-native-video', :path => '../node_modules/react-native-video'
 
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
   target 'OEMobileTests' do
     inherit! :search_paths
     # Pods for testing

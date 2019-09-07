@@ -1,4 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
+import { Message } from "element-ui";
+
+let errorMsg = (errorText) => Message({
+    type: "error",
+    text: errorText,
+    showCancel: true
+});
 
 export default {
     passwordRule: [
@@ -54,6 +61,7 @@ export default {
                     }
                 }).catch((error) => {
                     console.log(error.response);
+                    errorMsg("无法检查手机号重复，请检查网络或联系管理员")
                 })
             },
             trigger: "blur"
@@ -87,6 +95,7 @@ export default {
                     }
                 }).catch((error) => {
                     console.log(error.response);
+                    errorMsg("无法检查邮箱重复，请检查网络或联系管理员")
                 })
             },
             trigger: "blur"
@@ -128,6 +137,7 @@ export default {
                     }
                 }).catch((error) => {
                     console.log(error.response);
+                    errorMsg("无法检查用户名重复，请检查网络或联系管理员")
                 })
             },
             trigger: "blur"

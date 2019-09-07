@@ -1,4 +1,4 @@
-import {SET_COURSE_INFO} from "./courseActions";
+import {SET_COURSE_INFO, SET_COURSE_PAPERLIST} from "./courseActions";
 
 const courseInfoInit = {
     avatarUrl: "",
@@ -23,6 +23,8 @@ function courseInfoAction(state = courseInfoInit, action) {
     switch (action.type) {
         case SET_COURSE_INFO:
             return action.courseInfo;
+        case SET_COURSE_PAPERLIST:
+            return Object.assign({}, state, action.newPaperList);
         default:
             return state;
     }

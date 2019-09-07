@@ -38,9 +38,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public void sendSensitiveWordsDetectedWords(String email) {
+    public void sendSensitiveWordsDetectedWords(String email, String courseTitle, String sectionTitle, String username) {
         String subject = "处理违规言论";
-        String message = "系统监测到您的学生在论坛中发布了不当言论请前往处理。";
+        String message = "系统监测到您的学生" + username +" 在课程 " + courseTitle + " 章节 " + sectionTitle +" 下的论坛中发布了不当言论请前往处理。";
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(email);
@@ -51,9 +51,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public void sendNotification(String email){
+    public void sendNotification(String email, String courseTitle){
         String subject = "作业发布通知";
-        String message="您的作业已发布，请前往查看";
+        String message="您在课程 "+ courseTitle +" 的作业已发布，请前往查看";
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(email);

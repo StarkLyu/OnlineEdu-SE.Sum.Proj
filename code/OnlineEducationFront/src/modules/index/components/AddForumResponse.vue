@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-button type="primary" size="small" @click="showAdd">发布回复</el-button>
-        <el-dialog :visible.sync="addResponse">
+        <el-dialog :visible.sync="addResponse" ref="addWindow">
             <div slot="title">
                 <h2>发布回复</h2>
             </div>
@@ -59,6 +59,11 @@
             },
 
             commitAdd: function () {
+                let loading = this.$loading({
+                    target: this.$refs["addWindow"],
+                    fullscreen: false,
+                    text: "发布回复中..."
+                });
                 this.formData = new FormData();
                 this.$refs.upload.submit();
 
@@ -87,15 +92,19 @@
                         .then(function (res) {
                             console.log(res.data);
                             alert("发布成功");
+                            loading.close();
                             that.addResponse=false;
+                            that.$store.commit("setForumUpdate", true);
                         })
                         .catch(function (error2) {
                             console.log(error2.response);
                             alert("请求失败");
+                            loading.close();
                         });
                 }).catch((error) => {
                     alert(error);
                     console.log(error.response);
+                    loading.close();
                 })
             },
 

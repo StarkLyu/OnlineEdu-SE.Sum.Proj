@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { View } from "react-native";
-import { ListItem, Left, Icon, Text } from "native-base";
+import { ListItem, Left, Body, Right, Icon, Text } from "native-base";
 
 class PaperLine extends Component {
     constructor(props) {
@@ -13,7 +13,7 @@ class PaperLine extends Component {
 
     render() {
         return (
-            <ListItem onPress={() => {
+            <ListItem avatar onPress={() => {
                 this.props.navigation.navigate("CoursePaper", {
                     paperId: this.props.paper.paperId,
                     paper: this.props.paper
@@ -21,11 +21,13 @@ class PaperLine extends Component {
             }}>
                 <Left>
                     <Icon type={"FontAwesome"} name={"file-text-o"} />
-                    <Text>   {this.props.paper.title}</Text>
                 </Left>
-                <View style={{marginRight: 0, maxWidth: 200}}>
-                    <Text>DDL: {this.paperDDL()}</Text>
-                </View>
+                <Body>
+                    <Text>   {this.props.paper.title}</Text>
+                </Body>
+                <Right>
+                    <Text note>DDL: {this.paperDDL()}</Text>
+                </Right>
             </ListItem>
         );
     }

@@ -7,31 +7,35 @@
                 @close="cancelChange"
                 width="500px"
         >
-            <div v-if="changeStep === 0">
-                <el-form
-                        :model="changePass"
-                        :rules="changeRules"
-                        label-position="right"
-                        label-width="80px"
-                >
-                    <el-form-item prop="oldPass" label="旧密码">
-                        <el-input type="password" v-model="changePass.oldPass"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="newPass" label="新密吗">
-                        <el-input type="password" v-model="changePass.newPass"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="confirmPass" label="确认密码">
-                        <el-input type="password" v-model="changePass.confirmPass"></el-input>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div v-if="changeStep === 1">
-                <EmailConfirm
-                        confirmType="password"
-                        ref="emailConfirm"
-                        @confirm-pass="changeSuccess"
-                        @resend-request="resendRequest"
-                ></EmailConfirm>
+            <div ref="changePassDiv">
+                <div v-if="changeStep === 0">
+                    <el-form
+                            :model="changePass"
+                            :rules="changeRules"
+                            label-position="right"
+                            label-width="80px"
+                            ref="changePassForm"
+                    >
+                        <el-form-item prop="oldPass" label="旧密码">
+                            <el-input type="password" v-model="changePass.oldPass"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="newPass" label="新密吗">
+                            <el-input type="password" v-model="changePass.newPass"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="confirmPass" label="确认密码">
+                            <el-input type="password" v-model="changePass.confirmPass"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <div v-if="changeStep === 1">
+                    <EmailConfirm
+                            confirmType="password"
+                            ref="emailConfirm"
+                            @confirm-pass="changeSuccess"
+                            @confirm-fail="changeFail"
+                            @resend-request="resendRequest"
+                    ></EmailConfirm>
+                </div>
             </div>
             <div slot="footer">
                 <el-button @click="cancelChange">取消</el-button>
@@ -57,7 +61,7 @@
                 else {
                     callback()
                 }
-            }
+            };
 
             return {
                 showDialog: false,
@@ -76,23 +80,38 @@
                         formRules.requireRule("确认新密码不得为空"),
                         {validator: confirmPassValidator, trigger: "blur"}
                     ]
-                }
+                },
+                changeConfirmLoading: null
             }
         },
         methods: {
             nextStep: function () {
-                this.$http.request({
-                    url: this.requestUrl,
-                    method: "patch",
-                    headers: this.requestHeader,
-                    data: {
-                        password: this.changePass.newPass
+                let loading = this.$loading({
+                    target: this.$refs["changePassDiv"],
+                    fullscreen: false,
+                    text: "修改密码"
+                });
+                this.$refs["changePassForm"].validate((value) => {
+                    if (value) {
+                        this.$http.request({
+                            url: this.requestUrl,
+                            method: "patch",
+                            headers: this.requestHeader,
+                            data: {
+                                password: this.changePass.newPass
+                            }
+                        }).then(() => {
+                            loading.close();
+                            this.changeStep++;
+                        }).catch((error) => {
+                            alert("出错啦！");
+                            console.log(error.response);
+                            loading.close();
+                        })
                     }
-                }).then(() => {
-                    this.changeStep++;
-                }).catch((error) => {
-                    alert("出错啦！");
-                    console.log(error.response);
+                    else {
+                        loading.close();
+                    }
                 })
             },
             cancelChange: function () {
@@ -106,8 +125,17 @@
             changeSuccess: function () {
                 alert("修改成功！");
                 this.cancelChange();
+                this.changeConfirmLoading.close();
+            },
+            changeFail: function () {
+                this.changeConfirmLoading.close();
             },
             sendConfirm: function () {
+                this.changeConfirmLoading = this.$loading({
+                    target: this.$refs["changePassDiv"],
+                    fullscreen: false,
+                    text: "验证中"
+                });
                 this.$refs.emailConfirm.sendConfirmCode();
             },
             resendRequest: function () {

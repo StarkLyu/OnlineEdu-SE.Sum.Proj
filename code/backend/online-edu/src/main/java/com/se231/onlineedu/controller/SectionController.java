@@ -1,6 +1,7 @@
 package com.se231.onlineedu.controller;
 
 import com.se231.onlineedu.message.request.TitleAndDes;
+import com.se231.onlineedu.model.Course;
 import com.se231.onlineedu.model.Section;
 import com.se231.onlineedu.model.SectionBranches;
 import com.se231.onlineedu.model.User;
@@ -70,8 +71,9 @@ public class SectionController {
                               @PathVariable("secId")int secNo,
                               @PathVariable("branchId")int branchNo,
                               @RequestParam("paperId")Long paperId)throws Exception{
-        for(User student: courseService.getCourseInfo(courseId).getStudents()){
-            emailSenderService.sendNotification(student.getEmail());
+        Course course = courseService.getCourseInfo(courseId);
+        for(User student: course.getStudents()){
+            emailSenderService.sendNotification(student.getEmail(), course.getCourseTitle());
         }
         return sectionService.issuePaper(courseId, secNo, branchNo,paperId);
     }

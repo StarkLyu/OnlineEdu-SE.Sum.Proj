@@ -20,8 +20,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +52,13 @@ public class UserController {
 
     @Autowired
     VerificationTokenService verificationTokenService;
+
+    @ApiOperation(value = "已登录用户查询个人信息的用户名", notes = "已登录用户查询个人信息的用户名", httpMethod = "GET")
+    @GetMapping("/{id}/username")
+    public String getPersonalUsername(@PathVariable Long id) {
+        return userService.getUserInfo(id).getUsername();
+    }
+
 
     @ApiOperation(value = "已登录用户查询个人信息", notes = "已登录用户查询个人信息", httpMethod = "GET")
     @GetMapping("/info")
