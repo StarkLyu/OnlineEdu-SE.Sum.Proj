@@ -1,6 +1,7 @@
 package com.se231.onlineedu.controller;
 
 import com.se231.onlineedu.message.request.TempRecord;
+import com.se231.onlineedu.model.StudyReport;
 import com.se231.onlineedu.model.StudyTempRecord;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.StudyRecordService;
@@ -8,10 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Zhe Li
@@ -30,5 +28,11 @@ public class StudyRecordController {
     public StudyTempRecord submitRecord(@RequestBody TempRecord tempRecord,
                                         @AuthenticationPrincipal UserPrinciple userPrinciple){
         return studyRecordService.submitRecord(userPrinciple.getId(),tempRecord);
+    }
+
+    @ApiOperation("生成学习报告")
+    @GetMapping("/report")
+    public StudyReport getReport(@AuthenticationPrincipal UserPrinciple userPrinciple){
+        return studyRecordService.getReport(userPrinciple.getId());
     }
 }

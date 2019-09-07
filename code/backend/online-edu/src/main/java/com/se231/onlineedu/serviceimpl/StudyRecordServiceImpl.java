@@ -1,11 +1,10 @@
 package com.se231.onlineedu.serviceimpl;
 
+import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.TempRecord;
-import com.se231.onlineedu.model.StudyRecord;
-import com.se231.onlineedu.model.StudyRecordPrimaryKey;
-import com.se231.onlineedu.model.StudyTempRecord;
-import com.se231.onlineedu.model.VideoAction;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.StudyRecordRepository;
+import com.se231.onlineedu.repository.StudyReportRepository;
 import com.se231.onlineedu.repository.StudyTempRecordRepository;
 import com.se231.onlineedu.service.StudyRecordService;
 import com.se231.onlineedu.service.UserService;
@@ -23,6 +22,9 @@ public class StudyRecordServiceImpl implements StudyRecordService {
 
     @Autowired
     StudyRecordRepository studyRecordRepository;
+
+    @Autowired
+    StudyReportRepository studyReportRepository;
 
     @Autowired
     UserService userService;
@@ -87,4 +89,12 @@ public class StudyRecordServiceImpl implements StudyRecordService {
                 return studyTempRecordRepository.save(studyTempRecord);
             }
         }
+
+    @Override
+    public StudyReport getReport(Long userId) {
+        StudyReport studyReport = studyReportRepository.findById(userId)
+                .orElseThrow(()-> new NotFoundException("You haven't got any study record!"));
+
+        return studyReport;
+    }
 }
