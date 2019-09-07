@@ -6,7 +6,8 @@
         <el-main>
             <el-table
                     :data="AssignData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-                    style="width: 100%">
+                    style="width: 100%"
+                    v-loading="loading">
                 <el-table-column
                         prop="start"
                         label="开始时间"
@@ -114,9 +115,11 @@
 
         data(){
             return{
+                loading: true,
+
                 search:"",
 
-                AssignData:this.$store.getters.getCourseInfo.papers,
+                AssignData:[],
 
                 AssignVisible:false,
 
@@ -148,7 +151,7 @@
         },
 
         methods:{
-            // getThisCourseInfo(){
+            getThisCourseInfo(){
             //     var that=this;
             //     this.$http.request({
             //         url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
@@ -165,7 +168,9 @@
             //             alert("请求失败");
             //         });
             //
-            // },
+                this.AssignData=this.$store.getters.getCourseInfo.papers;
+                this.loading=false;
+            },
 
             // 显示增加作业弹窗
             handleAdd(){
@@ -288,7 +293,7 @@
             }
             console.log(this.questions);
 
-            // this.getThisCourseInfo();
+            this.getThisCourseInfo();
         }
     }
 </script>

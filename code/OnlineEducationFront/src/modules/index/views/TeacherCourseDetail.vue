@@ -142,7 +142,9 @@
 
         data(){
             return{
-                CourseForm:this.$store.getters.getCourseInfo,
+                // loading:true,
+
+                CourseForm:[],
 
                 courseDialogVisible:false,
 
@@ -193,6 +195,11 @@
         },
 
         methods:{
+            showCourse(){
+                this.CourseForm=this.$store.getters.getCourseInfo;
+                // this.loading=false;
+            },
+
             beforeAvatarUpload: function(file) {
                 console.log(file);
                 const isLt2M = file.size / 1024 < 5000;
@@ -290,6 +297,10 @@
                     end:'',
                 });
             },
+        },
+
+        mounted() {
+            this.showCourse();
         }
     }
 </script>

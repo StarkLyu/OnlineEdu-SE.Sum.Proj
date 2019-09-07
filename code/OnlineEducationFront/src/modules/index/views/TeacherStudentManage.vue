@@ -8,6 +8,7 @@
 <!--            显示助教表格-->
             <el-table :data="assistantData"
                       class="usertable"
+                      v-loading="loading"
                       stripe>
                 <el-table-column >
                     <el-table-column type="index">
@@ -47,6 +48,7 @@
 <!--            学生信息显示table-->
             <el-table :data="StudentData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
+                      v-loading="loading"
                       stripe>
                 <el-table-column >
                     <el-table-column type="index">
@@ -96,6 +98,8 @@
 
         data(){
             return{
+                loading:true,
+
                 search: '',
 
                 StudentData: [],
@@ -117,6 +121,7 @@
                         console.log(response.data);
                         // alert("请求成功");
                         that.StudentData = response.data;
+                        that.loading=false;
                     })
                     .catch(function (error) {
                         console.log(error.response);

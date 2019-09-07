@@ -17,7 +17,14 @@
 
         components:{
             CourseChapters,
-        }
+        },
+
+        data(){
+            return{
+                loading:true,
+            }
+
+    }
     }
 </script>
 

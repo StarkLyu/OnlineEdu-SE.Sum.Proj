@@ -24,7 +24,8 @@
             </div>
 <!--            展示所有资源-->
             <el-table :data="courseRes"
-                      highlight-current-row="true">
+                      highlight-current-row="true"
+                      v-loading="loading">
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
@@ -67,11 +68,18 @@
 
                 BTtype:"",
 
-                courseRes:this.$store.getters.getCourseInfo.coursePrototype.resources,
+                loading:true,
+
+                courseRes:[],
             }
         },
 
         methods: {
+            showAllBT(){
+                this.courseRes=this.$store.getters.getCourseInfo.coursePrototype.resources;
+                this.loading=false;
+            },
+
             submitUpload() {
                 this.$refs.upload.submit();
             },
@@ -157,6 +165,10 @@
                     });
             },
 
+        },
+
+        mounted() {
+            this.showAllBT();
         }
     }
 </script>
