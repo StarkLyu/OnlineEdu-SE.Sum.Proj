@@ -1,5 +1,9 @@
 <template>
-    <el-menu mode="horizontal" router>
+    <el-menu mode="horizontal"
+             background-color="#F0F6FF"
+             active-text-color="#116ECD"
+             text-color="#000000"
+             router>
         <div class="head-logo"><img alt="fuck" src="../../../assets/mainlogo.png" style="width: 160px;"></div>
         <el-menu-item index="/home">
             <i class="iconfont el-icon-my-home"></i>
@@ -11,10 +15,6 @@
         <el-menu-item index="/user">
             <i class="el-icon-user"></i>
             <span class="menu-text"> 个人中心</span>
-        </el-menu-item>
-        <el-menu-item>
-            <i class="iconfont el-icon-my-help"></i>
-            <span class="menu-text"> 帮助</span>
         </el-menu-item>
         <div class="head-right">
             <div class="head-right head-user head-user-auto">

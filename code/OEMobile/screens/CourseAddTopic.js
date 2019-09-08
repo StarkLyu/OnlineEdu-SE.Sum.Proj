@@ -83,7 +83,7 @@ class CourseAddTopic extends Component {
                 formdata.append("images", {
                     uri: i.path.replace("file:///", "content://"),
                     type: i.mime,
-                    //name: i.fileName
+                    name: i.path.split("/").pop()
                 });
                 // tempList.push({
                 //     uri: i.uri,
@@ -105,7 +105,8 @@ class CourseAddTopic extends Component {
                 console.log(response);
             }).catch((error) => {
                 this.$toast.errorToast("图片发布失败");
-                console.log(error)
+                console.log(error);
+                console.log(error.response);
             })
         }).catch((error) => {
             this.$toast.errorToast("帖子发布失败");

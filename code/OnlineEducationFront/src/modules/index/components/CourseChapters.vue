@@ -11,6 +11,7 @@
                     :key="indexChapter"
             >
                 <h2 slot="title">{{ chapter.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+<!--                <h3>{{chapter.secNo}}</h3>-->
                 <AddNewChapter slot="title" :last-chapter="chapter.secNo" v-if="isCourseTeacher"></AddNewChapter>
                 <div class="section-content">
                     <el-collapse>
@@ -42,7 +43,7 @@
         components: {AddNewChapter, CourseSectionUnit, AddNewSection},
         data() {
             return {
-                chapters: this.$store.getters.getCourseInfo.sectionList,
+                //chapters: this.$store.getters.getCourseInfo.sectionList,
 
                 showAddChapter: false,
                 addAfterChapter: {
@@ -55,6 +56,20 @@
             ...mapGetters([
                 'isCourseTeacher',
             ]),
+            chapters: function () {
+                var section=this.$store.getters.getCourseInfo.sectionList;
+                section.sort((a,b) => {
+                    if (a.secNo === b.secNo) {
+                        if (a.path < b.path) return -1;
+                        else return 1;
+                    }
+                    else {
+                        if (a.secNo < b.secNo) return -1;
+                        else return 1;
+                    }
+                });
+                return section;
+            }
         }
     }
 </script>

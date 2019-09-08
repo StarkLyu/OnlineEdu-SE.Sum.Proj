@@ -7,7 +7,7 @@
                     <strong class="title-font">{{ courseInfo.courseTitle }}</strong>
                     <div class="line-layout">
                         <div class="float-left">
-                            <UserUnit :user="courseInfo.teacher"></UserUnit>
+                            <UserUnit :user-id="courseInfo.teacher.id"></UserUnit>
                         </div>
                         <div class="float-right">
                             <!--<i class="el-icon-user"></i>

@@ -26,7 +26,7 @@
             </div>
             <div slot="footer">
                 <el-button @click.native="addResponse=false">取消</el-button>
-                <el-button type="primary" @click="commitAdd">添加</el-button>
+                <el-button type="primary" @click="commitAdd" :loading="addLoading">添加</el-button>
             </div>
         </el-dialog>
     </div>
@@ -49,7 +49,7 @@
                 addTopic: {
                     content: ""
                 },
-
+                addLoading: false,
                 formData: new FormData(),
             }
         },
@@ -59,11 +59,12 @@
             },
 
             commitAdd: function () {
-                let loading = this.$loading({
-                    target: this.$refs["addWindow"],
-                    fullscreen: false,
-                    text: "发布回复中..."
-                });
+                // let loading = this.$loading({
+                //     target: this.$refs["addWindow"],
+                //     fullscreen: false,
+                //     text: "发布回复中..."
+                // });
+                this.addLoading = true;
                 this.formData = new FormData();
                 this.$refs.upload.submit();
 
@@ -89,22 +90,25 @@
                         },
                         data:that.formData,
                     })
-                        .then(function (res) {
+                        .then((res) => {
                             console.log(res.data);
-                            alert("发布成功");
-                            loading.close();
+                            this.$root.success("发布成功");
+                            //loading.close();
+                            this.addLoading = false;
                             that.addResponse=false;
                             that.$store.commit("setForumUpdate", true);
                         })
-                        .catch(function (error2) {
+                        .catch((error2) => {
                             console.log(error2.response);
-                            alert("请求失败");
-                            loading.close();
+                            this.$root.error("发布失败");
+                            this.addLoading = false;
+                            //loading.close();
                         });
                 }).catch((error) => {
-                    alert(error);
+                    this.$root.error(error);
+                    this.addLoading = false;
                     console.log(error.response);
-                    loading.close();
+                    //loading.close();
                 })
             },
 

@@ -62,7 +62,7 @@ new Vue({
             };
             console.log(record);
             this.$http.request({
-                url: "/api/studyRecord/submit",
+                url: `/api/courses/${this.$store.getters.getCourseId}/studyRecord/submit`,
                 method: "post",
                 data: record,
                 headers: this.$store.getters.authRequestHead

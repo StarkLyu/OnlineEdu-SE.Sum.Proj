@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-avatar :size="avatarSize" :src="user.avatarUrl"></el-avatar>
-        <span class="name-font">{{ user.username }}</span>
+        <el-avatar :size="avatarSize" :src="userUnit.avatarUrl"></el-avatar>
+        <span class="name-font">{{ userUnit.username }}</span>
     </div>
 </template>
 
@@ -50,7 +50,9 @@
                     url: `/api/users/${this.userId}/avatar`,
                     method: "get",
                 }).then((response) => {
-                    this.userUnit = response.data;
+                    console.log(response.data);
+                    this.userUnit.username = response.data.username;
+                    this.userUnit.avatarUrl = "http://202.120.40.8:30382/online-edu/static" + response.data.avatar;
                 }).catch((error) => {
                     console.log(error);
                     this.userUnit = this.user;

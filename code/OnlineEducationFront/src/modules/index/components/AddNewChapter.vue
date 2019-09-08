@@ -46,6 +46,7 @@
                 })
                     .then(function (response) {
                         that.$message.success("添加章成功");
+                        that.getCourse();
                         console.log(response.data);
                     })
                     .catch(function (error) {
@@ -65,7 +66,8 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        that.newChapters=response.data.course.sectionList;
+                        that.$store.commit("setCourseInfo",response.data.course);
+                        that.$forceUpdate();
                         that.loading=false;
                         // that.$store.commit("setCourseInfo",response.data);
                         // alert("请求成功");
