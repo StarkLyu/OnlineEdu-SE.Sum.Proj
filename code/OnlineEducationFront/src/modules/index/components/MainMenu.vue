@@ -1,7 +1,7 @@
 <template>
     <el-menu mode="horizontal"
              background-color="#F0F6FF"
-             active-text-color="#ffd04b"
+             active-text-color="#116ECD"
              text-color="#000000"
              router>
         <div class="head-logo"><img alt="fuck" src="../../../assets/mainlogo.png" style="width: 160px;"></div>
