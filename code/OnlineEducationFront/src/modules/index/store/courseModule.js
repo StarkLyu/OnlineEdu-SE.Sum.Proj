@@ -51,6 +51,10 @@ const getters = {
                 title: sec.title
             })
         }
+        sectionList.sort((a, b) => {
+            if (a.secNo < b.secNo) return -1;
+            else return 1;
+        });
         return sectionList;
     },
     getPaperId:state => {

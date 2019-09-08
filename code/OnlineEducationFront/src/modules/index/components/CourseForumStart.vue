@@ -3,7 +3,7 @@
         <div slot="header">
             <strong>{{ forumTopic.title }}</strong>
             <div class="float-right">
-                <UserUnit class="float-left" size="middle"></UserUnit>&nbsp;&nbsp;&nbsp;&nbsp;
+                <UserUnit class="float-left" size="middle" :user-id="forumTopic.userId"></UserUnit>&nbsp;&nbsp;&nbsp;&nbsp;
                 {{ forumTopic.createdAt }}
             </div>
             <el-button style="float:right; margin-right: 20px;"
