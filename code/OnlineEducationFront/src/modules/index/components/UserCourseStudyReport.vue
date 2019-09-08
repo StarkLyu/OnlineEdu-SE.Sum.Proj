@@ -46,9 +46,27 @@
             }
         },
         methods: {
+            addDate: function (date) {
+                let temp = new Date(date);
+                temp.setDate(temp.getDate() + 1);
+                return this.$root.dateToString(temp);
+            },
             initChart: function () {
                 let dateList = [];
-                dateList.push(this.$store.getters.getCourseInfo);
+                let timeList = [];
+                let sourceList = this.dailyStudyTime;
+                let startDate = this.$store.getters.getCourseInfo.startDate.substr(0, 10);
+                //dateList.push(startDate);
+                let current = this.$root.dateToString(Date());
+                let courseEndDate = this.$store.getters.getCourseInfo.endDate.substr(0, 10);
+                let endDate = current < courseEndDate ? current : courseEndDate;
+                let scanDate = startDate;
+                while (scanDate <= endDate) {
+                    dateList.push(startDate);
+                    if (sourceList.length !== 0 && sourceList[0].date === scanDate) {
+                        timeList.push(sourceList[0])
+                    }
+                }
                 let chart = echarts.init(document.getElementById("studychart"));
                 chart.setOption({
                     title: {

@@ -12,10 +12,10 @@
             <i class="iconfont el-icon-my-homework"></i>
             课程作业
         </el-menu-item>
-        <el-menu-item index="/course/student/resources">
-            <i class="iconfont el-icon-my-resource"></i>
-            课程资源
-        </el-menu-item>
+        <!--<el-menu-item index="/course/student/resources">-->
+            <!--<i class="iconfont el-icon-my-resource"></i>-->
+            <!--课程资源-->
+        <!--</el-menu-item>-->
         <el-menu-item index="/course/student/forum">
             <i class="iconfont el-icon-my-forum"></i>
             课程论坛
