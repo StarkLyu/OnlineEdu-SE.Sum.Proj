@@ -1,7 +1,11 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.TempRecord;
+import com.se231.onlineedu.message.response.ReportAndTime;
+import com.se231.onlineedu.message.response.StudyTime;
 import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.StudyRecordRepository;
 import com.se231.onlineedu.repository.StudyReportRepository;
@@ -91,10 +95,17 @@ public class StudyRecordServiceImpl implements StudyRecordService {
         }
 
     @Override
-    public StudyReport getReport(Long userId) {
+    public ReportAndTime getReport(Long userId) {
+        ReportAndTime reportAndTime = new ReportAndTime();
         StudyReport studyReport = studyReportRepository.findById(userId)
                 .orElseThrow(()-> new NotFoundException("You haven't got any study record!"));
+        reportAndTime.setReport(studyReport);
 
-        return studyReport;
+        User user = userService.getUserInfo(userId);
+        List<StudyRecord> studyRecords = studyRecordRepository.findAllByStudyRecordPrimaryKey_User(user);
+        List<StudyTime> studyTimes = new ArrayList<>();
+        studyRecords.forEach(studyRecord -> studyTimes.add(new StudyTime(studyRecord)));
+        reportAndTime.setStudyTimes(studyTimes);
+        return reportAndTime;
     }
 }

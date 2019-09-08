@@ -1,7 +1,7 @@
 package com.se231.onlineedu.controller;
 
 import com.se231.onlineedu.message.request.TempRecord;
-import com.se231.onlineedu.model.StudyReport;
+import com.se231.onlineedu.message.response.ReportAndTime;
 import com.se231.onlineedu.model.StudyTempRecord;
 import com.se231.onlineedu.security.services.UserPrinciple;
 import com.se231.onlineedu.service.StudyRecordService;
@@ -32,7 +32,7 @@ public class StudyRecordController {
 
     @ApiOperation("生成学习报告")
     @GetMapping("/report")
-    public StudyReport getReport(@AuthenticationPrincipal UserPrinciple userPrinciple){
+    public ReportAndTime getReport(@AuthenticationPrincipal UserPrinciple userPrinciple){
         return studyRecordService.getReport(userPrinciple.getId());
     }
 }
