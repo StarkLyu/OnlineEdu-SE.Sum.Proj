@@ -170,4 +170,11 @@ public class CourseController {
         return courseService.deleteCourse(id);
     }
 
+    @ApiOperation("学生获取自己该门课的成绩")
+    @GetMapping("/{id}/score")
+    public double getScore(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                        @PathVariable(name = "id") Long courseId){
+        return courseService.getScore(userPrinciple.getId(),courseId);
+    }
+
 }

@@ -329,4 +329,12 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(course);
         return "success";
     }
+
+    @Override
+    public double getScore(Long userId, Long courseId) {
+        Learn learn = learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(userId,courseId)
+                .orElseThrow(()-> new NotFoundException("You haven't pick this course."));
+
+        return learn.getGrade();
+    }
 }

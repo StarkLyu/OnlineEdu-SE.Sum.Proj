@@ -1,11 +1,14 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.TempRecord;
-import com.se231.onlineedu.model.StudyRecord;
-import com.se231.onlineedu.model.StudyRecordPrimaryKey;
-import com.se231.onlineedu.model.StudyTempRecord;
-import com.se231.onlineedu.model.VideoAction;
+import com.se231.onlineedu.message.response.ReportAndTime;
+import com.se231.onlineedu.message.response.StudyTime;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.StudyRecordRepository;
+import com.se231.onlineedu.repository.StudyReportRepository;
 import com.se231.onlineedu.repository.StudyTempRecordRepository;
 import com.se231.onlineedu.service.StudyRecordService;
 import com.se231.onlineedu.service.UserService;
@@ -23,6 +26,9 @@ public class StudyRecordServiceImpl implements StudyRecordService {
 
     @Autowired
     StudyRecordRepository studyRecordRepository;
+
+    @Autowired
+    StudyReportRepository studyReportRepository;
 
     @Autowired
     UserService userService;
@@ -87,4 +93,19 @@ public class StudyRecordServiceImpl implements StudyRecordService {
                 return studyTempRecordRepository.save(studyTempRecord);
             }
         }
+
+    @Override
+    public ReportAndTime getReport(Long userId) {
+        ReportAndTime reportAndTime = new ReportAndTime();
+        StudyReport studyReport = studyReportRepository.findById(userId)
+                .orElseThrow(()-> new NotFoundException("You haven't got any study record!"));
+        reportAndTime.setReport(studyReport);
+
+        User user = userService.getUserInfo(userId);
+        List<StudyRecord> studyRecords = studyRecordRepository.findAllByStudyRecordPrimaryKey_User(user);
+        List<StudyTime> studyTimes = new ArrayList<>();
+        studyRecords.forEach(studyRecord -> studyTimes.add(new StudyTime(studyRecord)));
+        reportAndTime.setStudyTimes(studyTimes);
+        return reportAndTime;
+    }
 }
