@@ -25,7 +25,7 @@
                     <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
-<!--                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>-->
+                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent"></el-progress>
             </div>
             <div class="divright">
 <!--                <el-button @click="handleAdd">新增</el-button>-->
@@ -269,6 +269,15 @@
                         method: "post",
                         headers: {Authorization: "Bearer " + localStorage.getItem("managerToken") ,'Content-Type':'multipart/form-data'},
                         data:param,
+                        onUploadProgress: (event) => {
+                            // 监听上传进度
+                            if (event.lengthComputable) {
+                                let val = (event.loaded / event.total * 100).toFixed(0);
+                                that.excelFlag = true;
+                                that.excelUploadPercent = parseInt(val);
+                                // console.log(val);
+                            }
+                        }
                     },
                     {
                         onUploadProgress: (event) => {
@@ -292,6 +301,7 @@
                     .catch(function (err) {
                         console.log(err.response.data);
                         that.$message.error(err.response.data);
+                        that.excelFlag=false;
                     });
             },
 

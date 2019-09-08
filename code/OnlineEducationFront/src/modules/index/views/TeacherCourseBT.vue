@@ -21,6 +21,7 @@
                     <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">上传课程资源，一次最多三个</div>
                 </el-upload>
+                <el-progress v-if="isShowProgress===true" :percentage="BTpercent"></el-progress>
             </div>
 <!--            展示所有资源-->
             <el-table :data="courseRes"
@@ -71,6 +72,10 @@
                 loading:true,
 
                 courseRes:[],
+
+                isShowProgress:false,
+
+                BTpercent:0,
             }
         },
 
@@ -134,9 +139,6 @@
 
                 this.$message.info("正在上传文件");
 
-                // 进度条
-                // this.excelFlag = true;
-
                 let res = new FormData();
                 res.append('resource',file.file);
 
@@ -147,20 +149,22 @@
                         method: "post",
                         headers: {Authorization: "Bearer " + this.$store.state.user.accessToken ,'Content-Type':'multipart/form-data'},
                         data:res,
+                        onUploadProgress: (event) => {
+                            // 监听上传进度
+                            if (event.lengthComputable) {
+                                let val = (event.loaded / event.total * 100).toFixed(0);
+                                that.isShowProgress = true;
+                                that.BTpercent = parseInt(val);
+                                console.log(val);
+                            }
+                        }
                     },
-                    // {
-                    //     onUploadProgress: (event) => {
-                    //         // 监听上传进度
-                    //         event.percent = event.loaded / event.total * 100;
-                    //         this.excelUploadPercent=event.percent;
-                    //         file.onProgress(event);
-                    //     }
-                    // }
                 )
                     .then(function (response) {
                         console.log(response.data);
 
                         that.$message.success("上传资源成功");
+                        that.isShowProgress=false;
 
                     })
                     .catch(function (error) {
@@ -169,6 +173,10 @@
                     });
             },
 
+        //    删除资源
+            handleDel(){
+                this.$message.info("资源已删除");
+            }
         },
 
         mounted() {
