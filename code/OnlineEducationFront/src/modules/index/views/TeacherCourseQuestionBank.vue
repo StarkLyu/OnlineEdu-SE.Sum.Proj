@@ -385,12 +385,12 @@
                                     // alert("请求失败");
                                 });
                         }
+                        that.getCourse();
                         that.$message.success("添加单选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("添加单选题失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加单选题失败："+error.response.data);
                     });
                 this.singleVisible=false;
             },
@@ -442,12 +442,12 @@
                                     // alert("请求失败");
                                 });
                         }
+                        that.getCourse();
                         that.$message.success("添加多选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("添加多选题失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加多选题失败："+error.response.data);
                     });
                 this.multiVisible=false;
             },
@@ -492,12 +492,12 @@
                                     // alert("请求失败");
                                 });
                         }
+                        that.getCourse();
                         that.$message.success("添加判断题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("添加判断题失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加判断题失败："+error.response.data);
                     });
                 this.judgeVisible=false;
             },
@@ -541,12 +541,12 @@
                                     // alert("请求失败");
                                 });
                         }
+                        that.getCourse();
                         that.$message.success("添加主观题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("添加主观题失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加主观题失败："+error.response.data);
                     });
                 this.subVisible=false;
             },
@@ -600,6 +600,26 @@
             //     this.dialogImageUrl = file.url;
             //     this.dialogVisible = true;
             // },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.questions=response.data.course.coursePrototype.questions;
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            }
 
         },
 

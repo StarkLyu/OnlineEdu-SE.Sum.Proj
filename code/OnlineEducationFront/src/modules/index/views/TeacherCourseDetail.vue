@@ -223,8 +223,7 @@
                     this.$message.success("上传头像成功");
                     console.log(response);
                 }).catch((error) => {
-                    this.$message.error("上传头像失败");
-                    console.log(error.response);
+                    this.$message.error("上传头像失败："+error.response.data);
                 })
             },
 
@@ -262,13 +261,14 @@
 
                         that.courseDialogVisible=false;
                         // alert("修改课程信息成功");
+                        that.getCourse();
                         that.$message.success("修改课程信息成功");
+
                     })
                     .catch(function (error) {
                         console.log(error);
                         // alert("修改课程信息失败");
-                        that.$message.error("修改课程信息失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("修改课程信息失败："+error.response.data);
                     });
             },
 
@@ -288,6 +288,26 @@
                     end:'',
                 });
             },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.CourseForm=response.data.course;
+                        this.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            }
         },
 
         computed: {
@@ -311,7 +331,8 @@
         },
 
         mounted() {
-            this.showCourse();
+            this.getCourse();
+            // this.showCourse();
         }
     }
 </script>

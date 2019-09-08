@@ -122,8 +122,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("提交评分失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("提交评分失败："+error.response.data);
 
                     });
             }

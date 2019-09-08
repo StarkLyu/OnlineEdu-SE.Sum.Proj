@@ -113,7 +113,7 @@
                     this.BTtype='ppt';
                     return file;
                 }
-                else if(type[type.length-1]==='mp4'){
+                else if(type[type.length-1]==='mp4' || type[type.length-1]==='avi' || type[type.length-1]==='rmvb'){
                     this.BTtype='video';
                     return file;
                 }
@@ -163,20 +163,59 @@
                     .then(function (response) {
                         console.log(response.data);
 
+                        that.getCourse();
                         that.$message.success("上传资源成功");
                         that.isShowProgress=false;
 
                     })
                     .catch(function (error) {
                         console.log(error);
-                        that.$message.error("上传资源失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("上传资源失败："+error.response.data);
                     });
             },
 
         //    删除资源
-            handleDel(){
-                this.$message.info("资源已删除");
+            handleDel(index, row){
+                var that=this;
+                this.$http.request(
+                    {
+                        url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+"/"+row.url,
+                        method: "delete",
+                        headers: {Authorization: "Bearer " + this.$store.state.user.accessToken ,'Content-Type':'multipart/form-data'},
+                    },
+                )
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        that.getCourse();
+                        that.$message.info("资源已删除");
+                        that.isShowProgress=false;
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        that.$message.error("删除资源失败："+error.response.data);
+                    });
+            },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.courseRes=response.data.course.coursePrototype.resources;;
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             }
         },
 

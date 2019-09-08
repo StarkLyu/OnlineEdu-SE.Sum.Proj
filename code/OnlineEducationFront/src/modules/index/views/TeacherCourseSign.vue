@@ -138,14 +138,14 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        that.getCourse();
                         that.$message.success("发布签到成功");
                         that.signDialogVisible=false;
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("发布签到失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("发布签到失败"+error.response.data);
                     });
             },
 
@@ -167,6 +167,26 @@
                     }
                 );
             },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.signIns=response.data.course.signIns;
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            }
 
         }
     }

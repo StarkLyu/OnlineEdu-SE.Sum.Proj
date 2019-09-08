@@ -152,22 +152,6 @@
 
         methods:{
             getThisCourseInfo(){
-            //     var that=this;
-            //     this.$http.request({
-            //         url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
-            //         method: "get",
-            //         headers: this.$store.getters.authRequestHead,
-            //     })
-            //         .then(function (response) {
-            //             console.log(response.data);
-            //             that.$store.commit("setCourseInfo",response.data);
-            //             // alert("请求成功");
-            //         })
-            //         .catch(function (error) {
-            //             console.log(error);
-            //             alert("请求失败");
-            //         });
-            //
                 this.AssignData=this.$store.getters.getCourseInfo.papers;
                 this.loading=false;
             },
@@ -245,12 +229,12 @@
                     .then(function (response) {
                         console.log(response.data);
                         // that.getThisCourseInfo();
+                        that.getCourse();
                         that.$message.success("添加作业成功");
                     })
                     .catch(function (error) {
                         console.log(error);
-                        that.$message.error("添加作业失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加作业失败："+error.response.data);
                     });
 
                 this.AssignVisible=false;
@@ -273,6 +257,26 @@
                         paperId: row.id
                     }
                 });
+            },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.AssignData=response.data.course.papers;
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             }
         },
 
