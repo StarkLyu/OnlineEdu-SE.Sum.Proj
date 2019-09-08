@@ -63,10 +63,10 @@
                             label="操作"
                             min-width="40%">
                         <template slot-scope="scope">
-                            <el-button type="button" size="small" @click="handleEdit(scope.$index, scope.row)">
+                            <el-button type="primary" size="small" @click="handleEdit(scope.$index, scope.row)">
                                 修改
                             </el-button>
-                            <el-button type="button" size="small" @click="handleDel(scope.$index, scope.row)">
+                            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">
                                 删除
                             </el-button>
                         </template>

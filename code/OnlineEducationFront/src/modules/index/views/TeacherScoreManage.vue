@@ -74,11 +74,10 @@
                 :lock-scroll="false"
                 top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
-                <el-form-item>
-<!--                    <h3>学生姓名</h3>-->
-<!--                    <span>-->
-<!--                            {{editForm.username}}-->
-<!--                    </span>-->
+                <el-form-item label="学生">
+                    <span>
+                            {{editForm.username}}
+                    </span>
                 </el-form-item>
                 <el-form-item label="成绩">
                     <el-input type="number" v-model="editForm.score"></el-input>
@@ -144,6 +143,7 @@
             handleEdit: function(index, row) {
                 this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
+                this.editForm.username=this.editForm.student.username;
                 console.log(this.editForm);
             },
 
