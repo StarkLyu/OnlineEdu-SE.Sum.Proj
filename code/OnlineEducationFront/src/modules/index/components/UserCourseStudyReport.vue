@@ -80,21 +80,51 @@
                 console.log(this.chart);
                 this.chart.setOption({
                     title: {
-                        text: "我的学习情况"
+                        text: "我的学习情况",
+                        left: "center"
                     },
                     xAxis: {
                         type: "category",
-                        data: dateList
+                        data: dateList,
+                        name: "日期"
                     },
                     yAxis: {
-                        type: "value"
+                        type: "value",
+                        name: "日学习时间",
+                        min: 0,
+                        max: function(value) {
+                            return Math.ceil(value.max / 60) * 60
+                        },
+                        maxInterval: 60,
+                        axisLabel: {
+                            formatter: function (value, index) {
+                                return `${(value/60).toFixed(1)}h`
+                            }
+                        }
                     },
                     series: [
                         {
                             data: timeList,
-                            type: "line"
+                            type: "line",
                         }
-                    ]
+                    ],
+                    color: ['rgba(0,100,155,1)'],
+                    dataZoom: [
+                        {
+                            type: "inside",
+                            start: 10,
+                            end: 60
+                        },
+                        {
+                            type: "slider"
+                        }
+                    ],
+                    tooltip: {
+                        formatter: function (params) {
+                            return `${params.name}：共学习 ${(params.value / 60).toFixed(1)}h`
+                        },
+                        triggerOn: "click"
+                    }
                 })
             },
             initReport: function () {
@@ -198,7 +228,7 @@
     }
 
     .study-chart {
-        width: 900px;
+        width: 100%;
         margin-left: auto;
         margin-right: auto;
         height: 500px
