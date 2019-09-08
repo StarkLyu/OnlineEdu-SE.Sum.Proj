@@ -208,6 +208,22 @@
         methods:{
             showCourse(){
                 this.CourseForm=this.$store.getters.getCourseInfo;
+                var courseState=this.CourseForm.state;
+                if(courseState==='APPLYING'){
+                    this.CourseForm.state='通过审核';
+                }
+                else if(courseState==='READY_TO_START'){
+                    this.CourseForm.state='未开始';
+                }
+                else if (courseState==='TEACHING'){
+                    this.CourseForm.state='进行中';
+                }
+                else if (courseState==='FINISHED'){
+                    this.CourseForm.state='已完成';
+                }
+                else {
+                    this.CourseForm.state='未通过审核';
+                }
                 this.loading=false;
             },
 
@@ -313,13 +329,33 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        that.CourseForm=response.data.course;
+                        var newCourseForm=response.data.course;
+                        // that.CourseForm=response.data.course;
                         that.imageURL=response.data.course.avatarUrl;
                         if (that.imageURL !== "") {
                             that.imageURL= "http://202.120.40.8:30382/online-edu/static/" + that.imageURL + "?a=" + Math.random();
                         }
                         else that.imageURL= "";
-                        
+
+                        // 修改课程状态显示
+                        var courseState=newCourseForm.state;
+                        if(courseState==='APPLYING'){
+                            newCourseForm.state='通过审核';
+                        }
+                        else if(courseState==='READY_TO_START'){
+                            newCourseForm.state='未开始';
+                        }
+                        else if (courseState==='TEACHING'){
+                            newCourseForm.state='进行中';
+                        }
+                        else if (courseState==='FINISHED'){
+                            newCourseForm.state='已完成';
+                        }
+                        else {
+                            newCourseForm.state='未通过审核';
+                        }
+
+                        that.CourseForm=newCourseForm;
                         that.loading=false;
                         // that.$store.commit("setCourseInfo",response.data);
                         // alert("请求成功");
