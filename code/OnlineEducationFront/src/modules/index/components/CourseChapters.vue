@@ -57,7 +57,18 @@
                 'isCourseTeacher',
             ]),
             chapters: function () {
-                return this.$store.getters.getCourseInfo.sectionList;
+                var section=this.$store.getters.getCourseInfo.sectionList;
+                section.sort((a,b) => {
+                    if (a.secNo === b.secNo) {
+                        if (a.path < b.path) return -1;
+                        else return 1;
+                    }
+                    else {
+                        if (a.secNo < b.secNo) return -1;
+                        else return 1;
+                    }
+                });
+                return section;
             }
         }
     }
