@@ -1,10 +1,8 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
@@ -13,12 +11,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @Entity
 public class StudyTempRecord {
-    @Id
-    private long id;
+    @EmbeddedId
+    private LearnPrimaryKey learnPrimaryKey;
 
     @OneToOne
     @PrimaryKeyJoinColumn
-    private User user;
+    private Learn learn;
 
     private VideoAction prevState;
 
@@ -28,27 +26,19 @@ public class StudyTempRecord {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date prevTime;
 
+    public StudyTempRecord(User user, Course course) {
+        this.learnPrimaryKey = new LearnPrimaryKey(user,course);
+    }
+
+    public LearnPrimaryKey getLearnPrimaryKey() {
+        return learnPrimaryKey;
+    }
+
+    public void setLearnPrimaryKey(LearnPrimaryKey learnPrimaryKey) {
+        this.learnPrimaryKey = learnPrimaryKey;
+    }
+
     public StudyTempRecord() {
-    }
-
-    public StudyTempRecord(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public VideoAction getPrevState() {
@@ -73,5 +63,18 @@ public class StudyTempRecord {
 
     public void setPrevTime(Date prevTime) {
         this.prevTime = prevTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StudyTempRecord that = (StudyTempRecord) o;
+        return Objects.equals(learnPrimaryKey, that.learnPrimaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(learnPrimaryKey);
     }
 }

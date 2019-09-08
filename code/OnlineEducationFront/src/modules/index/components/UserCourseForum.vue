@@ -129,8 +129,10 @@
         },
         watch: {
             forumUpdate: function (val) {
-                alert("haha");
-                if (val) this.initForum();
+                if (val) {
+                    this.initForum();
+                    this.$store.commit("setForumUpdate", false);
+                }
             }
         },
         mounted() {

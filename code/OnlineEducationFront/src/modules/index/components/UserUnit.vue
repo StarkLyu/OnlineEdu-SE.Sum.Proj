@@ -12,13 +12,24 @@
             user: {
                 default() {
                     return {
-                        username: "starklyu",
+                        username: "???",
                         avatarUrl: "http://202.120.40"
                     }
                 }
             },
+            userId: {
+                default: -1
+            },
             size: {
                 default: "small"
+            }
+        },
+        data() {
+            return {
+                userUnit: {
+                    username: "",
+                    avatarUrl: ""
+                }
             }
         },
         computed: {
@@ -30,6 +41,22 @@
                 }
             }
         },
+        created() {
+            if (this.userId === -1) {
+                this.userUnit = this.user;
+            }
+            else {
+                this.$http.request({
+                    url: `/api/users/${this.userId}/avatar`,
+                    method: "get",
+                }).then((response) => {
+                    this.userUnit = response.data;
+                }).catch((error) => {
+                    console.log(error);
+                    this.userUnit = this.user;
+                })
+            }
+        }
     }
 </script>
 

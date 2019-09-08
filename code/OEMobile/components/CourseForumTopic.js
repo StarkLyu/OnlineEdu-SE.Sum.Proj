@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
-import {Image, Modal, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux';
-import { Card, CardItem, Left, Body, Right, Text, Button, View, Header, Icon, Footer } from "native-base";
+import { CardItem, Left, Body, Right, Text, Button, View } from "native-base";
 import UserUnit from '../components/UserUnit';
-import CourseAddTopic from '../screens/CourseAddTopic';
-//import ImageViewer from "react-native-image-zoom-viewer";
-//import RNFetchBlob from "rn-fetch-blob";
 import ImageViewer from "./ImageViewer";
 import { setCurrentTopic } from "../store/forumActions";
 
@@ -46,10 +43,10 @@ class CourseForumTopic extends Component {
     //     })
     // };
 
-    enterResponses = () => {
-        this.props.setCurrentTopic(this.props.forumTopic);
-        this.props.navigation.navigate("CourseForumResponses");
-    };
+    // enterResponses = () => {
+    //     this.props.setCurrentTopic(this.props.forumTopic);
+    //     this.props.navigation.navigate("CourseForumResponses");
+    // };
 
     render() {
         let topic = this.props.forumTopic;
@@ -58,11 +55,14 @@ class CourseForumTopic extends Component {
 
         return (
             <View>
-                <Card>
+                <View>
                     <CardItem header>
-                        <Body>
-                        <Text>{topic.title}</Text>
-                        </Body>
+                        {/*<Body>*/}
+                        {/*<Text>{topic.title}</Text>*/}
+                        {/*</Body>*/}
+                        <Left>
+                            <UserUnit user={topic.userId}/>
+                        </Left>
                         <Right>
                             <Text note>{topic.createdAt}</Text>
                         </Right>
@@ -97,19 +97,16 @@ class CourseForumTopic extends Component {
                         </Body>
                     </CardItem>
                     <CardItem>
-                        <Left>
-                            <UserUnit user={topic.userId}/>
-                        </Left>
+                        <Left/>
                         <Right>
-                            <Button transparent onPress={() => {this.enterResponses()}}>
-                                <Text>查看回复</Text>
-                            </Button>
-                            <Button transparent onPress={() => {this.props.navigation.navigate("CourseAddTopic")}}>
+                            <Button transparent onPress={() => {this.props.navigation.navigate("CourseAddResponse",{
+                                path: topic.path
+                            })}}>
                                 <Text>添加回复</Text>
                             </Button>
                         </Right>
                     </CardItem>
-                </Card>
+                </View>
                 <ImageViewer ref={"imageViewer"} imgList={this.state.imgList}/>
             </View>
         );

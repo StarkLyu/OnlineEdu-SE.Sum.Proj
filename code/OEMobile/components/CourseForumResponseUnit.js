@@ -34,13 +34,17 @@ class CourseForumResponseUnit extends Component {
         return (
             <View>
                 <Card>
-                    <CardItem header>
+                    <CardItem header bordered>
                         <Left>
                             <UserUnit user={response.userId}/>
                         </Left>
                         <Right>
                             <Text note>{response.createdAt}</Text>
                         </Right>
+                    </CardItem>
+                    <CardItem>
+                        <Text>回复：</Text>
+                        <UserUnit user={response.responseTo}/>
                     </CardItem>
                     <CardItem>
                         <Body>
@@ -79,14 +83,14 @@ class CourseForumResponseUnit extends Component {
                             </Button>
                         </Left>
                         <Right>
-                            <Button>
+                            <Button transparent onPress={() => {this.props.addResponse(response.path)}}>
                                 <Text>添加回复</Text>
                             </Button>
                         </Right>
                     </CardItem>
                 </Card>
                 {
-                    this.state.showResponse ? response.responses.map((item) => <CourseForumResponseUnit response={item} />) : <View/>
+                    this.state.showResponse ? response.responses.map((item) => <CourseForumResponseUnit response={item} addResponse={this.props.addResponse} />) : <View/>
                 }
             </View>
         );

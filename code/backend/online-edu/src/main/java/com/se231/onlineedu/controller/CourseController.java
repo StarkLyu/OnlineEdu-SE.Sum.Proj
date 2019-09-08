@@ -49,8 +49,6 @@ public class CourseController {
         return courseService.saveNotice(id, notice);
     }
 
-
-
     @ApiOperation(value = "教师基于已有的课程原型申请开课")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "prototypeId",value = "该课程基于的课程原型的id",paramType = "param"),

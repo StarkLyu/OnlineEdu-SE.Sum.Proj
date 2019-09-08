@@ -10,6 +10,7 @@ import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.StudyRecordRepository;
 import com.se231.onlineedu.repository.StudyReportRepository;
 import com.se231.onlineedu.repository.StudyTempRecordRepository;
+import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.StudyRecordService;
 import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +34,21 @@ public class StudyRecordServiceImpl implements StudyRecordService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CourseService courseService;
+
     static final int MAX_STUDY_TIME = 720;
 
     @Override
-    public StudyTempRecord submitRecord(Long userId, TempRecord tempRecord) {
-        StudyTempRecord studyTempRecord = studyTempRecordRepository.findById(userId)
-                .orElse(new StudyTempRecord(userId))   ;
+    public StudyTempRecord submitRecord(Long courseId, Long userId, TempRecord tempRecord) {
+        Course course = courseService.getCourseInfo(courseId);
+        User user = userService.getUserInfo(userId);
+        StudyTempRecord studyTempRecord = studyTempRecordRepository.findById(new LearnPrimaryKey(user,course))
+                .orElse(new StudyTempRecord(user,course))   ;
         VideoAction videoAction = VideoAction.valueOf(tempRecord.getAction());
         java.sql.Date date = new java.sql.Date(tempRecord.getTime().getTime());
-        StudyRecord studyRecord = studyRecordRepository.findById(new StudyRecordPrimaryKey(userService.getUserInfo(userId),date))
-                .orElse(new StudyRecord(userService.getUserInfo(userId),date));
+        StudyRecord studyRecord = studyRecordRepository.findById(new StudyRecordPrimaryKey(user,course,date))
+                .orElse(new StudyRecord(user,course,date));
         switch (videoAction) {
             case CHANGE_SPEED:
                 studyRecord.setChangeSpeedTime(studyRecord.getChangeSpeedTime() + 1);
@@ -95,14 +101,14 @@ public class StudyRecordServiceImpl implements StudyRecordService {
         }
 
     @Override
-    public ReportAndTime getReport(Long userId) {
+    public ReportAndTime getReport(Long courseId, Long userId) {
+        User user = userService.getUserInfo(userId);
+        Course course = courseService.getCourseInfo(courseId);
         ReportAndTime reportAndTime = new ReportAndTime();
-        StudyReport studyReport = studyReportRepository.findById(userId)
+        StudyReport studyReport = studyReportRepository.findById(new LearnPrimaryKey(user,course))
                 .orElseThrow(()-> new NotFoundException("You haven't got any study record!"));
         reportAndTime.setReport(studyReport);
-
-        User user = userService.getUserInfo(userId);
-        List<StudyRecord> studyRecords = studyRecordRepository.findAllByStudyRecordPrimaryKey_User(user);
+        List<StudyRecord> studyRecords = studyRecordRepository.findAllByStudyRecordPrimaryKey_UserAndStudyRecordPrimaryKey_Course(user,course);
         List<StudyTime> studyTimes = new ArrayList<>();
         studyRecords.forEach(studyRecord -> studyTimes.add(new StudyTime(studyRecord)));
         reportAndTime.setStudyTimes(studyTimes);
