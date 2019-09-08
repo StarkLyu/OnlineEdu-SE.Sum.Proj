@@ -1,6 +1,5 @@
 <template>
     <div ref="totalForum">
-        <el-button @click="generateWordMap()">论坛词云图</el-button>
         <el-collapse>
             <el-collapse-item
                     v-for="section in sectionForum"
@@ -109,18 +108,6 @@
                     loading.close();
                 })
             },
-            generateWordMap: function() {
-                this.$http.request({
-                    url: "/api/users/" + this.$store.state.user.userInfo.id + "/courses/" + this.$store.state.course.id + "/forums/",
-                    method: "post",
-                    headers: this.$store.getters.authRequestHead
-                }).then((response) => {
-                    console.log(response);
-                }).catch((error) => {
-                    alert(error);
-                    console.log(error.response);
-                })
-            }
         },
         computed: {
             forumUpdate: function () {
