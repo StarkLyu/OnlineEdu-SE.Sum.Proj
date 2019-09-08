@@ -5,6 +5,7 @@ axios.defaults.withCredentials = true;
 const state = {
     id: 0,
     courseInfo: {},
+    sections:{},
     identity: "",
     paperId:0,
     paperTitle:0,
@@ -51,6 +52,10 @@ const getters = {
                 title: sec.title
             })
         }
+        sectionList.sort((a, b) => {
+            if (a.secNo < b.secNo) return -1;
+            else return 1;
+        });
         return sectionList;
     },
     getPaperId:state => {
@@ -107,6 +112,9 @@ const mutations = {
     },
     setForumUpdate(state, newState) {
         state.forumUpdate = newState;
+    },
+    setSetions(state, sections) {
+        state.sections=sections;
     }
 };
 

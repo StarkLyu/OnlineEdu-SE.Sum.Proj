@@ -52,6 +52,7 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        that.getCourse();
                         that.$message.success("添加节成功");
                     })
                     .catch(function (error) {
@@ -61,6 +62,27 @@
                 this.newTitle = "";
                 this.newDescription="";
                 this.showAddSection = false;
+            },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.$store.commit("setCourseInfo",response.data.course);
+                        that.$forceUpdate();
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             }
         },
         computed: {

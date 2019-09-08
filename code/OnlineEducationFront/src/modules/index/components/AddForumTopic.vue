@@ -93,14 +93,14 @@
                     })
                         .then(function (res) {
                             console.log(res.data);
-                            alert("发布成功");
+                            that.$root.success("发布成功");
                             loading.close();
                             that.addResponse=false;
                             that.$store.commit("setForumUpdate", true);
                         })
                         .catch(function (error2) {
                             console.log(error2.response);
-                            alert("请求失败");
+                            that.$root.error("发布失败");
                             loading.close();
                         });
 
