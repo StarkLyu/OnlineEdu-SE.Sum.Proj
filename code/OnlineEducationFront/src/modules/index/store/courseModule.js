@@ -5,6 +5,7 @@ axios.defaults.withCredentials = true;
 const state = {
     id: 0,
     courseInfo: {},
+    sections:{},
     identity: "",
     paperId:0,
     paperTitle:0,
@@ -111,6 +112,9 @@ const mutations = {
     },
     setForumUpdate(state, newState) {
         state.forumUpdate = newState;
+    },
+    setSetions(state, sections) {
+        state.sections=sections;
     }
 };
 
