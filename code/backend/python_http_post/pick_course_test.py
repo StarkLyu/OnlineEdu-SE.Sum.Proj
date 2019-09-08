@@ -6,7 +6,7 @@ for i in range(3, 100):
         "username": "studen%d" % i,
         "password": "%d" % (111110+i),
     }
-    req = request.Request("http://localhost:8080/api/auth/signin")
+    req = request.Request("http://202.120.40.8:30382/online-edu/api/auth/signin")
     req.add_header("Content-Type", "application/json")
     req.method = 'POST'
     with request.urlopen(req, json.dumps(body).encode("utf-8")) as f:
@@ -15,7 +15,7 @@ for i in range(3, 100):
         data = data.decode('utf-8')
         data = json.loads(data)
         Token = head+data['accessToken']
-        new_req = request.Request("http://localhost:8080/api/courses/18/pick")
+        new_req = request.Request("http://202.120.40.8:30382/online-edu/api/courses/18/pick")
         new_req.add_header("Authorization", Token)
         new_req.method = 'POST'
         with request.urlopen(new_req, None) as nf:

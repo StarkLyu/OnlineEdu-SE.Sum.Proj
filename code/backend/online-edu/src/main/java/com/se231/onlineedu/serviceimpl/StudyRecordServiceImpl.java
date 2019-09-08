@@ -106,7 +106,7 @@ public class StudyRecordServiceImpl implements StudyRecordService {
         Course course = courseService.getCourseInfo(courseId);
         ReportAndTime reportAndTime = new ReportAndTime();
         StudyReport studyReport = studyReportRepository.findById(new LearnPrimaryKey(user,course))
-                .orElseThrow(()-> new NotFoundException("You haven't got any study record!"));
+                .orElse(new StudyReport());
         reportAndTime.setReport(studyReport);
         List<StudyRecord> studyRecords = studyRecordRepository.findAllByStudyRecordPrimaryKey_UserAndStudyRecordPrimaryKey_Course(user,course);
         List<StudyTime> studyTimes = new ArrayList<>();
