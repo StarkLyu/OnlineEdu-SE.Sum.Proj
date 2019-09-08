@@ -24,7 +24,8 @@
             </div>
 <!--            展示所有资源-->
             <el-table :data="courseRes"
-                      highlight-current-row="true">
+                      highlight-current-row="true"
+                      v-loading="loading">
                 <el-table-column >
                     <el-table-column type="index">
                     </el-table-column>
@@ -67,11 +68,18 @@
 
                 BTtype:"",
 
-                courseRes:this.$store.getters.getCourseInfo.coursePrototype.resources,
+                loading:true,
+
+                courseRes:[],
             }
         },
 
         methods: {
+            showAllBT(){
+                this.courseRes=this.$store.getters.getCourseInfo.coursePrototype.resources;
+                this.loading=false;
+            },
+
             submitUpload() {
                 this.$refs.upload.submit();
             },
@@ -102,10 +110,14 @@
                 }
                 else if(type[1]==='mp4'){
                     this.BTtype='video';
+                    return file;
                 }
+                // else if(type[1]==='apk'){
+                //     this.BTtype='compression'
+                // }
                 else{
-                    this.$message.error('上传文件只能是pdf、ppt或视频！');
-                    return false;
+                    this.BTtype='compression';
+                    return file;
                 }
             },
 
@@ -120,7 +132,7 @@
                 //     return file
                 // }
 
-                console.log("正在上传文件");
+                this.$message.info("正在上传文件");
 
                 // 进度条
                 // this.excelFlag = true;
@@ -148,15 +160,19 @@
                     .then(function (response) {
                         console.log(response.data);
 
-                        alert("上传资源成功");
+                        that.$message.success("上传资源成功");
 
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("上传资源失败");
+                        that.$message.error("上传资源失败");
                     });
             },
 
+        },
+
+        mounted() {
+            this.showAllBT();
         }
     }
 </script>

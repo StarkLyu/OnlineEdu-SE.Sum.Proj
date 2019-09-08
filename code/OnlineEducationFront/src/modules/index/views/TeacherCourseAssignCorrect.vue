@@ -7,6 +7,7 @@
 <!--            展示所有学生的答题情况-->
             <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
+                      v-loading="loading"
                       stripe>
                 <el-table-column >
                     <el-table-column type="index">
@@ -71,6 +72,8 @@
             return{
                 assignId:0,
 
+                loading:true,
+
                 search: '',
 
                 UserData: [],
@@ -101,12 +104,13 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.UserData=response.data;
+                        that.loading=false;
                         // console.log("UserData"+that.UserData);
                         // alert("请求成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("学生答题情况请求失败");
+                        // alert("学生答题情况请求失败");
                     });
             },
 
@@ -134,14 +138,14 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("获取学生答题数据请求失败");
+                        // alert("获取学生答题数据请求失败");
                     });
             },
 
             // 选择批改次数
             chooseData(){
                 if (this.timeChoose===0) {
-                    alert("该学生尚未答题");
+                    this.$message.warning("该学生尚未答题");
                     this.dialogFormVisible=false;
                 }
                 else{

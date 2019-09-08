@@ -3,7 +3,7 @@
         <el-header>
             <h1 class="titlesytle">课程公告</h1>
         </el-header>
-        <el-main>
+        <el-main v-loading="loading">
             <el-button class="addbotton" @click="addAnnounce" icon="el-icon-plus">
                 发布公告
             </el-button>
@@ -66,6 +66,8 @@
 
         data(){
             return{
+                loading:true,
+
                 announcements:this.$store.getters.getCourseInfo.notices,
 
                 dialogFormVisible:false,
@@ -86,6 +88,11 @@
         },
 
         methods:{
+            showAnnounce(){
+                this.announcements=this.$store.getters.getCourseInfo.notices;
+                this.loading=false;
+            },
+
             // 显示新增页面
             addAnnounce(){
                 this.dialogFormVisible = true;
@@ -94,7 +101,7 @@
 
             // 删除
             handleDel(){
-                alert("已删除");
+                this.$message.info("公告已删除");
             },
 
             //显示编辑界面
@@ -106,7 +113,7 @@
 
             // 添加公告
             createData(){
-                // var that=this;
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/notices/',
                     method: "post",
@@ -118,12 +125,12 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("添加公告成功");
+                        that.$message.success("添加公告成功");
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("添加公告失败");
+                        that.$message.error("添加公告失败");
                     });
 
                 this.dialogFormVisible=false;
@@ -131,9 +138,13 @@
 
             // 修改课程
             updateData(){
-                alert("公告修改成功");
+                this.$message.success("公告修改成功");
                 this.dialogFormVisible=false;
             },
+        },
+
+        mounted() {
+            this.showAnnounce();
         }
     }
 </script>

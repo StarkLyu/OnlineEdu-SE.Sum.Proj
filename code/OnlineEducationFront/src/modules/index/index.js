@@ -10,6 +10,7 @@ import '../../assets/div-layout.css'
 import '../../assets/icon/iconfont.css'
 import BaiduMap from 'vue-baidu-map';
 import RecordBehavior from './recordBehavior';
+import message from "element-ui/packages/message/src/main";
 
 Vue.use(BaiduMap, {
     // ak 是在百度地图开发者平台申请的密钥
@@ -27,6 +28,7 @@ Vue.prototype.$record = new RecordBehavior();
 new Vue({
     router,
     store,
+    message,
     methods: {
         error: function (errorText) {
             this.$message({
@@ -47,7 +49,7 @@ new Vue({
         this.$http.interceptors.response.use((response) => {
             return response;
         }, (error) => {
-            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+            if (error.response.status === 401 && error.response.statusText === "Unauthorized" && error.response.data.path !== "/online-edu/api/auth/signin") {
                 this.error("未登录或登录失效，请先登录");
                 this.$router.push("login");
                 return Promise.reject(error);

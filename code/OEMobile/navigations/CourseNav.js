@@ -6,6 +6,7 @@ import CourseChapterNav from "./CourseChapterNav";
 import CoursePaperNav from "./CoursePaperNav";
 import CourseSignins from "../screens/CourseSignins";
 import CourseHeader from "../components/CourseHeader";
+import CourseForumNav from "./CourseForumNav"
 
 const CourseNav = createBottomTabNavigator({
     CourseHome: {
@@ -33,6 +34,15 @@ const CourseNav = createBottomTabNavigator({
             tabBarIcon: () => (
                 <Icon type={"FontAwesome"} name={"pencil"} />
             ),
+        })
+    },
+    CourseForumNav: {
+        screen: CourseForumNav,
+        navigationOptions: () => ({
+            title: "论坛",
+            tabBarIcon: () => (
+                <Icon type={"FontAwesome"} name={"comment"} />
+            )
         })
     },
     CourseSignins: {

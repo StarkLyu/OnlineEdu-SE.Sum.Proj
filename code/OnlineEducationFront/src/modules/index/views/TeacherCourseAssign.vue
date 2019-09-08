@@ -6,7 +6,8 @@
         <el-main>
             <el-table
                     :data="AssignData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-                    style="width: 100%">
+                    style="width: 100%"
+                    v-loading="loading">
                 <el-table-column
                         prop="start"
                         label="开始时间"
@@ -114,9 +115,11 @@
 
         data(){
             return{
+                loading: true,
+
                 search:"",
 
-                AssignData:this.$store.getters.getCourseInfo.papers,
+                AssignData:[],
 
                 AssignVisible:false,
 
@@ -148,7 +151,7 @@
         },
 
         methods:{
-            // getThisCourseInfo(){
+            getThisCourseInfo(){
             //     var that=this;
             //     this.$http.request({
             //         url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
@@ -165,7 +168,9 @@
             //             alert("请求失败");
             //         });
             //
-            // },
+                this.AssignData=this.$store.getters.getCourseInfo.papers;
+                this.loading=false;
+            },
 
             // 显示增加作业弹窗
             handleAdd(){
@@ -189,7 +194,7 @@
                     this.$router.push("/course/manager/correction");
                 }
                 else {
-                    alert("这份作业没有主观题");
+                    this.$message.warning("这份作业没有主观题");
                 }
             },
 
@@ -202,7 +207,7 @@
 
             // 删除作业
             handleDelete:function (index, row) {
-                alert(row.title+"已删除");
+                this.$message.info(row.title+"已删除");
             },
 
             // 新增一份作业
@@ -223,7 +228,7 @@
                 this.AssignEditForm.questionFormList=finalQuestion;
                 // console.log(this.AssignEditForm);
                 // console.log(this.AssignEditForm.start);
-                // var that=this;
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/papers',
                     method: "post",
@@ -240,11 +245,11 @@
                     .then(function (response) {
                         console.log(response.data);
                         // that.getThisCourseInfo();
-                        alert("添加作业成功");
+                        that.$message.success("添加作业成功");
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("添加作业失败");
+                        that.$message.error("添加作业失败");
                     });
 
                 this.AssignVisible=false;
@@ -288,7 +293,7 @@
             }
             console.log(this.questions);
 
-            // this.getThisCourseInfo();
+            this.getThisCourseInfo();
         }
     }
 </script>

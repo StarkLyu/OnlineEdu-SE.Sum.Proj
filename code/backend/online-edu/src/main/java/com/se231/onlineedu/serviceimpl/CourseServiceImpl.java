@@ -322,4 +322,19 @@ public class CourseServiceImpl implements CourseService {
             throw new BulkImportDataException(errorMessage.toString());
         }
     }
+
+    @Override
+    public String deleteCourse(Long courseId) {
+        Course course = getCourseInfo(courseId);
+        courseRepository.delete(course);
+        return "success";
+    }
+
+    @Override
+    public double getScore(Long userId, Long courseId) {
+        Learn learn = learnRepository.findByLearnPrimaryKey_Student_IdAndLearnPrimaryKey_Course_Id(userId,courseId)
+                .orElseThrow(()-> new NotFoundException("You haven't pick this course."));
+
+        return learn.getGrade();
+    }
 }

@@ -10,8 +10,6 @@
     import "video.js/dist/video-js.css";
     import zhCN from "video.js/dist/lang/zh-CN.json";
 
-
-
     export default {
         name: "UserCourseVideo",
         props: {
@@ -75,15 +73,19 @@
                 console.log(this.$record.recordStartPlay(this.videoTitle, this.videoPlayer.currentTime()));
             });
             this.videoPlayer.on("pause", () => {
-                alert(this.videoPlayer.currentTime());
                 console.log(this.$record.recordPause(this.videoTitle, this.videoPlayer.currentTime()));
             });
             this.videoPlayer.on("play", () => {
                 console.log(this.$record.recordContinue(this.videoTitle, this.videoPlayer.currentTime()));
             });
             this.videoPlayer.on("ratechange", () => {
-                alert("hh");
                 console.log(this.$record.recordChangeSpeed(this.videoTitle, this.videoPlayer.currentTime(), this.videoPlayer.playbackRate()))
+            });
+            // this.videoPlayer.on("seeking", () => {
+            //     console.log(this.videoPlayer.currentTime());
+            // });
+            this.videoPlayer.on("seeked", () => {
+                console.log(this.videoPlayer.currentTime());
             })
         },
         beforeDestroy() {
