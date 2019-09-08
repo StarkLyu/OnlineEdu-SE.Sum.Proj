@@ -277,7 +277,7 @@
                     .then(function (response) {
                         console.log(response.data);
 
-                        alert("正在申请");
+                        that.$message.info("正在申请");
 
                         that.showAllProtos();
                         that.dialogFormVisible=false;
@@ -297,7 +297,7 @@
                             this.active++;
                         }
                         else {
-                            alert("您不能使用该课程原型！");
+                            this.$message.warning("您不能使用该课程原型！");
                         }
                     }
                 }
