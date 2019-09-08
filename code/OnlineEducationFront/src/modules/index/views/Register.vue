@@ -82,7 +82,7 @@
                         ref="emailConfirm"
                         @confirm-pass="finishRegister"
                         @resend-request="resendRequest"
-                        @confirm-fail="this.step3Loading = false"
+                        @confirm-fail="failConfirm"
                 ></EmailConfirm>
                 <div class="center-layout button-group-size">
                     <el-button type="primary" @click="lastStep">返回</el-button>
@@ -217,13 +217,13 @@
                     this.step2Loading = false;
                     console.log(error.response);
                     if (error.response.data === "Fail -> Email Address is already taken!") {
-                        alert("邮箱已被使用，请更换邮箱");
+                        this.$root.error("邮箱已被使用，请更换邮箱");
                     }
                 })
             },
             finishRegister: function () {
                 this.step3Loading = false;
-                alert("注册成功！");
+                this.$root.success("注册成功！");
                 this.nextStep();
             },
             resendRequest: function () {
@@ -237,9 +237,12 @@
                 }).catch((error) => {
                     console.log(error.response);
                     if (error.response.data === "Fail -> Email Address is already taken!") {
-                        alert("邮箱已被使用，请更换邮箱");
+                        this.$root.error("邮箱已被使用，请更换邮箱");
                     }
                 })
+            },
+            failConfirm: function () {
+                this.step3Loading = false;
             }
         }
     }
