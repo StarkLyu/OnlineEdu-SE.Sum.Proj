@@ -108,7 +108,7 @@ class ResourceLine extends Component {
                             })
                         }).then((res) => {
                             console.log(resourceUrl);
-                            alert("资源保存在：" + res.path());
+                            this.$toast.successToast("资源保存成功");
                             this.setState({
                                 status: "downloaded"
                             })

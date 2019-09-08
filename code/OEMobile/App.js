@@ -57,6 +57,8 @@ class App extends React.Component {
             return response;
         }, (error) => {
             global.cancelLoading();
+            console.log(error);
+            console.log(error.response);
             if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
                 this.$toast.errorToast("登录出错，请重新登录");
             }

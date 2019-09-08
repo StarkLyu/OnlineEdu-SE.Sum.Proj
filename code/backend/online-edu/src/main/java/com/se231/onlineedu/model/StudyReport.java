@@ -1,9 +1,6 @@
 package com.se231.onlineedu.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -12,12 +9,12 @@ import java.util.Objects;
  */
 @Entity
 public class StudyReport {
-    @Id
-    private long id;
+    @EmbeddedId
+    private LearnPrimaryKey learnPrimaryKey;
 
     @OneToOne
     @PrimaryKeyJoinColumn
-    private User user;
+    private Learn learn;
 
     private int hardworking;
 
@@ -25,20 +22,20 @@ public class StudyReport {
 
     private int studyTime;
 
-    public long getId() {
-        return id;
+    public LearnPrimaryKey getLearnPrimaryKey() {
+        return learnPrimaryKey;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setLearnPrimaryKey(LearnPrimaryKey learnPrimaryKey) {
+        this.learnPrimaryKey = learnPrimaryKey;
     }
 
-    public User getUser() {
-        return user;
+    public Learn getLearn() {
+        return learn;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setLearn(Learn learn) {
+        this.learn = learn;
     }
 
     public int getHardworking() {
@@ -73,11 +70,11 @@ public class StudyReport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudyReport that = (StudyReport) o;
-        return id == that.id;
+        return learnPrimaryKey == that.learnPrimaryKey;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(learnPrimaryKey);
     }
 }

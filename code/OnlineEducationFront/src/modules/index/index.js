@@ -9,7 +9,6 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '../../assets/div-layout.css'
 import '../../assets/icon/iconfont.css'
 import BaiduMap from 'vue-baidu-map';
-import RecordBehavior from './recordBehavior';
 import message from "element-ui/packages/message/src/main";
 
 Vue.use(BaiduMap, {
@@ -23,7 +22,11 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
 Vue.prototype.$http = axios;
-Vue.prototype.$record = new RecordBehavior();
+//Vue.prototype.$record = new RecordBehavior();
+
+let transTime = (time) => {
+    return time < 10 ? `0${time}` : time
+};
 
 new Vue({
     router,
@@ -43,6 +46,59 @@ new Vue({
                 message: successText,
                 showClose: true
             })
+        },
+        recordBehavior: function(action, info) {
+            let currentTime = new Date();
+            let yyyy = currentTime.getFullYear();
+            let MM = transTime(currentTime.getMonth());
+            let dd = transTime(currentTime.getDate());
+            let HH = transTime(currentTime.getHours());
+            let mm = transTime(currentTime.getMinutes());
+            let ss = transTime(currentTime.getSeconds());
+            let record = {
+                action,
+                time: `${yyyy}-${MM}-${dd} ${HH}:${mm}:${ss}`,
+                info
+            };
+            console.log(record);
+            this.$http.request({
+                url: "/api/studyRecord/submit",
+                method: "post",
+                data: record,
+                headers: this.$store.getters.authRequestHead
+            }).then((response) => {
+                console.log(response);
+            }).catch((error) => {
+                console.log(error.response)
+            });
+        },
+        recordVideoBehavior: function (action, videoName, videoTime, extraInfo) {
+            let videoInfo = {
+                videoName,
+                videoTime
+            };
+            Object.assign(videoInfo, extraInfo);
+            this.recordBehavior(action, videoInfo);
+        },
+        recordStartPlay: function(videoName, videoTime) {
+            this.recordVideoBehavior("START_PLAY", videoName, videoTime)
+        },
+        recordPause: function(videoName, videoTime){
+            this.recordVideoBehavior("PAUSE", videoName, videoTime);
+        },
+        recordContinue: function(videoName, videoTime){
+            this.recordVideoBehavior("CONTINUE", videoName, videoTime);
+        },
+        recordChangeSpeed: function(videoName, videoTime, newSpeed){
+            this.recordVideoBehavior("CHANGE_SPEED", videoName, videoTime, {
+                newSpeed
+            });
+        },
+        recordFinishPlay: function(videoName, videoTime){
+            this.recordVideoBehavior("FINISH_WATCH", videoName, videoTime);
+        },
+        recordJump: function (videoName, videoTime) {
+            this.recordVideoBehavior("JUMP", videoName, videoTime);
         }
     },
     created() {

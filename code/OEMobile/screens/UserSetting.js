@@ -27,6 +27,7 @@ class UserSetting extends React.Component {
             else {
                 global.showLoading("上传新头像中");
                 let avatarFile = new FormData();
+                console.log(response.uri);
                 avatarFile.append("avatar", {
                     uri: response.uri,
                     type: response.type,
@@ -41,7 +42,7 @@ class UserSetting extends React.Component {
                         'Content-Type': 'multipart/form-data'
                     }
                 }).then((response) => {
-                    console.log(response);
+                    //console.log(response);
                     this.$toast.successToast("修改成功");
                     this.newUrl = response.data;
                     this.props.setNewAvatar(this.newUrl);
