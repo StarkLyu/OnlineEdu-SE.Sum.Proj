@@ -118,7 +118,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String addTeachingAdmin(Long userId){
         User user = userService.getUserInfo(userId);
-        Role teachingAdmin = new Role(RoleType.ROLE_TEACHING_ADMIN);
+        Role teachingAdmin = roleRepository.findByRole(RoleType.ROLE_TEACHING_ADMIN).orElseThrow(() -> new NotFoundException("该角色不存在"));
         if(user.getRoles().contains(teachingAdmin)){
             throw new ValidationException("This User has already been a teaching admin.");
         }
