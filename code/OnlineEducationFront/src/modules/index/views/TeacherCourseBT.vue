@@ -100,15 +100,15 @@
             beforeUpload(file) {
                 let type = file.name.split('.');
 
-                if (type[1] === 'pdf') {
+                if (type[type.length-1] === 'pdf') {
                     this.BTtype='pdf';
                     return file;
                 }
-                else if(type[1]==='ppt' || type[1]==='pptx'){
+                else if(type[type.length-1]==='ppt' || type[1]==='pptx'){
                     this.BTtype='ppt';
                     return file;
                 }
-                else if(type[1]==='mp4'){
+                else if(type[type.length-1]==='mp4'){
                     this.BTtype='video';
                     return file;
                 }

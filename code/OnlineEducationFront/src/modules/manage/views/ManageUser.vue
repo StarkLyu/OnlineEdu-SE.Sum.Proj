@@ -32,6 +32,7 @@
             </div>
             <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
+                      v-loading="loading"
                       highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
@@ -132,6 +133,8 @@
 
                 UserData: [],
 
+                loading:true,
+
                 dialogFormVisible:false,
 
                 dialogStatus: "",
@@ -184,7 +187,7 @@
 
                         if (response.data==="Unauthorized")
                         {
-                            alert("您没有管理员权限！");
+                            that.$message.warning("您没有管理员权限！");
                         }
 
                         // 存储role
@@ -210,6 +213,8 @@
                                 }
                             }
                         }
+
+                        that.loading=false;
 
                     })
                     .catch(function (error) {
@@ -249,6 +254,7 @@
             // 上传文件
             uploadExcel(file){
                 console.log("正在上传文件");
+                this.$message.info("正在上传文件");
 
                 // 进度条
                 // this.excelFlag = true;
@@ -277,15 +283,15 @@
                         console.log(response.data);
                         if (response.data==='Import successfully.')
                         {
-                            alert("上传成功");
-                            // this.$message.success('上传成功');
+                            // alert("上传成功");
+                            that.$message.success('上传成功');
                         }
                         that.excelFlag=false;
                         that.showAllUsers();
-
                     })
-                    .catch(function (error) {
-                        console.log(error);
+                    .catch(function (err) {
+                        console.log(err.response.data);
+                        that.$message.error(err.response.data);
                     });
             },
 
@@ -301,7 +307,7 @@
 
             // 删除学生
             handleDel:function(index,row){
-                alert(row.username+"已删除");
+                this.$message.info(row.username+"已删除");
             },
 
             //显示编辑界面
@@ -331,7 +337,7 @@
             },
 
             createData(){
-                alert("用户添加成功");
+                this.$message.success("用户添加成功");
                 this.dialogFormVisible=false;
             },
 
@@ -352,6 +358,7 @@
                         .catch(function (error) {
                             console.log(error);
                             // alert("请求失败");
+                            that.$message.error(error.response.data);
                         });
                 }
                 // 修改用户信息
@@ -371,12 +378,13 @@
                         {
                             that.showAllUsers();
                             that.dialogFormVisible=false;
-                            alert("修改成功");
+                            that.$message.success("修改成功");
                         }
 
                     })
                     .catch(function (error) {
                         console.log(error);
+                        that.$message.error(error.response.data);
                     })
             }
         },
