@@ -8,7 +8,7 @@
             :http-request="uploadProcess"
     >
         <div ref="avatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <el-avatar v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </div>
     </el-upload>
@@ -112,5 +112,6 @@
         width: 178px;
         height: 178px;
         display: block;
+        object-fit: cover;
     }
 </style>
