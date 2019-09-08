@@ -11,7 +11,7 @@
                     :key="indexChapter"
             >
                 <h2 slot="title">{{ chapter.title }}&nbsp;&nbsp;&nbsp;&nbsp;</h2>
-                <h3>{{chapter.secNo}}</h3>
+<!--                <h3>{{chapter.secNo}}</h3>-->
                 <AddNewChapter slot="title" :last-chapter="chapter.secNo" v-if="isCourseTeacher"></AddNewChapter>
                 <div class="section-content">
                     <el-collapse>
