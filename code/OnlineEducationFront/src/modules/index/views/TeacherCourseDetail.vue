@@ -267,7 +267,8 @@
                     .catch(function (error) {
                         console.log(error);
                         // alert("修改课程信息失败");
-                        that.$message.error("失败");
+                        that.$message.error("修改课程信息失败");
+                        that.$message.error(error.response.data);
                     });
             },
 

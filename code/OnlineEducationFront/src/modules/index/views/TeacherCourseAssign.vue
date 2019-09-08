@@ -250,6 +250,7 @@
                     .catch(function (error) {
                         console.log(error);
                         that.$message.error("添加作业失败");
+                        that.$message.error(error.response.data);
                     });
 
                 this.AssignVisible=false;

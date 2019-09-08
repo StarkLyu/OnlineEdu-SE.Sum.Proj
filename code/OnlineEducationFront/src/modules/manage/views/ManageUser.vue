@@ -298,9 +298,9 @@
                         that.excelFlag=false;
                         that.showAllUsers();
                     })
-                    .catch(function (err) {
-                        console.log(err.response.data);
-                        that.$message.error(err.response.data);
+                    .catch(function (error) {
+                        console.log(error.response.data);
+                        that.$message.error(error.response.data);
                         that.excelFlag=false;
                     });
             },

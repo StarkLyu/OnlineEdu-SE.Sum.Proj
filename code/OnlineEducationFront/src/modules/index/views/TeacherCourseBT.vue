@@ -170,6 +170,7 @@
                     .catch(function (error) {
                         console.log(error);
                         that.$message.error("上传资源失败");
+                        that.$message.error(error.response.data);
                     });
             },
 
