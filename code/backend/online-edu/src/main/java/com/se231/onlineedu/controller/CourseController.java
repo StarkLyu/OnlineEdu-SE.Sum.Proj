@@ -154,7 +154,7 @@ public class CourseController {
     public Learn setGrade(@PathVariable("id")Long courseId,
                           @PathVariable("studentId")Long studentId,
                           @RequestParam("grade")double grade){
-        return courseService.setGrade(courseId,studentId,grade);
+        return courseService.setGrade(studentId,courseId,grade);
     }
 
     @ApiOperation("批量导入学生成绩")

@@ -1,7 +1,7 @@
 from urllib import request
 import json
 
-for i in range(1, 100):
+for i in range(3, 100):
     body = {
         "username": "studen%d" % i,
         "password": "%d" % (111110+i),
@@ -14,7 +14,7 @@ for i in range(1, 100):
         data = f.read()
         data = data.decode('utf-8')
         data = json.loads(data)
-        Token = head+data['accessToken'];
+        Token = head+data['accessToken']
         new_req = request.Request("http://localhost:8080/api/courses/18/pick")
         new_req.add_header("Authorization", Token)
         new_req.method = 'POST'
