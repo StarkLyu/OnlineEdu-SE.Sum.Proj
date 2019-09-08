@@ -131,13 +131,14 @@ public class CoursePrototypeServiceImpl implements CoursePrototypeService {
         int size = coursePrototype.getResources().size();
         for(Resource resource :coursePrototype.getResources()){
             if(resource.getUrl().equals(name)){
-                coursePrototype.getResources().remove(index);
+                break;
             }
             index++;
         }
         if(index == size){
             throw new ValidationException("该文件不存在");
         }
+        coursePrototype.getResources().remove(index);
         coursePrototypeRepository.save(coursePrototype);
     }
 }
