@@ -131,6 +131,7 @@
 
             // 加入资源
             chooseResource(){
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/'+this.sectionInfo.sectionBranchesPrimaryKey.branchId+'/resources/issue',
                     method: "post",
@@ -141,17 +142,19 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        that.getCourse();
+                        that.$root.success("发布资源成功");
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert(error);
+                        that.$root.error("发布资源失败"+error.response.data);
                     });
                 this.resDialogVisible=false;
             },
 
             // 加入作业
             chooseAssign(){
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/'+this.sectionInfo.sectionBranchesPrimaryKey.branchId+'/papers/issue',
                     method: "post",
@@ -162,13 +165,35 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        that.getCourse();
+                        that.$root.success("发布作业成功");
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert(error);
+                        that.$root.error("发布作业失败"+error.response.data);
                     });
                 this.assignDialogVisible=false;
+            },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.$store.commit("setCourseInfo",response.data.course);
+                        that.$forceUpdate();
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             }
         },
 

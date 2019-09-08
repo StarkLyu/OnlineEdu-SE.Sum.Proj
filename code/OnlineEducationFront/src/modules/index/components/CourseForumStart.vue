@@ -68,11 +68,11 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("请求成功");
+                        this.$root.success("封贴成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        this.$root.error("封贴失败："+error.response.data);
                     });
             }
         },
