@@ -34,7 +34,7 @@ for(j) in range(1, 20):
             data = json.loads(data)
             Token = head+data['accessToken']
 
-            new_req = request.Request("http://202.120.40.8:30382/online-edu/api/studyRecord/submit")
+            new_req = request.Request("http://202.120.40.8:30382/online-edu/api/courses/18/studyRecord/submit")
             new_req.add_header("Authorization", Token)
             new_req.add_header("Content-Type", "application/json")
             new_req.method = 'POST'

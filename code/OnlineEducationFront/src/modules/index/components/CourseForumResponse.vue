@@ -2,7 +2,13 @@
     <el-card>
         <div slot="header">
             <div class="float-left">
-                <UserUnit size="middle"></UserUnit>
+                <div class="float-left">
+                    <UserUnit size="middle" :user-id="response.userId"></UserUnit>
+                </div>
+                <div class="float-left response-text">回复</div>
+                <div class="float-left">
+                    <UserUnit size="middle" :user-id="response.responseTo"></UserUnit>
+                </div>
             </div>
             <div class="float-right">{{ response.createdAt }}</div>
             <div class="float-clear"></div>
@@ -51,5 +57,8 @@
 </script>
 
 <style scoped>
-
+    .response-text {
+        padding-left: 20px;
+        padding-right: 20px
+    }
 </style>

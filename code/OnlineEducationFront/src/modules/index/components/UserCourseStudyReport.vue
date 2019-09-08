@@ -1,5 +1,5 @@
 <template>
-    <div class="report-div">
+    <div class="report-div" ref="studyReport">
         <h2>
             我的学习报告
         </h2>
@@ -8,13 +8,13 @@
         </p>
         <div class="study-chart" id="studychart"></div>
         <el-row>
-            <el-col span="8">
-                专注度：{{ concentrationText }}
+            <el-col :span="8">
+                专注度：{{ concentrationText }} / 100
             </el-col>
-            <el-col span="8">
-                努力度：{{ hardworkingText }}
+            <el-col :span="8">
+                努力度：{{ hardworkingText }} / 100
             </el-col>
-            <el-col span="8">
+            <el-col :span="8">
                 总学习时长：{{ totalStudyTimeText }}
             </el-col>
         </el-row>
@@ -45,6 +45,7 @@
         },
         methods: {
             initChart: function () {
+                let dateList = [];
                 let chart = echarts.init(document.getElementById("studychart"));
                 chart.setOption({
                     title: {
@@ -53,6 +54,52 @@
                     xAxis: {
                         type: "category"
                     }
+                })
+            },
+            initReport: function () {
+                let loading = this.$loading({
+                    target: this.$refs["studyReport"],
+                    text: "生成报告中",
+                    fullscreen: false
+                });
+                let courseId = this.$store.getters.getCourseId;
+                let authHeader = this.$store.getters.authRequestHead;
+                this.$http.request({
+                    url: `/api/courses/${courseId}/studyReport/report`,
+                    method: "get",
+                    headers: authHeader
+                }).then((response) => {
+                    this.concentration = response.data.report.concentration;
+                    this.hardworking = response.data.report.hardworking;
+                    this.totalStudyTime = response.data.report.studyTime;
+                    this.dailyStudyTime = response.data.studyTimes;
+                    this.$http.request({
+                        url: `/api/users/${this.$store.state.user.userInfo.id}/courses/${courseId}/forums/`,
+                        method: "post",
+                        headers: authHeader
+                    }).then((response) => {
+                        this.wordMap = `http://202.120.40.8:30382/online-edu/static/${response.data}`;
+                        console.log(response);
+                        this.$http.request({
+                            url: `/api/courses/${courseId}/score`,
+                            method: "get",
+                            headers: authHeader
+                        }).then((response) => {
+                            loading.close();
+                            this.score = response.data;
+                        }).catch((error) => {
+                            loading.close();
+                            this.$root.error(error);
+                            console.log(error);
+                        })
+                    }).catch((error) => {
+                        loading.close();
+                        console.log(error.response);
+                    })
+                }).catch((error) => {
+                    loading.close();
+                    this.$root.error(error);
+                    console.log(error);
                 })
             }
         },
@@ -87,6 +134,7 @@
             }
         },
         created() {
+            this.initReport();
             this.initChart();
         }
     }
