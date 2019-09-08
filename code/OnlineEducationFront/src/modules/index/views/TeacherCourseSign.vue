@@ -145,6 +145,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("发布签到失败");
+                        that.$message.error(error.response.data);
                     });
             },
 

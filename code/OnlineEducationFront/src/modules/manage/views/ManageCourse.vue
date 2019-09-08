@@ -14,6 +14,7 @@
             </div>
             <el-table :data="CourseData.filter(data=>!search || data.courseTitle.includes(search))"
                       class="coursetable"
+                      v-loading="loading"
                       highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
@@ -223,6 +224,8 @@
 
                 CourseData: [],
 
+                loading:true,
+
                 dialogFormVisible:false,
 
                 dialogProtoVisible:false,
@@ -302,6 +305,7 @@
                         // alert("请求成功");
 
                         that.CourseData=response.data;
+                        that.loading=false;
 
                         // 管理状态
                         for (let index=0; index<that.CourseData.length; index++)
@@ -343,12 +347,12 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        // alert("请求失败");
                     })
             },
 
             handleDel:function(index,row){
-                alert(row.courseName+"已删除");
+                this.$message.info(row.courseName+"已删除");
             },
 
             //显示编辑界面
@@ -407,7 +411,8 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        // alert("请求失败");
+                        that.$message.error(error.response.data);
                     });
 
                 this.dialogProtoVisible=true;
@@ -462,6 +467,7 @@
                     .catch(function (error) {
                         console.log(error);
                         // alert("请求失败");
+                        that.$message.error(error.response.data);
                     });
 
                 this.dialogFormVisible=false;
@@ -492,11 +498,12 @@
 
                         that.showAllCourse();
                         that.dialogFormVisible=false;
-                        // alert("请求成功");
+                        that.$message.success("修改权限成功");
                     })
                     .catch(function (error) {
                         console.log(error);
                         // alert("请求失败");
+                        that.$message.error(error.response.data);
                     });
 
                 // if (this.editForm.timeSlots.day==='MONDAY')
@@ -521,22 +528,23 @@
 
                         that.showAllCourse();
                         that.dialogFormVisible=false;
-                        alert("修改课程信息成功");
+                        that.$message.success("修改课程信息成功");
                     })
                     .catch(function (error) {
                         console.log(error);
                         // alert("请求失败");
+                        that.$message.error(error.response.data);
                     });
             },
 
             //课程添加学生
             AddCourseStudent(){
-                alert(this.addStudent+" "+"该课程添加学生成功");
+                this.$message.success(this.addStudent+" "+"该课程添加学生成功");
             },
 
             //课程删除学生
             DelStudent: function(index, row){
-                alert(row.username+"已删除");
+                this.$message.info(row.username+"已删除");
             },
 
             // 移除时间段

@@ -390,6 +390,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("添加单选题失败");
+                        that.$message.error(error.response.data);
                     });
                 this.singleVisible=false;
             },
@@ -446,6 +447,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("添加多选题失败");
+                        that.$message.error(error.response.data);
                     });
                 this.multiVisible=false;
             },
@@ -495,6 +497,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("添加判断题失败");
+                        that.$message.error(error.response.data);
                     });
                 this.judgeVisible=false;
             },
@@ -543,6 +546,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("添加主观题失败");
+                        that.$message.error(error.response.data);
                     });
                 this.subVisible=false;
             },
