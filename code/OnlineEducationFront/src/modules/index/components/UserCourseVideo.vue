@@ -70,25 +70,27 @@
 
             });
             this.videoPlayer.on("firstplay", () => {
-                console.log(this.$record.recordStartPlay(this.videoTitle, this.videoPlayer.currentTime()));
+                this.$root.recordStartPlay(this.videoTitle, this.videoPlayer.currentTime());
             });
             this.videoPlayer.on("pause", () => {
-                console.log(this.$record.recordPause(this.videoTitle, this.videoPlayer.currentTime()));
+                this.$root.recordPause(this.videoTitle, this.videoPlayer.currentTime());
             });
             this.videoPlayer.on("play", () => {
-                console.log(this.$record.recordContinue(this.videoTitle, this.videoPlayer.currentTime()));
+                this.$root.recordContinue(this.videoTitle, this.videoPlayer.currentTime());
             });
             this.videoPlayer.on("ratechange", () => {
-                console.log(this.$record.recordChangeSpeed(this.videoTitle, this.videoPlayer.currentTime(), this.videoPlayer.playbackRate()))
+                this.$root.recordChangeSpeed(this.videoTitle, this.videoPlayer.currentTime(), this.videoPlayer.playbackRate());
             });
             // this.videoPlayer.on("seeking", () => {
             //     console.log(this.videoPlayer.currentTime());
             // });
             this.videoPlayer.on("seeked", () => {
-                console.log(this.videoPlayer.currentTime());
+                this.$root.recordJump(this.videoTitle, this.videoPlayer.currentTime());
+                //console.log(this.videoPlayer.currentTime());
             })
         },
         beforeDestroy() {
+            this.$root.recordFinishPlay(this.videoTitle, this.videoPlayer.currentTime());
             if (this.videoPlayer) {
                 this.videoPlayer.dispose();
             }

@@ -3,6 +3,9 @@ import {Toast} from "native-base";
 const defaultOptions = {
     duration: 3000,
     buttonText: 'OK',
+    style: {
+        zIndex: 9999999
+    }
 };
 
 const showToast = (text, type, customOptions) => {

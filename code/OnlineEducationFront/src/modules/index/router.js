@@ -82,6 +82,7 @@ export default new Router({
                         {
                             path: 'report',
                             name: 'courseStudentReport',
+                            component: () => import('./components/UserCourseStudyReport')
                         },
                         {
                             path: 'forum',

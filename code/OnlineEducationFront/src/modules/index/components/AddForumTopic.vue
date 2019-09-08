@@ -94,14 +94,14 @@
                         .then(function (res) {
                             console.log(res.data);
                             alert("发布成功");
-                            //loading.close();
+                            loading.close();
                             that.addResponse=false;
                             that.$store.commit("setForumUpdate", true);
                         })
                         .catch(function (error2) {
                             console.log(error2.response);
                             alert("请求失败");
-                            //loading.close();
+                            loading.close();
                         });
 
                 }).catch((error) => {
@@ -113,6 +113,7 @@
 
             // 上传图片
             UploadImg (file) {
+                console.log(file.file);
                 this.formData.append('images', file.file);
             },
 
