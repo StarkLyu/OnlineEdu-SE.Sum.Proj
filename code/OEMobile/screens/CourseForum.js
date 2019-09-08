@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { FlatList } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, View, ListItem, Text } from "native-base";
-import CourseForumTopic from '../components/CourseForumTopic';
+import { Container, View, ListItem, Text, Card, CardItem, Left, Right, Button, Icon } from "native-base";
+import UserUnit from '../components/UserUnit';
+import {setCurrentTopic} from "../store/forumActions";
 
 class CourseForum extends Component {
     constructor(props) {
@@ -86,6 +87,34 @@ class CourseForum extends Component {
         })
     };
 
+    enterResponses = (topic) => {
+        if (topic.title === "该内容已被锁" && topic.content === "该内容已被锁") {
+            this.$toast.errorToast("论坛被锁，无法查看");
+        }
+        else {
+            this.props.setCurrentTopic(topic);
+            this.props.navigation.navigate("CourseForumResponses", {
+                title: topic.title
+            });
+        }
+    };
+
+    renderTopicUnit = (item) => (
+        <Card>
+            <CardItem header button onPress={() => {this.enterResponses(item)}}>
+                <Left>
+                    <UserUnit user={item.userId}/>
+                </Left>
+                <Right>
+                    <Text note>{item.createdAt}</Text>
+                </Right>
+            </CardItem>
+            <CardItem button onPress={() => {this.enterResponses(item)}}>
+                <Text>{item.title}</Text>
+            </CardItem>
+        </Card>
+    );
+
     componentDidMount(): void {
         this.initForum();
     }
@@ -99,9 +128,22 @@ class CourseForum extends Component {
                         return (
                             <View>
                                 <ListItem itemDivider>
-                                    <Text>{item.title}</Text>
+                                    <Left>
+                                        <Text>{item.title}</Text>
+                                    </Left>
+                                    <Right>
+                                        <Button transparent onPress={() => {this.props.navigation.navigate("CourseAddTopic", {
+                                            secNo: item.secNo
+                                        })}}>
+                                            <Icon name={"add"} type={"Ionicons"} />
+                                            {/*<Text>发帖</Text>*/}
+                                        </Button>
+                                    </Right>
                                 </ListItem>
-                                <FlatList data={item.topics} renderItem={({ item }) => (<CourseForumTopic forumTopic={item} navigation={this.props.navigation}/>)}/>
+                                {/*<FlatList data={item.topics} renderItem={({ item }) => this.renderTopicUnit(item)}/>*/}
+                                {
+                                    item.topics.map((item, index) => this.renderTopicUnit(item))
+                                }
                             </View>
                         )
                     }}
@@ -119,4 +161,10 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, null)(CourseForum);
+const mapDispatchToProps = dispatch => {
+    return {
+        setCurrentTopic: (topic) => dispatch(setCurrentTopic(topic))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CourseForum);

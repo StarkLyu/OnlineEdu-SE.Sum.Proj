@@ -31,8 +31,12 @@ class UserUnit extends Component {
                 url: `/api/users/${temp}/avatar`,
                 method: "get"
             }).then((response) => {
+                console.log(response.data);
                 this.setState({
-                    user: response.data
+                    user: {
+                        username: response.data.username,
+                        avatarUrl: response.data.avatar
+                    }
                 })
             }).catch((error) => {
                 console.log(error);

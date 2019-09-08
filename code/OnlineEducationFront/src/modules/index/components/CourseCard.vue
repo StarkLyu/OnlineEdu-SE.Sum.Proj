@@ -77,11 +77,14 @@
                 let startTime = new Date(this.courseInfo.startDate);
                 let endTime = new Date(this.courseInfo.endDate);
                 let nowTime = new Date();
+                console.log(startTime);
+                console.log(endTime);
+                console.log(nowTime);
                 if (nowTime >= endTime) return 100;
                 else if (nowTime <= startTime) return 0;
                 else {
                     let startSec = startTime.getTime();
-                    return (endTime.getTime() - startSec) / (nowTime.getTime() - startSec) * 100;
+                    return Math.trunc((nowTime.getTime() - startSec) / (endTime.getTime() - startSec) * 100);
                 }
             }
         }
