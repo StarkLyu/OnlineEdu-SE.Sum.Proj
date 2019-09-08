@@ -25,8 +25,8 @@ public class StudyRecord {
     public StudyRecord() {
     }
 
-    public StudyRecord(User user, Date date) {
-        studyRecordPrimaryKey=new StudyRecordPrimaryKey(user,date);
+    public StudyRecord(User user, Course course, Date date) {
+        studyRecordPrimaryKey=new StudyRecordPrimaryKey(user,course,date);
         timeInMinute=0;
         pauseTime=0;
         changeSpeedTime=0;

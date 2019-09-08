@@ -110,7 +110,7 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("学生答题情况请求失败");
+                        // alert("学生答题情况请求失败");
                     });
             },
 
@@ -138,14 +138,14 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("获取学生答题数据请求失败");
+                        // alert("获取学生答题数据请求失败");
                     });
             },
 
             // 选择批改次数
             chooseData(){
                 if (this.timeChoose===0) {
-                    alert("该学生尚未答题");
+                    this.$message.warning("该学生尚未答题");
                     this.dialogFormVisible=false;
                 }
                 else{

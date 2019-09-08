@@ -170,4 +170,12 @@ public interface CourseService {
      */
     String deleteCourse(Long courseId);
 
+    /**
+     * this service allow student to get the grade of a course.
+     * @param userId    id of student
+     * @param courseId  id of course
+     * @return  grade of student in the course.
+     */
+    double getScore(Long userId,Long courseId);
+
 }

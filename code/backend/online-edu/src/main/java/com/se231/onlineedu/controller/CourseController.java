@@ -49,8 +49,6 @@ public class CourseController {
         return courseService.saveNotice(id, notice);
     }
 
-
-
     @ApiOperation(value = "教师基于已有的课程原型申请开课")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "prototypeId",value = "该课程基于的课程原型的id",paramType = "param"),
@@ -154,7 +152,7 @@ public class CourseController {
     public Learn setGrade(@PathVariable("id")Long courseId,
                           @PathVariable("studentId")Long studentId,
                           @RequestParam("grade")double grade){
-        return courseService.setGrade(courseId,studentId,grade);
+        return courseService.setGrade(studentId,courseId,grade);
     }
 
     @ApiOperation("批量导入学生成绩")
@@ -168,6 +166,13 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public String deleteCourse(@PathVariable("id")Long id){
         return courseService.deleteCourse(id);
+    }
+
+    @ApiOperation("学生获取自己该门课的成绩")
+    @GetMapping("/{id}/score")
+    public double getScore(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                        @PathVariable(name = "id") Long courseId){
+        return courseService.getScore(userPrinciple.getId(),courseId);
     }
 
 }

@@ -25,13 +25,14 @@
                     <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
-<!--                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent" style="margin-top:10px;"></el-progress>-->
+                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent"></el-progress>
             </div>
             <div class="divright">
 <!--                <el-button @click="handleAdd">新增</el-button>-->
             </div>
             <el-table :data="UserData.filter(data=>!search || data.username.includes(search))"
                       class="usertable"
+                      v-loading="loading"
                       highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
@@ -132,6 +133,8 @@
 
                 UserData: [],
 
+                loading:true,
+
                 dialogFormVisible:false,
 
                 dialogStatus: "",
@@ -184,7 +187,7 @@
 
                         if (response.data==="Unauthorized")
                         {
-                            alert("您没有管理员权限！");
+                            that.$message.warning("您没有管理员权限！");
                         }
 
                         // 存储role
@@ -210,6 +213,8 @@
                                 }
                             }
                         }
+
+                        that.loading=false;
 
                     })
                     .catch(function (error) {
@@ -249,6 +254,7 @@
             // 上传文件
             uploadExcel(file){
                 console.log("正在上传文件");
+                this.$message.info("正在上传文件");
 
                 // 进度条
                 // this.excelFlag = true;
@@ -263,6 +269,15 @@
                         method: "post",
                         headers: {Authorization: "Bearer " + localStorage.getItem("managerToken") ,'Content-Type':'multipart/form-data'},
                         data:param,
+                        onUploadProgress: (event) => {
+                            // 监听上传进度
+                            if (event.lengthComputable) {
+                                let val = (event.loaded / event.total * 100).toFixed(0);
+                                that.excelFlag = true;
+                                that.excelUploadPercent = parseInt(val);
+                                // console.log(val);
+                            }
+                        }
                     },
                     {
                         onUploadProgress: (event) => {
@@ -277,15 +292,16 @@
                         console.log(response.data);
                         if (response.data==='Import successfully.')
                         {
-                            alert("上传成功");
-                            // this.$message.success('上传成功');
+                            // alert("上传成功");
+                            that.$message.success('上传成功');
                         }
                         that.excelFlag=false;
                         that.showAllUsers();
-
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        console.log(error.response.data);
+                        that.$message.error(error.response.data);
+                        that.excelFlag=false;
                     });
             },
 
@@ -301,7 +317,7 @@
 
             // 删除学生
             handleDel:function(index,row){
-                alert(row.username+"已删除");
+                this.$message.info(row.username+"已删除");
             },
 
             //显示编辑界面
@@ -331,7 +347,7 @@
             },
 
             createData(){
-                alert("用户添加成功");
+                this.$message.success("用户添加成功");
                 this.dialogFormVisible=false;
             },
 
@@ -352,6 +368,7 @@
                         .catch(function (error) {
                             console.log(error);
                             // alert("请求失败");
+                            that.$message.error(error.response.data);
                         });
                 }
                 // 修改用户信息
@@ -371,12 +388,13 @@
                         {
                             that.showAllUsers();
                             that.dialogFormVisible=false;
-                            alert("修改成功");
+                            that.$message.success("修改成功");
                         }
 
                     })
                     .catch(function (error) {
                         console.log(error);
+                        that.$message.error(error.response.data);
                     })
             }
         },

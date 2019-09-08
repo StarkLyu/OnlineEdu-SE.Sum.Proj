@@ -125,29 +125,43 @@
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("获取学生失败");
+                        // alert("获取学生失败");
                     });
             },
 
             // 任命助教
             chooseAssistant(index, row){
-                this.$http.request({
-                    url: '/api/courses/'+this.$store.getters.getCourseId+'/teacherAssistant',
-                    method: "post",
-                    headers: this.$store.getters.authRequestHead,
-                    params:{
-                        teacherAssistantId:row.id,
-                    }
-                })
-                    .then(function (response) {
-                        console.log(response.data);
-                        alert("任命助教成功");
+                this.$confirm('此操作将任命该学生为助教, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var that=this;
+                    this.$http.request({
+                        url: '/api/courses/'+this.$store.getters.getCourseId+'/teacherAssistant',
+                        method: "post",
+                        headers: this.$store.getters.authRequestHead,
+                        params:{
+                            teacherAssistantId:row.id,
+                        }
                     })
-                    .catch(function (error) {
-                        console.log(error.response);
-                        alert("任命助教失败");
+                        .then(function (response) {
+                            console.log(response.data);
+                            that.showAllStudents();
+                            that.$message.success("任命助教成功");
+                        })
+                        .catch(function (error) {
+                            console.log(error.response);
+                            that.$message.error("任命助教失败");
+                        });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
                     });
-            }
+                });
+            },
+
         },
 
         mounted() {

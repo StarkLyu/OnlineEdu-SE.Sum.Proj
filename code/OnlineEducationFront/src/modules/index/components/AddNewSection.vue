@@ -37,7 +37,8 @@
         },
         methods: {
             addSection: function () {
-                this.$http.request({
+                var that=this;
+                that.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/append',
                     method: "post",
                     headers:this.$store.getters.authRequestHead,
@@ -51,11 +52,11 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("添加节成功");
+                        that.$message.success("添加节成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("添加节失败");
+                        that.$message.error("添加节失败："+error.response.data);
                     });
                 this.newTitle = "";
                 this.newDescription="";

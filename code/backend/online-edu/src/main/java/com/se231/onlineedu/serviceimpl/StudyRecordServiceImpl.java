@@ -1,12 +1,16 @@
 package com.se231.onlineedu.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.se231.onlineedu.exception.NotFoundException;
 import com.se231.onlineedu.message.request.TempRecord;
-import com.se231.onlineedu.model.StudyRecord;
-import com.se231.onlineedu.model.StudyRecordPrimaryKey;
-import com.se231.onlineedu.model.StudyTempRecord;
-import com.se231.onlineedu.model.VideoAction;
+import com.se231.onlineedu.message.response.ReportAndTime;
+import com.se231.onlineedu.message.response.StudyTime;
+import com.se231.onlineedu.model.*;
 import com.se231.onlineedu.repository.StudyRecordRepository;
+import com.se231.onlineedu.repository.StudyReportRepository;
 import com.se231.onlineedu.repository.StudyTempRecordRepository;
+import com.se231.onlineedu.service.CourseService;
 import com.se231.onlineedu.service.StudyRecordService;
 import com.se231.onlineedu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +29,26 @@ public class StudyRecordServiceImpl implements StudyRecordService {
     StudyRecordRepository studyRecordRepository;
 
     @Autowired
+    StudyReportRepository studyReportRepository;
+
+    @Autowired
     UserService userService;
+
+    @Autowired
+    CourseService courseService;
 
     static final int MAX_STUDY_TIME = 720;
 
     @Override
-    public StudyTempRecord submitRecord(Long userId, TempRecord tempRecord) {
-        StudyTempRecord studyTempRecord = studyTempRecordRepository.findById(userId)
-                .orElse(new StudyTempRecord(userId))   ;
+    public StudyTempRecord submitRecord(Long courseId, Long userId, TempRecord tempRecord) {
+        Course course = courseService.getCourseInfo(courseId);
+        User user = userService.getUserInfo(userId);
+        StudyTempRecord studyTempRecord = studyTempRecordRepository.findById(new LearnPrimaryKey(user,course))
+                .orElse(new StudyTempRecord(user,course))   ;
         VideoAction videoAction = VideoAction.valueOf(tempRecord.getAction());
         java.sql.Date date = new java.sql.Date(tempRecord.getTime().getTime());
-        StudyRecord studyRecord = studyRecordRepository.findById(new StudyRecordPrimaryKey(userService.getUserInfo(userId),date))
-                .orElse(new StudyRecord(userService.getUserInfo(userId),date));
+        StudyRecord studyRecord = studyRecordRepository.findById(new StudyRecordPrimaryKey(user,course,date))
+                .orElse(new StudyRecord(user,course,date));
         switch (videoAction) {
             case CHANGE_SPEED:
                 studyRecord.setChangeSpeedTime(studyRecord.getChangeSpeedTime() + 1);
@@ -87,4 +99,19 @@ public class StudyRecordServiceImpl implements StudyRecordService {
                 return studyTempRecordRepository.save(studyTempRecord);
             }
         }
+
+    @Override
+    public ReportAndTime getReport(Long courseId, Long userId) {
+        User user = userService.getUserInfo(userId);
+        Course course = courseService.getCourseInfo(courseId);
+        ReportAndTime reportAndTime = new ReportAndTime();
+        StudyReport studyReport = studyReportRepository.findById(new LearnPrimaryKey(user,course))
+                .orElseThrow(()-> new NotFoundException("You haven't got any study record!"));
+        reportAndTime.setReport(studyReport);
+        List<StudyRecord> studyRecords = studyRecordRepository.findAllByStudyRecordPrimaryKey_UserAndStudyRecordPrimaryKey_Course(user,course);
+        List<StudyTime> studyTimes = new ArrayList<>();
+        studyRecords.forEach(studyRecord -> studyTimes.add(new StudyTime(studyRecord)));
+        reportAndTime.setStudyTimes(studyTimes);
+        return reportAndTime;
+    }
 }

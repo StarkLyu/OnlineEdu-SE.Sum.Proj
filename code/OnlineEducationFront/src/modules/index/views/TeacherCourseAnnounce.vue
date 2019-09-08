@@ -101,7 +101,7 @@
 
             // 删除
             handleDel(){
-                alert("已删除");
+                this.$message.info("公告已删除");
             },
 
             //显示编辑界面
@@ -113,7 +113,7 @@
 
             // 添加公告
             createData(){
-                // var that=this;
+                var that=this;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/notices/',
                     method: "post",
@@ -125,12 +125,13 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        alert("添加公告成功");
+                        that.getCourse();
+                        that.$message.success("添加公告成功");
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("添加公告失败");
+                        that.$message.error("添加公告失败："+error.response.data);
                     });
 
                 this.dialogFormVisible=false;
@@ -138,9 +139,29 @@
 
             // 修改课程
             updateData(){
-                alert("公告修改成功");
+                this.$message.success("公告修改成功");
                 this.dialogFormVisible=false;
             },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.announcements=response.data.course.notices;
+                        this.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            }
         },
 
         mounted() {

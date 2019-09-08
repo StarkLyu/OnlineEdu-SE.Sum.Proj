@@ -14,6 +14,7 @@
             </div>
             <el-table :data="CourseData.filter(data=>!search || data.courseName.includes(search))"
                       class="coursetable"
+                      v-loading="loading"
                       highlight-current-row="true">
                 <el-table-column >
                     <el-table-column type="index">
@@ -149,6 +150,8 @@
 
                 CourseData: [],
 
+                loading:true,
+
                 dialogFormVisible:false,
 
                 UserDialogVisible:false,
@@ -213,16 +216,16 @@
                             }
                         }
 
-
+                        that.loading=false;
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        alert("请求失败");
+                        that.$message.error(error.response.data);
                     })
             },
 
             handleDel:function(index,row){
-                alert(row.courseName+"已删除");
+                this.$message.info(row.courseName+"已删除");
             },
 
             //显示编辑界面
@@ -260,12 +263,15 @@
                     .then(function (response) {
                         console.log(response.data);
 
+                        that.$message.success("添加课程原型成功");
+
                         that.showAllCoursePrototypes();
                         that.dialogFormVisible=false;
                     })
                     .catch(function (error) {
                         console.log(error);
                         // alert("请求失败");
+                        that.$message.error(error.response.data);
                     });
 
 
@@ -293,6 +299,7 @@
                     .then(function (response) {
                         console.log(response.data);
 
+                        that.$message.success("修改成功");
                         that.showAllCoursePrototypes();
                         that.dialogFormVisible=false;
                         // alert("请求成功");
@@ -300,6 +307,7 @@
                     .catch(function (error) {
                         console.log(error);
                         // alert("请求失败");
+                        that.$message.error(error.response.data);
                     });
             },
 
@@ -385,6 +393,7 @@
                         .then(function (response) {
                             console.log(response.data);
 
+                            that.$message.success("已审核");
                             that.showAllCoursePrototypes();
                             that.UserDialogVisible=false;
                             // alert("请求成功");
@@ -392,9 +401,10 @@
                         .catch(function (error) {
                             console.log(error);
                             // alert("请求失败");
+                            that.$message.error(error.response.data);
                         });
 
-                    console.log(that.UserForm[x]);
+                    // console.log(that.UserForm[x]);
                 }
             },
 

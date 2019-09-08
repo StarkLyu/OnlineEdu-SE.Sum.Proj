@@ -12,8 +12,6 @@
                             :headers="uploadHeader"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
-                            :on-success="uploadSucceed"
-                            :on-error="uploadFail"
                             :http-request="uploadProcess">
                         <img v-if="imageURL" :src="imageURL" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -142,7 +140,7 @@
 
         data(){
             return{
-                // loading:true,
+                loading:true,
 
                 CourseForm:[],
 
@@ -197,7 +195,7 @@
         methods:{
             showCourse(){
                 this.CourseForm=this.$store.getters.getCourseInfo;
-                // this.loading=false;
+                this.loading=false;
             },
 
             beforeAvatarUpload: function(file) {
@@ -222,22 +220,11 @@
                         'Content-Type': 'multipart/form-data'
                     },
                 }).then((response) => {
+                    this.$message.success("上传头像成功");
                     console.log(response);
-                    alert("修改课程信息成功");
                 }).catch((error) => {
-                    alert("修改课程信息失败");
-                    console.log(error.response);
+                    this.$message.error("上传头像失败："+error.response.data);
                 })
-            },
-
-            uploadSucceed: function(response,file,filelist) {
-                alert("上传成功");
-                console.log(response);
-            },
-
-            uploadFail: function(error,file,filelist) {
-                alert("上传失败");
-                console.log(error);
             },
 
             // 显示编辑弹窗
@@ -273,11 +260,15 @@
                         console.log(response.data);
 
                         that.courseDialogVisible=false;
-                        alert("修改课程信息成功");
+                        // alert("修改课程信息成功");
+                        that.getCourse();
+                        that.$message.success("修改课程信息成功");
+
                     })
                     .catch(function (error) {
                         console.log(error);
-                        alert("修改课程信息失败");
+                        // alert("修改课程信息失败");
+                        that.$message.error("修改课程信息失败："+error.response.data);
                     });
             },
 
@@ -297,10 +288,51 @@
                     end:'',
                 });
             },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.CourseForm=response.data.course;
+                        this.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            }
+        },
+
+        computed: {
+            uploadUrl: function () {
+                return "/api/users/" + this.$store.getters.getcourseId + "/avatar"
+            },
+            // imageUrl: function () {
+            //     if (this.newUrl === "") {
+            //         return this.$store.getters.userAvatarUrl;
+            //     }
+            //     else {
+            //         return "http://202.120.40.8:30382/online-edu/static/" + this.newUrl
+            //     }
+            // },
+            uploadHeader: function () {
+                return {
+                    'Authorization': "Bearer " + this.$store.state.user.accessToken,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
         },
 
         mounted() {
-            this.showCourse();
+            this.getCourse();
+            // this.showCourse();
         }
     }
 </script>

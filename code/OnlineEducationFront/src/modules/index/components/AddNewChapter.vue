@@ -29,11 +29,13 @@
             return {
                 showAddChapter: false,
                 newTitle: "",
+                newChapters:[],
             }
         },
         methods: {
             addChapter: function () {
-                this.$http.request({
+                var that=this;
+                that.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/append',
                     method: "post",
                     headers:{Authorization: "Bearer " + this.$store.state.user.accessToken,'Content-Type':'text/plain'},
@@ -43,15 +45,35 @@
                     data:this.newTitle,
                 })
                     .then(function (response) {
+                        that.$message.success("添加章成功");
                         console.log(response.data);
-                        alert("添加章成功");
                     })
                     .catch(function (error) {
+                        that.$message.error("添加章失败："+error.response.data);
                         console.log(error.response);
-                        alert("添加章失败");
                     });
                 this.newTitle = "";
                 this.showAddChapter = false;
+            },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.newChapters=response.data.course.sectionList;
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             }
         },
         computed: {
