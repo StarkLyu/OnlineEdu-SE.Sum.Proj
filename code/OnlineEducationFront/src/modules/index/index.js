@@ -50,7 +50,7 @@ new Vue({
         recordBehavior: function(action, info) {
             let currentTime = new Date();
             let yyyy = currentTime.getFullYear();
-            let MM = transTime(currentTime.getMonth());
+            let MM = transTime(currentTime.getMonth() + 1);
             let dd = transTime(currentTime.getDate());
             let HH = transTime(currentTime.getHours());
             let mm = transTime(currentTime.getMinutes());
