@@ -6,7 +6,7 @@
         <p>
             我的成绩：<strong class="score-text">{{scoreText}}</strong>
         </p>
-        <div class="study-chart" id="studychart"></div>
+        <div class="study-chart" ref="studychart"></div>
         <el-row>
             <el-col :span="8">
                 专注度：{{ concentrationText }} / 100
@@ -42,7 +42,8 @@
                 wordMap: "",
                 reportLoaded: false,
                 wordMapLoaded: false,
-                scoreLoaded: false
+                scoreLoaded: false,
+                chart: null
             }
         },
         methods: {
@@ -55,26 +56,45 @@
                 let dateList = [];
                 let timeList = [];
                 let sourceList = this.dailyStudyTime;
+                console.log(sourceList);
                 let startDate = this.$store.getters.getCourseInfo.startDate.substr(0, 10);
                 //dateList.push(startDate);
-                let current = this.$root.dateToString(Date());
+                let current = this.$root.dateToString(new Date());
                 let courseEndDate = this.$store.getters.getCourseInfo.endDate.substr(0, 10);
                 let endDate = current < courseEndDate ? current : courseEndDate;
                 let scanDate = startDate;
                 while (scanDate <= endDate) {
-                    dateList.push(startDate);
+                    dateList.push(scanDate);
                     if (sourceList.length !== 0 && sourceList[0].date === scanDate) {
-                        timeList.push(sourceList[0])
+                        timeList.push(sourceList[0].minute);
+                        sourceList.shift();
                     }
+                    else {
+                        timeList.push(0);
+                    }
+                    scanDate = this.addDate(scanDate);
                 }
-                let chart = echarts.init(document.getElementById("studychart"));
-                chart.setOption({
+                console.log(dateList);
+                console.log(timeList);
+                //let chart = echarts.init(document.getElementById("studychart"));
+                console.log(this.chart);
+                this.chart.setOption({
                     title: {
                         text: "我的学习情况"
                     },
                     xAxis: {
-                        type: "category"
-                    }
+                        type: "category",
+                        data: dateList
+                    },
+                    yAxis: {
+                        type: "value"
+                    },
+                    series: [
+                        {
+                            data: timeList,
+                            type: "line"
+                        }
+                    ]
                 })
             },
             initReport: function () {
@@ -94,11 +114,13 @@
                     this.hardworking = response.data.report.hardworking;
                     this.totalStudyTime = response.data.report.studyTime;
                     this.dailyStudyTime = response.data.studyTimes;
+                    this.initChart();
                     loading.close();
                 }).catch((error) => {
                     loading.close();
                     this.$root.error(error);
-                    console.log(error.response);
+                    //console.error(error);
+                    //console.log(error.response);
                 });
                 this.$http.request({
                     url: `/api/users/${this.$store.state.user.userInfo.id}/courses/${courseId}/forums/`,
@@ -155,9 +177,10 @@
                 }
             }
         },
-        created() {
+        mounted() {
+            console.log(echarts);
+            this.chart = echarts.init(this.$refs["studychart"]);
             this.initReport();
-            this.initChart();
         }
     }
 </script>

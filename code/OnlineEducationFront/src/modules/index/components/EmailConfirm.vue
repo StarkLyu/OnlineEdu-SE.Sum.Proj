@@ -63,16 +63,17 @@
                 this.countTime();
             },
             sendConfirmCode: function () {
+                console.log(this.confirmCode);
                 this.$http.request(this.requestConfig).then(() => {
                     this.$emit("confirm-pass");
                 }).catch((error) => {
                     this.$emit("confirm-fail");
                     console.log(error.response);
                     if (error.response.status === 400) {
-                        alert("验证码无效");
+                        this.$root.error("验证码无效");
                     }
                     else {
-                        alert("验证失败");
+                        this.$root.error("验证失败");
                     }
                 })
             },
