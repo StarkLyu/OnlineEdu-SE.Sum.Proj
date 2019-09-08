@@ -57,6 +57,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("添加节失败");
+                        that.$message.error(error.response.data);
                     });
                 this.newTitle = "";
                 this.newDescription="";

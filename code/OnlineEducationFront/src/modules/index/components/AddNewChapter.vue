@@ -49,6 +49,7 @@
                     })
                     .catch(function (error) {
                         that.$message.error("添加章失败");
+                        that.$message.error(error.response.data);
                         console.log(error.response);
                     });
                 this.newTitle = "";

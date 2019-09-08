@@ -131,6 +131,7 @@
                     .catch(function (error) {
                         console.log(error.response);
                         that.$message.error("添加公告失败");
+                        that.$message.error(error.response.data);
                     });
 
                 this.dialogFormVisible=false;
