@@ -10,7 +10,7 @@ public class Learn {
     @EmbeddedId
     private LearnPrimaryKey learnPrimaryKey;
 
-    private double grade;
+    private double grade =-1;
 
     private int signInTimes = 0;
 

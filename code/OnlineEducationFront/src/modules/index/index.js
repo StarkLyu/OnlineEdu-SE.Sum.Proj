@@ -47,17 +47,25 @@ new Vue({
                 showClose: true
             })
         },
+        dateToString: function(date, detail = false) {
+            let currentTime = date;
+            let yyyy = currentTime.getFullYear();
+            let MM = transTime(currentTime.getMonth() + 1);
+            let dd = transTime(currentTime.getDate());
+            let res = `${yyyy}-${MM}-${dd}`;
+            if (detail) {
+                let HH = transTime(currentTime.getHours());
+                let mm = transTime(currentTime.getMinutes());
+                let ss = transTime(currentTime.getSeconds());
+                res = `${res} ${HH}:${mm}:${ss}`;
+            }
+            return res;
+        },
         recordBehavior: function(action, info) {
             let currentTime = new Date();
-            let yyyy = currentTime.getFullYear();
-            let MM = transTime(currentTime.getMonth());
-            let dd = transTime(currentTime.getDate());
-            let HH = transTime(currentTime.getHours());
-            let mm = transTime(currentTime.getMinutes());
-            let ss = transTime(currentTime.getSeconds());
             let record = {
                 action,
-                time: `${yyyy}-${MM}-${dd} ${HH}:${mm}:${ss}`,
+                time: this.dateToString(currentTime, true),
                 info
             };
             console.log(record);

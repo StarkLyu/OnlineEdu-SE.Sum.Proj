@@ -43,7 +43,8 @@
         },
         created() {
             if (this.userId === -1) {
-                this.userUnit = this.user;
+                this.userUnit.username = this.user.username;
+                this.userUnit.avatarUrl = "http://202.120.40.8:30382/online-edu/static" + this.user.avatarUrl;
             }
             else {
                 this.$http.request({

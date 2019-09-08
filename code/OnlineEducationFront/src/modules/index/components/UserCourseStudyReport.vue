@@ -19,10 +19,10 @@
             </el-col>
         </el-row>
         <el-divider></el-divider>
-        <div>
+        <h3>
             我的论坛词云图：
-            <img :src="wordMap">
-        </div>
+        </h3>
+        <img :src="wordMap">
     </div>
 </template>
 
@@ -40,12 +40,33 @@
                 totalStudyTime: -1,
                 dailyStudyTime: [],
                 wordMap: "",
-                //studyChart: null
+                reportLoaded: false,
+                wordMapLoaded: false,
+                scoreLoaded: false
             }
         },
         methods: {
+            addDate: function (date) {
+                let temp = new Date(date);
+                temp.setDate(temp.getDate() + 1);
+                return this.$root.dateToString(temp);
+            },
             initChart: function () {
                 let dateList = [];
+                let timeList = [];
+                let sourceList = this.dailyStudyTime;
+                let startDate = this.$store.getters.getCourseInfo.startDate.substr(0, 10);
+                //dateList.push(startDate);
+                let current = this.$root.dateToString(Date());
+                let courseEndDate = this.$store.getters.getCourseInfo.endDate.substr(0, 10);
+                let endDate = current < courseEndDate ? current : courseEndDate;
+                let scanDate = startDate;
+                while (scanDate <= endDate) {
+                    dateList.push(startDate);
+                    if (sourceList.length !== 0 && sourceList[0].date === scanDate) {
+                        timeList.push(sourceList[0])
+                    }
+                }
                 let chart = echarts.init(document.getElementById("studychart"));
                 chart.setOption({
                     title: {
@@ -65,7 +86,7 @@
                 let courseId = this.$store.getters.getCourseId;
                 let authHeader = this.$store.getters.authRequestHead;
                 this.$http.request({
-                    url: `/api/courses/${courseId}/studyReport/report`,
+                    url: `/api/courses/${courseId}/studyRecord/report`,
                     method: "get",
                     headers: authHeader
                 }).then((response) => {
@@ -73,31 +94,32 @@
                     this.hardworking = response.data.report.hardworking;
                     this.totalStudyTime = response.data.report.studyTime;
                     this.dailyStudyTime = response.data.studyTimes;
-                    this.$http.request({
-                        url: `/api/users/${this.$store.state.user.userInfo.id}/courses/${courseId}/forums/`,
-                        method: "post",
-                        headers: authHeader
-                    }).then((response) => {
-                        this.wordMap = `http://202.120.40.8:30382/online-edu/static/${response.data}`;
-                        console.log(response);
-                        this.$http.request({
-                            url: `/api/courses/${courseId}/score`,
-                            method: "get",
-                            headers: authHeader
-                        }).then((response) => {
-                            loading.close();
-                            this.score = response.data;
-                        }).catch((error) => {
-                            loading.close();
-                            this.$root.error(error);
-                            console.log(error);
-                        })
-                    }).catch((error) => {
-                        loading.close();
-                        console.log(error.response);
-                    })
+                    loading.close();
                 }).catch((error) => {
                     loading.close();
+                    this.$root.error(error);
+                    console.log(error.response);
+                });
+                this.$http.request({
+                    url: `/api/users/${this.$store.state.user.userInfo.id}/courses/${courseId}/forums/`,
+                    method: "post",
+                    headers: authHeader
+                }).then((response) => {
+                    this.wordMap = `http://202.120.40.8:30382/online-edu/static/${response.data}?a=${Date()}`;
+                    console.log(response);
+                }).catch((error) => {
+                    //loading.close();
+                    console.log(error.response);
+                });
+                this.$http.request({
+                    url: `/api/courses/${courseId}/score`,
+                    method: "get",
+                    headers: authHeader
+                }).then((response) => {
+                    //loading.close();
+                    this.score = response.data;
+                }).catch((error) => {
+                    //loading.close();
                     this.$root.error(error);
                     console.log(error);
                 })
@@ -129,7 +151,7 @@
                     return "？？？";
                 }
                 else {
-                    return `${Math.trunc(this.totalStudyTime / 60)} h ${this.totalStudyTime % 60} s`;
+                    return `${Math.trunc(this.totalStudyTime / 60)} h ${this.totalStudyTime % 60} min`;
                 }
             }
         },
@@ -142,7 +164,6 @@
 
 <style scoped>
     .report-div {
-        border-style: solid;
         width: 950px;
         margin-left: auto;
         margin-right: auto;

@@ -92,7 +92,7 @@
 
     .head-user {
         float: right;
-        margin-right: 90px;
+        margin-right: 100px;
     }
 
     .head-search {

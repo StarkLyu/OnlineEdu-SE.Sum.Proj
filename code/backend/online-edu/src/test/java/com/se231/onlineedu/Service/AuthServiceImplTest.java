@@ -82,19 +82,19 @@ public class AuthServiceImplTest {
         assertThat(found.isEnabled()).isTrue();
     }
 
-    @Test
-    public void addTeachingAdmin(){
-        User user = new User();
-        user.setTel(531L);
-        user.setUsername("Liu");
-        user.setEmail("cdjddzy@foxmail.com");
-        user.setPassword("password");
-        user.setId(1L);
-        user.getRoles().add(new Role(RoleType.ROLE_USER));
-
-        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
-
-        String response = authService.addTeachingAdmin(1L);
-        assertThat(response).isEqualTo("Add Teaching Admin successfully");
-    }
+//    @Test
+//    public void addTeachingAdmin(){
+//        User user = new User();
+//        user.setTel(531L);
+//        user.setUsername("Liu");
+//        user.setEmail("cdjddzy@foxmail.com");
+//        user.setPassword("password");
+//        user.setId(1L);
+//        user.getRoles().add(new Role(RoleType.ROLE_USER));
+//
+//        Mockito.when(userService.getUserInfo(1L)).thenReturn(user);
+//
+//        String response = authService.addTeachingAdmin(1L);
+//        assertThat(response).isEqualTo("Add Teaching Admin successfully");
+//    }
 }
