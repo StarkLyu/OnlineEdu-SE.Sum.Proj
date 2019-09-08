@@ -75,13 +75,13 @@
                 top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item>
-                    <h3>学生姓名</h3>
-                    <span>
-                            {{editForm.username}}
-                    </span>
+<!--                    <h3>学生姓名</h3>-->
+<!--                    <span>-->
+<!--                            {{editForm.username}}-->
+<!--                    </span>-->
                 </el-form-item>
                 <el-form-item label="成绩">
-                    <el-input type="number" v-model="editForm.grade"></el-input>
+                    <el-input type="number" v-model="editForm.score"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="el-dialog__footer">
@@ -109,10 +109,7 @@
                 dialogFormVisible:false,
 
                 //编辑界面数据
-                editForm: {
-                    username:"",
-                    grade:"",
-                },
+                editForm: [],
             }
         },
 
@@ -140,19 +137,42 @@
 
             // 导入成绩
             handleAdd(){
-                alert("导入成绩");
+                this.$message.info("导入成绩");
             },
 
             //显示编辑界面
             handleEdit: function(index, row) {
                 this.dialogFormVisible = true;
                 this.editForm = Object.assign({}, row);
+                console.log(this.editForm);
             },
 
             // 提交修改后的成绩
             updateData(){
-                this.$message.success("用户修改成功");
-                this.dialogFormVisible=false;
+                var that=this;
+                //编辑课程信息
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/'+this.editForm.student.id+'/grade',
+                    method: "put",
+                    headers: this.$store.getters.authRequestHead,
+                    params:{
+                        grade:this.editForm.score,
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+
+                        // alert("修改课程信息成功");
+                        that.$message.success("修改学生成绩成功");
+                        that.showAllStudents();
+                        that.dialogFormVisible=false;
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("修改课程信息失败");
+                        that.$message.error("修改学生成绩失败"+error.response.data);
+                    });
             },
 
             submitUpload() {

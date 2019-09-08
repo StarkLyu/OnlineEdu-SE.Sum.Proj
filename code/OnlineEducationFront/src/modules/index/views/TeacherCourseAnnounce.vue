@@ -125,13 +125,13 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        that.getCourse();
                         that.$message.success("添加公告成功");
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("添加公告失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加公告失败："+error.response.data);
                     });
 
                 this.dialogFormVisible=false;
@@ -142,6 +142,26 @@
                 this.$message.success("公告修改成功");
                 this.dialogFormVisible=false;
             },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.announcements=response.data.course.notices;
+                        this.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
+            }
         },
 
         mounted() {

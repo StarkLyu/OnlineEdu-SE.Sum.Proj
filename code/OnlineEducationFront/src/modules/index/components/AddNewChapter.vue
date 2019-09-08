@@ -29,6 +29,7 @@
             return {
                 showAddChapter: false,
                 newTitle: "",
+                newChapters:[],
             }
         },
         methods: {
@@ -48,12 +49,31 @@
                         console.log(response.data);
                     })
                     .catch(function (error) {
-                        that.$message.error("添加章失败");
-                        that.$message.error(error.response.data);
+                        that.$message.error("添加章失败："+error.response.data);
                         console.log(error.response);
                     });
                 this.newTitle = "";
                 this.showAddChapter = false;
+            },
+
+            getCourse(){
+                var that=this;
+                this.$http.request({
+                    url: '/api/courses/'+this.$store.getters.getCourseId+'/info',
+                    method: "get",
+                    headers: this.$store.getters.authRequestHead,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.newChapters=response.data.course.sectionList;
+                        that.loading=false;
+                        // that.$store.commit("setCourseInfo",response.data);
+                        // alert("请求成功");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        // alert("请求失败");
+                    });
             }
         },
         computed: {
