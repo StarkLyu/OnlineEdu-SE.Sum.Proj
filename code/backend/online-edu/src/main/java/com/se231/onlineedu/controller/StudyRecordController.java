@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api("上传与生成学习记录的相关接口")
 @RestController
-@RequestMapping("/api/studyRecord")
+@RequestMapping("/api/courses/{courseId}/studyRecord")
 public class StudyRecordController {
 
     @Autowired
@@ -26,13 +26,15 @@ public class StudyRecordController {
     @ApiOperation("上传看视频记录")
     @PostMapping("/submit")
     public StudyTempRecord submitRecord(@RequestBody TempRecord tempRecord,
+                                        @PathVariable("courseId")Long courseId,
                                         @AuthenticationPrincipal UserPrinciple userPrinciple){
-        return studyRecordService.submitRecord(userPrinciple.getId(),tempRecord);
+        return studyRecordService.submitRecord(courseId,userPrinciple.getId(),tempRecord);
     }
 
     @ApiOperation("生成学习报告")
     @GetMapping("/report")
-    public ReportAndTime getReport(@AuthenticationPrincipal UserPrinciple userPrinciple){
-        return studyRecordService.getReport(userPrinciple.getId());
+    public ReportAndTime getReport(@PathVariable("courseId")Long courseId,
+                                   @AuthenticationPrincipal UserPrinciple userPrinciple){
+        return studyRecordService.getReport(courseId,userPrinciple.getId());
     }
 }
