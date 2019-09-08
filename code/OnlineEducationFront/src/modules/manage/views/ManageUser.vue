@@ -16,7 +16,6 @@
                         :on-preview="handlePreview"
                         :before-upload="beforeUpload"
                         :on-remove="handleRemove"
-                        :on-progress="onUploadProgress"
                         :limit="3"
                         :on-exceed="handleExceed"
                         :auto-upload="false"
@@ -96,7 +95,7 @@
                     <el-input type="text" v-model="editForm.sno"></el-input>
                 </el-form-item>
                 <el-form-item label="用户名">
-                    <el-input type="text" v-model="editForm.username"></el-input>
+                    <span>{{editForm.username}}</span>
                 </el-form-item>
 <!--                只有用户为学生是才显示是否授权为教师的选项-->
                 <span v-if="editForm.boolrole===false">
@@ -279,22 +278,10 @@
                             }
                         }
                     },
-                    {
-                        onUploadProgress: (event) => {
-                            // 监听上传进度
-                            event.percent = event.loaded / event.total * 100;
-                            this.excelUploadPercent=event.percent;
-                            file.onProgress(event);
-                        }
-                    }
                 )
                     .then(function (response) {
                         console.log(response.data);
-                        if (response.data==='Import successfully.')
-                        {
-                            // alert("上传成功");
-                            that.$message.success('上传成功');
-                        }
+                        that.$message.success('上传成功');
                         that.excelFlag=false;
                         that.showAllUsers();
                     })
@@ -386,6 +373,7 @@
                         console.log(response.data);
                         if(response.data.id===that.editForm.id)
                         {
+                            that.rolecheck="";
                             that.showAllUsers();
                             that.dialogFormVisible=false;
                             that.$message.success("修改成功");

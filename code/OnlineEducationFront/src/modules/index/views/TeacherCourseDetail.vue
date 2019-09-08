@@ -5,18 +5,31 @@
         </el-header>
         <el-main>
             <div class="courseimg">
-                <el-tooltip effect="dark" content="点击头像上传头像图片" placement="top-start">
-                    <el-upload
-                            class="avatar-uploader avatar"
-                            :action="uploadUrl"
-                            :headers="uploadHeader"
-                            :show-file-list="false"
-                            :before-upload="beforeAvatarUpload"
-                            :http-request="uploadProcess">
-                        <img v-if="imageURL" :src="imageURL" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-tooltip>
+                <el-upload
+                        class="upload-demo"
+                        :action="uploadUrl"
+                        :headers="uploadHeader"
+                        :show-file-list="false"
+                        :before-upload="beforeAvatarUpload"
+                        :http-request="uploadProcess">
+                    <el-button size="small" type="primary">点击上传头像</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过5000kb</div>
+                </el-upload>
+                <div class="image-div">
+                    <img :src="imageURL" class="image-div">
+                </div>
+<!--                <el-tooltip effect="dark" content="点击头像上传头像图片" placement="top-start">-->
+<!--                    <el-upload-->
+<!--                            class="avatar-uploader avatar"-->
+<!--                            :action="uploadUrl"-->
+<!--                            :headers="uploadHeader"-->
+<!--                            :show-file-list="false"-->
+<!--                            :before-upload="beforeAvatarUpload"-->
+<!--                            :http-request="uploadProcess">-->
+<!--                        <button>上传头像</button>-->
+<!--                    </el-upload>-->
+<!--                    -->
+<!--                </el-tooltip>-->
             </div>
             <div class="coursedes">
                 <p>
@@ -211,6 +224,7 @@
             uploadProcess: function(param) {
                 let formData = new FormData();
                 formData.append("avatar",param.file);
+                var that=this;
                 this.$http.request({
                     url: "/api/courses/" + this.$store.getters.getCourseId+ "/avatar",
                     method: "post",
@@ -220,10 +234,11 @@
                         'Content-Type': 'multipart/form-data'
                     },
                 }).then((response) => {
-                    this.$message.success("上传头像成功");
+                    that.$message.success("上传头像成功");
+                    that.getCourse();
                     console.log(response);
                 }).catch((error) => {
-                    this.$message.error("上传头像失败："+error.response.data);
+                    that.$message.error("上传头像失败："+error.response.data);
                 })
             },
 
@@ -299,7 +314,13 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.CourseForm=response.data.course;
-                        this.loading=false;
+                        that.imageURL=response.data.course.avatarUrl;
+                        if (that.imageURL !== "") {
+                            that.imageURL= "http://202.120.40.8:30382/online-edu/static/" + that.imageURL + "?a=" + Math.random();
+                        }
+                        else that.imageURL= "";
+                        
+                        that.loading=false;
                         // that.$store.commit("setCourseInfo",response.data);
                         // alert("请求成功");
                     })
@@ -383,6 +404,17 @@
         width: 178px;
         height: 178px;
         display: block;
+    }
+
+    .image-div {
+        width: 300px;
+        height: 185px;
+        background-color: white;
+    }
+
+    .title-div {
+        width: 300px;
+        text-align: center;
     }
 
 </style>
