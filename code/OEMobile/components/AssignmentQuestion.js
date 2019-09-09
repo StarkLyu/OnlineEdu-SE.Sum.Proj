@@ -20,13 +20,19 @@ class AssignmentQuestion extends Component {
 
     render() {
         let questionType = this.props.question.questionType;
+        let initAnswer = this.getAnswer();
+        let imgLength = this.props.question.images.length;
+        let imgSize = new Array(imgLength);
+        imgSize.fill(1);
+        console.log(`initAnswer: ${initAnswer}`);
         switch (questionType) {
             case "SINGLE_ANSWER":
                 return (
                     <AssignmentSingle
                         question={this.props.question}
                         setAnswer={this.props.setAnswer}
-                        initAnswer={this.getAnswer()}
+                        initAnswer={initAnswer}
+                        imgSize={imgSize}
                     />);
             case "MULTIPLE_ANSWER":
                 return (
@@ -34,6 +40,7 @@ class AssignmentQuestion extends Component {
                         question={this.props.question}
                         setAnswer={this.props.setAnswer}
                         initAnswer={this.getAnswer()}
+                        imgSize={imgSize}
                     />);
             case "T_OR_F":
                 return (
@@ -41,6 +48,7 @@ class AssignmentQuestion extends Component {
                         question={this.props.question}
                         setAnswer={this.props.setAnswer}
                         initAnswer={this.getAnswer()}
+                        imgSize={imgSize}
                     />);
             default: return null;
         }

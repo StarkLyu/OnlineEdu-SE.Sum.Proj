@@ -19,6 +19,11 @@ export default createStackNavigator({
             title: navigation.getParam("sectionTitle", "未知章节名")
         })
     },
-    CourseVideoPlay,
+    CourseVideoPlay: {
+        screen: CourseVideoPlay,
+        navigationOptions: {
+            header: null
+        }
+    },
     CoursePaper
 })

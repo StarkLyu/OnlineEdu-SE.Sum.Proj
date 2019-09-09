@@ -72,42 +72,45 @@ class CourseAddTopic extends Component {
                 content: this.state.content
             },
             headers: this.props.authHeader
-        }).then((res) => {
-            //global.showLoading("发布帖子中");
-            //console.log(this.state.images);
-            console.log(res);
-            let formdata = new FormData();
-            let tempList = [];
-            for (let i of this.state.images) {
-                console.log(i.uri);
-                formdata.append("images", {
-                    uri: i.path.replace("file:///", "content://"),
-                    type: i.mime,
-                    name: i.path.split("/").pop()
-                });
-                // tempList.push({
-                //     uri: i.uri,
-                //     type: i.type,
-                //     name: i.fileName
-                // })
-            }
-            //formdata.append("images", tempList);
-            this.$axios.request({
-                url: `/api/forums/${res.data.id}/images`,
-                method: "post",
-                data: formdata,
-                headers: {
-                    ...this.props.authHeader,
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then((response) => {
-                this.$toast.successToast("帖子发布成功");
-                console.log(response);
-            }).catch((error) => {
-                this.$toast.errorToast("图片发布失败");
-                console.log(error);
-                console.log(error.response);
-            })
+        }).then((response) => {
+            this.$toast.successToast("帖子发布成功");
+            console.log(response);
+            this.props.navigation.popToTop();
+            // //global.showLoading("发布帖子中");
+            // //console.log(this.state.images);
+            // console.log(res);
+            // let formdata = new FormData();
+            // let tempList = [];
+            // for (let i of this.state.images) {
+            //     console.log(i.uri);
+            //     formdata.append("images", {
+            //         uri: i.path.replace("file:///", "content://"),
+            //         type: i.mime,
+            //         name: i.path.split("/").pop()
+            //     });
+            //     // tempList.push({
+            //     //     uri: i.uri,
+            //     //     type: i.type,
+            //     //     name: i.fileName
+            //     // })
+            // }
+            // //formdata.append("images", tempList);
+            // // this.$axios.request({
+            // //     url: `/api/forums/${res.data.id}/images`,
+            // //     method: "post",
+            // //     data: formdata,
+            // //     headers: {
+            // //         ...this.props.authHeader,
+            // //         'Content-Type': 'multipart/form-data'
+            // //     }
+            // // }).then((response) => {
+            // //     this.$toast.successToast("帖子发布成功");
+            // //     console.log(response);
+            // // }).catch((error) => {
+            // //     this.$toast.errorToast("图片发布失败");
+            // //     console.log(error);
+            // //     console.log(error.response);
+            // // })
         }).catch((error) => {
             this.$toast.errorToast("帖子发布失败");
             console.log(error);
@@ -155,8 +158,8 @@ class CourseAddTopic extends Component {
                     </View>
                     <CardItem>
                         <Left>
-                            <Button transparent onPress={() => {this.chooseImages()}}>
-                                <Text>添加图片</Text>
+                            <Button transparent onPress={() => {this.chooseImages()}} disabled>
+                                <Text>暂不支持添加图片</Text>
                             </Button>
                         </Left>
                         <Right>
