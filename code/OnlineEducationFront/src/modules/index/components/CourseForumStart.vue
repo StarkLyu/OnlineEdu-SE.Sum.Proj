@@ -61,6 +61,7 @@
             banForum(id){
                 alert("确定要封贴吗？");
 
+                var that=this;
                 this.$http.request({
                     url: '/api/forums/'+id,
                     method: "delete",
@@ -68,11 +69,11 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        this.$root.success("封贴成功");
+                        that.$root.success("封贴成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        this.$root.error("封贴失败："+error.response.data);
+                        that.$root.error("封贴失败："+error.response.data);
                     });
             }
         },
