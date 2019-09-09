@@ -9,7 +9,7 @@
                     @click="showAddChapter = true"
             ></el-button>
         </el-tooltip>
-        <el-dialog :visible.sync="showAddChapter">
+        <el-dialog :visible.sync="showAddChapter" v-loading="loading">
             <h2 slot="title">添加章</h2>
             <el-input v-model="newTitle" placeholder="新章标题"></el-input>
             <div slot="footer">
@@ -30,11 +30,13 @@
                 showAddChapter: false,
                 newTitle: "",
                 newChapters:[],
+                loading:false,
             }
         },
         methods: {
             addChapter: function () {
                 var that=this;
+                that.loading=true;
                 that.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/append',
                     method: "post",
@@ -45,16 +47,19 @@
                     data:this.newTitle,
                 })
                     .then(function (response) {
+                        that.loading=false;
                         that.$message.success("添加章成功");
                         that.getCourse();
+                        that.showAddChapter = false;
                         console.log(response.data);
                     })
                     .catch(function (error) {
+                        that.loading=false;
                         that.$message.error("添加章失败："+error.response.data);
                         console.log(error.response);
                     });
                 this.newTitle = "";
-                this.showAddChapter = false;
+
             },
 
             getCourse(){
@@ -68,7 +73,7 @@
                         console.log(response.data);
                         that.$store.commit("setCourseInfo",response.data.course);
                         that.$forceUpdate();
-                        that.loading=false;
+                        // that.loading=false;
                         // that.$store.commit("setCourseInfo",response.data);
                         // alert("请求成功");
                     })

@@ -41,6 +41,7 @@
                     :title="发布签到"
                     :visible.sync="signDialogVisible"
                     :lock-scroll="false"
+                    v-loading="loading"
                     top="5%">
                 <el-form :model="signInForm" label-width="80px" ref="signInForm">
                     <el-form-item label="签到时间">
@@ -101,6 +102,8 @@
 
         data(){
             return{
+                loading:false,
+
                 signIns:this.$store.getters.getCourseInfo.signIns,
 
                 signInForm:{
@@ -125,6 +128,7 @@
                 console.log(this.center);
 
                 var that=this;
+                that.loading=true;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/signIns',
                     method: "post",
@@ -139,12 +143,18 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.getCourse();
+                        that.loading=false;
                         that.$message.success("发布签到成功");
                         that.signDialogVisible=false;
+                        that.signInForm={
+                            endDate: "",
+                            startDate: "",
+                        };
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
+                        that.loading=false;
                         that.$message.error("发布签到失败"+error.response.data);
                     });
             },
@@ -178,7 +188,7 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.signIns=response.data.course.signIns;
-                        that.loading=false;
+                        // that.loading=false;
                         // that.$store.commit("setCourseInfo",response.data);
                         // alert("请求成功");
                     })

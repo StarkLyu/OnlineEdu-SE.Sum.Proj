@@ -50,7 +50,7 @@
                             sortable>
                     </el-table-column>
                     <el-table-column
-                            prop="score"
+                            prop="score2"
                             label="成绩"
                             min-width="25%"
                     ></el-table-column>
@@ -72,6 +72,7 @@
                 :title="'成绩修改'"
                 :visible.sync="dialogFormVisible"
                 :lock-scroll="false"
+                v-loading="loading_2"
                 top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item label="学生">
@@ -99,6 +100,8 @@
             return{
                 loading:true,
 
+                loading_2:false,
+
                 fileList: [],
 
                 search: '',
@@ -123,7 +126,18 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        that.UserData=response.data.scoreMap;
+
+                        // 修改成绩显示
+                        var UserScore=response.data.scoreMap;
+                        for (let i=0; i<UserScore.length; i++) {
+                            if (UserScore[i].score===-1){
+                                UserScore[i].score2='暂无成绩';
+                            }
+                            else {
+                                UserScore[i].score2=UserScore[i].score;
+                            }
+                        }
+                        that.UserData=UserScore;
                         that.loading=false;
                         console.log(that.UserData);
                         // alert("请求成功");
@@ -150,6 +164,7 @@
             // 提交修改后的成绩
             updateData(){
                 var that=this;
+                that.loading_2=true;
                 //编辑课程信息
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/'+this.editForm.student.id+'/grade',
@@ -163,6 +178,7 @@
                         console.log(response.data);
 
                         // alert("修改课程信息成功");
+                        that.loading_2=false;
                         that.$message.success("修改学生成绩成功");
                         that.showAllStudents();
                         that.dialogFormVisible=false;
@@ -171,6 +187,7 @@
                     .catch(function (error) {
                         console.log(error);
                         // alert("修改课程信息失败");
+                        that.loading_2=false;
                         that.$message.error("修改学生成绩失败"+error.response.data);
                     });
             },

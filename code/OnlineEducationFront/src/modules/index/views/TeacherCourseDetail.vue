@@ -3,7 +3,7 @@
         <el-header>
             <h1 class="titlesytle">课程详情</h1>
         </el-header>
-        <el-main>
+        <el-main v-loading="loading">
             <div class="courseimg">
                 <el-upload
                         class="upload-demo"
@@ -75,6 +75,7 @@
             <el-dialog :title="'编辑课程信息'"
                        :visible.sync="courseDialogVisible"
                        :lock-scroll="false"
+                       v-loading="loading_2"
                        top="5%">
                 <el-form :model="editForm" label-width="80px" ref="editForm">
                     <el-form-item label="课程名">
@@ -154,6 +155,8 @@
         data(){
             return{
                 loading:true,
+
+                loading_2:false,
 
                 CourseForm:[],
 
@@ -274,6 +277,7 @@
             // 修改课程
             updateData(){
                 var that=this;
+                that.loading_2=true;
                 //编辑课程信息
                 this.$http.request({
                     url: '/api/courses/'+this.editForm.id+'/modify',
@@ -290,6 +294,7 @@
                     .then(function (response) {
                         console.log(response.data);
 
+                        that.loading_2=false;
                         that.courseDialogVisible=false;
                         // alert("修改课程信息成功");
                         that.getCourse();
@@ -299,6 +304,7 @@
                     .catch(function (error) {
                         console.log(error);
                         // alert("修改课程信息失败");
+                        that.loading_2=false;
                         that.$message.error("修改课程信息失败："+error.response.data);
                     });
             },
