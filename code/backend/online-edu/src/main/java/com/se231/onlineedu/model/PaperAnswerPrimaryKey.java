@@ -6,6 +6,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * Paper Answer Primary Key Class
@@ -21,10 +23,12 @@ public class PaperAnswerPrimaryKey implements Serializable {
     private static final Long serialVersionUID = 1L;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotFound(action= NotFoundAction.IGNORE)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotFound(action=NotFoundAction.IGNORE)
     @JoinColumn(name = "paper_id")
     private Paper paper;
 
