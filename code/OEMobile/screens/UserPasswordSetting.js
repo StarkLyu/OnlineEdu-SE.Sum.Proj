@@ -63,15 +63,24 @@ class UserPasswordSetting extends Component {
                     <Form>
                         <Item stackedLabel>
                             <Label>旧密码</Label>
-                            <Input onChangeText={(text) => this.setState({oldPass: text})}/>
+                            <Input
+                                onChangeText={(text) => this.setState({oldPass: text})}
+                                secureTextEntry = {true}
+                            />
                         </Item>
                         <Item stackedLabel>
                             <Label>新密码</Label>
-                            <Input onChangeText={(text) => this.setState({newPass: text})}/>
+                            <Input
+                                onChangeText={(text) => this.setState({newPass: text})}
+                                secureTextEntry = {true}
+                            />
                         </Item>
                         <Item stackedLabel>
                             <Label>确认密码</Label>
-                            <Input onChangeText={(text) => this.setState({confirmPass: text})}/>
+                            <Input
+                                onChangeText={(text) => this.setState({confirmPass: text})}
+                                secureTextEntry = {true}
+                            />
                         </Item>
                     </Form>
                     <Button full onPress={() => {this.changeRequest()}}>

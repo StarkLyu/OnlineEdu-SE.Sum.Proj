@@ -77,7 +77,7 @@ function mapStateToProps(state) {
         accessToken: state.login.accessToken,
         userEmail: state.userInfo.email,
         userUrl: "/api/users/" + state.userInfo.id + "/",
-        authHeader: state.authHeader
+        authHeader: state.login.authHeader
     }
 }
 

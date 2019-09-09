@@ -30,6 +30,7 @@ class CourseVideoPlay extends Component {
                     source={{ uri: videoUrl }}
                     style={styles.backgroundVideo}
                     controls={true}
+                    onBack={() => {this.props.navigation.pop()}}
                 />
             </Container>
         );

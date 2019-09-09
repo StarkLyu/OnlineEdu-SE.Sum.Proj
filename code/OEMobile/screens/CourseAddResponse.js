@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import { FlatList, Alert, Image, Dimensions } from 'react-native';
-import { Container, Content, Form, Item, Text, Input, Textarea, Label, Button, View } from "native-base";
+import { Container, Content, Form, Item, Text, Input, Textarea, CardItem, Left, Right, Button, View } from "native-base";
 import ImagePicker from 'react-native-image-crop-picker';
 
 class CourseAddResponse extends Component {
@@ -64,16 +64,22 @@ class CourseAddResponse extends Component {
         global.showLoading("发布帖子中");
         let courseId = this.props.courseId;
         let secNo = this.props.secNo;
+        let forumPath = this.props.navigation.getParam("path");
         this.$axios.request({
             url: `/api/courses/${courseId}/sections/${secNo}/forums`,
             method: "post",
             data: {
                 content: this.state.content,
-                path: this.props.forumPath
+                path: forumPath
             },
             headers: this.props.authHeader
         }).then((response) => {
-
+            this.$toast.successToast("回复发布成功");
+            console.log(response);
+            this.props.navigation.popToTop();
+        }).catch((error) => {
+            this.$toast.errorToast("回复发布失败");
+            console.log(error);
         })
     };
 
@@ -83,7 +89,12 @@ class CourseAddResponse extends Component {
         return (
             <Container>
                 <Content>
-                    <Textarea rowSpan={6} placeholder={"在此添加内容"}/>
+                    <Textarea
+                        rowSpan={6}
+                        placeholder={"在此添加内容"}
+                        defaultValue={this.state.content}
+                        onChangeText={(text) => {this.setState({content: text})}}
+                    />
                     <View>
                         {
                             this.state.images.map((item, index) => {
@@ -102,9 +113,18 @@ class CourseAddResponse extends Component {
                             })
                         }
                     </View>
-                    <Button onPress={() => {this.chooseImages()}} transparent>
-                        <Text>添加图片</Text>
-                    </Button>
+                    <CardItem>
+                        <Left>
+                            <Button onPress={() => {this.chooseImages()}} transparent disabled>
+                                <Text>暂不支持添加图片</Text>
+                            </Button>
+                        </Left>
+                        <Right>
+                            <Button onPress={() => {this.commitAddTopic()}} transparent>
+                                <Text>添加回复</Text>
+                            </Button>
+                        </Right>
+                    </CardItem>
                 </Content>
             </Container>
         );

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Container, H3, Left, ListItem, Text} from "native-base";
-import {FlatList} from "react-native";
+import {Content, H3, Left, ListItem, Text} from "native-base";
+import {Image} from "react-native";
 
 class AssignmentMulti extends Component {
     constructor(props) {
@@ -20,6 +20,7 @@ class AssignmentMulti extends Component {
             newSelectedList.push(optionKey);
         }
         newSelectedList.sort();
+        console.log(newSelectedList);
         this.setState({
             answer: this.answerString(newSelectedList),
             selectedList: newSelectedList
@@ -38,7 +39,7 @@ class AssignmentMulti extends Component {
 
     answerString = (selectedList) => {
         let answer = "";
-        for (let i in selectedList) {
+        for (let i of selectedList) {
             answer += i;
         }
         return answer;
@@ -53,8 +54,11 @@ class AssignmentMulti extends Component {
     }
 
     render() {
+        let imgWidth = this.$window.width;
+        let imgSize = this.props.imgSize;
+
         return (
-            <Container>
+            <Content>
                 <ListItem>
                     <Left>
                         <H3>多选题</H3>
@@ -63,8 +67,33 @@ class AssignmentMulti extends Component {
                 <ListItem>
                     <Text>{this.props.question.content}</Text>
                 </ListItem>
-                <FlatList data={Object.keys(this.props.question.options)} renderItem={({item}) => this._renderOption(item)} />
-            </Container>
+                {
+                    this.props.question.images.map((item, index) => {
+                        return <Image
+                            source={{uri: `http://202.120.40.8:30382/online-edu/static/${item}`}}
+                            key={index}
+                            style={{width: imgWidth, height: imgWidth * imgSize[index]}}
+                            onLoadStart={() => {
+                                Image.getSize(`http://202.120.40.8:30382/online-edu/static/${item}`, (width, height) => {
+                                    let temp = this.state.imgSize;
+                                    temp[index] = height/width;
+                                    this.setState({
+                                        imgSize: temp
+                                    })
+                                }, () => {
+
+                                })}
+                            }
+                        />
+                    })
+                }
+                {/*<FlatList data={Object.keys(this.props.question.options)} renderItem={({item}) => this._renderOption(item)} />*/}
+                {
+                    Object.keys(this.props.question.options).map((item, index) => {
+                        return this._renderOption(item);
+                    })
+                }
+            </Content>
         );
     }
 }

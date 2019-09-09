@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Container, View, ListItem, Text, Card, CardItem, Left, Right, Button, Icon } from "native-base";
 import UserUnit from '../components/UserUnit';
 import {setCurrentTopic} from "../store/forumActions";
+import {NavigationEvents} from "react-navigation"
 
 class CourseForum extends Component {
     constructor(props) {
@@ -122,6 +123,7 @@ class CourseForum extends Component {
     render() {
         return (
             <Container>
+                <NavigationEvents onWillFocus={() => {this.initForum()}}/>
                 <FlatList
                     data={this.state.sectionForum}
                     renderItem={({ item }) => {

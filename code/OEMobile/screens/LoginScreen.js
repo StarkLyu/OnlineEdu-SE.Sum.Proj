@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Item, Icon, Input, Button , Text, View} from 'native-base';
+import { Container, H1, Item, Icon, Input, Button , Text, View, Content} from 'native-base';
 import { connect } from 'react-redux';
 
 class LoginScreen extends Component {
@@ -61,14 +61,13 @@ class LoginScreen extends Component {
 
     render() {
         return (
-            <Container>
+            <Container style={{backgroundColor: "#bbb"}}>
                 <Content>
-                    <View style={{flex: 4}}>
-                        <Text>
-                            OnlineEdu
-                        </Text>
+                    <View style={{ marginTop: 100}}>
+                        <Text style={{textAlign: "center", fontSize: 80}}>Online</Text>
+                        <Text style={{textAlign: "center", fontSize: 80, color: "white"}}>Edu</Text>
                     </View>
-                    <View style={{flex: 3}}>
+                    <View style={{marginTop: 100, backgroundColor: "#fff"}}>
                         <Item>
                             <Icon type={"FontAwesome"} name='user' />
                             <Input placeholder='用户名' onChangeText={(text) => this.setState({username: text})}/>

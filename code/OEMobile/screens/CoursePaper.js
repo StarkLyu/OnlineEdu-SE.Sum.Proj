@@ -63,21 +63,26 @@ class CoursePaper extends Component {
                 state: response.data.state,
                 grade: response.data.grade
             });
-            let resAnswers = response.data.answers;
+            let resAnswers = response.data['0'].answers;
+            console.log(resAnswers);
             for (let temp in resAnswers) {
                 for (let ques of this.questions) {
                     if (resAnswers[temp].answerPrimaryKey.question.id === ques.id) {
                         let getAnswer = resAnswers[temp];
+                        //console.log(getAnswer);
                         answerMap.set(ques.id, getAnswer.answer);
+                        ques.myAnswer = getAnswer.answer;
                         ques.grade = getAnswer.grade;
                         ques.comment = getAnswer.comment;
-                        resAnswers.slice(temp, 1);
-                        temp--;
+                        //console.log(`fuck: ${answerMap.get(ques.id)}`);
+                        //resAnswers.slice(temp, 1);
+                        //temp--;
+                        break;
                     }
                 }
             }
-            console.log(answerMap.keys());
-            console.log(this.questions);
+            //console.log(answerMap.keys());
+            //console.log(this.questions);
             this.props.initAnswer(answerMap);
         })
     };
@@ -141,9 +146,10 @@ class CoursePaper extends Component {
         }).then(() => {
             this.$toast.successToast(state === "NOT_FINISH" ? "暂存成功！" : "提交成功！");
             this.answerInit();
+            this.props.navigation.pop();
         }).catch((error) => {
             //alert(error);
-            this.$toast.errorToast(error);
+            this.$toast.errorToast(error.response.data);
             console.log(error.response);
         })
     };
