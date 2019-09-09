@@ -138,16 +138,16 @@
                             }
                         }).then(() => {
                             if (state === "NOT_FINISH") {
-                                alert("暂存成功！");
+                                this.$root.success("暂存成功！");
                                 this.saveLoading = false;
                             }
                             else if (state === "FINISHED") {
-                                alert("提交成功！");
+                                this.$root.success("提交成功！");
                                 this.submitLoading = false;
                             }
                             this.initialPaper();
                         }).catch((error) => {
-                            alert(error);
+                            this.$root.error(error);
                             console.log(error.response);
                             this.submitLoading = false;
                             this.saveLoading = false;
@@ -245,7 +245,9 @@
                 return haveTimes;
             },
             allowSubmit: function () {
-                return !(this.haveTime === 0 || this.state === "NOT_MARK" || this.state === "MARKED");
+                let nowTime = this.$root.dateToString(new Date(), true);
+                console.log(nowTime);
+                return !(this.haveTime === 0 || this.state === "NOT_MARK" || this.state === "MARKED" || nowTime > this.paperInfo.end || nowTime < this.paperInfo.start);
             }
         },
         created() {

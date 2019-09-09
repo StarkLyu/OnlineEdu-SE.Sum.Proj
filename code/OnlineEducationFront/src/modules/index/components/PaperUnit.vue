@@ -1,11 +1,9 @@
 <template>
     <div class="paper-unit float-left">
-        <el-badge :type="badgeType" :value="badgeText">
-            <el-link @click="loadPaperPage">
-                <i class="iconfont el-icon-my-homework"></i>
-                {{ paperInfo.title }}
-            </el-link>
-        </el-badge>
+        <el-link @click="loadPaperPage">
+            <i class="iconfont el-icon-my-homework"></i>
+            {{ paperInfo.title }}
+        </el-link>
     </div>
 </template>
 
