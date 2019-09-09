@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Text, H1 } from "native-base";
+import {Container, Text, H1, Icon, Button} from "native-base";
 import UserUnit from './UserUnit';
 
 const styles = StyleSheet.create({
@@ -19,14 +19,21 @@ class CourseInfo extends Component {
     render() {
         return (
             <Container>
-                <View style={{flex: 6}}>
+                <View style={{flex: 5}}>
                     <Image style={styles.courseAvatar} source={{uri: "http://202.120.40.8:30382/online-edu/static/" + this.props.courseInfo.avatarUrl}}/>
                 </View>
                 <View style={{flex: 9, flexDirection: 'row'}}>
                     <View style={{flex: 1}} />
                     <View style={{flex: 20}}>
-                        <View style={{flex: 1}}>
-                            <H1>{this.props.courseInfo.courseTitle}</H1>
+                        <View style={{flex: 1, flexDirection: 'row'}}>
+                            <View style={{flex: 5}}>
+                                <H1>{this.props.courseInfo.courseTitle}</H1>
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Button transparent onPress={() => {this.props.navigation.navigate("CourseAnnouncement")}}>
+                                    <Icon name={"ios-bulb"} />
+                                </Button>
+                            </View>
                         </View>
                         <View style={{flex: 1, flexDirection: 'row'}}>
                             <View style={{flex: 1, flexDirection: 'row'}}>

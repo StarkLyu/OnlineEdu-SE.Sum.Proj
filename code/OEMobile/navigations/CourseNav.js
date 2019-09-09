@@ -6,11 +6,12 @@ import CourseChapterNav from "./CourseChapterNav";
 import CoursePaperNav from "./CoursePaperNav";
 import CourseSignins from "../screens/CourseSignins";
 import CourseHeader from "../components/CourseHeader";
-import CourseForumNav from "./CourseForumNav"
+import CourseForumNav from "./CourseForumNav";
+import CourseHomeNav from "./CourseHomeNav";
 
 const CourseNav = createBottomTabNavigator({
     CourseHome: {
-        screen: CourseHome,
+        screen: CourseHomeNav,
         navigationOptions: () => ({
             title: "首页",
             tabBarIcon: () => (

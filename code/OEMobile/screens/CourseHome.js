@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { Modal } from "react-native";
 import CourseInfo from "../components/CourseInfo";
-import { Container, Content } from "native-base";
-import CourseHeader from "../components/CourseHeader";
-import UserFab from "../components/UserFab";
+import { Container, Content, Button, Icon } from "native-base";
+import CourseAnnouncement from "../components/CourseAnnouncement";
 
 class CourseHome extends Component {
     constructor(props) {
@@ -13,7 +13,7 @@ class CourseHome extends Component {
         return (
             <Container>
                 <Content>
-                    <CourseInfo/>
+                    <CourseInfo navigation={this.props.navigation}/>
                 </Content>
             </Container>
         )
