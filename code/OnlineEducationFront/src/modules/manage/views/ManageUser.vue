@@ -24,7 +24,7 @@
                     <el-button size="small" type="success" @click="submitUpload">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传.xls或.xlsx文件</div>
                 </el-upload>
-                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent"></el-progress>
+<!--                <el-progress v-if="excelFlag===true" :percentage="excelUploadPercent"></el-progress>-->
             </div>
             <div class="divright">
 <!--                <el-button @click="handleAdd">新增</el-button>-->

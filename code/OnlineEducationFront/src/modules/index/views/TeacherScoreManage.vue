@@ -13,9 +13,11 @@
                 <el-upload
                         class="upload-demo"
                         ref="upload"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-preview="handlePreview"
+                        action="/api/users/bulkImport"
+                        :http-request="uploadExcel"
+                        :before-upload="beforeUpload"
                         :on-remove="handleRemove"
+                        :on-preview="handlePreview"
                         :file-list="fileList"
                         :auto-upload="false">
                     <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -202,6 +204,63 @@
 
             handlePreview(file) {
                 console.log(file);
+            },
+
+            // 上传前校验格式
+            beforeUpload(file) {
+                let Xls = file.name.split('.');
+
+                if (Xls[1] === 'xls' || Xls[1] === 'xlsx') {
+                    return file
+                } else {
+                    this.$message.error('上传文件只能是 xls/xlsx 格式!');
+                    return false;
+                }
+            },
+
+            // 上传文件
+            uploadExcel(file){
+                console.log("正在上传文件");
+                this.$message.info("正在上传文件");
+
+                // 进度条
+                // this.excelFlag = true;
+
+                let param = new FormData();
+                param.append('excel',file.file);
+
+                var that=this;
+                this.$http.request(
+                    {
+                        url: '/api/courses/'+this.$store.getters.getCourseId+'/bulkImportGrade',
+                        method: "put",
+                        headers:{
+                            'Authorization': "Bearer " + that.$store.state.user.accessToken,
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        data:param,
+                        // onUploadProgress: (event) => {
+                        //     // 监听上传进度
+                        //     if (event.lengthComputable) {
+                        //         let val = (event.loaded / event.total * 100).toFixed(0);
+                        //         that.excelFlag = true;
+                        //         that.excelUploadPercent = parseInt(val);
+                        //         // console.log(val);
+                        //     }
+                        // }
+                    },
+                )
+                    .then(function (response) {
+                        console.log(response.data);
+                        that.$message.success('上传成功');
+                        that.excelFlag=false;
+                        that.showAllStudents();
+                    })
+                    .catch(function (error) {
+                        console.log(error.response.data);
+                        that.$message.error(error.response.data);
+                        that.excelFlag=false;
+                    });
             },
         },
 
