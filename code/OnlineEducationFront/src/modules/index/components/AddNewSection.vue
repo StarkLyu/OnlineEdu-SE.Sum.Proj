@@ -9,7 +9,7 @@
                     @click="showAddSection = true"
             ></el-button>
         </el-tooltip>
-        <el-dialog :visible.sync="showAddSection">
+        <el-dialog :visible.sync="showAddSection" v-loading="loading">
             <h2 slot="title">添加节</h2>
             <el-input v-model="newTitle" placeholder="新节标题"></el-input>
             <el-input v-model="newDescription" placeholder="新节描述"></el-input>
@@ -32,12 +32,14 @@
                 showAddSection: false,
                 newTitle: "",
                 newDescription: "",
-                content:"添加第"+this.lastSection+"小节"
+                content:"添加第"+this.lastSection+"小节",
+                loading:false,
             }
         },
         methods: {
             addSection: function () {
                 var that=this;
+                that.loading=true;
                 that.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/sections/'+this.chapterId+'/append',
                     method: "post",
@@ -52,16 +54,19 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        that.loading=false;
                         that.getCourse();
+                        that.showAddSection = false;
                         that.$message.success("添加节成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
+                        that.loading=false;
                         that.$message.error("添加节失败："+error.response.data);
                     });
                 this.newTitle = "";
                 this.newDescription="";
-                this.showAddSection = false;
+
             },
 
             getCourse(){
@@ -75,7 +80,7 @@
                         console.log(response.data);
                         that.$store.commit("setCourseInfo",response.data.course);
                         that.$forceUpdate();
-                        that.loading=false;
+                        // that.loading=false;
                         // that.$store.commit("setCourseInfo",response.data);
                         // alert("请求成功");
                     })

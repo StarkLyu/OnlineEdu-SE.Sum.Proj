@@ -44,6 +44,7 @@
 <!--            添加单选题弹窗部分-->
             <el-dialog :title="'单选题'"
                        :visible.sync="singleVisible"
+                       v-loading="loading_1"
                        top="5%">
                 <el-form :model="singleEditForm" label-width="80px" ref="singleEditForm">
                     <el-form-item label="题目">
@@ -84,6 +85,7 @@
 <!--            添加多选题弹窗部分-->
             <el-dialog :title="'多选题'"
                        :visible.sync="multiVisible"
+                       v-loading="loading_2"
                        top="5%">
                 <el-form :model="multiEditForm" label-width="80px" ref="multiEditForm">
                     <el-form-item label="题目">
@@ -124,6 +126,7 @@
 <!--            添加判断题弹窗部分-->
             <el-dialog :title="'判断题'"
                        :visible.sync="judgeVisible"
+                       v-loading="loading_3"
                        top="5%">
                 <el-form :model="judgeEditForm" label-width="80px" ref="judgeEditForm">
                     <el-form-item label="题目">
@@ -153,6 +156,7 @@
 <!--            添加主观题弹窗部分-->
             <el-dialog :title="'主观题'"
                        :visible.sync="subVisible"
+                       v-loading="loading_4"
                        top="5%">
                 <el-form :model="subEditForm" label-width="80px" ref="subEditForm">
                     <el-form-item label="题目">
@@ -187,6 +191,14 @@
         data(){
             return{
                 loading:true,
+
+                loading_1:false,
+
+                loading_2:false,
+
+                loading_3:false,
+
+                loading_4:false,
 
                 singleVisible: false,
 
@@ -346,6 +358,7 @@
                     singleChoices.push(that.singleEditForm.choices[x].content);
                 }
 
+                that.loading_1=true;
                 // 先上传题目
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
@@ -385,14 +398,17 @@
                                     // alert("请求失败");
                                 });
                         }
+                        that.loading_1=false;
                         that.getCourse();
+                        that.singleVisible=false;
                         that.$message.success("添加单选题成功");
                     })
                     .catch(function (error) {
                         console.log(error.response);
+                        that.loading_1=false;
                         that.$message.error("添加单选题失败："+error.response.data);
                     });
-                this.singleVisible=false;
+
             },
 
             createMultiData(){
@@ -406,6 +422,7 @@
                     multiChoices.push(that.multiEditForm.choices[x].content);
                 }
 
+                that.loading_2=true;
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
@@ -442,14 +459,17 @@
                                     // alert("请求失败");
                                 });
                         }
+                        that.loading_2=false;
                         that.getCourse();
                         that.$message.success("添加多选题成功");
+                        that.multiVisible=false;
                     })
                     .catch(function (error) {
                         console.log(error.response);
+                        that.loading_2=false;
                         that.$message.error("添加多选题失败："+error.response.data);
                     });
-                this.multiVisible=false;
+
             },
 
             createJudgeData(){
@@ -457,6 +477,8 @@
                 that.formData = new FormData();
                 that.$refs.upload.submit();
                 var newQuestionId=0;
+
+                that.loading_3=true;
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
@@ -493,13 +515,16 @@
                                 });
                         }
                         that.getCourse();
+                        that.loading_3=false;
                         that.$message.success("添加判断题成功");
+                        that.judgeVisible=false;
                     })
                     .catch(function (error) {
                         console.log(error.response);
+                        that.loading_3=false;
                         that.$message.error("添加判断题失败："+error.response.data);
                     });
-                this.judgeVisible=false;
+
             },
 
             createSubData(){
@@ -507,6 +532,8 @@
                 that.formData = new FormData();
                 that.$refs.upload.submit();
                 var newQuestionId=0;
+
+                that.loading_4=false;
                 this.$http.request({
                     url: '/api/coursePrototypes/'+this.$store.getters.getCourseInfo.coursePrototype.id+'/questions/submit',
                     method: "post",
@@ -542,13 +569,16 @@
                                 });
                         }
                         that.getCourse();
+                        that.loading_4=false;
                         that.$message.success("添加主观题成功");
+                        that.subVisible=false;
                     })
                     .catch(function (error) {
                         console.log(error.response);
+                        that.loading_4=false;
                         that.$message.error("添加主观题失败："+error.response.data);
                     });
-                this.subVisible=false;
+
             },
 
             // 删除题目

@@ -25,7 +25,7 @@
                             sortable="true">
                     </el-table-column>
                     <el-table-column
-                            prop="state"
+                            prop="state2"
                             label="作业情况"
                             min-width="25%"
                     ></el-table-column>
@@ -46,6 +46,7 @@
         <el-dialog :title="'选择作业'"
                    :visible.sync="dialogFormVisible"
                    :lock-scroll="false"
+                   v-loading="loading_2"
                    top="5%">
             <el-form :model="editForm" label-width="80px" ref="editForm">
                 <el-form-item label="选择次数">
@@ -73,6 +74,8 @@
                 assignId:0,
 
                 loading:true,
+
+                loading_2:false,
 
                 search: '',
 
@@ -103,7 +106,26 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        that.UserData=response.data;
+                        var UserAssign=response.data;
+                        for (let i=0; i<UserAssign.length; i++){
+                            if (UserAssign[i].state==='TEMP_SAVE'){
+                                UserAssign[i].state2="暂存";
+                            }
+                            else if(UserAssign[i].state==='NOT_START'){
+                                UserAssign[i].state2="未开始";
+                            }
+                            else if(UserAssign[i].state==='FINISHED'){
+                                UserAssign[i].state2="已完成";
+                            }
+                            else if(UserAssign[i].state==='NOT_MARKED'){
+                                UserAssign[i].state2="待批改";
+                            }
+                            else {
+                                UserAssign[i].state2="已批改";
+                            }
+                        }
+
+                        that.UserData=UserAssign;
                         that.loading=false;
                         // console.log("UserData"+that.UserData);
                         // alert("请求成功");
@@ -144,11 +166,14 @@
 
             // 选择批改次数
             chooseData(){
+                this.loading_2=true;
                 if (this.timeChoose===0) {
                     this.$message.warning("该学生尚未答题");
+                    this.loading_2=false;
                     this.dialogFormVisible=false;
                 }
                 else{
+                    this.loading_2=false;
                     this.dialogFormVisible=false;
                     // 把选择的答题的答案存起来
                     this.$store.commit("setPaperAnswers", this.oneStuAnswer[this.timeChoose-1]);

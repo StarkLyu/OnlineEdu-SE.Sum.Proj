@@ -37,6 +37,7 @@
                     :title="textMap[dialogStatus]"
                     :visible.sync="dialogFormVisible"
                     :lock-scroll="false"
+                    v-loading="loading_2"
                     top="5%">
                 <el-form :model="editForm" label-width="80px" ref="editForm">
                     <el-form-item label="标题">
@@ -67,6 +68,8 @@
         data(){
             return{
                 loading:true,
+
+                loading_2:false,
 
                 announcements:this.$store.getters.getCourseInfo.notices,
 
@@ -114,6 +117,7 @@
             // 添加公告
             createData(){
                 var that=this;
+                that.loading_2=true;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/notices/',
                     method: "post",
@@ -126,15 +130,19 @@
                     .then(function (response) {
                         console.log(response.data);
                         that.getCourse();
+                        that.loading_2=false;
+                        that.dialogFormVisible=false;
                         that.$message.success("添加公告成功");
+
 
                     })
                     .catch(function (error) {
                         console.log(error.response);
-                        that.$message.error("添加公告失败："+error.response.data);
+                        that.loading_2=false;
+                        that.$message.error("添加公告失败");
                     });
 
-                this.dialogFormVisible=false;
+
             },
 
             // 修改课程

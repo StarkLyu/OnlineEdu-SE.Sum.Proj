@@ -60,6 +60,7 @@
         <el-dialog :title="'作业'"
                    :visible.sync="AssignVisible"
                    :lock-scroll="false"
+                   v-loading="loading_2"
                    top="5%"
                    width="80%">
             <el-form :model="AssignEditForm" label-width="80px" ref="AssignEditForm">
@@ -116,6 +117,8 @@
         data(){
             return{
                 loading: true,
+
+                loading_2:false,
 
                 search:"",
 
@@ -213,6 +216,7 @@
                 // console.log(this.AssignEditForm);
                 // console.log(this.AssignEditForm.start);
                 var that=this;
+                that.loading_2=true;
                 this.$http.request({
                     url: '/api/courses/'+this.$store.getters.getCourseId+'/papers',
                     method: "post",
@@ -230,14 +234,17 @@
                         console.log(response.data);
                         // that.getThisCourseInfo();
                         that.getCourse();
+                        that.loading_2=false;
                         that.$message.success("添加作业成功");
+                        that.AssignVisible=false;
                     })
                     .catch(function (error) {
                         console.log(error);
+                        that.loading_2=false;
                         that.$message.error("添加作业失败："+error.response.data);
                     });
 
-                this.AssignVisible=false;
+
             },
 
             // 编辑作业
