@@ -57,6 +57,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
         PaperAnswer paperAnswer = getPaperAnswer(userId, courseId, paperId);
         Paper paper = paperRepository.getOne(paperId);
         timeTest(paper);
+        List<Answer> answerList = new ArrayList<>();
         try{
             for (QuestionAnswer questionAnswer :form.getAnswerList()){
                 Question question = questionRepository.findById(questionAnswer.getQuestionId())
@@ -66,7 +67,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
                 }
                 AnswerPrimaryKey answerPrimaryKey = new AnswerPrimaryKey(paperAnswer,question);
                 Answer answer = new Answer(answerPrimaryKey,questionAnswer.getAnswer(),0);
-                paperAnswer.getAnswers().add(answerRepository.save(answer));
+                answerList.add(answer);
             }
         } catch (AnswerException e){
             if(paperAnswer.getState() == null) {
@@ -75,6 +76,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             throw e;
         }
         paperAnswer.setState(PaperAnswerState.valueOf(form.getState()));
+        paperAnswer.setAnswers(answerList);
         return paperAnswerRepository.save(paperAnswer);
     }
 
@@ -185,8 +187,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             PaperAnswerPrimaryKey lastAnswerPrimaryKey = new PaperAnswerPrimaryKey(user, paper, times);
             PaperAnswer lastAnswer = paperAnswerRepository.getOne(lastAnswerPrimaryKey);
             if (lastAnswer.getState().equals(PaperAnswerState.NOT_FINISH)){
-                paperAnswerRepository.delete(lastAnswer);
-                times--;
+                return lastAnswer;
             }
             if(lastAnswer.getState().equals(PaperAnswerState.TEMP_SAVE)){
                 return lastAnswer;
