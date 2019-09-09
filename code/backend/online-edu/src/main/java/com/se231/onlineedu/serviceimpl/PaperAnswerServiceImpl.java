@@ -75,7 +75,7 @@ public class PaperAnswerServiceImpl implements PaperAnswerService {
             }
             throw e;
         }
-        if(paperAnswer.getState().equals(PaperAnswerState.TEMP_SAVE)) {
+        if(paperAnswer.getState()!=null&&paperAnswer.getState().equals(PaperAnswerState.TEMP_SAVE)) {
             paperAnswer.getAnswers().addAll(answerList);
         }else {
             paperAnswer.setAnswers(answerList);
